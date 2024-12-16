@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "ES2020" /* Set the target JavaScript version. */,
+    "module": "ESNext" /* Use modern ECMAScript modules. */,
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ] /* Include libraries for modern web apps. */,
+    "jsx": "react-jsx" /* Use React's new JSX runtime. */,
+
+    /* Module Resolution */
+    "moduleResolution": "node" /* Resolve modules like Node.js. */,
+    "baseUrl": "./" /* Set base path for imports. */,
+    "paths": {
+      /* Aliases for module imports. */ "@components/*": ["src/components/*"],
+      "@utils/*": ["src/utils/*"]
+    },
+    "resolveJsonModule": true /* Allow importing .json files. */,
+    "esModuleInterop": true /* Improve CommonJS module compatibility. */,
+    "allowSyntheticDefaultImports": true /* Enable default imports for modules without default exports. */,
+
+    /* Type Checking */
+    "strict": true /* Enable all strict type-checking options. */,
+    "noImplicitAny": true /* Disallow implicit 'any' types. */,
+    "strictNullChecks": true /* Ensure 'null' and 'undefined' are handled explicitly. */,
+    "noImplicitReturns": true /* Report functions with missing return statements. */,
+    "noFallthroughCasesInSwitch": true /* Disallow fallthrough cases in switch statements. */,
+
+    /* JSX and React */
+    "useUnknownInCatchVariables": true /* Use 'unknown' for catch clause variables. */,
+    "forceConsistentCasingInFileNames": true /* Ensure consistent casing in imports. */,
+
+    /* Output Options */
+    "skipLibCheck": true /* Skip type checking declaration files. */,
+    "outDir": "./dist" /* Specify output directory for compiled files. */,
+    "sourceMap": true /* Enable source maps for debugging. */,
+
+    /* JavaScript Support */
+    "allowJs": true /* Allow JavaScript files in the project. */,
+
+    /* Additional Options */
+    "incremental": true /* Enable incremental compilation for faster builds. */
+  },
+  "include": ["src"] /* Include the source folder for compilation. */,
+  "exclude": ["node_modules", "dist"] /* Exclude unnecessary folders. */
+}

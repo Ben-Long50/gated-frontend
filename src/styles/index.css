@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Rovelink';
+  src: url('/rovelink.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Omnitrinx';
+  src: url('/Omnitrinx.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Exo-regular';
+  src: url('/Exo-Regular.otf') format('opentype');
+}
+
+@layer components {
+  .bg-primary {
+    @apply border-gray-400 bg-zinc-100 dark:border-gray-600 dark:bg-zinc-900;
+  }
+  .bg-blur {
+    @apply bg-opacity-95 backdrop-blur-sm;
+  }
+  .bg-secondary {
+    @apply border-gray-400 bg-zinc-200 dark:border-gray-600 dark:bg-zinc-800;
+  }
+  .input-primary {
+    @apply bg-zinc-200 dark:bg-zinc-800;
+  }
+  .text-primary {
+    @apply text-gray-900 dark:text-gray-50;
+  }
+  .text-secondary {
+    @apply text-gray-700 dark:text-gray-200;
+  }
+  .text-tertiary {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+  .text-accent {
+    @apply text-yellow-300;
+  }
+  .text-error {
+    @apply text-red-500;
+  }
+  .accent-primary {
+    @apply bg-yellow-300 text-gray-900;
+  }
+  .shadow-standard {
+    @apply shadow shadow-gray-300 dark:shadow dark:shadow-black;
+  }
+  .shadow-medium {
+    @apply shadow-md shadow-gray-300 dark:shadow-md dark:shadow-black;
+  }
+  .focus {
+    @apply outline-none ring-yellow-300 focus:border-transparent focus:ring-2;
+  }
+  .timing {
+    @apply transition-all duration-500 ease-in-out md:duration-300;
+  }
+  h1 {
+    @apply py-2 text-center text-3xl font-semibold tracking-widest;
+  }
+  h2 {
+    @apply text-primary text-2xl font-semibold tracking-widest;
+  }
+  h3 {
+    @apply text-secondary text-xl;
+  }
+  .auth-layout-small {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+  }
+  .auth-layout-large {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 1rem;
+  }
+  .main-layout-large {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .stat-bar-layout {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+  }
+  dialog::backdrop {
+    backdrop-filter: blur(5px) brightness(0.8);
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  .clip-chamfer {
+    clip-path: polygon(
+      2rem 0px,
+      100% 0px,
+      100% calc(100% - 2rem),
+      calc(100% - 2rem) 100%,
+      0px 100%,
+      0px 2rem
+    );
+  }
+}
