@@ -10,7 +10,6 @@ const BtnRect = (props) => {
     <div className={`${props.position}`}>
       <ThemeContainer
         chamfer="16"
-        className="clip-4"
         borderColor={hover ? accentPrimary : 'transparent'}
       >
         <button

@@ -1,92 +1,55 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 
-const InputField = (props) => {
+const InputField = ({ field, ...props }) => {
   const [borderColor, setBorderColor] = useState('transparent');
   const [focus, setFocus] = useState(false);
-  const [error, setError] = useState(null);
   const { accentPrimary, errorPrimary } = useContext(ThemeContext);
-  const inputRef = useRef(null);
 
-  const handleValidation = () => {
-    const value = inputRef.current.value;
-
-    switch (props.type) {
-      case 'text':
-        if (value.length < 2 && value.length > 0) {
-          setBorderColor(errorPrimary);
-          setError('Input too short');
-        } else {
-          setBorderColor(accentPrimary);
-          setError(null);
-        }
-        break;
-
-      case 'email':
-        const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-        if (!isValidEmail && value.length > 0) {
-          setBorderColor(errorPrimary);
-          setError('Invalid email address');
-        } else {
-          setBorderColor(accentPrimary);
-          setError(null);
-        }
-        break;
-
-      case 'password':
-        if (value.length < 6 && value.length > 0) {
-          setBorderColor(errorPrimary);
-          setError('Password too short');
-        } else {
-          setBorderColor(accentPrimary);
-          setError(null);
-        }
-        break;
-
-      default:
-        setBorderColor('transparent');
-        setError(null);
+  const handleBorder = () => {
+    if (field.state.meta.errors.length > 0) {
+      setBorderColor(errorPrimary);
+    } else {
+      setBorderColor(accentPrimary);
     }
   };
 
   return (
-    <div className="relative">
-      <ThemeContainer chamfer="16" className="clip-4" borderColor={borderColor}>
-        <input
-          ref={inputRef}
-          className={`${props.className} text-secondary timing focus:bg-primary w-full bg-zinc-300 p-3 pl-4 text-xl outline-none dark:bg-zinc-700`}
-          type={props.type}
-          name={props.name}
-          id={props.name}
-          value={props.value}
-          onChange={(e) => {
-            props.onChange && props.onChange(e);
-            handleValidation();
-            if (inputRef.current.value.length === 0) {
-              setError(null);
-            }
-          }}
-          minLength={props.minLength}
-          onFocus={() => {
-            handleValidation();
-            setFocus(true);
-          }}
-          onBlur={() => {
-            if (!error) {
-              setBorderColor('transparent');
-            }
-            setFocus(false);
-          }}
-        />
-      </ThemeContainer>
+    <ThemeContainer chamfer="16" borderColor={borderColor}>
+      <input
+        className={`${props.className} text-secondary timing focus:bg-primary w-full rounded-none ${field.state.value.length === 0 ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
+        type={props.type || 'text'}
+        name={field.name}
+        id={field.name}
+        value={field.state.value}
+        onFocus={() => {
+          handleBorder();
+          setFocus(true);
+        }}
+        onBlur={() => {
+          if (field.state.value.length === 0) {
+            setBorderColor('transparent');
+          }
+          setFocus(false);
+        }}
+        onChange={(e) => {
+          field.handleChange(e.target.value);
+          handleBorder();
+        }}
+      />
       <label
-        className={` ${focus && error ? 'text-error' : ''} ${focus ? 'bg-primary text-accent -translate-y-6' : ''} ${inputRef.current?.value && !focus ? 'text-transparent' : ''} ${!inputRef.current?.value && !focus ? 'text-gray-400' : ''} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
+        htmlFor={field.name}
+        className={` ${field.state.meta.errors.length > 0 ? 'text-error' : ''} ${field.state.value.length > 0 || focus ? 'bg-primary text-accent -translate-y-6' : ''} ${field.state.value.length === 0 && !focus ? 'text-gray-400' : ''} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
       >
         {props.label}
       </label>
-      {error && <p className="text-error mt-2 text-sm">{error}</p>}
-    </div>
+      {field.state.meta.errors && (
+        <em className="timing text-error" role="alert">
+          {field.state.meta.errors.join(', ')}
+        </em>
+      )}
+    </ThemeContainer>
   );
 };
 

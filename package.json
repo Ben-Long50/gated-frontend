@@ -19,6 +19,7 @@
     "@designbycode/tailwindcss-text-shadow": "^2.2.1",
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
+    "@tanstack/react-form": "^0.40.4",
     "@tanstack/react-query": "^5.51.23",
     "@tanstack/react-query-devtools": "^5.51.23",
     "date-fns": "^3.6.0",

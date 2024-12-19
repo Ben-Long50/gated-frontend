@@ -1,19 +1,40 @@
-import { mdiRectangle } from '@mdi/js';
+import { mdiCircle, mdiRectangle } from '@mdi/js';
 import Icon from '@mdi/react';
+import { useContext } from 'react';
+import { LayoutContext } from '../contexts/LayoutContext';
 
 const StatBar = (props) => {
+  const { layoutSize } = useContext(LayoutContext);
+
   return (
-    <div className="stat-bar-layout w-full items-center gap-8">
+    <>
       <h3 className="text-xl font-semibold tracking-widest">{props.title}</h3>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 max-sm:gap-1">
         {Array.from({ length: props.total }).map((_, index) =>
           index < props.current ? (
+            layoutSize === 'small' || layoutSize === 'xsmall' ? (
+              <Icon
+                key={index}
+                className=""
+                path={mdiCircle}
+                size={0.5}
+                color={props.color}
+              />
+            ) : (
+              <Icon
+                key={index}
+                className="scale-x-150 scale-y-50"
+                path={mdiRectangle}
+                size={1}
+                color={props.color}
+              />
+            )
+          ) : layoutSize === 'small' || layoutSize === 'xsmall' ? (
             <Icon
               key={index}
-              className="scale-x-150 scale-y-50"
-              path={mdiRectangle}
-              size={1}
-              color={props.color}
+              className="text-gray-400"
+              path={mdiCircle}
+              size={0.5}
             />
           ) : (
             <Icon
@@ -25,10 +46,11 @@ const StatBar = (props) => {
           ),
         )}
       </div>
-      <p>
+
+      <p className={`justify-self-end whitespace-nowrap`}>
         {props.current} / {props.total}
       </p>
-    </div>
+    </>
   );
 };
 

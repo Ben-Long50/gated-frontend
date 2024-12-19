@@ -7,9 +7,9 @@ const BtnAuth = (props) => {
   const { accentPrimary } = useContext(ThemeContext);
 
   return (
-    <ThemeContainer borderColor={borderColor} chamfer="16" className="clip-4">
+    <ThemeContainer borderColor={borderColor} chamfer="16">
       <button
-        className="text-secondary hover:bg-primary md:hover:text-accent bg-secondary timing flex w-full items-center justify-center p-2 text-lg"
+        className="text-secondary hover:bg-primary md:hover:text-accent bg-secondary timing flex w-full items-center justify-center p-2 text-lg clip-4"
         onClick={props.onClick}
         onMouseEnter={() => {
           setBorderColor(accentPrimary);

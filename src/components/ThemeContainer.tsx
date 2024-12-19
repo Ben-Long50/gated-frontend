@@ -26,7 +26,7 @@ const ThemeContainer = (props) => {
   }, []);
 
   return (
-    <div className="relative">
+    <div ref={containerRef} className={`${props.className} relative`}>
       <ThemeBorder
         className="absolute right-[1px] top-[1px]"
         height={dimensions.height}
@@ -34,9 +34,7 @@ const ThemeContainer = (props) => {
         borderColor={props.borderColor}
         chamfer={props.chamfer}
       />
-      <div ref={containerRef} className={`${props.className} timing relative`}>
-        {props.children}
-      </div>
+      {props.children}
     </div>
   );
 };

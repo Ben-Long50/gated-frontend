@@ -61,7 +61,7 @@
     @apply transition-all duration-500 ease-in-out md:duration-300;
   }
   h1 {
-    @apply py-2 text-center text-3xl font-semibold tracking-widest;
+    @apply text-center text-3xl font-semibold tracking-widest;
   }
   h2 {
     @apply text-primary text-2xl font-semibold tracking-widest;
@@ -78,7 +78,7 @@
   }
   .auth-layout-large {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
   .main-layout-large {
@@ -88,7 +88,11 @@
   }
   .stat-bar-layout {
     display: grid;
-    grid-template-columns: 100px 1fr auto;
+    grid-template-columns: auto 1fr auto;
+  }
+  .stat-bar-layout-xs {
+    display: grid;
+    grid-template-columns: 1fr auto;
   }
   dialog::backdrop {
     backdrop-filter: blur(5px) brightness(0.8);

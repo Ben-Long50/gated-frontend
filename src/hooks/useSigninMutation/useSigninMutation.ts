@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import signin from '../services/signin';
+import signin from './signin';
 import { useNavigate } from 'react-router-dom';
 
 const useSigninMutation = (apiUrl, setErrors) => {
@@ -9,8 +9,8 @@ const useSigninMutation = (apiUrl, setErrors) => {
     mutationFn: async (formData) => {
       return await signin(formData, apiUrl);
     },
-    onSuccess: () => {
-      queryClient.clear();
+    onSuccess: (data) => {
+      // queryClient.clear();
       navigate('/home');
     },
     onError: (error) => {

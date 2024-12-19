@@ -18,6 +18,8 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = Cookies.get('token');
+    console.log(token);
+
     if (token) {
       setAuthToken(token);
       navigate('/home');
@@ -36,6 +38,7 @@ const AuthProvider = ({ children }) => {
       value={{
         apiUrl,
         authToken,
+        setAuthToken,
         user: user.data,
       }}
     >

@@ -1,45 +1,67 @@
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
-import { mdiSquare, mdiSquareOutline, mdiTriangleSmallUp } from '@mdi/js';
+import {
+  mdiCircle,
+  mdiCircleOutline,
+  mdiSquare,
+  mdiSquareOutline,
+  mdiTriangleSmallUp,
+} from '@mdi/js';
 import Icon from '@mdi/react';
+import { LayoutContext } from '../contexts/LayoutContext';
 
 const AttributeCard = (props) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const { layoutSize } = useContext(LayoutContext);
 
   return (
-    <ThemeContainer
-      chamfer="32"
-      className="bg-primary p-6 clip-8"
-      borderColor={accentPrimary}
-    >
-      <div className="mb-4 flex w-full items-center justify-between gap-4 pl-4">
+    <>
+      <div className="mb-4 flex w-full flex-wrap items-center justify-between gap-2 pl-4 sm:gap-4">
         <h2 className="text-2xl font-semibold tracking-widest">
-          {props.category.charAt(0).toUpperCase() + props.category.slice(1)}{' '}
+          {props.attribute.charAt(0).toUpperCase() + props.attribute.slice(1)}{' '}
         </h2>
-        <div className="flex gap-4">
-          {Array.from({ length: props.points }).map((_, index) => (
+        <div className="flex gap-2 sm:gap-4">
+          {Array.from({ length: 4 }).map((_, index) => (
             <button
               key={index}
-              onClick={() => props.handleAttributeDecrement(props.category)}
+              onClick={(e) => {
+                e.preventDefault();
+                props.updatePoints(props.attribute, index + 1);
+              }}
             >
-              <Icon path={mdiSquare} size={1} color="gold" />
-            </button>
-          ))}
-          {Array.from({ length: 4 - props.points }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => props.handleAttributeIncrement(props.category)}
-            >
-              <Icon path={mdiSquareOutline} size={1} color="gold" />
+              {layoutSize === 'small' || layoutSize === 'xsmall' ? (
+                index < props.points ? (
+                  <Icon key={index} path={mdiCircle} size={0.7} color="gold" />
+                ) : (
+                  <Icon
+                    key={index}
+                    path={mdiCircleOutline}
+                    size={0.7}
+                    color={accentPrimary}
+                  />
+                )
+              ) : index < props.points ? (
+                <Icon key={index} path={mdiSquare} size={1} color="gold" />
+              ) : (
+                <Icon
+                  key={index}
+                  path={mdiSquareOutline}
+                  size={1}
+                  color={accentPrimary}
+                />
+              )}
             </button>
           ))}
         </div>
       </div>
       <ul className="flex flex-col gap-3">
-        {Object.entries(props.skills).map(([skill, value]) => (
+        {Object.entries(props.skills).map(([skill, { points }]) => (
           <>
-            <li className="flex w-full items-center pl-3" key={skill}>
+            <li
+              className="flex w-full flex-wrap items-center gap-1 pl-3"
+              key={skill}
+            >
               <Icon
                 className="text-primary"
                 path={mdiTriangleSmallUp}
@@ -49,29 +71,46 @@ const AttributeCard = (props) => {
               <h3 className="mr-4 grow pl-2 text-xl">
                 {skill.charAt(0).toUpperCase() + skill.slice(1)}
               </h3>{' '}
-              <div className="flex gap-4">
-                {Array.from({ length: value }).map((_, index) => (
+              <div className="flex gap-2 sm:gap-4">
+                {Array.from({ length: 4 }).map((_, index) => (
                   <button
                     key={index}
-                    onClick={() =>
-                      props.handleSkillDecrement(props.category, skill)
-                    }
+                    onClick={(e) => {
+                      e.preventDefault();
+                      props.updatePoints(props.attribute, index + 1, skill);
+                    }}
                   >
-                    <Icon path={mdiSquare} size={1} className="text-primary" />
-                  </button>
-                ))}
-                {Array.from({ length: 4 - value }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() =>
-                      props.handleSkillIncrement(props.category, skill)
-                    }
-                  >
-                    <Icon
-                      path={mdiSquareOutline}
-                      size={1}
-                      className="text-tertiary"
-                    />
+                    {layoutSize === 'small' || layoutSize === 'xsmall' ? (
+                      index < points ? (
+                        <Icon
+                          key={index}
+                          className="text-primary"
+                          path={mdiCircle}
+                          size={0.7}
+                        />
+                      ) : (
+                        <Icon
+                          key={index}
+                          className="text-tertiary"
+                          path={mdiCircleOutline}
+                          size={0.7}
+                        />
+                      )
+                    ) : index < points ? (
+                      <Icon
+                        key={index}
+                        path={mdiSquare}
+                        size={1}
+                        className="text-primary"
+                      />
+                    ) : (
+                      <Icon
+                        key={index}
+                        path={mdiSquareOutline}
+                        size={1}
+                        className="text-tertiary"
+                      />
+                    )}
                   </button>
                 ))}
               </div>
@@ -79,7 +118,7 @@ const AttributeCard = (props) => {
           </>
         ))}
       </ul>
-    </ThemeContainer>
+    </>
   );
 };
 
