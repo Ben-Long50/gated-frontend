@@ -13,6 +13,7 @@ import usePerksQuery from '../hooks/usePerksQuery/usePerksQuery';
 import StatBar from './StatBar';
 import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';
+import useCreateCharacterMutation from '../hooks/useCreateCharacterMutation/useCreateCharacterMutation';
 
 const CharacterForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
@@ -22,7 +23,7 @@ const CharacterForm = () => {
 
   const perks = usePerksQuery(apiUrl, authToken);
   const perkFilter = usePerks();
-  //   const createCharacter = useCreateCharacterMutation(apiUrl, authToken);
+  const createCharacter = useCreateCharacterMutation(apiUrl, authToken);
   const attributeTree = useAttributeTree();
   const stats = attributeTree.calculateSkills(attributeTree.tree);
 
@@ -39,7 +40,7 @@ const CharacterForm = () => {
     },
     onSubmit: async ({ value }) => {
       console.log(value);
-      //   createCharacter.mutate(value);
+      createCharacter.mutate(value);
     },
   });
 

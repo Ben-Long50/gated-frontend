@@ -26,7 +26,7 @@ const AuthProvider = ({ children }) => {
       setAuthToken(null);
       navigate('/signin');
     }
-  }, [navigate]);
+  }, []);
 
   // if (user.isPending) {
   //   return <span></span>;

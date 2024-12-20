@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -14,121 +14,34 @@ import WeaponCard from './WeaponCard';
 import ArmorCard from './ArmorCard';
 import CyberneticCard from './CyberneticCard';
 import AttributeCard from './AttributeCard';
-import { LayoutContext } from '../contexts/LayoutContext';
 import useAttributeTree from '../hooks/useAttributeTree';
+import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { apiUrl, user } = useContext(AuthContext);
-  const { layoutSize } = useContext(LayoutContext);
+  const { apiUrl, authToken } = useContext(AuthContext);
 
-  const character = {
-    name: 'Uni Dori',
-    level: 4,
-    height: { inches: 73 },
-    weight: { pounds: 180 },
-    age: 30,
-    sex: 'male',
-    profits: 20,
-    attributes: {
-      cybernetica: {
-        points: 4,
-        skills: {
-          chromebits: { points: 4 },
-        },
-      },
-      peace: {
-        points: 1,
-        skills: {
-          barter: { points: 1 },
-        },
-      },
-      violence: {
-        points: 2,
-        skills: {
-          shooting: { points: 2 },
-          threshold: { points: 3 },
-        },
-      },
-    },
-    stats: {
-      health: {
-        current: 10,
-        total: 0,
-      },
-      sanity: { current: 4, total: 0 },
-      speed: { current: 0, total: 0 },
-      cyber: { current: 10, total: 0 },
-      equip: { current: 16, total: 0 },
-      evasion: { current: 1, total: 1 },
-      armor: { current: 0, total: 0 },
-      ward: { current: 0, total: 0 },
-    },
-    injuries: 3,
-    insanities: 2,
-    perks: [
-      {
-        name: 'Benefactor',
-        requirements: {
-          cybernetica: { points: 0, skills: { chromebits: { points: 3 } } },
-        },
-        description:
-          'When you select this perk, you receive a non-blackmarket cybernetic of your choice. If it is ever destroyed or damaged, it is repaired or replaced for free. Every time your Upgrade Level increases, you receive another cybernetic. These cybernetics are personalized to you, and cannot be shared.',
-      },
-      {
-        name: 'Proto-chrome',
-        requirements: {
-          cybernetica: { points: 0, skills: { chromebits: { points: 4 } } },
-        },
-        description:
-          'When you select this perk, you receive 1 of 4 unique cybernetic augments. They are listed in the cybernetic section “Prototype Augments”. You or a trusted associate are able to repair or rebuild this cybernetic if it is damaged or lost.',
-      },
-    ],
-    weapons: [
-      {
-        name: 'Ranger Smoothbore',
-        type: 'Shotgun',
-        weild: 2,
-        description:
-          'The weapon of choice for hired outriders, those lonesome souls that patrol the Wastes Between.',
-        stats: {
-          DMG: 5,
-          SLV: 2,
-          RNG: 20,
-          MAG: 8,
-          WGT: 3,
-          Cost: 4,
-        },
-        keywords: [],
-      },
-    ],
-    armor: [
-      {
-        name: 'Mk. 3 Industrial Suit',
-        type: 'Power',
-        description:
-          'Designed to protect laborers against hazardous environments.',
-        stats: { AV: 4, BP: 10, WGT: 10, PWR: 6, Cost: 15 },
-        keywords: ['Torque'],
-      },
-    ],
-    cybernetics: [
-      {
-        name: 'CR87 Cyberdeck',
-        type: 'Function Augment',
-        body: 'Brain',
-        stats: { Cyber: 2, Cost: 15 },
-        description:
-          'The Caldwin CR87 is a cerebral and spinal augment that acts as a miniature Sphere Hub once deployed. As an Extended Action, you can deploy the Cyber Deck. Whilst deployed, you can only take simple actions, such as walking and conversating. Your Upload range increases to 500 feet. As an action, you can mark characters you see in range. Marked characters can be targeted by Upload as long as they’re within 500 feet, line of sight not required. While deployed, you retain the mark and track their location, even if they exceed 500 feet. You lose the mark once you deactivate it.',
-      },
-    ],
-  };
+  const [structuredTree, setStructuredTree] = useState({});
+  const [stats, setStats] = useState({});
 
-  //   const { data: character } = useCharacterQuery(user.id, apiUrl);
+  const { data: character, isPending } = useCharacterQuery(apiUrl, authToken);
 
   const attributeTree = useAttributeTree();
-  const structuredTree = attributeTree.structureTree(character.attributes);
-  const stats = attributeTree.calculateSkills(structuredTree);
+
+  useEffect(() => {
+    if (character) {
+      const structured = attributeTree.structureTree(character[0].attributes);
+      setStructuredTree(structured);
+
+      const calculatedStats = attributeTree.calculateSkills(structured);
+      setStats(calculatedStats);
+      console.log(structured);
+    }
+  }, [character]);
+
+  if (isPending) {
+    return <span></span>;
+  }
 
   return (
     <div className="text-primary flex w-full max-w-5xl flex-col gap-8">
@@ -136,10 +49,10 @@ const CharacterSheet = () => {
         <ThemeContainer chamfer="16" borderColor={accentPrimary}>
           <div className="bg-primary flex grow items-center justify-around gap-8 px-8 clip-4">
             <h1 className="py-2 text-center text-3xl font-semibold tracking-widest">
-              {character.name}
+              {character[0].name}
             </h1>
             <p className="accent-primary flex size-8 shrink-0 items-center justify-center rounded-full pt-1 text-2xl font-semibold">
-              {character.level}
+              {character[0].level}
             </p>
           </div>
         </ThemeContainer>
@@ -149,52 +62,52 @@ const CharacterSheet = () => {
               Height
             </h3>
             <p className="text-xl">
-              {Math.floor(character.height.inches / 12)}ft{' '}
-              {character.height.inches % 12}in
+              {Math.floor(character[0].height / 12)}ft{' '}
+              {character[0].height % 12}in
             </p>
           </div>
           <div className="flex flex-col items-center gap-2">
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Weight
             </h3>
-            <p className="text-xl">{character.weight.pounds} lbs</p>
+            <p className="text-xl">{character[0].weight} lbs</p>
           </div>
           <div className="flex flex-col items-center gap-2">
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Age
             </h3>
-            <p className="text-xl">{character.age}</p>
+            <p className="text-xl">{character[0].age}</p>
           </div>
           <div className="flex flex-col items-center gap-2">
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Sex
             </h3>
-            <p className="text-xl">{character.sex}</p>
+            <p className="text-xl">{character[0].sex}</p>
           </div>
         </div>
       </div>
       <div className={`stat-bar-layout w-full items-center gap-4`}>
         <StatBar
           title="Health"
-          current={character.stats.health.current}
+          current={stats.health}
           total={stats.health}
           color="rgb(248 113 113)"
         />
         <StatBar
           title="Sanity"
-          current={character.stats.sanity.current}
+          current={stats.sanity}
           total={stats.sanity}
           color="rgb(96 165 250)"
         />
         <StatBar
           title="Cyber"
-          current={character.stats.cyber.current}
+          current={stats.cyber}
           total={stats.cyber}
           color="rgb(52 211 153)"
         />
         <StatBar
           title="Equip"
-          current={character.stats.equip.current}
+          current={stats.equip}
           total={stats.equip}
           color="rgb(251 191 36)"
         />
@@ -222,7 +135,7 @@ const CharacterSheet = () => {
               </h3>
               <div className="flex items-center gap-2">
                 {Array.from({ length: 5 }).map((_, index) =>
-                  index < character.injuries ? (
+                  index < character[0].injuries ? (
                     <Icon
                       key={index}
                       className="text-primary"
@@ -246,7 +159,7 @@ const CharacterSheet = () => {
               </h3>
               <div className="flex items-center gap-2">
                 {Array.from({ length: 5 }).map((_, index) =>
-                  index < character.insanities ? (
+                  index < character[0].insanities ? (
                     <Icon
                       key={index}
                       className="text-primary"
@@ -293,13 +206,13 @@ const CharacterSheet = () => {
             Perks
           </h2>
           <div className="flex flex-col gap-4">
-            {character.perks.map((perk) => {
+            {character[0].perks.map((perk) => {
               return <PerkCard key={perk.name} perk={perk} />;
             })}
           </div>
         </div>
       </ThemeContainer>
-      <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+      {/* <ThemeContainer chamfer="16" borderColor={accentPrimary}>
         <div className="bg-primary p-4 clip-4">
           <h2 className="mb-2 py-2 pl-4 text-left text-2xl font-semibold tracking-widest">
             Weapons
@@ -348,7 +261,7 @@ const CharacterSheet = () => {
             })}
           </div>
         </div>
-      </ThemeContainer>
+      </ThemeContainer> */}
     </div>
   );
 };

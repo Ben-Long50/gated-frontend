@@ -51,8 +51,8 @@ const PerkList = ({
                                 <input
                                   className="size-6"
                                   type="checkbox"
-                                  checked={checkedPerk === perk.name}
-                                  onChange={() => setCheckedPerk(perk.name)}
+                                  checked={checkedPerk === perk.id}
+                                  onChange={() => setCheckedPerk(perk.id)}
                                 />
                               )}
                             </div>
