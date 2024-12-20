@@ -18,7 +18,6 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = Cookies.get('token');
-    console.log(token);
 
     if (token) {
       setAuthToken(token);
@@ -29,9 +28,9 @@ const AuthProvider = ({ children }) => {
     }
   }, [navigate]);
 
-  if (user.isLoading) {
-    return <span></span>;
-  }
+  // if (user.isPending) {
+  //   return <span></span>;
+  // }
 
   return (
     <AuthContext.Provider

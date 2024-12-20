@@ -1,14 +1,22 @@
-import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createPerk from './createPerk';
 
 const useCreatePerkMutation = (apiUrl, authToken) => {
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (formData) => {
-      return await createPerk(formData, apiUrl, authToken);
+    mutationFn: (formData) => {
+      return createPerk(formData, apiUrl, authToken);
     },
-    onSuccess: () => navigate(0),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['perks'],
+        exact: false,
+      });
+      console.log('Perk successfully created');
+    },
+    onError: () => {
+      console.error('Error creating perk');
+    },
   });
 };
 

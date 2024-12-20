@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Skill {
   points: number;
@@ -9,55 +9,77 @@ interface Attribute {
   skills: Record<string, Skill>;
 }
 
-interface AttributeTree {
+export interface AttributeTree {
   cybernetica: Attribute;
   esoterica: Attribute;
   peace: Attribute;
   violence: Attribute;
 }
 
-const useAttributeTree = (tree?: Partial<AttributeTree>) => {
-  const [attributeTree, setAttributeTree] = useState(
-    tree || {
-      cybernetica: {
-        points: 0,
-        skills: {
-          chromebits: { points: 0 },
-          hardwired: { points: 0 },
-          motorized: { points: 0 },
-          networked: { points: 0 },
-        },
-      },
-      esoterica: {
-        points: 0,
-        skills: {
-          gestalt: { points: 0 },
-          godhead: { points: 0 },
-          mysticism: { points: 0 },
-          outerworld: { points: 0 },
-        },
-      },
-      peace: {
-        points: 0,
-        skills: {
-          barter: { points: 0 },
-          erudition: { points: 0 },
-          rhetoric: { points: 0 },
-          treatment: { points: 0 },
-        },
-      },
-      violence: {
-        points: 0,
-        skills: {
-          assault: { points: 0 },
-          shooting: { points: 0 },
-          subterfuge: { points: 0 },
-          threshold: { points: 0 },
-        },
+const useAttributeTree = () => {
+  const initialTree = {
+    cybernetica: {
+      points: 0,
+      skills: {
+        chromebits: { points: 0 },
+        hardwired: { points: 0 },
+        motorized: { points: 0 },
+        networked: { points: 0 },
       },
     },
-  );
+    esoterica: {
+      points: 0,
+      skills: {
+        gestalt: { points: 0 },
+        godhead: { points: 0 },
+        mysticism: { points: 0 },
+        outerworld: { points: 0 },
+      },
+    },
+    peace: {
+      points: 0,
+      skills: {
+        barter: { points: 0 },
+        erudition: { points: 0 },
+        rhetoric: { points: 0 },
+        treatment: { points: 0 },
+      },
+    },
+    violence: {
+      points: 0,
+      skills: {
+        assault: { points: 0 },
+        shooting: { points: 0 },
+        subterfuge: { points: 0 },
+        threshold: { points: 0 },
+      },
+    },
+  };
 
+  const [attributeTree, setAttributeTree] = useState(initialTree);
+
+  const resetTree = () => {
+    setAttributeTree(initialTree);
+  };
+
+  //Takes a partial attribute tree and returns a full tree including all fields where the point values are zero
+  const structureTree = (tree: Partial<AttributeTree>) => {
+    const updatedTree: AttributeTree = { ...attributeTree };
+
+    Object.entries(tree).forEach(([attribute, { points, skills }]) => {
+      if (updatedTree[attribute]) {
+        updatedTree[attribute].points = points;
+      }
+      Object.entries(skills).map(([skill, { points }]) => {
+        if (updatedTree[attribute].skills[skill]) {
+          updatedTree[attribute].skills[skill].points = points;
+        }
+      });
+    });
+    return updatedTree;
+  };
+
+  //Returns the number of points attributed to a specific attribute or skill
   const getPoints = (
     attribute: keyof AttributeTree,
     skill?: string,
@@ -122,11 +144,29 @@ const useAttributeTree = (tree?: Partial<AttributeTree>) => {
     return result;
   };
 
+  const calculateSkills = (tree: AttributeTree) => {
+    const health: number = 10 + tree.violence.skills.threshold.points * 2;
+    const sanity: number = 5 + tree.esoterica.skills.mysticism.points * 2;
+    const speed: number = 4 + tree.violence.skills.assault.points * 2;
+    const cyber: number = 4 + tree.cybernetica.skills.chromebits.points * 2;
+    const equip: number = 10 + tree.violence.skills.threshold.points * 2;
+    return {
+      health,
+      sanity,
+      speed,
+      cyber,
+      equip,
+    };
+  };
+
   return {
     tree: attributeTree,
     getPoints,
     updatePoints,
     destructureTree,
+    structureTree,
+    calculateSkills,
+    resetTree,
   };
 };
 

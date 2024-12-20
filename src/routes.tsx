@@ -13,7 +13,8 @@ import MainLayout from './layouts/MainLayout';
 import Test from './components/Test';
 import CharacterSheet from './components/CharacterSheet';
 import PerkForm from './components/PerkForm';
-import PerkList from './components/PerkList';
+import CharacterForm from './components/CharacterForm';
+import Perks from './components/Perks';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,8 +27,9 @@ const router = createBrowserRouter(
       <Route path="/" element={<MainLayout />}>
         <Route path="home" element={<Test />} />
         <Route path="character" element={<CharacterSheet />} />
+        <Route path="character/create" element={<CharacterForm />} />
+        <Route path="perks" element={<Perks />} />
         <Route path="perks/create" element={<PerkForm />} />
-        <Route path="perks" element={<PerkList />} />
       </Route>
     </Route>,
   ),

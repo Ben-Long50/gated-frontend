@@ -1,34 +1,54 @@
 import { Link } from 'react-router-dom';
 import BtnNav from './BtnNav';
-import { useState } from 'react';
 import Icon from '@mdi/react';
-import { mdiChevronDoubleLeft } from '@mdi/js';
+import {
+  mdiAccountBoxOutline,
+  mdiAccountBoxPlusOutline,
+  mdiChevronDoubleLeft,
+  mdiStarOutline,
+  mdiStarPlusOutline,
+} from '@mdi/js';
 
-const Sidebar = () => {
-  const [visibility, setVisibility] = useState(true);
-
+const Sidebar = ({ sidebarVisibility, setSidebarVisibility }) => {
   return (
     <nav
-      className={`${!visibility && '-translate-x-full'} timing bg-secondary relative z-10 col-start-1 row-start-2 flex w-full min-w-96 border-r border-yellow-300 py-8 pl-4`}
+      className={`${!sidebarVisibility && '-translate-x-full'} timing bg-secondary relative z-10 col-start-1 row-start-2 flex w-full min-w-96 border-r border-yellow-300`}
     >
-      <div className="flex grow flex-col gap-2">
+      <div className="flex grow flex-col gap-2 py-8 pl-4">
         <Link to="/character">
-          <BtnNav>Characters</BtnNav>
+          <BtnNav>
+            <Icon path={mdiAccountBoxOutline} size={1.25} />
+            <h3 className="flex items-center pt-1 text-inherit">Characters</h3>
+          </BtnNav>
+        </Link>
+        <Link to="/character/create">
+          <BtnNav>
+            <Icon path={mdiAccountBoxPlusOutline} size={1.25} />
+            <h3 className="flex items-center pt-1 text-inherit">
+              Create Character
+            </h3>
+          </BtnNav>
         </Link>
         <Link to="/perks">
-          <BtnNav>Perks</BtnNav>
+          <BtnNav>
+            <Icon path={mdiStarOutline} size={1.25} />
+            <h3 className="flex items-center pt-1 text-inherit">Perks</h3>
+          </BtnNav>
         </Link>
         <Link to="/perks/create">
-          <BtnNav>Create Perk</BtnNav>
+          <BtnNav>
+            <Icon path={mdiStarPlusOutline} size={1.25} />
+            <h3 className="flex items-center pt-1 text-inherit">Create Perk</h3>
+          </BtnNav>
         </Link>
       </div>
 
       <button
-        className={`${!visibility && 'translate-x-full'} text-tertiary timing z-20 clip-4`}
-        onClick={() => setVisibility(!visibility)}
+        className={`${!sidebarVisibility && 'translate-x-full'} hover:bg-primary text-tertiary timing`}
+        onClick={() => setSidebarVisibility(!sidebarVisibility)}
       >
         <Icon
-          className={`${!visibility && 'rotate-180'} timing`}
+          className={`${!sidebarVisibility && 'rotate-180'} timing`}
           path={mdiChevronDoubleLeft}
           size={1}
         />

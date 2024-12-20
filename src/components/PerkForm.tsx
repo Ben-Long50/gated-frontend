@@ -9,10 +9,12 @@ import { AuthContext } from '../contexts/AuthContext';
 import useCreatePerkMutation from '../hooks/useCreatePerkMutation/useCreatePerkMutation';
 import { useForm } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
+import { useQueryClient } from '@tanstack/react-query';
 
 const PerkForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const queryClient = useQueryClient();
 
   const createPerk = useCreatePerkMutation(apiUrl, authToken);
   const attributeTree = useAttributeTree();
@@ -21,32 +23,49 @@ const PerkForm = () => {
     defaultValues: {
       name: '',
       description: '',
-      requirements: attributeTree.tree,
+      requirements: {},
     },
     onSubmit: async ({ value }) => {
-      createPerk.mutate(value);
+      await createPerk.mutate(value, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['perks'],
+            exact: false,
+          });
+          console.log('Perk successfully created');
+        },
+        onError: () => {
+          console.error('Error creating perk');
+        },
+      });
+      perkForm.reset({
+        name: '',
+        description: '',
+        requirements: {},
+      });
+      attributeTree.resetTree();
     },
   });
 
   useEffect(() => {
     perkForm.setFieldValue('requirements', attributeTree.destructureTree());
-  }, [attributeTree.tree, perkForm]);
+  }, [attributeTree.tree, attributeTree, perkForm]);
 
   return (
     <ThemeContainer
       className="mb-auto w-full max-w-2xl lg:max-w-4xl"
-      chamfer="48"
+      chamfer="32"
       borderColor={accentPrimary}
     >
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-8 clip-12"
+        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-8 clip-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           perkForm.handleSubmit();
         }}
       >
-        <h1 className="text-primary">Create Perk</h1>
+        <h1 className="text-center">Create Perk</h1>
         <perkForm.Field
           name="name"
           validators={{

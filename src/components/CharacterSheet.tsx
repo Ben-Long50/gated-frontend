@@ -35,35 +35,18 @@ const CharacterSheet = () => {
         points: 4,
         skills: {
           chromebits: { points: 4 },
-          hardwired: { points: 0 },
-          motorized: { points: 1 },
-          networked: { points: 3 },
-        },
-      },
-      esoterica: {
-        points: 0,
-        skills: {
-          gestalt: { points: 0 },
-          godhead: { points: 0 },
-          mysticism: { points: 0 },
-          outerworld: { points: 0 },
         },
       },
       peace: {
         points: 1,
         skills: {
           barter: { points: 1 },
-          erudition: { points: 0 },
-          rhetoric: { points: 0 },
-          treatment: { points: 0 },
         },
       },
       violence: {
         points: 2,
         skills: {
-          assault: { points: 0 },
           shooting: { points: 2 },
-          subterfuge: { points: 0 },
           threshold: { points: 3 },
         },
       },
@@ -86,13 +69,17 @@ const CharacterSheet = () => {
     perks: [
       {
         name: 'Benefactor',
-        reqirements: [{ attribute: 'Chromebits', points: 3 }],
+        requirements: {
+          cybernetica: { points: 0, skills: { chromebits: { points: 3 } } },
+        },
         description:
           'When you select this perk, you receive a non-blackmarket cybernetic of your choice. If it is ever destroyed or damaged, it is repaired or replaced for free. Every time your Upgrade Level increases, you receive another cybernetic. These cybernetics are personalized to you, and cannot be shared.',
       },
       {
         name: 'Proto-chrome',
-        reqirements: [{ attribute: 'Chromebits', points: 4 }],
+        requirements: {
+          cybernetica: { points: 0, skills: { chromebits: { points: 4 } } },
+        },
         description:
           'When you select this perk, you receive 1 of 4 unique cybernetic augments. They are listed in the cybernetic section “Prototype Augments”. You or a trusted associate are able to repair or rebuild this cybernetic if it is damaged or lost.',
       },
@@ -137,22 +124,11 @@ const CharacterSheet = () => {
     ],
   };
 
-  character.stats.health.total =
-    10 + character.attributes.violence.skills.threshold.points * 2;
-  character.stats.sanity.total =
-    5 + character.attributes.esoterica.skills.mysticism.points * 2;
-  character.stats.speed.total =
-    4 + character.attributes.violence.skills.assault.points * 2;
-  character.stats.cyber.total =
-    4 + character.attributes.cybernetica.skills.chromebits.points * 2;
-  character.stats.equip.total =
-    10 + character.attributes.violence.skills.threshold.points * 2;
-
   //   const { data: character } = useCharacterQuery(user.id, apiUrl);
 
-  const attributeTree = useAttributeTree(character.attributes);
-  const destructredTree = attributeTree.destructureTree();
-  console.log(destructredTree);
+  const attributeTree = useAttributeTree();
+  const structuredTree = attributeTree.structureTree(character.attributes);
+  const stats = attributeTree.calculateSkills(structuredTree);
 
   return (
     <div className="text-primary flex w-full max-w-5xl flex-col gap-8">
@@ -201,50 +177,45 @@ const CharacterSheet = () => {
         <StatBar
           title="Health"
           current={character.stats.health.current}
-          total={character.stats.health.total}
+          total={stats.health}
           color="rgb(248 113 113)"
         />
         <StatBar
           title="Sanity"
           current={character.stats.sanity.current}
-          total={character.stats.sanity.total}
+          total={stats.sanity}
           color="rgb(96 165 250)"
         />
         <StatBar
           title="Cyber"
           current={character.stats.cyber.current}
-          total={character.stats.cyber.total}
+          total={stats.cyber}
           color="rgb(52 211 153)"
         />
         <StatBar
           title="Equip"
           current={character.stats.equip.current}
-          total={character.stats.equip.total}
+          total={stats.equip}
           color="rgb(251 191 36)"
         />
       </div>
 
       <div className="flex flex-col gap-8">
-        <ThemeContainer chamfer="32" borderColor={accentPrimary}>
-          <div className="bg-primary flex flex-wrap justify-center gap-6 p-4 clip-8 lg:justify-between lg:pl-10">
-            {Object.entries(character.stats).map(
-              ([stat, { current, total }]) => {
-                const stats = ['speed', 'evasion', 'armor', 'ward'];
-                return (
-                  stats.includes(stat) && (
-                    <div
-                      className="flex flex-col items-center gap-2"
-                      key={stat}
-                    >
-                      <h3 className="text-primary text-xl font-semibold tracking-widest">
-                        {stat.charAt(0).toUpperCase() + stat.slice(1)}{' '}
-                      </h3>
-                      <p className="text-xl">{total}</p>
-                    </div>
-                  )
-                );
-              },
-            )}
+        <ThemeContainer chamfer="24" borderColor={accentPrimary}>
+          <div className="bg-primary clip-6 flex flex-wrap justify-center gap-6 p-4 lg:justify-between lg:pl-10">
+            {Object.entries(stats).map(([stat, points]) => {
+              const stats = ['speed', 'evasion', 'armor', 'ward'];
+              return (
+                stats.includes(stat) && (
+                  <div className="flex flex-col items-center gap-2" key={stat}>
+                    <h3 className="text-primary text-xl font-semibold tracking-widest">
+                      {stat.charAt(0).toUpperCase() + stat.slice(1)}{' '}
+                    </h3>
+                    <p className="text-xl">{points}</p>
+                  </div>
+                )
+              );
+            })}
             <div className="flex flex-col items-center gap-2">
               <h3 className="text-primary text-xl font-semibold tracking-widest">
                 Permenant Injuries
@@ -297,14 +268,14 @@ const CharacterSheet = () => {
         </ThemeContainer>
 
         <div className="mb-auto flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
-          {Object.entries(character.attributes).map(
+          {Object.entries(structuredTree).map(
             ([attribute, { points, skills }]) => (
               <ThemeContainer
                 key={attribute}
-                chamfer="32"
+                chamfer="24"
                 borderColor={accentPrimary}
               >
-                <div className="bg-primary p-6 clip-8">
+                <div className="bg-primary clip-6 p-6">
                   <AttributeCard
                     attribute={attribute}
                     points={points}

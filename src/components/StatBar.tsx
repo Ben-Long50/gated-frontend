@@ -47,7 +47,7 @@ const StatBar = (props) => {
         )}
       </div>
 
-      <p className={`justify-self-end whitespace-nowrap`}>
+      <p className={`text-tertiary justify-self-end whitespace-nowrap`}>
         {props.current} / {props.total}
       </p>
     </>

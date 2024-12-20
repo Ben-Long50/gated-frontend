@@ -61,13 +61,19 @@
     @apply transition-all duration-500 ease-in-out md:duration-300;
   }
   h1 {
-    @apply text-center text-3xl font-semibold tracking-widest;
+    @apply text-primary text-3xl font-semibold tracking-widest lg:text-4xl;
   }
   h2 {
-    @apply text-primary text-2xl font-semibold tracking-widest;
+    @apply text-primary text-2xl font-semibold tracking-widest lg:text-3xl;
   }
   h3 {
-    @apply text-secondary text-xl;
+    @apply text-secondary text-xl font-semibold tracking-widest lg:text-2xl;
+  }
+  h4 {
+    @apply text-secondary text-lg font-semibold tracking-widest lg:text-xl;
+  }
+  p {
+    @apply text-secondary text-lg tracking-wide lg:text-xl;
   }
   .auth-layout-small {
     display: flex;
