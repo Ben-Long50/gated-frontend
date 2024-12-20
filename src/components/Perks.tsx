@@ -3,9 +3,12 @@ import PerkList from './PerkList';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import usePerks from '../hooks/usePerks';
+import ThemeContainer from './ThemeContainer';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const Perks = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
+  const { accentPrimary } = useContext(ThemeContext);
   const [activeFilter, setActivefilter] = useState('');
 
   const perks = usePerksQuery(apiUrl, authToken);
@@ -23,7 +26,7 @@ const Perks = () => {
 
   return (
     <div className="flex w-full max-w-4xl flex-col items-center gap-3">
-      <h1 className="mb-5 text-center">Perks</h1>
+      <h1 className="text-center lg:mb-5">Perks</h1>
       <div className="flex w-full flex-col items-center justify-between gap-2 lg:flex-row lg:px-8">
         <p>Filter by attribute</p>
 
@@ -38,7 +41,7 @@ const Perks = () => {
             reset
           </button>
           <button
-            className={`${activeFilter === 'generalPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full rounded-l-md pt-1 text-lg font-semibold`}
+            className={`${activeFilter === 'generalPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full rounded-l-md text-lg font-semibold lg:pt-1`}
             onClick={() => {
               perkFilter.handleFilter('generalPerks');
               setActivefilter('generalPerks');
@@ -47,7 +50,7 @@ const Perks = () => {
             G
           </button>
           <button
-            className={`${activeFilter === 'cyberneticaPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full pt-1 text-lg font-semibold`}
+            className={`${activeFilter === 'cyberneticaPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
             onClick={() => {
               perkFilter.handleFilter('cyberneticaPerks');
               setActivefilter('cyberneticaPerks');
@@ -56,7 +59,7 @@ const Perks = () => {
             C
           </button>
           <button
-            className={`${activeFilter === 'esotericaPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full pt-1 text-lg font-semibold`}
+            className={`${activeFilter === 'esotericaPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
             onClick={() => {
               perkFilter.handleFilter('esotericaPerks');
               setActivefilter('esotericaPerks');
@@ -65,7 +68,7 @@ const Perks = () => {
             E
           </button>
           <button
-            className={`${activeFilter === 'peacePerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full pt-1 text-lg font-semibold`}
+            className={`${activeFilter === 'peacePerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
             onClick={() => {
               perkFilter.handleFilter('peacePerks');
               setActivefilter('peacePerks');
@@ -74,7 +77,7 @@ const Perks = () => {
             P
           </button>
           <button
-            className={`${activeFilter === 'violencePerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full rounded-r-md pt-1 text-lg font-semibold`}
+            className={`${activeFilter === 'violencePerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full rounded-r-md text-lg font-semibold lg:pt-1`}
             onClick={() => {
               perkFilter.handleFilter('violencePerks');
               setActivefilter('violencePerks');
@@ -84,8 +87,15 @@ const Perks = () => {
           </button>
         </div>
       </div>
-
-      <PerkList perkTree={perkFilter.filteredTree} />
+      <ThemeContainer
+        chamfer="32"
+        className="w-full"
+        borderColor={accentPrimary}
+      >
+        <div className="bg-primary w-full p-6 clip-8">
+          <PerkList perkTree={perkFilter.filteredTree} />
+        </div>
+      </ThemeContainer>
     </div>
   );
 };

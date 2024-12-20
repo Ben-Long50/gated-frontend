@@ -168,6 +168,7 @@ const usePerks = () => {
     }
   };
 
+  //Filters the perk tree to return only perks of a specified attribute
   const handleFilter = (attribute: string) => {
     const perks = perkTree[attribute];
     setFilteredTree({ [attribute]: perks });

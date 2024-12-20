@@ -10,7 +10,6 @@ import { useForm } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
 import SelectField from './SelectField';
 import usePerksQuery from '../hooks/usePerksQuery/usePerksQuery';
-import { LayoutContext } from '../contexts/LayoutContext';
 import StatBar from './StatBar';
 import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';
@@ -18,10 +17,8 @@ import usePerks from '../hooks/usePerks';
 const CharacterForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
 
-  const [selectedPerk, setSelectedPerk] = useState(false);
-  const [filteredPerks, setFilteredPerks] = useState([]);
+  const [checkedPerk, setCheckedPerk] = useState('');
 
   const perks = usePerksQuery(apiUrl, authToken);
   const perkFilter = usePerks();
@@ -56,10 +53,9 @@ const CharacterForm = () => {
     characterForm.setFieldValue('attributes', attributeTree.destructureTree());
   }, [attributeTree.tree, characterForm]);
 
-  const handleChecked = (perk) => {
-    setSelectedPerk(perk);
-    characterForm.setFieldValue('perks', [perk]);
-  };
+  useEffect(() => {
+    characterForm.setFieldValue('perks', [checkedPerk]);
+  }, [checkedPerk]);
 
   if (perks.isPending) {
     return <span></span>;
@@ -209,7 +205,12 @@ const CharacterForm = () => {
           (Available perks are only shown if you meet the attribute and skill
           point requirements)
         </p>
-        <PerkList perkTree={perkFilter.perkTree} />
+        <PerkList
+          perkTree={perkFilter.filteredTree}
+          mode="edit"
+          checkedPerk={checkedPerk}
+          setCheckedPerk={setCheckedPerk}
+        />
         <BtnRect type="submit" className="w-full">
           Create
         </BtnRect>
