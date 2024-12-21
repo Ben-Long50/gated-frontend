@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import plugin from '@designbycode/tailwindcss-text-shadow';
+import tailwindScrollbar from 'tailwind-scrollbar';
 
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -52,5 +53,6 @@ export default {
       }, {});
       addUtilities(utilities);
     },
+    tailwindScrollbar,
   ],
 };

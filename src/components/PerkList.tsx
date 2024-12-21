@@ -6,8 +6,8 @@ import { PerkTree } from 'src/hooks/usePerks';
 const PerkList = ({
   perkTree,
   mode,
-  checkedPerk,
-  setCheckedPerk,
+  checkedPerks,
+  setCheckedPerks,
 }: {
   perkTree: Partial<PerkTree>;
 }) => {
@@ -51,8 +51,21 @@ const PerkList = ({
                                 <input
                                   className="size-6"
                                   type="checkbox"
-                                  checked={checkedPerk === perk.id}
-                                  onChange={() => setCheckedPerk(perk.id)}
+                                  checked={checkedPerks?.includes(perk.id)}
+                                  onChange={() => {
+                                    if (!checkedPerks?.includes(perk.id)) {
+                                      setCheckedPerks([
+                                        ...checkedPerks,
+                                        perk.id,
+                                      ]);
+                                    } else {
+                                      setCheckedPerks((prevPerks) =>
+                                        prevPerks.filter(
+                                          (id) => id !== perk.id,
+                                        ),
+                                      );
+                                    }
+                                  }}
                                 />
                               )}
                             </div>

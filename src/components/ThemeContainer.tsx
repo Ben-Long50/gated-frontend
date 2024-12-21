@@ -7,23 +7,27 @@ const ThemeContainer = (props) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        setDimensions({
-          height: Math.floor(containerRef.current.offsetHeight),
-          width: Math.floor(containerRef.current.offsetWidth),
-        });
-      }
-    };
+    const observer = new ResizeObserver(updateDimensions);
 
-    updateDimensions();
-
-    window.addEventListener('resize', updateDimensions);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
 
     return () => {
-      window.removeEventListener('resize', updateDimensions);
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
     };
   }, []);
+
+  const updateDimensions = () => {
+    if (containerRef.current) {
+      setDimensions({
+        height: Math.floor(containerRef.current.offsetHeight),
+        width: Math.floor(containerRef.current.offsetWidth),
+      });
+    }
+  };
 
   return (
     <div ref={containerRef} className={`${props.className} relative`}>

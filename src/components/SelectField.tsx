@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 
@@ -10,10 +10,14 @@ const SelectField = ({ field, ...props }) => {
   const handleBorder = () => {
     if (field.state.meta.errors.length > 0) {
       setBorderColor(errorPrimary);
-    } else {
+    } else if (field.state.value) {
       setBorderColor(accentPrimary);
     }
   };
+
+  useEffect(() => {
+    handleBorder();
+  }, []);
 
   return (
     <ThemeContainer chamfer="16" borderColor={borderColor}>

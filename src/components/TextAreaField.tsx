@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 
@@ -10,15 +10,23 @@ const TextAreaField = ({ field, ...props }) => {
   const handleBorder = () => {
     if (field.state.meta.errors.length > 0) {
       setBorderColor(errorPrimary);
-    } else {
+    } else if (field.state.value) {
       setBorderColor(accentPrimary);
     }
   };
 
+  useEffect(() => {
+    handleBorder();
+  }, []);
+
   return (
-    <ThemeContainer chamfer="16" className="h-40" borderColor={borderColor}>
+    <ThemeContainer
+      chamfer="16"
+      className={`mx-auto ${props.className}`}
+      borderColor={borderColor}
+    >
       <textarea
-        className={`${props.className} text-secondary timing focus:bg-primary h-40 w-full rounded-none clip-4 ${field.state.value.length === 0 ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
+        className={`${props.className} text-secondary scrollbar-secondary-2 timing focus:bg-primary w-full resize-none rounded-none pr-3 clip-4 ${field.state.value?.length === 0 ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
         name={field.name}
         id={field.name}
         value={field.state.value}
@@ -39,7 +47,7 @@ const TextAreaField = ({ field, ...props }) => {
       />
       <label
         htmlFor={field.name}
-        className={` ${field.state.meta.errors.length > 0 ? 'text-error' : ''} ${field.state.value.length > 0 || focus ? 'bg-primary text-accent -translate-y-6' : ''} ${field.state.value.length === 0 && !focus ? 'text-gray-400' : ''} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
+        className={` ${field.state.meta.errors.length > 0 ? 'text-error' : ''} ${field.state.value?.length > 0 || focus ? 'bg-primary text-accent -translate-y-6' : ''} ${field.state.value?.length === 0 && !focus ? 'text-gray-400' : ''} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
       >
         {props.label}
       </label>

@@ -92,7 +92,7 @@ const Perks = () => {
         className="w-full"
         borderColor={accentPrimary}
       >
-        <div className="bg-primary w-full p-6 clip-8">
+        <div className="bg-primary w-full p-3 clip-8 sm:p-6 lg:p-8">
           <PerkList perkTree={perkFilter.filteredTree} />
         </div>
       </ThemeContainer>

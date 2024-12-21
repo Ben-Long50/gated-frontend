@@ -8,8 +8,11 @@ const StatBar = (props) => {
 
   return (
     <>
-      <h3 className="text-xl font-semibold tracking-widest">{props.title}</h3>
-      <div className="flex flex-wrap items-center gap-2 max-sm:gap-1">
+      {layoutSize !== 'xsmall' && (
+        <h3 className="text-xl font-semibold tracking-widest">{props.title}</h3>
+      )}
+      {props.children}
+      <div className="flex flex-wrap items-center gap-2 justify-self-start max-sm:gap-1">
         {Array.from({ length: props.total }).map((_, index) =>
           index < props.current ? (
             layoutSize === 'small' || layoutSize === 'xsmall' ? (
@@ -46,10 +49,11 @@ const StatBar = (props) => {
           ),
         )}
       </div>
-
-      <p className={`text-tertiary justify-self-end whitespace-nowrap`}>
-        {props.current} / {props.total}
-      </p>
+      {props.mode !== 'edit' && (
+        <p className={`text-tertiary justify-self-end whitespace-nowrap`}>
+          {props.current} / {props.total}
+        </p>
+      )}
     </>
   );
 };

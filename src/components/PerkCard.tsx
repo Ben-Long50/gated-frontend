@@ -8,10 +8,10 @@ const PerkCard = (props) => {
 
   return (
     <details
-      className={`${props.className} bg-secondary group rounded-md p-3 [&_summary::-webkit-details-marker]:hidden`}
+      className={`${props.className} bg-secondary group p-4 clip-6 [&_summary::-webkit-details-marker]:hidden`}
     >
       <summary className="text-primary flex items-center justify-between text-xl font-semibold tracking-widest">
-        <span> {props.perk.name}</span>
+        <span className="pl-2"> {props.perk.name}</span>
         <span className="shrink-0 transition duration-300 group-open:-rotate-180">
           <Icon
             path={mdiChevronDown}

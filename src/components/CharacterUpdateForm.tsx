@@ -13,47 +13,79 @@ import usePerksQuery from '../hooks/usePerksQuery/usePerksQuery';
 import StatBar from './StatBar';
 import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';
-import useCreateCharacterMutation from '../hooks/useCreateCharacterMutation/useCreateCharacterMutation';
 import Icon from '@mdi/react';
 import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
-import WardIcon from './icons/WardIcon';
-import SpeedIcon from './icons/SpeedIcon';
-import ArmorIcon from './icons/ArmorIcon';
-import EvasionIcon from './icons/EvasionIcon';
 import HealthIcon from './icons/HealthIcon';
 import { LayoutContext } from '../contexts/LayoutContext';
 import SanityIcon from './icons/SanityIcon';
-import CyberIcon from './icons/CyberIcon';
-import EquipIcon from './icons/EquipIcon';
+import { useParams } from 'react-router-dom';
+import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
+import useUpdateCharacterMutation from '../hooks/useCharacterUpdateMutation/useCharacterUpdateMutation';
 
-const CharacterForm = () => {
+const CharacterUpdateForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
+  const { characterId } = useParams();
 
-  const [checkedPerks, setCheckedPerks] = useState([]);
-  const [imagePreview, setImagePreview] = useState('');
+  const {
+    data: character,
+    isPending,
+    isLoading,
+  } = useCharacterQuery(apiUrl, authToken, characterId);
+
+  const [checkedPerks, setCheckedPerks] = useState(() => {
+    return character?.perks.map((perk) => perk.id);
+  });
+  const [imagePreview, setImagePreview] = useState(character?.picture.imageUrl);
+  const [characterStats, setCharacterStats] = useState({});
 
   const perks = usePerksQuery(apiUrl, authToken);
   const perkFilter = usePerks();
-  const createCharacter = useCreateCharacterMutation(apiUrl, authToken);
-  const attributeTree = useAttributeTree();
-  const stats = attributeTree.calculateSkills(attributeTree.tree);
 
-  const characterForm = useForm({
+  const updateCharacter = useUpdateCharacterMutation(
+    characterId,
+    apiUrl,
+    authToken,
+  );
+
+  const attributeTree = useAttributeTree();
+
+  const characterUpdateForm = useForm({
     defaultValues: {
-      name: '',
-      picture: '',
-      height: '',
-      weight: '',
-      age: '',
-      sex: '',
-      background: '',
-      attributes: attributeTree.tree,
-      perks: [],
+      name: character?.name ?? '',
+      level: character?.level ?? '',
+      profits: character?.profits ?? '',
+      stats: {
+        currentHealth: character?.stats.currentHealth ?? '',
+        currentSanity: character?.stats.currentSanity ?? '',
+        injuries: character?.stats.injuries ?? '',
+        insanities: character?.stats.insanities ?? '',
+      },
+      picture: character?.picture ?? '',
+      height: character?.height ?? '',
+      weight: character?.weight ?? '',
+      age: character?.age ?? '',
+      sex: character?.sex ?? '',
+      background: character?.background ?? '',
+      attributes: character?.attributes ?? '',
+      perks: character?.perks ?? '',
     },
-    onSubmit: ({ value }) => {
+    onSubmit: async ({ value }) => {
       const formData = new FormData();
+
+      if (value.stats.currentHealth == 0) {
+        value.stats.injuries++;
+        value.stats.currentHealth = characterStats.health;
+      }
+      if (value.stats.currentSanity == 0) {
+        console.log(value.stats.currentSanity);
+
+        value.stats.insanities++;
+        value.stats.currentSanity = characterStats.sanity;
+      }
+
+      console.log(value.stats.insanities);
 
       Object.entries(value).forEach(([key, value]) => {
         if (key === 'picture' && value instanceof File) {
@@ -62,9 +94,23 @@ const CharacterForm = () => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      createCharacter.mutate(formData);
+      console.log(value);
+
+      updateCharacter.mutate(formData);
     },
   });
+
+  useEffect(() => {
+    if (character) {
+      attributeTree.structureTree(character.attributes);
+    }
+  }, [character]);
+
+  useEffect(() => {
+    attributeTree.structureTree(attributeTree.tree);
+    const stats = attributeTree.calculateSkills(attributeTree.tree);
+    setCharacterStats({ health: stats.health, sanity: stats.sanity });
+  }, [attributeTree.tree]);
 
   useEffect(() => {
     if (perks.data) {
@@ -73,18 +119,21 @@ const CharacterForm = () => {
   }, [perks.data, attributeTree.tree]);
 
   useEffect(() => {
-    characterForm.setFieldValue('attributes', attributeTree.destructureTree());
-  }, [attributeTree.tree, characterForm]);
+    characterUpdateForm.setFieldValue(
+      'attributes',
+      attributeTree.destructureTree(),
+    );
+  }, [attributeTree, characterUpdateForm]);
 
   useEffect(() => {
-    characterForm.setFieldValue('perks', [checkedPerks]);
+    characterUpdateForm.setFieldValue('perks', checkedPerks);
   }, [checkedPerks]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]; // Get the selected file
 
     if (selectedFile) {
-      characterForm.setFieldValue('picture', selectedFile);
+      characterUpdateForm.setFieldValue('picture', selectedFile);
 
       // Create a URL for the selected file to preview
       const fileUrl = URL.createObjectURL(selectedFile);
@@ -93,6 +142,10 @@ const CharacterForm = () => {
   };
 
   if (perks.isPending) {
+    return <span></span>;
+  }
+
+  if (isLoading || isPending) {
     return <span></span>;
   }
 
@@ -107,38 +160,61 @@ const CharacterForm = () => {
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          characterForm.handleSubmit();
+          characterUpdateForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">Create Character</h1>
-        <characterForm.Field
-          name="name"
-          validators={{
-            onChange: ({ value }) =>
-              value.length < 2
-                ? 'Perk name must be at least 2 characters long'
-                : undefined,
-          }}
-        >
-          {(field) => <InputField label="Name" field={field} />}
-        </characterForm.Field>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4 lg:gap-16">
-          <characterForm.Field name="height">
+        <h1 className="text-center">Update Character</h1>
+        <div className="grid gap-4 max-sm:grid-rows-2 sm:grid-cols-2 sm:gap-8">
+          <characterUpdateForm.Field
+            name="name"
+            validators={{
+              onChange: ({ value }) =>
+                value.length < 2
+                  ? 'Perk name must be at least 2 characters long'
+                  : undefined,
+            }}
+          >
+            {(field) => (
+              <InputField className="w-full" label="Name" field={field} />
+            )}
+          </characterUpdateForm.Field>
+          <div className="flex gap-4 sm:gap-8">
+            <characterUpdateForm.Field
+              name="level"
+              validators={{
+                onChange: ({ value }) =>
+                  value < 1 ? 'You cannot be a lower level than 1' : undefined,
+              }}
+            >
+              {(field) => (
+                <InputField type="number" label="Level" field={field} />
+              )}
+            </characterUpdateForm.Field>
+            <characterUpdateForm.Field name="profits">
+              {(field) => (
+                <InputField type="number" label="Profits" field={field} />
+              )}
+            </characterUpdateForm.Field>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-4">
+          <characterUpdateForm.Field name="height">
             {(field) => (
               <InputField type="number" label="Height (in)" field={field} />
             )}
-          </characterForm.Field>
-          <characterForm.Field name="weight">
+          </characterUpdateForm.Field>
+          <characterUpdateForm.Field name="weight">
             {(field) => (
               <InputField type="number" label="Weight (lbs)" field={field} />
             )}
-          </characterForm.Field>
-          <characterForm.Field name="age">
+          </characterUpdateForm.Field>
+          <characterUpdateForm.Field name="age">
             {(field) => (
               <InputField type="number" label="Age (yrs)" field={field} />
             )}
-          </characterForm.Field>
-          <characterForm.Field name="sex">
+          </characterUpdateForm.Field>
+          <characterUpdateForm.Field name="sex">
             {(field) => (
               <SelectField type="select" label="Sex" field={field}>
                 <option defaultValue="" disabled></option>
@@ -146,7 +222,7 @@ const CharacterForm = () => {
                 <option value="Female">Female</option>
               </SelectField>
             )}
-          </characterForm.Field>
+          </characterUpdateForm.Field>
         </div>
         <div className="grid grid-rows-2 gap-8 sm:grid-cols-2 sm:grid-rows-1">
           <ThemeContainer
@@ -184,7 +260,7 @@ const CharacterForm = () => {
                 <button
                   className="text-secondary absolute right-2 top-2"
                   onClick={() => {
-                    characterForm.setFieldValue('picture', '');
+                    characterUpdateForm.setFieldValue('picture', '');
                     setImagePreview('');
                   }}
                 >
@@ -194,7 +270,7 @@ const CharacterForm = () => {
             )}
           </ThemeContainer>
 
-          <characterForm.Field
+          <characterUpdateForm.Field
             name="background"
             validators={{
               onChange: ({ value }) =>
@@ -210,114 +286,71 @@ const CharacterForm = () => {
                 field={field}
               />
             )}
-          </characterForm.Field>
+          </characterUpdateForm.Field>
         </div>
         <div
           className={` ${layoutSize !== 'xsmall' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full gap-4`}
         >
-          <StatBar
-            title="Health"
-            current={stats.health}
-            total={stats.health}
-            color="rgb(248 113 113)"
+          <characterUpdateForm.Field
+            name="stats.currentHealth"
+            validators={{
+              onChange: ({ value }) =>
+                value > characterStats.health
+                  ? 'Cannot exceed max health'
+                  : undefined,
+            }}
           >
-            <HealthIcon className="size-8" />
-          </StatBar>
-          <StatBar
-            title="Sanity"
-            current={stats.sanity}
-            total={stats.sanity}
-            color="rgb(96 165 250)"
-          >
-            <SanityIcon className="size-8" />
-          </StatBar>
-          <StatBar
-            title="Cyber"
-            current={stats.cyber}
-            total={stats.cyber}
-            color="rgb(52 211 153)"
-          >
-            <CyberIcon className="size-8" />
-          </StatBar>
-          <StatBar
-            title="Equip"
-            current={stats.equip}
-            total={stats.equip}
-            color="rgb(251 191 36)"
-          >
-            <EquipIcon className="size-8" />
-          </StatBar>
-        </div>
-        <div className="flex flex-wrap justify-around gap-6">
-          {Object.entries(stats).map(([stat, points]) => {
-            const stats = ['speed', 'evasion', 'armor', 'ward'];
-            return (
-              stats.includes(stat) && (
-                <div className="flex flex-col items-center gap-2" key={stat}>
-                  {layoutSize !== 'xsmall' && (
-                    <h3 className="text-primary text-xl font-semibold tracking-widest">
-                      {stat.charAt(0).toUpperCase() + stat.slice(1)}{' '}
-                    </h3>
-                  )}
-                  <div className="flex items-center justify-center gap-2">
-                    <SpeedIcon className="text-secondary size-8" />
-                    <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                      {points}
-                    </p>
-                  </div>
-                </div>
-              )
-            );
-          })}
-          <div className="flex flex-col items-center gap-2" key={'evasion'}>
-            {layoutSize !== 'xsmall' && (
-              <h3 className="text-primary text-xl font-semibold tracking-widest">
-                Evasion
-              </h3>
+            {(field) => (
+              <>
+                <StatBar
+                  title="Health"
+                  mode="edit"
+                  current={field.state.value}
+                  total={characterStats.health || 0}
+                  color="rgb(248 113 113)"
+                >
+                  <HealthIcon className="size-8" />
+                </StatBar>
+                <InputField
+                  className="w-28"
+                  field={field}
+                  label="Cur. health"
+                  type="number"
+                />
+              </>
             )}
-            <div className="flex items-center justify-center gap-2">
-              <EvasionIcon className="size-8" />
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">1</p>
-            </div>
-          </div>
-          <div className="flex flex-col items-center gap-2" key={'armor'}>
-            {layoutSize !== 'xsmall' && (
-              <h3 className="text-primary text-xl font-semibold tracking-widest">
-                Armor
-              </h3>
+          </characterUpdateForm.Field>
+          <characterUpdateForm.Field
+            name="stats.currentSanity"
+            validators={{
+              onChange: ({ value }) =>
+                value > characterStats.sanity
+                  ? 'Cannot exceed max sanity'
+                  : undefined,
+            }}
+          >
+            {(field) => (
+              <>
+                <StatBar
+                  title="Sanity"
+                  mode="edit"
+                  current={field.state.value}
+                  total={characterStats.sanity || 0}
+                  color="rgb(96 165 250)"
+                >
+                  <SanityIcon className="size-8" />
+                </StatBar>
+                <InputField
+                  className="w-28"
+                  field={field}
+                  label="Cur. sanity"
+                  type="number"
+                />
+              </>
             )}
-            <div className="flex items-center justify-center gap-2">
-              <ArmorIcon className="size-8" />
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">0</p>
-            </div>
-          </div>
-          <div className="flex flex-col items-center gap-2" key={'ward'}>
-            {layoutSize !== 'xsmall' && (
-              <h3 className="text-primary text-xl font-semibold tracking-widest sm:text-2xl">
-                Ward
-              </h3>
-            )}
-            <div className="flex items-center justify-center gap-2">
-              <WardIcon className="text-secondary size-8" />
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">0</p>
-            </div>
-          </div>
+          </characterUpdateForm.Field>
         </div>
         <h2>Attributes and skills</h2>
-        <div className="flex w-full flex-col gap-2">
-          <p className="flex justify-between">
-            <span className="text-tertiary">Unallocated attribute points</span>
-            <span className="text-xl">
-              {6 - attributeTree.getAttributePoints()}
-            </span>
-          </p>
-          <p className="flex justify-between">
-            <span className="text-tertiary">Unallocated skill points</span>
-            <span className="text-xl">
-              {10 - attributeTree.getSkillPoints()}
-            </span>
-          </p>
-        </div>
         <div className="flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
           {Object.entries(attributeTree.tree).map(
             ([attribute, { points, skills }]) => (
@@ -332,7 +365,7 @@ const CharacterForm = () => {
             ),
           )}
         </div>
-        <h2>Starting Perk</h2>
+        <h2>Available Perks</h2>
         <p className="text-tertiary sm:px-4 lg:px-6">
           (Available perks are only shown if you meet the attribute and skill
           point requirements)
@@ -344,11 +377,11 @@ const CharacterForm = () => {
           setCheckedPerks={setCheckedPerks}
         />
         <BtnRect type="submit" className="w-full">
-          Create
+          Update
         </BtnRect>
       </form>
     </ThemeContainer>
   );
 };
 
-export default CharacterForm;
+export default CharacterUpdateForm;

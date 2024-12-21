@@ -26,18 +26,7 @@ const PerkForm = () => {
       requirements: {},
     },
     onSubmit: async ({ value }) => {
-      await createPerk.mutate(value, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: ['perks'],
-            exact: false,
-          });
-          console.log('Perk successfully created');
-        },
-        onError: () => {
-          console.error('Error creating perk');
-        },
-      });
+      await createPerk.mutate(value);
       perkForm.reset({
         name: '',
         description: '',
@@ -58,7 +47,7 @@ const PerkForm = () => {
       borderColor={accentPrimary}
     >
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-8 clip-8"
+        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -86,7 +75,13 @@ const PerkForm = () => {
                 : undefined,
           }}
         >
-          {(field) => <TextAreaField label="Perk description" field={field} />}
+          {(field) => (
+            <TextAreaField
+              className="h-40 w-full"
+              label="Perk description"
+              field={field}
+            />
+          )}
         </perkForm.Field>
         <h2>Requirements</h2>
         <div className="flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">

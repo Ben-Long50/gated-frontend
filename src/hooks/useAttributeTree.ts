@@ -79,6 +79,27 @@ const useAttributeTree = () => {
     return updatedTree;
   };
 
+  //Returns the total number of attribute points found in an attribute tree
+  const getAttributePoints = () => {
+    return Object.entries(attributeTree).reduce(
+      (total, [attribute, { points }]) => total + points,
+      0,
+    );
+  };
+
+  //Returns the total number of skill points found in an attribute tree
+  const getSkillPoints = () => {
+    return Object.values(attributeTree).reduce((total, attribute) => {
+      const skillPoints = Object.values(attribute.skills).reduce(
+        (skillTotal, { points }) => {
+          return skillTotal + points;
+        },
+        0,
+      );
+      return total + skillPoints;
+    }, 0);
+  };
+
   //Returns the number of points attributed to a specific attribute or skill
   const getPoints = (
     attribute: keyof AttributeTree,
@@ -161,6 +182,8 @@ const useAttributeTree = () => {
 
   return {
     tree: attributeTree,
+    getAttributePoints,
+    getSkillPoints,
     getPoints,
     updatePoints,
     destructureTree,

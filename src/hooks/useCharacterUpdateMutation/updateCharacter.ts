@@ -1,9 +1,9 @@
 import handleResponse from '../handleResponse';
 
-const createCharacter = async (formData, apiUrl, authToken) => {
+const updateCharacter = async (formData, characterId, apiUrl, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/characters`, {
-      method: 'POST',
+    const response = await fetch(`${apiUrl}/characters/${characterId}`, {
+      method: 'PUT',
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
@@ -17,4 +17,4 @@ const createCharacter = async (formData, apiUrl, authToken) => {
   }
 };
 
-export default createCharacter;
+export default updateCharacter;

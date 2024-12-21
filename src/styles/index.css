@@ -54,6 +54,18 @@
   .shadow-medium {
     @apply shadow-md shadow-gray-300 dark:shadow-md dark:shadow-black;
   }
+  .scrollbar-primary {
+    @apply scrollbar scrollbar-thumb-zinc-900 scrollbar-track-zinc-800;
+  }
+  .scrollbar-secondary {
+    @apply scrollbar-thin scrollbar-thumb-zinc-900 scrollbar-track-zinc-800;
+  }
+  .scrollbar-primary-2 {
+    @apply scrollbar scrollbar-thumb-zinc-800 scrollbar-track-zinc-900;
+  }
+  .scrollbar-secondary-2 {
+    @apply scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-zinc-900;
+  }
   .focus {
     @apply outline-none ring-yellow-300 focus:border-transparent focus:ring-2;
   }
@@ -94,11 +106,12 @@
   }
   .stat-bar-layout {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    grid-template-columns: auto auto 1fr auto;
   }
-  .stat-bar-layout-xs {
+  .stat-bar-layout-sm {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto 1fr auto;
   }
   dialog::backdrop {
     backdrop-filter: blur(5px) brightness(0.8);

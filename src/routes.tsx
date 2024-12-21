@@ -10,11 +10,11 @@ import AuthLayout from './layouts/AuthLayout';
 import SigninForm from './components/SigninForm';
 import SignupForm from './components/SignupForm';
 import MainLayout from './layouts/MainLayout';
-import Test from './components/Test';
 import CharacterSheet from './components/CharacterSheet';
 import PerkForm from './components/PerkForm';
 import CharacterForm from './components/CharacterForm';
 import Perks from './components/Perks';
+import CharacterUpdateForm from './components/CharacterUpdateForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,9 +25,12 @@ const router = createBrowserRouter(
         <Route path="signin" element={<SigninForm />} />
       </Route>
       <Route path="/" element={<MainLayout />}>
-        <Route path="home" element={<Test />} />
-        <Route path="character" element={<CharacterSheet />} />
-        <Route path="character/create" element={<CharacterForm />} />
+        <Route path="characters" element={<CharacterSheet />} />
+        <Route path="characters/create" element={<CharacterForm />} />
+        <Route
+          path="characters/:characterId/update"
+          element={<CharacterUpdateForm />}
+        />
         <Route path="perks" element={<Perks />} />
         <Route path="perks/create" element={<PerkForm />} />
       </Route>

@@ -21,7 +21,7 @@ const AuthProvider = ({ children }) => {
 
     if (token) {
       setAuthToken(token);
-      navigate('/home');
+      navigate('/characters');
     } else {
       setAuthToken(null);
       navigate('/signin');

@@ -1,20 +1,24 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import createCharacter from './createCharacter';
 import { useNavigate } from 'react-router-dom';
+import updateCharacter from './updateCharacter';
 
-const useCreateCharacterMutation = (apiUrl, authToken) => {
+const useUpdateCharacterMutation = (characterId, apiUrl, authToken) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
     mutationFn: (formData) => {
-      return createCharacter(formData, apiUrl, authToken);
+      return updateCharacter(formData, characterId, apiUrl, authToken);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['character'],
+        exact: false,
+      });
       queryClient.invalidateQueries({
         queryKey: ['characters'],
         exact: false,
       });
-      navigate('/characters');
+      navigate(`/characters`);
       console.log('Character successfully created');
     },
     onError: () => {
@@ -24,4 +28,4 @@ const useCreateCharacterMutation = (apiUrl, authToken) => {
   });
 };
 
-export default useCreateCharacterMutation;
+export default useUpdateCharacterMutation;
