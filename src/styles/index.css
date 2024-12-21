@@ -55,16 +55,16 @@
     @apply shadow-md shadow-gray-300 dark:shadow-md dark:shadow-black;
   }
   .scrollbar-primary {
-    @apply scrollbar scrollbar-thumb-zinc-900 scrollbar-track-zinc-800;
+    @apply scrollbar scrollbar-track-zinc-800 scrollbar-thumb-zinc-900;
   }
   .scrollbar-secondary {
-    @apply scrollbar-thin scrollbar-thumb-zinc-900 scrollbar-track-zinc-800;
+    @apply scrollbar-thin scrollbar-track-zinc-800 scrollbar-thumb-zinc-900;
   }
   .scrollbar-primary-2 {
-    @apply scrollbar scrollbar-thumb-zinc-800 scrollbar-track-zinc-900;
+    @apply scrollbar scrollbar-track-zinc-900 scrollbar-thumb-zinc-800;
   }
   .scrollbar-secondary-2 {
-    @apply scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-zinc-900;
+    @apply scrollbar-thin scrollbar-track-zinc-900 scrollbar-thumb-zinc-800;
   }
   .focus {
     @apply outline-none ring-yellow-300 focus:border-transparent focus:ring-2;
@@ -101,7 +101,7 @@
   }
   .main-layout-large {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
     grid-template-rows: auto 1fr;
   }
   .stat-bar-layout {

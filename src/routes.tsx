@@ -15,6 +15,7 @@ import PerkForm from './components/PerkForm';
 import CharacterForm from './components/CharacterForm';
 import Perks from './components/Perks';
 import CharacterUpdateForm from './components/CharacterUpdateForm';
+import CharacterList from './components/CharacterList';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,7 +26,8 @@ const router = createBrowserRouter(
         <Route path="signin" element={<SigninForm />} />
       </Route>
       <Route path="/" element={<MainLayout />}>
-        <Route path="characters" element={<CharacterSheet />} />
+        <Route path="characters" element={<CharacterList />} />
+        <Route path="characters/:characterId" element={<CharacterSheet />} />
         <Route path="characters/create" element={<CharacterForm />} />
         <Route
           path="characters/:characterId/update"

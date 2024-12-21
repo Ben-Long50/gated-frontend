@@ -289,7 +289,7 @@ const CharacterUpdateForm = () => {
           </characterUpdateForm.Field>
         </div>
         <div
-          className={` ${layoutSize !== 'xsmall' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full gap-4`}
+          className={` ${layoutSize !== 'xsmall' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full items-center gap-4`}
         >
           <characterUpdateForm.Field
             name="stats.currentHealth"

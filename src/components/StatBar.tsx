@@ -8,7 +8,7 @@ const StatBar = (props) => {
 
   return (
     <>
-      {layoutSize !== 'xsmall' && (
+      {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
         <h3 className="text-xl font-semibold tracking-widest">{props.title}</h3>
       )}
       {props.children}
@@ -26,7 +26,7 @@ const StatBar = (props) => {
             ) : (
               <Icon
                 key={index}
-                className="scale-x-150 scale-y-50"
+                className="-my-2 scale-x-150 scale-y-50"
                 path={mdiRectangle}
                 size={1}
                 color={props.color}
@@ -42,7 +42,7 @@ const StatBar = (props) => {
           ) : (
             <Icon
               key={index}
-              className="scale-x-150 scale-y-50 text-gray-400"
+              className="-my-2 scale-x-150 scale-y-50 text-gray-400"
               path={mdiRectangle}
               size={1}
             />

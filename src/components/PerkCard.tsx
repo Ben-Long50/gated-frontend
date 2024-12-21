@@ -1,18 +1,26 @@
 import { mdiChevronDown, mdiSquare, mdiTriangleSmallUp } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 
 const PerkCard = (props) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [animation, setAnimation] = useState(false);
 
   return (
-    <details
-      className={`${props.className} bg-secondary group p-4 clip-6 [&_summary::-webkit-details-marker]:hidden`}
+    <div
+      className={`${props.className} bg-secondary timing group p-4 clip-6 [&_summary::-webkit-details-marker]:hidden`}
+      onClick={async (e) => {
+        e.preventDefault();
+        setDetailsOpen(!detailsOpen);
+      }}
     >
-      <summary className="text-primary flex items-center justify-between text-xl font-semibold tracking-widest">
+      <summary
+        className={`text-primary timing flex items-center justify-between text-xl font-semibold tracking-widest`}
+      >
         <span className="pl-2"> {props.perk.name}</span>
-        <span className="shrink-0 transition duration-300 group-open:-rotate-180">
+        <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>
           <Icon
             path={mdiChevronDown}
             size={1.1}
@@ -20,7 +28,10 @@ const PerkCard = (props) => {
           ></Icon>
         </span>
       </summary>
-      <div className="mt-4 flex flex-col gap-2">
+      <div
+        className={`timing ease-in-out ${!detailsOpen ? 'max-h-0' : 'max-h-[300px]'} flex flex-col gap-2 overflow-y-auto`}
+      >
+        <div></div>
         <strong className="text-primary text-lg tracking-wide">
           Requirements:
         </strong>
@@ -81,7 +92,7 @@ const PerkCard = (props) => {
         </strong>
         <p className="text-secondary">{props.perk.description}</p>
       </div>
-    </details>
+    </div>
   );
 };
 

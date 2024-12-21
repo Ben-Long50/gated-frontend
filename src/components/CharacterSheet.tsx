@@ -15,7 +15,6 @@ import ArmorCard from './ArmorCard';
 import CyberneticCard from './CyberneticCard';
 import AttributeCard from './AttributeCard';
 import useAttributeTree from '../hooks/useAttributeTree';
-import useCharactersQuery from '../hooks/useCharactersQuery/useCharactersQuery';
 import { LayoutContext } from '../contexts/LayoutContext';
 import HealthIcon from './icons/HealthIcon';
 import SanityIcon from './icons/SanityIcon';
@@ -25,8 +24,11 @@ import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import BtnRect from './BtnRect';
+import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
+import InjuryIcon from './icons/InjuryIcon';
+import InsanityIcon from './icons/InsanityIcon';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -39,29 +41,26 @@ const CharacterSheet = () => {
     layoutSize === 'xsmall' ? false : true,
   );
 
+  const { characterId } = useParams();
+
   const {
     data: character,
     isPending,
-    isError,
-  } = useCharactersQuery(apiUrl, authToken);
+    isLoading,
+  } = useCharacterQuery(apiUrl, authToken, characterId);
 
   const attributeTree = useAttributeTree();
 
   useEffect(() => {
     if (character) {
-      const structured = attributeTree.structureTree(character[0].attributes);
+      const structured = attributeTree.structureTree(character.attributes);
       setStructuredTree(structured);
 
-      const calculatedStats = attributeTree.calculateSkills(structured);
-      setStats(calculatedStats);
+      setStats(attributeTree.calculateSkills(structured));
     }
   }, [character]);
 
-  if (isError) {
-    return <div className="bg-secondary">No characters found</div>;
-  }
-
-  if (isPending) {
+  if (isLoading || isPending) {
     return <span></span>;
   }
 
@@ -76,16 +75,16 @@ const CharacterSheet = () => {
           >
             <div className="bg-primary flex h-full w-full items-center justify-between gap-8 px-8 clip-4">
               <h1 className="py-2 text-center text-3xl font-semibold tracking-widest">
-                {character[0].name}
+                {character.name}
               </h1>
               <p className="accent-primary flex size-8 shrink-0 items-center justify-center rounded-full text-2xl font-semibold sm:pt-1">
-                {character[0].level}
+                {character.level}
               </p>
             </div>
           </ThemeContainer>
           <div className="flex flex-col items-center gap-1 pr-2">
             <h3 className="text-xl">Profits</h3>
-            <p className="text-xl">{character[0].profits} p</p>
+            <p className="text-xl">{character.profits} p</p>
           </div>
         </div>
         <div className="flex w-full items-center justify-evenly gap-2 sm:gap-8 lg:w-auto lg:justify-center">
@@ -94,40 +93,39 @@ const CharacterSheet = () => {
               Height
             </h3>
             <p className="text-xl">
-              {Math.floor(character[0].height / 12)}ft{' '}
-              {character[0].height % 12}in
+              {Math.floor(character.height / 12)}ft {character.height % 12}in
             </p>
           </div>
           <div className="flex flex-col items-center gap-1">
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Weight
             </h3>
-            <p className="text-xl">{character[0].weight} lbs</p>
+            <p className="text-xl">{character.weight} lbs</p>
           </div>
           <div className="flex flex-col items-center gap-1">
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Age
             </h3>
-            <p className="text-xl">{character[0].age}</p>
+            <p className="text-xl">{character.age}</p>
           </div>
           <div className="flex flex-col items-center gap-1">
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Sex
             </h3>
-            <p className="text-xl">{character[0].sex}</p>
+            <p className="text-xl">{character.sex}</p>
           </div>
         </div>
       </div>
       <div className="flex flex-col gap-8 sm:flex-row">
-        {character[0].picture.imageUrl && (
+        {character.picture.imageUrl && (
           <ThemeContainer
             className="mx-auto aspect-square max-h-96 shrink-0"
             chamfer="24"
             borderColor={accentPrimary}
           >
             <img
-              className="fade-in-bottom max-h-96 clip-6"
-              src={character[0].picture.imageUrl}
+              className="max-h-96 clip-6"
+              src={character.picture.imageUrl}
               alt="Preview"
             />
           </ThemeContainer>
@@ -140,7 +138,7 @@ const CharacterSheet = () => {
         >
           <div className="bg-primary scrollbar-secondary max-h-96 overflow-y-auto p-4 clip-6">
             <div className="flex w-full items-center justify-between px-2">
-              <h3 className="">{character[0].name}'s Story</h3>
+              <h3 className="">{character.name}'s Story</h3>
               <button
                 className="text-tertiary hover:underline"
                 onClick={() => setStoryVisibility(!storyVisibility)}
@@ -148,9 +146,7 @@ const CharacterSheet = () => {
                 {storyVisibility ? 'hide' : 'show'}
               </button>
             </div>
-            {storyVisibility && (
-              <p className="mt-2">{character[0].background}</p>
-            )}
+            {storyVisibility && <p className="mt-2">{character.background}</p>}
           </div>
         </ThemeContainer>
       </div>
@@ -159,7 +155,7 @@ const CharacterSheet = () => {
       >
         <StatBar
           title="Health"
-          current={character[0].stats.currentHealth}
+          current={character.stats.currentHealth}
           total={stats.health}
           color="rgb(248 113 113)"
         >
@@ -167,7 +163,7 @@ const CharacterSheet = () => {
         </StatBar>
         <StatBar
           title="Sanity"
-          current={character[0].stats.currentSanity}
+          current={character.stats.currentSanity}
           total={stats.sanity}
           color="rgb(96 165 250)"
         >
@@ -273,13 +269,8 @@ const CharacterSheet = () => {
                 </h3>
                 <div className="flex items-center gap-2">
                   {Array.from({ length: 5 }).map((_, index) =>
-                    index < character[0].stats.injuries ? (
-                      <Icon
-                        key={index}
-                        className="text-primary"
-                        path={mdiSkullOutline}
-                        size={1}
-                      />
+                    index < character.stats.injuries ? (
+                      <InjuryIcon key={index} className="size-8" />
                     ) : (
                       <Icon
                         key={index}
@@ -297,13 +288,8 @@ const CharacterSheet = () => {
                 </h3>
                 <div className="flex items-center gap-2">
                   {Array.from({ length: 5 }).map((_, index) =>
-                    index < character[0].stats.insanities ? (
-                      <Icon
-                        key={index}
-                        className="text-primary"
-                        path={mdiHeadSnowflakeOutline}
-                        size={1}
-                      />
+                    index < character.stats.insanities ? (
+                      <InsanityIcon key={index} className="size-7" />
                     ) : (
                       <Icon
                         key={index}
@@ -345,13 +331,13 @@ const CharacterSheet = () => {
             Perks
           </h2>
           <div className="flex flex-col gap-4">
-            {character[0].perks.map((perk) => {
+            {character.perks.map((perk) => {
               return <PerkCard key={perk.name} perk={perk} />;
             })}
           </div>
         </div>
       </ThemeContainer>
-      <Link to={`/characters/${character[0].id}/update`}>
+      <Link to={`/characters/${character.id}/update`}>
         <BtnRect className="w-full">Update character info</BtnRect>
       </Link>
     </div>

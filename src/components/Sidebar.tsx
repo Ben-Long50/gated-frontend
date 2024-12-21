@@ -5,6 +5,9 @@ import {
   mdiAccountBoxOutline,
   mdiAccountBoxPlusOutline,
   mdiChevronDoubleLeft,
+  mdiMenu,
+  mdiMenuClose,
+  mdiMenuOpen,
   mdiStarOutline,
   mdiStarPlusOutline,
 } from '@mdi/js';
@@ -16,7 +19,7 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
 
   return (
     <nav
-      className={`${!sidebarVisibility && '-translate-x-full'} bg-secondary sticky z-10 col-start-1 row-start-2 flex w-full min-w-96 border-r border-yellow-300 transition-transform duration-300`}
+      className={`${!sidebarVisibility && '-translate-x-full'} bg-secondary sticky z-10 col-start-1 row-start-2 flex max-w-96 border-r border-yellow-300 transition-transform duration-500 ease-in-out`}
       style={{
         height: `calc(100dvh - ${navbarHeight}px)`,
         top: `${navbarHeight}px`,
@@ -32,7 +35,7 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
             }}
           >
             <Icon path={mdiAccountBoxOutline} size={1.25} />
-            <h3 className="flex items-center pt-1 text-inherit">Character</h3>
+            <h3 className="flex items-center pt-1 text-inherit">Characters</h3>
           </BtnNav>
         </Link>
         <Link to="/characters/create">
@@ -74,16 +77,15 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
           </BtnNav>
         </Link>
       </div>
-
       <button
-        className={`${!sidebarVisibility && 'translate-x-full'} hover:bg-primary text-tertiary timing`}
+        className={`${!sidebarVisibility ? '-right-3 translate-x-full' : 'right-3'} accent-primary absolute bottom-3 flex size-16 shrink-0 items-center justify-center rounded-full text-2xl font-semibold transition-all duration-500 ease-in-out sm:pt-1`}
         onClick={() => setSidebarVisibility(!sidebarVisibility)}
       >
-        <Icon
-          className={`${!sidebarVisibility && 'rotate-180'} timing`}
-          path={mdiChevronDoubleLeft}
-          size={1}
-        />
+        {!sidebarVisibility ? (
+          <Icon path={mdiMenuClose} size={1.75} />
+        ) : (
+          <Icon path={mdiMenuOpen} size={1.75} />
+        )}
       </button>
     </nav>
   );

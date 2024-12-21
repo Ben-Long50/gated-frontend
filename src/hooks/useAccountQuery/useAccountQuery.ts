@@ -6,6 +6,7 @@ const useAccountQuery = (apiUrl, token) => {
     queryKey: ['account', token],
     queryFn: async () => await getAccount(apiUrl, token),
     enabled: !!token,
+    throwOnError: false,
   });
 };
 
