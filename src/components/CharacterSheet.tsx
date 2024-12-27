@@ -2,11 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import {
-  mdiCircleOutline,
-  mdiHeadSnowflakeOutline,
-  mdiSkullOutline,
-} from '@mdi/js';
+import { mdiCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import StatBar from './StatBar';
 import PerkCard from './PerkCard';
@@ -119,12 +115,12 @@ const CharacterSheet = () => {
       <div className="flex flex-col gap-8 sm:flex-row">
         {character.picture.imageUrl && (
           <ThemeContainer
-            className="mx-auto aspect-square max-h-96 shrink-0"
+            className="size mx-auto aspect-square w-full max-w-96"
             chamfer="24"
             borderColor={accentPrimary}
           >
             <img
-              className="max-h-96 clip-6"
+              className="clip-6"
               src={character.picture.imageUrl}
               alt="Preview"
             />
@@ -151,7 +147,7 @@ const CharacterSheet = () => {
         </ThemeContainer>
       </div>
       <div
-        className={` ${layoutSize !== 'xsmall' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full gap-4`}
+        className={` ${layoutSize !== 'xsmall' && layoutSize !== 'small' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full gap-4`}
       >
         <StatBar
           title="Health"
@@ -265,7 +261,7 @@ const CharacterSheet = () => {
             <div className="flex items-center justify-center gap-8 max-sm:flex-wrap">
               <div className="flex flex-col items-center gap-2">
                 <h3 className="text-primary whitespace-nowrap text-xl font-semibold tracking-widest">
-                  Permenant Injuries
+                  Permanent Injuries
                 </h3>
                 <div className="flex items-center gap-2">
                   {Array.from({ length: 5 }).map((_, index) =>
@@ -284,7 +280,7 @@ const CharacterSheet = () => {
               </div>
               <div className="flex flex-col items-center gap-2">
                 <h3 className="text-primary whitespace-nowrap text-xl font-semibold tracking-widest">
-                  Permenant Insanities
+                  Permanent Insanities
                 </h3>
                 <div className="flex items-center gap-2">
                   {Array.from({ length: 5 }).map((_, index) =>
@@ -330,15 +326,19 @@ const CharacterSheet = () => {
           <h2 className="mb-2 py-2 pl-4 text-left text-2xl font-semibold tracking-widest">
             Perks
           </h2>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
             {character.perks.map((perk) => {
-              return <PerkCard key={perk.name} perk={perk} />;
+              return (
+                <PerkCard className="w-full" key={perk.name} perk={perk} />
+              );
             })}
           </div>
         </div>
       </ThemeContainer>
       <Link to={`/characters/${character.id}/update`}>
-        <BtnRect className="w-full">Update character info</BtnRect>
+        <BtnRect className="sm:w-1/2 sm:justify-self-end">
+          Update character info
+        </BtnRect>
       </Link>
     </div>
   );

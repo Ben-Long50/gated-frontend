@@ -1,8 +1,8 @@
 import handleResponse from '../handleResponse';
 
-const getCharacter = async (apiUrl, authToken, characterId) => {
+const getKeywords = async (apiUrl, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/characters/${characterId}`, {
+    const response = await fetch(`${apiUrl}/keywords`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${authToken}`,
@@ -17,4 +17,4 @@ const getCharacter = async (apiUrl, authToken, characterId) => {
   }
 };
 
-export default getCharacter;
+export default getKeywords;

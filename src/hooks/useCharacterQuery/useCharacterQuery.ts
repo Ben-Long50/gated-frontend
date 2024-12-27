@@ -3,7 +3,7 @@ import getCharacter from './getCharacter';
 
 const useCharacterQuery = (apiUrl, authToken, characterId) => {
   return useQuery({
-    queryKey: ['character'],
+    queryKey: ['character', characterId],
     queryFn: async () => await getCharacter(apiUrl, authToken, characterId),
   });
 };

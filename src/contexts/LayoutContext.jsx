@@ -6,7 +6,7 @@ const LayoutProvider = ({ children }) => {
   const [layoutSize, setLayoutSize] = useState(() => {
     if (window.innerWidth >= 1280) {
       return 'large';
-    } else if (window.innerWidth > 500 && window.innerWidth < 768) {
+    } else if (window.innerWidth > 500 && window.innerWidth < 640) {
       return 'small';
     } else if (window.innerWidth <= 500) {
       return 'xsmall';
@@ -19,7 +19,7 @@ const LayoutProvider = ({ children }) => {
     const handleResize = () => {
       if (window.innerWidth >= 1280) {
         setLayoutSize('large');
-      } else if (window.innerWidth > 500 && window.innerWidth < 768) {
+      } else if (window.innerWidth > 500 && window.innerWidth < 640) {
         setLayoutSize('small');
       } else if (window.innerWidth <= 500) {
         setLayoutSize('xsmall');

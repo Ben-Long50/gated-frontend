@@ -1,15 +1,14 @@
 import handleResponse from '../handleResponse';
 
-const getCharacter = async (apiUrl, authToken, characterId) => {
+const deleteCharacter = async (characterId, apiUrl, authToken) => {
   try {
     const response = await fetch(`${apiUrl}/characters/${characterId}`, {
-      method: 'GET',
+      method: 'DELETE',
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     });
     const data = await handleResponse(response);
-
     return data;
   } catch (error) {
     console.error(error.message);
@@ -17,4 +16,4 @@ const getCharacter = async (apiUrl, authToken, characterId) => {
   }
 };
 
-export default getCharacter;
+export default deleteCharacter;

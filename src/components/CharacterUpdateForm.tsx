@@ -14,13 +14,15 @@ import StatBar from './StatBar';
 import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';
 import Icon from '@mdi/react';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
+import { mdiAlertOutline, mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import HealthIcon from './icons/HealthIcon';
 import { LayoutContext } from '../contexts/LayoutContext';
 import SanityIcon from './icons/SanityIcon';
 import { useParams } from 'react-router-dom';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import useUpdateCharacterMutation from '../hooks/useCharacterUpdateMutation/useCharacterUpdateMutation';
+import useDeleteCharacterMutation from '../hooks/useDeleteCharacterMutation/useDeleteCharacterMutation';
+import Loading from './Loading';
 
 const CharacterUpdateForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
@@ -28,11 +30,9 @@ const CharacterUpdateForm = () => {
   const { layoutSize } = useContext(LayoutContext);
   const { characterId } = useParams();
 
-  const {
-    data: character,
-    isPending,
-    isLoading,
-  } = useCharacterQuery(apiUrl, authToken, characterId);
+  const [deleteMode, setDeleteMode] = useState(false);
+
+  const { data: character } = useCharacterQuery(apiUrl, authToken, characterId);
 
   const [checkedPerks, setCheckedPerks] = useState(() => {
     return character?.perks.map((perk) => perk.id);
@@ -40,10 +40,14 @@ const CharacterUpdateForm = () => {
   const [imagePreview, setImagePreview] = useState(character?.picture.imageUrl);
   const [characterStats, setCharacterStats] = useState({});
 
-  const perks = usePerksQuery(apiUrl, authToken);
-  const perkFilter = usePerks();
+  const perks = usePerks();
 
   const updateCharacter = useUpdateCharacterMutation(
+    characterId,
+    apiUrl,
+    authToken,
+  );
+  const deleteCharacter = useDeleteCharacterMutation(
     characterId,
     apiUrl,
     authToken,
@@ -62,7 +66,7 @@ const CharacterUpdateForm = () => {
         injuries: character?.stats.injuries ?? '',
         insanities: character?.stats.insanities ?? '',
       },
-      picture: character?.picture ?? '',
+      picture: '',
       height: character?.height ?? '',
       weight: character?.weight ?? '',
       age: character?.age ?? '',
@@ -85,16 +89,15 @@ const CharacterUpdateForm = () => {
         value.stats.currentSanity = characterStats.sanity;
       }
 
-      console.log(value.stats.insanities);
-
-      Object.entries(value).forEach(([key, value]) => {
-        if (key === 'picture' && value instanceof File) {
-          formData.append(key, value);
+      Object.entries(value).forEach(([key, val]) => {
+        if (key === 'picture') {
+          if (val instanceof File) {
+            formData.append(key, val);
+          }
         } else {
-          formData.append(key, JSON.stringify(value));
+          formData.append(key, JSON.stringify(val));
         }
       });
-      console.log(value);
 
       updateCharacter.mutate(formData);
     },
@@ -107,16 +110,16 @@ const CharacterUpdateForm = () => {
   }, [character]);
 
   useEffect(() => {
+    if (!perks.isPending) {
+      perks.getSatisfiedPerks(attributeTree.tree);
+    }
+  }, [perks.isPending]);
+
+  useEffect(() => {
     attributeTree.structureTree(attributeTree.tree);
     const stats = attributeTree.calculateSkills(attributeTree.tree);
     setCharacterStats({ health: stats.health, sanity: stats.sanity });
   }, [attributeTree.tree]);
-
-  useEffect(() => {
-    if (perks.data) {
-      perkFilter.filterPerks(perks.data, attributeTree.tree);
-    }
-  }, [perks.data, attributeTree.tree]);
 
   useEffect(() => {
     characterUpdateForm.setFieldValue(
@@ -141,11 +144,12 @@ const CharacterUpdateForm = () => {
     }
   };
 
-  if (perks.isPending) {
-    return <span></span>;
-  }
-
-  if (isLoading || isPending) {
+  if (
+    perks.isLoading ||
+    perks.isPending ||
+    character.isLoading ||
+    character.isPending
+  ) {
     return <span></span>;
   }
 
@@ -289,7 +293,7 @@ const CharacterUpdateForm = () => {
           </characterUpdateForm.Field>
         </div>
         <div
-          className={` ${layoutSize !== 'xsmall' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full items-center gap-4`}
+          className={` ${layoutSize !== 'xsmall' && layoutSize !== 'small' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full items-center gap-4`}
         >
           <characterUpdateForm.Field
             name="stats.currentHealth"
@@ -371,14 +375,56 @@ const CharacterUpdateForm = () => {
           point requirements)
         </p>
         <PerkList
-          perkTree={perkFilter.filteredTree}
+          perkTree={perks.filteredTree}
           mode="edit"
           checkedPerks={checkedPerks}
           setCheckedPerks={setCheckedPerks}
         />
-        <BtnRect type="submit" className="w-full">
-          Update
-        </BtnRect>
+        <div className="grid grid-cols-2 gap-4 sm:gap-8">
+          <BtnRect type="submit" className="group w-full">
+            {updateCharacter.isPending ? (
+              <Loading
+                className="text-gray-900 group-hover:text-yellow-300"
+                size={1.15}
+              />
+            ) : (
+              'Update'
+            )}
+          </BtnRect>
+          <BtnRect
+            className="ml-auto"
+            onClick={(e) => {
+              e.preventDefault();
+              !deleteMode ? setDeleteMode(true) : deleteCharacter.mutate();
+            }}
+          >
+            Delete character
+          </BtnRect>
+          {deleteMode && (
+            <div className="col-span-2 flex flex-col items-center justify-center gap-2 lg:gap-4">
+              <div className="flex items-center gap-4 self-start">
+                <Icon
+                  className="text-error shrink-0"
+                  path={mdiAlertOutline}
+                  size={layoutSize === 'large' ? 2 : 1.5}
+                />
+                <h2 className="text-error font-semibold">Warning: </h2>
+              </div>
+              <p className="text-error">
+                You are about to permenantly delete this character. This action
+                cannot be undone and all data relating to this character will be
+                gone forever. To continue, click the "Delete character" button
+                again.
+              </p>
+              <button
+                className="text-secondary self-end pr-4 text-xl hover:underline"
+                onClick={() => setDeleteMode(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
       </form>
     </ThemeContainer>
   );

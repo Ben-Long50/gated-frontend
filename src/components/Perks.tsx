@@ -1,31 +1,38 @@
-import usePerksQuery from '../hooks/usePerksQuery/usePerksQuery';
 import PerkList from './PerkList';
-import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
+import { useContext, useState } from 'react';
 import usePerks from '../hooks/usePerks';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { useForm } from '@tanstack/react-form';
+import InputField from './InputField';
 
 const Perks = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [activeFilter, setActivefilter] = useState('');
 
-  const perks = usePerksQuery(apiUrl, authToken);
-  const perkFilter = usePerks();
+  const perks = usePerks();
 
-  useEffect(() => {
-    if (perks.data) {
-      perkFilter.sortPerks(perks.data);
-    }
-  }, [perks.data]);
+  const searchForm = useForm({
+    defaultValues: {
+      query: '',
+    },
+    onSubmit: ({ value }) => {
+      console.log(value);
 
-  if (perks.isPending) {
+      if (value.query === '') {
+        perks.handleFilter(activeFilter, value.query);
+      } else {
+        perks.handleFilter(activeFilter, value.query);
+      }
+    },
+  });
+
+  if (perks.isLoading || perks.isPending) {
     return <span></span>;
   }
 
   return (
-    <div className="flex w-full max-w-4xl flex-col items-center gap-3">
+    <div className="flex w-full max-w-5xl flex-col items-center gap-3">
       <h1 className="text-center lg:mb-5">Perks</h1>
       <div className="flex w-full flex-col items-center justify-between gap-2 lg:flex-row lg:px-8">
         <p>Filter by attribute</p>
@@ -34,7 +41,8 @@ const Perks = () => {
           <button
             className="text-tertiary px-2 hover:underline"
             onClick={() => {
-              perkFilter.sortPerks(perks.data);
+              perks.resetPerks();
+              searchForm.setFieldValue('query', '');
               setActivefilter('');
             }}
           >
@@ -43,7 +51,10 @@ const Perks = () => {
           <button
             className={`${activeFilter === 'generalPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full rounded-l-md text-lg font-semibold lg:pt-1`}
             onClick={() => {
-              perkFilter.handleFilter('generalPerks');
+              perks.handleFilter(
+                'generalPerks',
+                searchForm.getFieldValue('query'),
+              );
               setActivefilter('generalPerks');
             }}
           >
@@ -52,7 +63,10 @@ const Perks = () => {
           <button
             className={`${activeFilter === 'cyberneticaPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
             onClick={() => {
-              perkFilter.handleFilter('cyberneticaPerks');
+              perks.handleFilter(
+                'cyberneticaPerks',
+                searchForm.getFieldValue('query'),
+              );
               setActivefilter('cyberneticaPerks');
             }}
           >
@@ -61,7 +75,10 @@ const Perks = () => {
           <button
             className={`${activeFilter === 'esotericaPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
             onClick={() => {
-              perkFilter.handleFilter('esotericaPerks');
+              perks.handleFilter(
+                'esotericaPerks',
+                searchForm.getFieldValue('query'),
+              );
               setActivefilter('esotericaPerks');
             }}
           >
@@ -70,7 +87,10 @@ const Perks = () => {
           <button
             className={`${activeFilter === 'peacePerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
             onClick={() => {
-              perkFilter.handleFilter('peacePerks');
+              perks.handleFilter(
+                'peacePerks',
+                searchForm.getFieldValue('query'),
+              );
               setActivefilter('peacePerks');
             }}
           >
@@ -79,7 +99,10 @@ const Perks = () => {
           <button
             className={`${activeFilter === 'violencePerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full rounded-r-md text-lg font-semibold lg:pt-1`}
             onClick={() => {
-              perkFilter.handleFilter('violencePerks');
+              perks.handleFilter(
+                'violencePerks',
+                searchForm.getFieldValue('query'),
+              );
               setActivefilter('violencePerks');
             }}
           >
@@ -92,8 +115,21 @@ const Perks = () => {
         className="w-full"
         borderColor={accentPrimary}
       >
-        <div className="bg-primary w-full p-3 clip-8 sm:p-6 lg:p-8">
-          <PerkList perkTree={perkFilter.filteredTree} />
+        <div className="bg-primary flex w-full flex-col gap-4 px-3 py-4 clip-8 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8">
+          <form>
+            <searchForm.Field name="query">
+              {(field) => (
+                <InputField
+                  label="Search perks"
+                  field={field}
+                  onChange={() => {
+                    searchForm.handleSubmit();
+                  }}
+                />
+              )}
+            </searchForm.Field>
+          </form>
+          <PerkList perkTree={perks.filteredTree} />
         </div>
       </ThemeContainer>
     </div>

@@ -34,8 +34,7 @@ const CharacterForm = () => {
   const [checkedPerks, setCheckedPerks] = useState([]);
   const [imagePreview, setImagePreview] = useState('');
 
-  const perks = usePerksQuery(apiUrl, authToken);
-  const perkFilter = usePerks();
+  const perks = usePerks();
   const createCharacter = useCreateCharacterMutation(apiUrl, authToken);
   const attributeTree = useAttributeTree();
   const stats = attributeTree.calculateSkills(attributeTree.tree);
@@ -67,10 +66,10 @@ const CharacterForm = () => {
   });
 
   useEffect(() => {
-    if (perks.data) {
-      perkFilter.filterPerks(perks.data, attributeTree.tree);
+    if (!perks.isLoading) {
+      perks.getSatisfiedPerks(attributeTree.tree);
     }
-  }, [perks.data, attributeTree.tree]);
+  }, [perks.isLoading, attributeTree.tree]);
 
   useEffect(() => {
     characterForm.setFieldValue('attributes', attributeTree.destructureTree());
@@ -213,7 +212,7 @@ const CharacterForm = () => {
           </characterForm.Field>
         </div>
         <div
-          className={` ${layoutSize !== 'xsmall' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full gap-4`}
+          className={` ${layoutSize !== 'xsmall' && layoutSize !== 'small' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full gap-4`}
         >
           <StatBar
             title="Health"
@@ -338,7 +337,7 @@ const CharacterForm = () => {
           point requirements)
         </p>
         <PerkList
-          perkTree={perkFilter.filteredTree}
+          perkTree={perks.filteredTree}
           mode="edit"
           checkedPerks={checkedPerks}
           setCheckedPerks={setCheckedPerks}

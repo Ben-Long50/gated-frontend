@@ -1,15 +1,16 @@
 import handleResponse from '../handleResponse';
 
-const getCharacter = async (apiUrl, authToken, characterId) => {
+const createKeyword = async (formData, apiUrl, authToken) => {
   try {
-    const response = await fetch(`${apiUrl}/characters/${characterId}`, {
-      method: 'GET',
+    const response = await fetch(`${apiUrl}/keywords`, {
+      method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${authToken}`,
       },
+      body: JSON.stringify(formData),
     });
     const data = await handleResponse(response);
-
     return data;
   } catch (error) {
     console.error(error.message);
@@ -17,4 +18,4 @@ const getCharacter = async (apiUrl, authToken, characterId) => {
   }
 };
 
-export default getCharacter;
+export default createKeyword;

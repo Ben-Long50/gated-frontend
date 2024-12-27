@@ -4,8 +4,6 @@ import Icon from '@mdi/react';
 import {
   mdiAccountBoxOutline,
   mdiAccountBoxPlusOutline,
-  mdiChevronDoubleLeft,
-  mdiMenu,
   mdiMenuClose,
   mdiMenuOpen,
   mdiStarOutline,
@@ -25,7 +23,7 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
         top: `${navbarHeight}px`,
       }}
     >
-      <div className="flex grow flex-col gap-2 py-8 pl-4">
+      <div className="flex grow flex-col gap-2 px-4 py-8">
         <Link to="/characters">
           <BtnNav
             onClick={() => {
@@ -74,6 +72,32 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
           >
             <Icon path={mdiStarPlusOutline} size={1.25} />
             <h3 className="flex items-center pt-1 text-inherit">Create Perk</h3>
+          </BtnNav>
+        </Link>
+        <Link to="/keywords">
+          <BtnNav
+            onClick={() => {
+              if (layoutSize !== 'large') {
+                setSidebarVisibility(false);
+              }
+            }}
+          >
+            <Icon path={mdiStarOutline} size={1.25} />
+            <h3 className="flex items-center pt-1 text-inherit">Keywords</h3>
+          </BtnNav>
+        </Link>
+        <Link to="/keywords/create">
+          <BtnNav
+            onClick={() => {
+              if (layoutSize !== 'large') {
+                setSidebarVisibility(false);
+              }
+            }}
+          >
+            <Icon path={mdiStarPlusOutline} size={1.25} />
+            <h3 className="flex items-center pt-1 text-inherit">
+              Create Keyword
+            </h3>
           </BtnNav>
         </Link>
       </div>

@@ -16,6 +16,8 @@ import CharacterForm from './components/CharacterForm';
 import Perks from './components/Perks';
 import CharacterUpdateForm from './components/CharacterUpdateForm';
 import CharacterList from './components/CharacterList';
+import KeywordForm from './components/KeywordForm';
+import Keywords from './components/Keywords';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -35,6 +37,8 @@ const router = createBrowserRouter(
         />
         <Route path="perks" element={<Perks />} />
         <Route path="perks/create" element={<PerkForm />} />
+        <Route path="keywords" element={<Keywords />} />
+        <Route path="keywords/create" element={<KeywordForm />} />
       </Route>
     </Route>,
   ),

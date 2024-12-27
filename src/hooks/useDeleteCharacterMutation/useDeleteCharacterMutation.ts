@@ -1,24 +1,21 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import updateCharacter from './updateCharacter';
+import deleteCharacter from './deleteCharacter';
 
-const useUpdateCharacterMutation = (characterId, apiUrl, authToken) => {
+const useDeleteCharacterMutation = (characterId, apiUrl, authToken) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: (formData) => {
-      return updateCharacter(formData, characterId, apiUrl, authToken);
+    mutationFn: () => {
+      return deleteCharacter(characterId, apiUrl, authToken);
     },
     onSuccess: () => {
-      navigate(`/characters`);
       queryClient.invalidateQueries({
-        queryKey: ['character'],
-        exact: false,
-      });
-      return queryClient.invalidateQueries({
         queryKey: ['characters'],
         exact: false,
       });
+      navigate('/characters');
+      console.log('Character successfully deleted');
     },
     onError: () => {
       console.error('Error creating character');
@@ -27,4 +24,4 @@ const useUpdateCharacterMutation = (characterId, apiUrl, authToken) => {
   });
 };
 
-export default useUpdateCharacterMutation;
+export default useDeleteCharacterMutation;

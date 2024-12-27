@@ -21,7 +21,7 @@ const Navbar = ({ setNavbarHeight }) => {
       ref={navbarRef}
       className="bg-primary sticky top-0 z-20 col-span-2 flex items-center justify-between gap-4 px-4 py-2 shadow-md shadow-black"
     >
-      <Icon path={mdiPyramid} size={1.75} color={accentPrimary} />
+      <h1 className="text-accent -mb-2 font-logo">GatED</h1>
       <img
         className="size-10"
         src={user?.profilePicture}

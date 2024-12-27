@@ -6,11 +6,10 @@ import { ThemeContext } from '../contexts/ThemeContext';
 const PerkCard = (props) => {
   const { accentPrimary } = useContext(ThemeContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [animation, setAnimation] = useState(false);
 
   return (
     <div
-      className={`${props.className} bg-secondary timing group p-4 clip-6 [&_summary::-webkit-details-marker]:hidden`}
+      className={`${props.className} bg-secondary timing group p-4 clip-4 [&_summary::-webkit-details-marker]:hidden`}
       onClick={async (e) => {
         e.preventDefault();
         setDetailsOpen(!detailsOpen);
@@ -29,7 +28,7 @@ const PerkCard = (props) => {
         </span>
       </summary>
       <div
-        className={`timing ease-in-out ${!detailsOpen ? 'max-h-0' : 'max-h-[300px]'} flex flex-col gap-2 overflow-y-auto`}
+        className={`timing ease-in-out ${!detailsOpen ? 'max-h-0' : 'max-h-[300px]'} scrollbar-secondary flex flex-col gap-2 overflow-y-auto`}
       >
         <div></div>
         <strong className="text-primary text-lg tracking-wide">

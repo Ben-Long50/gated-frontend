@@ -8,7 +8,9 @@ const InputField = ({ field, ...props }) => {
   const { accentPrimary, errorPrimary } = useContext(ThemeContext);
 
   const handleBorder = () => {
-    if (field.state.meta.errors.length > 0) {
+    if (focus && field.state.meta.errors.length === 0) {
+      setBorderColor(accentPrimary);
+    } else if (field.state.meta.errors.length > 0) {
       setBorderColor(errorPrimary);
     } else if (field.state.value) {
       setBorderColor(accentPrimary);
@@ -33,8 +35,8 @@ const InputField = ({ field, ...props }) => {
           id={field.name}
           value={field.state.value}
           onFocus={() => {
-            handleBorder();
             setFocus(true);
+            handleBorder();
           }}
           onBlur={() => {
             if (field.state.value?.length === 0) {
@@ -44,7 +46,12 @@ const InputField = ({ field, ...props }) => {
           }}
           onChange={(e) => {
             field.handleChange(e.target.value);
+            console.log(field.state.value);
+
             handleBorder();
+            if (props.onChange) {
+              props.onChange();
+            }
           }}
         />
         <label
