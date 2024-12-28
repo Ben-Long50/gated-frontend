@@ -52,7 +52,7 @@ const KeywordForm = () => {
           validators={{
             onChange: ({ value }) =>
               value.length < 2
-                ? 'Perk name must be at least 2 characters long'
+                ? 'Keyword name must be at least 2 characters long'
                 : undefined,
           }}
         >
@@ -63,7 +63,7 @@ const KeywordForm = () => {
           validators={{
             onChange: ({ value }) =>
               value.length < 2
-                ? 'Perk description must be at least 2 characters long'
+                ? 'Keyword description must be at least 2 characters long'
                 : undefined,
           }}
         >
@@ -75,7 +75,13 @@ const KeywordForm = () => {
             />
           )}
         </keywordForm.Field>
-        <keywordForm.Field name="keywordType">
+        <keywordForm.Field
+          name="keywordType"
+          validators={{
+            onSubmit: ({ value }) =>
+              value.length < 1 ? 'You must select a keyword type' : undefined,
+          }}
+        >
           {(field) => (
             <SelectField type="select" label="Keyword type" field={field}>
               <option defaultValue="" disabled></option>

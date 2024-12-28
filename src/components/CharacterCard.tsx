@@ -17,7 +17,7 @@ const CharacterCard = ({ character }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const attributeTree = useAttributeTree();
+  const attributeTree = useAttributeTree(character?.attributes);
 
   return (
     <ThemeContainer chamfer="32" borderColor={accentPrimary}>
@@ -35,10 +35,10 @@ const CharacterCard = ({ character }) => {
         </ThemeContainer>
         <div className="flex w-full flex-col justify-between gap-4 md:gap-6">
           <div className="flex w-full items-center justify-between gap-8 clip-4 md:px-8">
-            <h1 className="py-2 text-center text-3xl font-semibold tracking-widest">
+            <h1 className="text-center text-3xl font-semibold tracking-widest">
               {character.name}
             </h1>
-            <p className="accent-primary flex size-8 shrink-0 items-center justify-center rounded-full text-2xl font-semibold sm:pt-1">
+            <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold clip-2 sm:pt-1">
               {character.level}
             </p>
           </div>

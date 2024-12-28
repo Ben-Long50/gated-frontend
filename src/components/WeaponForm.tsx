@@ -17,7 +17,7 @@ const WeaponForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
 
-  const [checkedKeywords, setCheckedKeywords] = useState<number[]>([]);
+  const [checkedKeywords, setCheckedKeywords] = useState([]);
   const [imagePreview, setImagePreview] = useState('');
   const createWeapon = useCreateWeaponMutation(apiUrl, authToken);
 
@@ -80,7 +80,7 @@ const WeaponForm = () => {
 
   useEffect(() => {
     weaponForm.setFieldValue('keywords', checkedKeywords);
-  }, [checkedKeywords]);
+  }, [checkedKeywords, weaponForm]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]; // Get the selected file

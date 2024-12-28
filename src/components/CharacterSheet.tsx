@@ -56,10 +56,10 @@ const CharacterSheet = () => {
             borderColor={accentPrimary}
           >
             <div className="bg-primary flex h-full w-full items-center justify-between gap-8 px-8 clip-4">
-              <h1 className="py-2 text-center text-3xl font-semibold tracking-widest">
+              <h1 className="py-1 text-center text-3xl font-semibold tracking-widest">
                 {character.name}
               </h1>
-              <p className="accent-primary flex size-8 shrink-0 items-center justify-center rounded-full text-2xl font-semibold sm:pt-1">
+              <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold clip-2 sm:pt-1">
                 {character.level}
               </p>
             </div>

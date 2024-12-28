@@ -76,9 +76,11 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
     return updatedTree;
   };
 
-  const [attributeTree, setAttributeTree] = useState<AttributeTree>(
-    partialTree ? structureTree(partialTree) : emptyAttributeTree,
-  );
+  const attributeTree: AttributeTree = partialTree
+    ? structureTree(partialTree)
+    : emptyAttributeTree;
+
+  console.log(attributeTree);
 
   //Returns the total number of attribute points found in an attribute tree
   const getAttributePoints = () => {
@@ -121,32 +123,19 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
     points: number,
     skill?: string,
   ) => {
-    setAttributeTree((prevTree) => {
-      const updatedTree = { ...prevTree };
+    if (skill) {
+      const skillZeroCase =
+        attributeTree[attribute].skills[skill].points === 1 && points === 1;
 
-      if (skill) {
-        const skillZeroCase =
-          prevTree[attribute].skills[skill].points === 1 && points === 1;
+      attributeTree[attribute].skills[skill].points = skillZeroCase
+        ? 0
+        : points;
+    } else {
+      const attributeZeroCase =
+        attributeTree[attribute].points === 1 && points === 1;
 
-        updatedTree[attribute] = {
-          ...prevTree[attribute],
-          skills: {
-            ...prevTree[attribute].skills,
-            [skill]: { points: skillZeroCase ? 0 : points },
-          },
-        };
-      } else {
-        const attributeZeroCase =
-          prevTree[attribute].points === 1 && points === 1;
-
-        updatedTree[attribute] = {
-          ...prevTree[attribute],
-          points: attributeZeroCase ? 0 : points,
-        };
-      }
-
-      return updatedTree;
-    });
+      attributeTree[attribute].points = attributeZeroCase ? 0 : points;
+    }
   };
 
   // Remove the attribute and skill fields from a tree where the point values are 0

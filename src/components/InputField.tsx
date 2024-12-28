@@ -63,11 +63,16 @@ const InputField = ({ field, ...props }) => {
           {props.label}
         </label>
       </ThemeContainer>
-      {field.state.meta.errors && (
-        <em className="timing text-error" role="alert">
-          {field.state.meta.errors.join(', ')}
-        </em>
-      )}
+      {field.state.meta.errors &&
+        field.state.meta.errors.map((error: string) => (
+          <p
+            key={error}
+            className="timing text-error mt-1 text-base italic leading-5"
+            role="alert"
+          >
+            {error}
+          </p>
+        ))}
     </div>
   );
 };

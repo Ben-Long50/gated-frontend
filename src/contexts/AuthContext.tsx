@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import useAccountQuery from '../hooks/useAccountQuery/useAccountQuery';
@@ -6,9 +6,7 @@ import useAccountQuery from '../hooks/useAccountQuery/useAccountQuery';
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [authToken, setAuthToken] = useState<string>(() => {
-    return Cookies.get('token') || '';
-  });
+  const authToken: string = Cookies.get('token') || '';
   const navigate = useNavigate();
   const isMobile = window.location.href.includes('192.168.4.94');
 
@@ -31,7 +29,6 @@ const AuthProvider = ({ children }) => {
       value={{
         apiUrl,
         authToken,
-        setAuthToken,
         user,
       }}
     >
