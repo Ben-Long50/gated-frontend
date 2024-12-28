@@ -15,10 +15,6 @@ const useCreateCharacterMutation = (apiUrl, authToken) => {
         exact: false,
       });
       navigate('/characters');
-      console.log('Character successfully created');
-    },
-    onError: () => {
-      console.error('Error creating character');
     },
     throwOnError: false,
   });

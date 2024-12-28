@@ -22,7 +22,7 @@ const InputField = ({ field, ...props }) => {
   }, []);
 
   return (
-    <div>
+    <div className={`${props.className}`}>
       <ThemeContainer
         className={`${props.className} ml-auto`}
         chamfer="16"
@@ -45,9 +45,11 @@ const InputField = ({ field, ...props }) => {
             setFocus(false);
           }}
           onChange={(e) => {
-            field.handleChange(e.target.value);
-            console.log(field.state.value);
-
+            if (props.type === 'number') {
+              field.handleChange(Number(e.target.value));
+            } else {
+              field.handleChange(e.target.value);
+            }
             handleBorder();
             if (props.onChange) {
               props.onChange();

@@ -7,7 +7,8 @@ enum KeywordType {
   Armor = 'Armor',
 }
 
-interface Keyword {
+export interface Keyword {
+  id: number;
   name: string;
   description: string;
   keywordType: KeywordType;
@@ -15,7 +16,7 @@ interface Keyword {
 }
 
 interface List {
-  [key: string]: Partial<Keyword>[];
+  [key: string]: Keyword[];
 }
 
 const useKeywords = () => {
@@ -44,7 +45,7 @@ const useKeywords = () => {
   }, [keywords]);
 
   // Oraganizes the keywords from the keyword list by keyword type
-  const sortKeywords = (keywordList: Partial<Keyword>[]) => {
+  const sortKeywords = (keywordList: Keyword[]) => {
     const weaponKeywords = keywordList.filter(
       (keyword) => keyword.keywordType === 'Weapon',
     );

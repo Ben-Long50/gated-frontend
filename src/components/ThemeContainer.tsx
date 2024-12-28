@@ -30,7 +30,7 @@ const ThemeContainer = (props) => {
   };
 
   return (
-    <div ref={containerRef} className={`${props.className} relative`}>
+    <div ref={containerRef} className={`${props.className} relative my-auto`}>
       <ThemeBorder
         className="absolute right-[1px] top-[1px]"
         height={dimensions.height}

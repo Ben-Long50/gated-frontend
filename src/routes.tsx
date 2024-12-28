@@ -18,6 +18,10 @@ import CharacterUpdateForm from './components/CharacterUpdateForm';
 import CharacterList from './components/CharacterList';
 import KeywordForm from './components/KeywordForm';
 import Keywords from './components/Keywords';
+import WeaponForm from './components/WeaponForm';
+import Weapons from './components/Weapons';
+import ArmorForm from './components/ArmorForm';
+import Armor from './components/Armor';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -35,6 +39,10 @@ const router = createBrowserRouter(
           path="characters/:characterId/update"
           element={<CharacterUpdateForm />}
         />
+        <Route path="weapons" element={<Weapons />} />
+        <Route path="weapons/create" element={<WeaponForm />} />
+        <Route path="armor" element={<Armor />} />
+        <Route path="armor/create" element={<ArmorForm />} />
         <Route path="perks" element={<Perks />} />
         <Route path="perks/create" element={<PerkForm />} />
         <Route path="keywords" element={<Keywords />} />

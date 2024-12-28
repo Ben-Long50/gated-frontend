@@ -5,9 +5,11 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { useForm } from '@tanstack/react-form';
 import InputField from './InputField';
+import { LayoutContext } from '../contexts/LayoutContext';
 
 const Perks = () => {
   const { accentPrimary } = useContext(ThemeContext);
+  const { layoutSize } = useContext(LayoutContext);
   const [activeFilter, setActivefilter] = useState('');
 
   const perks = usePerks();
@@ -111,11 +113,13 @@ const Perks = () => {
         </div>
       </div>
       <ThemeContainer
-        chamfer="32"
+        chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
         className="w-full"
         borderColor={accentPrimary}
       >
-        <div className="bg-primary flex w-full flex-col gap-4 px-3 py-4 clip-8 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8">
+        <div
+          className={`bg-primary flex w-full flex-col gap-4 px-3 py-4 ${layoutSize === 'small' || layoutSize === 'xsmall' ? 'clip-6' : 'clip-8'} sm:gap-6 sm:p-6 lg:gap-8 lg:p-8`}
+        >
           <form>
             <searchForm.Field name="query">
               {(field) => (

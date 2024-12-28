@@ -4,13 +4,17 @@ import Icon from '@mdi/react';
 import {
   mdiAccountBoxOutline,
   mdiAccountBoxPlusOutline,
+  mdiKey,
+  mdiKeyPlus,
   mdiMenuClose,
   mdiMenuOpen,
+  mdiPistol,
   mdiStarOutline,
   mdiStarPlusOutline,
 } from '@mdi/js';
 import { useContext } from 'react';
 import { LayoutContext } from '../contexts/LayoutContext';
+import ArmorIcon from './icons/ArmorIcon';
 
 const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
   const { layoutSize } = useContext(LayoutContext);
@@ -50,6 +54,58 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
             </h3>
           </BtnNav>
         </Link>
+        <Link to="/weapons">
+          <BtnNav
+            onClick={() => {
+              if (layoutSize !== 'large') {
+                setSidebarVisibility(false);
+              }
+            }}
+          >
+            <Icon path={mdiPistol} size={1.25} />
+            <h3 className="flex items-center pt-1 text-inherit">Weapons</h3>
+          </BtnNav>
+        </Link>
+        <Link to="/weapons/create">
+          <BtnNav
+            onClick={() => {
+              if (layoutSize !== 'large') {
+                setSidebarVisibility(false);
+              }
+            }}
+          >
+            <Icon path={mdiPistol} size={1.25} />
+            <h3 className="flex items-center pt-1 text-inherit">
+              Create Weapon
+            </h3>
+          </BtnNav>
+        </Link>
+        <Link to="/armor">
+          <BtnNav
+            onClick={() => {
+              if (layoutSize !== 'large') {
+                setSidebarVisibility(false);
+              }
+            }}
+          >
+            <ArmorIcon className="size-8" />
+            <h3 className="flex items-center pt-1 text-inherit">Armor</h3>
+          </BtnNav>
+        </Link>
+        <Link to="/armor/create">
+          <BtnNav
+            onClick={() => {
+              if (layoutSize !== 'large') {
+                setSidebarVisibility(false);
+              }
+            }}
+          >
+            <ArmorIcon className="size-8" />
+            <h3 className="flex items-center pt-1 text-inherit">
+              Create Armor
+            </h3>
+          </BtnNav>
+        </Link>
         <Link to="/perks">
           <BtnNav
             onClick={() => {
@@ -82,7 +138,7 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
               }
             }}
           >
-            <Icon path={mdiStarOutline} size={1.25} />
+            <Icon path={mdiKey} size={1.25} />
             <h3 className="flex items-center pt-1 text-inherit">Keywords</h3>
           </BtnNav>
         </Link>
@@ -94,7 +150,7 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
               }
             }}
           >
-            <Icon path={mdiStarPlusOutline} size={1.25} />
+            <Icon path={mdiKeyPlus} size={1.25} />
             <h3 className="flex items-center pt-1 text-inherit">
               Create Keyword
             </h3>
@@ -102,7 +158,7 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
         </Link>
       </div>
       <button
-        className={`${!sidebarVisibility ? '-right-3 translate-x-full' : 'right-3'} accent-primary absolute bottom-3 flex size-16 shrink-0 items-center justify-center rounded-full text-2xl font-semibold transition-all duration-500 ease-in-out sm:pt-1`}
+        className={`${!sidebarVisibility ? '-right-3 translate-x-full' : 'right-3'} accent-primary absolute bottom-3 flex size-14 shrink-0 items-center justify-center rounded-full text-2xl font-semibold shadow-md shadow-zinc-950 transition-all duration-500 ease-in-out sm:pt-1`}
         onClick={() => setSidebarVisibility(!sidebarVisibility)}
       >
         {!sidebarVisibility ? (

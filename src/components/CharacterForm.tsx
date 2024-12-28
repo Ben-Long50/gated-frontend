@@ -9,7 +9,6 @@ import { AuthContext } from '../contexts/AuthContext';
 import { useForm } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
 import SelectField from './SelectField';
-import usePerksQuery from '../hooks/usePerksQuery/usePerksQuery';
 import StatBar from './StatBar';
 import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';

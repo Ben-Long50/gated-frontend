@@ -1,17 +1,17 @@
 import { useContext } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import KeywordCard from './KeywordCard';
-import useKeywords from '../hooks/useKeywords';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import { LayoutContext } from '../contexts/LayoutContext';
+import useArmor from '../hooks/useArmor';
+import ArmorCard from './ArmorCard';
 
-const Keywords = () => {
+const Armor = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const keywords = useKeywords();
+  const armor = useArmor();
 
   const searchForm = useForm({
     defaultValues: {
@@ -19,20 +19,20 @@ const Keywords = () => {
     },
     onSubmit: ({ value }) => {
       if (value.query === '') {
-        keywords.resetList();
+        armor.resetList();
       } else {
-        keywords.filterByQuery(value.query);
+        armor.filterByQuery(value.query);
       }
     },
   });
 
-  if (keywords.isLoading || keywords.isPending) {
+  if (armor.isLoading || armor.isPending) {
     return <span></span>;
   }
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-3">
-      <h1 className="text-center lg:mb-5">Keywords</h1>
+      <h1 className="text-center lg:mb-5">Armor</h1>
       <ThemeContainer
         chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
         className="w-full"
@@ -45,7 +45,7 @@ const Keywords = () => {
             <searchForm.Field name="query">
               {(field) => (
                 <InputField
-                  label="Search keywords"
+                  label="Search armor"
                   field={field}
                   onChange={() => {
                     searchForm.handleSubmit();
@@ -54,31 +54,13 @@ const Keywords = () => {
               )}
             </searchForm.Field>
           </form>
-          {Object.entries(keywords.filteredKeywords).map(
-            ([type, keywordList]) => {
-              return (
-                keywordList.length > 0 && (
-                  <div
-                    className="flex flex-col gap-4 md:grid md:grid-cols-2"
-                    key={type}
-                  >
-                    <h1 className="col-span-2 pl-6 sm:mb-4">
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </h1>
-                    {keywordList.map((keyword) => {
-                      return (
-                        <KeywordCard key={keyword.name} keyword={keyword} />
-                      );
-                    })}
-                  </div>
-                )
-              );
-            },
-          )}
+          {armor.filteredArmor.map((armor) => {
+            return <ArmorCard key={armor.name} armor={armor} />;
+          })}
         </div>
       </ThemeContainer>
     </div>
   );
 };
 
-export default Keywords;
+export default Armor;

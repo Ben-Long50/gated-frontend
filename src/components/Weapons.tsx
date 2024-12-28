@@ -1,17 +1,17 @@
 import { useContext } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import KeywordCard from './KeywordCard';
-import useKeywords from '../hooks/useKeywords';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
+import WeaponCard from './WeaponCard';
+import useWeapons from '../hooks/useWeapons';
 import { LayoutContext } from '../contexts/LayoutContext';
 
-const Keywords = () => {
+const Weapons = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const keywords = useKeywords();
+  const weapons = useWeapons();
 
   const searchForm = useForm({
     defaultValues: {
@@ -19,20 +19,20 @@ const Keywords = () => {
     },
     onSubmit: ({ value }) => {
       if (value.query === '') {
-        keywords.resetList();
+        weapons.resetList();
       } else {
-        keywords.filterByQuery(value.query);
+        weapons.filterByQuery(value.query);
       }
     },
   });
 
-  if (keywords.isLoading || keywords.isPending) {
+  if (weapons.isLoading || weapons.isPending) {
     return <span></span>;
   }
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-3">
-      <h1 className="text-center lg:mb-5">Keywords</h1>
+      <h1 className="text-center lg:mb-5">Weapons</h1>
       <ThemeContainer
         chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
         className="w-full"
@@ -45,7 +45,7 @@ const Keywords = () => {
             <searchForm.Field name="query">
               {(field) => (
                 <InputField
-                  label="Search keywords"
+                  label="Search weapons"
                   field={field}
                   onChange={() => {
                     searchForm.handleSubmit();
@@ -54,31 +54,13 @@ const Keywords = () => {
               )}
             </searchForm.Field>
           </form>
-          {Object.entries(keywords.filteredKeywords).map(
-            ([type, keywordList]) => {
-              return (
-                keywordList.length > 0 && (
-                  <div
-                    className="flex flex-col gap-4 md:grid md:grid-cols-2"
-                    key={type}
-                  >
-                    <h1 className="col-span-2 pl-6 sm:mb-4">
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </h1>
-                    {keywordList.map((keyword) => {
-                      return (
-                        <KeywordCard key={keyword.name} keyword={keyword} />
-                      );
-                    })}
-                  </div>
-                )
-              );
-            },
-          )}
+          {weapons.filteredWeapons.map((weapon) => {
+            return <WeaponCard key={weapon.name} weapon={weapon} />;
+          })}
         </div>
       </ThemeContainer>
     </div>
   );
 };
 
-export default Keywords;
+export default Weapons;
