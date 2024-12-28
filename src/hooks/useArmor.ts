@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { Keyword } from './useKeywords';
 import useArmorQuery from './useArmorQuery/useArmorQuery';
@@ -29,24 +29,19 @@ const useArmor = () => {
     isPending,
   } = useArmorQuery(apiUrl, authToken);
 
-  const [filteredArmor, setFilteredArmor] = useState<Armor[]>([]);
+  const [query, setQuery] = useState('');
 
-  useEffect(() => {
-    if (armor) {
-      setFilteredArmor(armor);
-    }
-  }, [armor]);
+  const filteredArmor =
+    armor?.filter((armor: Armor) =>
+      armor.name.toLowerCase().includes(query.toLowerCase()),
+    ) ?? [];
 
   const filterByQuery = (query: string) => {
-    const filteredArmor = armor.filter((armor) =>
-      armor.name?.toLowerCase().includes(query.toLowerCase()),
-    );
-
-    setFilteredArmor(filteredArmor);
+    setQuery(query);
   };
 
   const resetList = () => {
-    setFilteredArmor(armor);
+    setQuery('');
   };
 
   return {

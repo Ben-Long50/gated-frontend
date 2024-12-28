@@ -9,7 +9,6 @@ import { AuthContext } from '../contexts/AuthContext';
 import { useForm } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
 import SelectField from './SelectField';
-import usePerksQuery from '../hooks/usePerksQuery/usePerksQuery';
 import StatBar from './StatBar';
 import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';
@@ -38,9 +37,9 @@ const CharacterUpdateForm = () => {
     return character?.perks.map((perk) => perk.id);
   });
   const [imagePreview, setImagePreview] = useState(character?.picture.imageUrl);
-  const [characterStats, setCharacterStats] = useState({});
 
-  const perks = usePerks();
+  const attributeTree = useAttributeTree(character?.attributes);
+  const perks = usePerks(attributeTree?.tree);
 
   const updateCharacter = useUpdateCharacterMutation(
     characterId,
@@ -52,8 +51,6 @@ const CharacterUpdateForm = () => {
     apiUrl,
     authToken,
   );
-
-  const attributeTree = useAttributeTree();
 
   const characterUpdateForm = useForm({
     defaultValues: {
@@ -80,13 +77,13 @@ const CharacterUpdateForm = () => {
 
       if (value.stats.currentHealth == 0) {
         value.stats.injuries++;
-        value.stats.currentHealth = characterStats.health;
+        value.stats.currentHealth = attributeTree.stats.health;
       }
       if (value.stats.currentSanity == 0) {
         console.log(value.stats.currentSanity);
 
         value.stats.insanities++;
-        value.stats.currentSanity = characterStats.sanity;
+        value.stats.currentSanity = attributeTree.stats.sanity;
       }
 
       Object.entries(value).forEach(([key, val]) => {
@@ -104,24 +101,6 @@ const CharacterUpdateForm = () => {
   });
 
   useEffect(() => {
-    if (character) {
-      attributeTree.structureTree(character.attributes);
-    }
-  }, [character]);
-
-  useEffect(() => {
-    if (!perks.isPending) {
-      perks.getSatisfiedPerks(attributeTree.tree);
-    }
-  }, [perks.isPending]);
-
-  useEffect(() => {
-    attributeTree.structureTree(attributeTree.tree);
-    const stats = attributeTree.calculateSkills(attributeTree.tree);
-    setCharacterStats({ health: stats.health, sanity: stats.sanity });
-  }, [attributeTree.tree]);
-
-  useEffect(() => {
     characterUpdateForm.setFieldValue(
       'attributes',
       attributeTree.destructureTree(),
@@ -130,7 +109,7 @@ const CharacterUpdateForm = () => {
 
   useEffect(() => {
     characterUpdateForm.setFieldValue('perks', checkedPerks);
-  }, [checkedPerks]);
+  }, [checkedPerks, characterUpdateForm]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]; // Get the selected file
@@ -299,7 +278,7 @@ const CharacterUpdateForm = () => {
             name="stats.currentHealth"
             validators={{
               onChange: ({ value }) =>
-                value > characterStats.health
+                value > attributeTree.stats.health
                   ? 'Cannot exceed max health'
                   : undefined,
             }}
@@ -310,7 +289,7 @@ const CharacterUpdateForm = () => {
                   title="Health"
                   mode="edit"
                   current={field.state.value}
-                  total={characterStats.health || 0}
+                  total={attributeTree.stats.health || 0}
                   color="rgb(248 113 113)"
                 >
                   <HealthIcon className="size-8" />
@@ -328,7 +307,7 @@ const CharacterUpdateForm = () => {
             name="stats.currentSanity"
             validators={{
               onChange: ({ value }) =>
-                value > characterStats.sanity
+                value > attributeTree.stats.sanity
                   ? 'Cannot exceed max sanity'
                   : undefined,
             }}
@@ -339,7 +318,7 @@ const CharacterUpdateForm = () => {
                   title="Sanity"
                   mode="edit"
                   current={field.state.value}
-                  total={characterStats.sanity || 0}
+                  total={attributeTree.stats.sanity || 0}
                   color="rgb(96 165 250)"
                 >
                   <SanityIcon className="size-8" />
@@ -375,7 +354,7 @@ const CharacterUpdateForm = () => {
           point requirements)
         </p>
         <PerkList
-          perkTree={perks.filteredTree}
+          perkTree={perks.filteredPerkTree}
           mode="edit"
           checkedPerks={checkedPerks}
           setCheckedPerks={setCheckedPerks}

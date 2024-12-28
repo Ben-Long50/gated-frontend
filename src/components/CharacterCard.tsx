@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import ThemeContainer from './ThemeContainer';
 import StatBar from './StatBar';
 import HealthIcon from './icons/HealthIcon';
@@ -17,17 +17,7 @@ const CharacterCard = ({ character }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const [stats, setStats] = useState({});
-
   const attributeTree = useAttributeTree();
-
-  useEffect(() => {
-    if (character) {
-      const structuredTree = attributeTree.structureTree(character.attributes);
-
-      setStats(attributeTree.calculateSkills(structuredTree));
-    }
-  }, [character]);
 
   return (
     <ThemeContainer chamfer="32" borderColor={accentPrimary}>
@@ -58,7 +48,7 @@ const CharacterCard = ({ character }) => {
             <StatBar
               title="Health"
               current={character.stats.currentHealth}
-              total={stats.health}
+              total={attributeTree.stats.health}
               color="rgb(248 113 113)"
             >
               <HealthIcon className="size-8" />
@@ -66,14 +56,14 @@ const CharacterCard = ({ character }) => {
             <StatBar
               title="Sanity"
               current={character.stats.currentSanity}
-              total={stats.sanity}
+              total={attributeTree.stats.sanity}
               color="rgb(96 165 250)"
             >
               <SanityIcon className="size-8" />
             </StatBar>
           </div>
           <div className="flex flex-wrap justify-around gap-6">
-            {Object.entries(stats).map(([stat, points]) => {
+            {Object.entries(attributeTree.stats).map(([stat, points]) => {
               const stats = ['speed', 'evasion', 'armor', 'ward'];
               return (
                 stats.includes(stat) && (

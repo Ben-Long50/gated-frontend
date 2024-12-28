@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AttributeTree } from './useAttributeTree';
 import usePerksQuery from './usePerksQuery/usePerksQuery';
 import { AuthContext } from '../contexts/AuthContext';
@@ -42,14 +42,14 @@ interface ViolencePerks {
 }
 
 export interface PerkTree {
-  generalPerks: GeneralPerks;
-  cyberneticaPerks: CyberneticaPerks;
-  esotericaPerks: EsotericaPerks;
-  peacePerks: PeacePerks;
-  violencePerks: ViolencePerks;
+  general: GeneralPerks;
+  cybernetica: CyberneticaPerks;
+  esoterica: EsotericaPerks;
+  peace: PeacePerks;
+  violence: ViolencePerks;
 }
 
-const usePerks = () => {
+const usePerks = (attributeTree?: AttributeTree) => {
   const { apiUrl, authToken } = useContext(AuthContext);
 
   const {
@@ -58,27 +58,30 @@ const usePerks = () => {
     isPending,
   } = usePerksQuery(apiUrl, authToken);
 
-  const initialTree: PerkTree = {
-    generalPerks: { general: [] },
-    cyberneticaPerks: {
+  const [attributeQuery, setAttributeQuery] = useState('');
+  const [query, setQuery] = useState('');
+
+  const emptyTree: PerkTree = {
+    general: { general: [] },
+    cybernetica: {
       chromebits: [],
       hardwired: [],
       motorized: [],
       networked: [],
     },
-    esotericaPerks: {
+    esoterica: {
       gestalt: [],
       godhead: [],
       mysticism: [],
       outerworld: [],
     },
-    peacePerks: {
+    peace: {
       barter: [],
       erudition: [],
       rhetoric: [],
       treatment: [],
     },
-    violencePerks: {
+    violence: {
       assault: [],
       shooting: [],
       subterfuge: [],
@@ -86,79 +89,36 @@ const usePerks = () => {
     },
   };
 
-  const [perkTree, setPerkTree] = useState(initialTree);
-  const [filteredTree, setFilteredTree] = useState(initialTree);
-
-  useEffect(() => {
-    if (perks) {
-      const sortedTree = sortPerks(perks);
-      setPerkTree(sortedTree);
-      setFilteredTree(sortedTree);
-    }
-  }, [perks]);
-
-  // Oraganizes the perks from a perk list into attribute and skill arrays corresponding to its requirements
+  // Sorts the perks from a perk list into attribute and skill arrays corresponding to the perk's requirements
   const sortPerks = (perkList: Perk[]) => {
-    if (perkList) {
-      const newGeneralPerks = { general: [] };
-      const newCyberneticaPerks = {
-        chromebits: [],
-        hardwired: [],
-        motorized: [],
-        networked: [],
-      };
-      const newEsotericaPerks = {
-        gestalt: [],
-        godhead: [],
-        mysticism: [],
-        outerworld: [],
-      };
-      const newPeacePerks = {
-        barter: [],
-        erudition: [],
-        rhetoric: [],
-        treatment: [],
-      };
-      const newViolencePerks = {
-        assault: [],
-        shooting: [],
-        subterfuge: [],
-        threshold: [],
-      };
-
-      perkList.forEach((perk) => {
-        if (!perk.requirements || !Object.keys(perk.requirements).length) {
-          newGeneralPerks.general.push(perk);
-        } else {
-          Object.entries(perk.requirements).map(([attribute, { skills }]) => {
-            Object.entries(skills).map(([skill]) => {
-              if (attribute === 'cybernetica') {
-                newCyberneticaPerks[skill as keyof CyberneticaPerks].push(perk);
-              } else if (attribute === 'esoterica') {
-                newEsotericaPerks[skill as keyof EsotericaPerks].push(perk);
-              } else if (attribute === 'peace') {
-                newPeacePerks[skill as keyof PeacePerks].push(perk);
-              } else if (attribute === 'violence') {
-                newViolencePerks[skill as keyof ViolencePerks].push(perk);
-              }
-            });
+    const emptyTreeCopy = JSON.parse(JSON.stringify(emptyTree));
+    perkList?.map((perk: Perk) => {
+      if (!perk.requirements || !Object.keys(perk.requirements).length) {
+        emptyTreeCopy.general.general.push(perk);
+      } else {
+        Object.entries(perk.requirements).map(([attribute, { skills }]) => {
+          Object.entries(skills).map(([skill]) => {
+            if (attribute === 'cybernetica') {
+              emptyTreeCopy.cybernetica[skill as keyof CyberneticaPerks].push(
+                perk,
+              );
+            } else if (attribute === 'esoterica') {
+              emptyTreeCopy.esoterica[skill as keyof EsotericaPerks].push(perk);
+            } else if (attribute === 'peace') {
+              emptyTreeCopy.peace[skill as keyof PeacePerks].push(perk);
+            } else if (attribute === 'violence') {
+              emptyTreeCopy.violence[skill as keyof ViolencePerks].push(perk);
+            }
           });
-        }
-      });
-
-      return {
-        generalPerks: newGeneralPerks,
-        cyberneticaPerks: newCyberneticaPerks,
-        esotericaPerks: newEsotericaPerks,
-        peacePerks: newPeacePerks,
-        violencePerks: newViolencePerks,
-      };
-    }
+        });
+      }
+    });
+    return emptyTreeCopy;
   };
 
-  //Filters a perk list while comparing it against a character's attribute tree returning only perks who's requirements are met by the attribute tree
+  //Filters and sorts a perk list while comparing it against a character's attribute tree returning a perk tree containing only perks who's requirements are met by the supplied attribute tree
   const getSatisfiedPerks = (attributeTree: AttributeTree) => {
-    const newFilteredPerks = perks.map((perk) => {
+    const satisfiedPerks = perks?.map((perk: Perk) => {
       let requirementsMet = true;
       Object.entries(perk.requirements).map(
         ([attribute, { points, skills }]) => {
@@ -181,53 +141,44 @@ const usePerks = () => {
       return requirementsMet ? perk : false;
     });
     const satisfiedPerkTree = sortPerks(
-      newFilteredPerks.filter((perk) => !!perk),
+      satisfiedPerks?.filter((perk: Perk) => !!perk),
     );
-    setFilteredTree(satisfiedPerkTree);
+    return satisfiedPerkTree;
   };
 
-  const filterByQuery = (tree: Partial<PerkTree>, query: string) => {
-    const newFilteredPerks: Partial<PerkTree> = JSON.parse(
-      JSON.stringify(tree),
-    );
-    Object.entries(tree).map(([attribute, skills]) => {
-      Object.entries(skills).map(
-        ([skill, perkList]) =>
-          (newFilteredPerks[attribute as keyof PerkTree][skill] = !query
-            ? perkList
-            : perkList.filter((perk) =>
-                perk.name?.toLowerCase().includes(query.toLowerCase()),
-              )),
-      );
-    });
-    setFilteredTree(newFilteredPerks);
+  const perkTree: PerkTree = attributeTree
+    ? getSatisfiedPerks(attributeTree)
+    : sortPerks(perks || []);
+
+  const filteredPerkTree = sortPerks(
+    Object.entries(perkTree)
+      .filter(([attribute]) =>
+        attribute.toLowerCase().includes(attributeQuery.toLowerCase()),
+      )
+      .flatMap(([_, skills]) =>
+        Object.entries(skills).flatMap(([_, perkList]) =>
+          perkList.filter((perk: Perk) =>
+            perk.name?.toLowerCase().includes(query.toLowerCase()),
+          ),
+        ),
+      ),
+  );
+
+  //Filters the perk tree to return only perks of a specified attribute
+  const filterPerks = (attribute: string, query: string) => {
+    setAttributeQuery(attribute);
+    setQuery(query);
   };
 
   const resetPerks = () => {
-    setFilteredTree(perkTree);
-  };
-  //Filters the perk tree to return only perks of a specified attribute
-  const handleFilter = (attribute: string, query: string) => {
-    if (query && !attribute) {
-      filterByQuery(perkTree, query);
-    } else if (!query && attribute) {
-      const perks = perkTree[attribute as keyof PerkTree];
-      setFilteredTree({ [attribute as keyof PerkTree]: perks });
-    } else if (!query && !attribute) {
-      resetPerks();
-    } else {
-      const perks = perkTree[attribute as keyof PerkTree];
-      const newTree = { [attribute as keyof PerkTree]: perks };
-      filterByQuery(newTree, query);
-    }
+    setAttributeQuery('');
+    setQuery('');
   };
 
   return {
-    filteredTree,
-    getSatisfiedPerks,
-    sortPerks,
+    filteredPerkTree,
+    filterPerks,
     resetPerks,
-    handleFilter,
     isLoading,
     isPending,
   };

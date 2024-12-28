@@ -17,7 +17,7 @@ const ArmorForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
 
-  const [checkedKeywords, setCheckedKeywords] = useState<number[]>([]);
+  const [checkedKeywords, setCheckedKeywords] = useState([]);
   const [imagePreview, setImagePreview] = useState('');
   const createArmor = useCreateArmorMutation(apiUrl, authToken);
 
@@ -55,20 +55,20 @@ const ArmorForm = () => {
         }
       });
       await createArmor.mutate(formData);
-      // armorForm.reset({
-      //   name: '',
-      //   picture: '',
-      //   description: '',
-      //   stats: {
-      //     armor: '',
-      //     ward: '',
-      //     block: '',
-      //     power: '',
-      //     weight: '',
-      //   },
-      //   price: '',
-      //   keywords: [],
-      // });
+      armorForm.reset({
+        name: '',
+        picture: '',
+        description: '',
+        stats: {
+          armor: '',
+          ward: '',
+          block: '',
+          power: '',
+          weight: '',
+        },
+        price: '',
+        keywords: [],
+      });
       setCheckedKeywords([]);
       setImagePreview('');
     },
@@ -76,7 +76,7 @@ const ArmorForm = () => {
 
   useEffect(() => {
     armorForm.setFieldValue('keywords', checkedKeywords);
-  }, [checkedKeywords]);
+  }, [checkedKeywords, armorForm]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]; // Get the selected file

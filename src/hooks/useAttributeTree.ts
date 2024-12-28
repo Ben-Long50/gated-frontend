@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface Skill {
   points: number;
@@ -16,8 +16,8 @@ export interface AttributeTree {
   violence: Attribute;
 }
 
-const useAttributeTree = () => {
-  const initialTree = {
+const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
+  const emptyAttributeTree: AttributeTree = {
     cybernetica: {
       points: 0,
       skills: {
@@ -56,48 +56,52 @@ const useAttributeTree = () => {
     },
   };
 
-  const [attributeTree, setAttributeTree] = useState(initialTree);
-
-  const resetTree = () => {
-    setAttributeTree(initialTree);
-  };
-
   //Takes a partial attribute tree and returns a full tree including all fields where the point values are zero
-  const structureTree = (tree: Partial<AttributeTree>) => {
-    const updatedTree: AttributeTree = { ...attributeTree };
+  const structureTree = (partialTree: Partial<AttributeTree>) => {
+    const updatedTree: AttributeTree = JSON.parse(
+      JSON.stringify(emptyAttributeTree),
+    );
 
-    Object.entries(tree).forEach(([attribute, { points, skills }]) => {
-      if (updatedTree[attribute]) {
-        updatedTree[attribute].points = points;
+    Object.entries(partialTree).forEach(([attribute, { points, skills }]) => {
+      if (updatedTree[attribute as keyof AttributeTree]) {
+        updatedTree[attribute as keyof AttributeTree].points = points;
       }
       Object.entries(skills).map(([skill, { points }]) => {
-        if (updatedTree[attribute].skills[skill]) {
-          updatedTree[attribute].skills[skill].points = points;
+        if (updatedTree[attribute as keyof AttributeTree].skills[skill]) {
+          updatedTree[attribute as keyof AttributeTree].skills[skill].points =
+            points;
         }
       });
     });
     return updatedTree;
   };
 
+  const [attributeTree, setAttributeTree] = useState<AttributeTree>(
+    partialTree ? structureTree(partialTree) : emptyAttributeTree,
+  );
+
   //Returns the total number of attribute points found in an attribute tree
   const getAttributePoints = () => {
     return Object.entries(attributeTree).reduce(
-      (total, [attribute, { points }]) => total + points,
+      (total, [_, { points }]) => total + points,
       0,
     );
   };
 
   //Returns the total number of skill points found in an attribute tree
   const getSkillPoints = () => {
-    return Object.values(attributeTree).reduce((total, attribute) => {
-      const skillPoints = Object.values(attribute.skills).reduce(
-        (skillTotal, { points }) => {
-          return skillTotal + points;
-        },
-        0,
-      );
-      return total + skillPoints;
-    }, 0);
+    return Object.values(attributeTree).reduce(
+      (total: number, attribute: Attribute) => {
+        const skillPoints = Object.values(attribute.skills).reduce(
+          (skillTotal, { points }) => {
+            return skillTotal + points;
+          },
+          0,
+        );
+        return total + skillPoints;
+      },
+      0,
+    );
   };
 
   //Returns the number of points attributed to a specific attribute or skill
@@ -117,27 +121,31 @@ const useAttributeTree = () => {
     points: number,
     skill?: string,
   ) => {
-    setAttributeTree((prev) => {
-      const attributeZeroCase =
-        attributeTree[attribute]?.points === 1 && points === 1;
-      const skillZeroCase =
-        attributeTree[attribute]?.skills[skill]?.points === 1 && points === 1;
-
-      const newAttribute = { ...prev[attribute] };
+    setAttributeTree((prevTree) => {
+      const updatedTree = { ...prevTree };
 
       if (skill) {
-        newAttribute.skills = {
-          ...newAttribute.skills,
-          [skill]: { points: skillZeroCase ? 0 : points },
+        const skillZeroCase =
+          prevTree[attribute].skills[skill].points === 1 && points === 1;
+
+        updatedTree[attribute] = {
+          ...prevTree[attribute],
+          skills: {
+            ...prevTree[attribute].skills,
+            [skill]: { points: skillZeroCase ? 0 : points },
+          },
         };
       } else {
-        newAttribute.points = attributeZeroCase ? 0 : points;
+        const attributeZeroCase =
+          prevTree[attribute].points === 1 && points === 1;
+
+        updatedTree[attribute] = {
+          ...prevTree[attribute],
+          points: attributeZeroCase ? 0 : points,
+        };
       }
 
-      return {
-        ...prev,
-        [attribute]: newAttribute,
-      };
+      return updatedTree;
     });
   };
 
@@ -165,19 +173,12 @@ const useAttributeTree = () => {
     return result;
   };
 
-  const calculateSkills = (tree: AttributeTree) => {
-    const health: number = 10 + tree.violence.skills.threshold.points * 2;
-    const sanity: number = 5 + tree.esoterica.skills.mysticism.points * 2;
-    const speed: number = 4 + tree.violence.skills.assault.points * 2;
-    const cyber: number = 4 + tree.cybernetica.skills.chromebits.points * 2;
-    const equip: number = 10 + tree.violence.skills.threshold.points * 2;
-    return {
-      health,
-      sanity,
-      speed,
-      cyber,
-      equip,
-    };
+  const stats = {
+    health: 10 + attributeTree.violence.skills.threshold.points * 2,
+    sanity: 5 + attributeTree.esoterica.skills.mysticism.points * 2,
+    speed: 4 + attributeTree.violence.skills.assault.points * 2,
+    cyber: 4 + attributeTree.cybernetica.skills.chromebits.points * 2,
+    equip: 10 + attributeTree.violence.skills.threshold.points * 2,
   };
 
   return {
@@ -188,8 +189,7 @@ const useAttributeTree = () => {
     updatePoints,
     destructureTree,
     structureTree,
-    calculateSkills,
-    resetTree,
+    stats,
   };
 };
 

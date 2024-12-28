@@ -10,6 +10,8 @@ const PerkList = ({
   setCheckedPerks,
 }: {
   perkTree: Partial<PerkTree>;
+  mode: string;
+  checkedPerks: number[];
 }) => {
   return (
     <div className="flex w-full flex-col gap-6 sm:gap-8 lg:gap-10">
@@ -24,7 +26,7 @@ const PerkList = ({
               className="flex flex-col gap-4 sm:gap-6 lg:gap-8"
             >
               <h2 className="pl-4 text-left">
-                {perkType.charAt(0).toUpperCase() + perkType.slice(1, -5)}
+                {perkType.charAt(0).toUpperCase() + perkType.slice(1)}
               </h2>
               {Object.entries(skills).map(([skill, perkList]) => {
                 {
@@ -47,7 +49,7 @@ const PerkList = ({
                           {perkList.map((perk) => {
                             return (
                               <div
-                                key={perk.name}
+                                key={perk.id}
                                 className="flex w-full items-center justify-between gap-4"
                               >
                                 <PerkCard className="w-full" perk={perk} />

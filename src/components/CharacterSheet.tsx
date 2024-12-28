@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -6,9 +6,6 @@ import { mdiCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import StatBar from './StatBar';
 import PerkCard from './PerkCard';
-import WeaponCard from './WeaponCard';
-import ArmorCard from './ArmorCard';
-import CyberneticCard from './CyberneticCard';
 import AttributeCard from './AttributeCard';
 import useAttributeTree from '../hooks/useAttributeTree';
 import { LayoutContext } from '../contexts/LayoutContext';
@@ -31,8 +28,6 @@ const CharacterSheet = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const [structuredTree, setStructuredTree] = useState({});
-  const [stats, setStats] = useState({});
   const [storyVisibility, setStoryVisibility] = useState(
     layoutSize === 'xsmall' ? false : true,
   );
@@ -45,16 +40,7 @@ const CharacterSheet = () => {
     isLoading,
   } = useCharacterQuery(apiUrl, authToken, characterId);
 
-  const attributeTree = useAttributeTree();
-
-  useEffect(() => {
-    if (character) {
-      const structured = attributeTree.structureTree(character.attributes);
-      setStructuredTree(structured);
-
-      setStats(attributeTree.calculateSkills(structured));
-    }
-  }, [character]);
+  const attributeTree = useAttributeTree(character?.attributes);
 
   if (isLoading || isPending) {
     return <span></span>;
@@ -152,7 +138,7 @@ const CharacterSheet = () => {
         <StatBar
           title="Health"
           current={character.stats.currentHealth}
-          total={stats.health}
+          total={attributeTree.stats.health}
           color="rgb(248 113 113)"
         >
           <HealthIcon className="size-8" />
@@ -160,23 +146,23 @@ const CharacterSheet = () => {
         <StatBar
           title="Sanity"
           current={character.stats.currentSanity}
-          total={stats.sanity}
+          total={attributeTree.stats.sanity}
           color="rgb(96 165 250)"
         >
           <SanityIcon className="size-8" />
         </StatBar>
         <StatBar
           title="Cyber"
-          current={stats.cyber}
-          total={stats.cyber}
+          current={attributeTree.stats.cyber}
+          total={attributeTree.stats.cyber}
           color="rgb(52 211 153)"
         >
           <CyberIcon className="size-8" />
         </StatBar>
         <StatBar
           title="Equip"
-          current={stats.equip}
-          total={stats.equip}
+          current={attributeTree.stats.equip}
+          total={attributeTree.stats.equip}
           color="rgb(251 191 36)"
         >
           <EquipIcon className="size-8" />
@@ -186,7 +172,7 @@ const CharacterSheet = () => {
         <ThemeContainer chamfer="24" borderColor={accentPrimary}>
           <div className="bg-primary flex flex-wrap justify-center gap-8 px-8 py-4 clip-6 lg:justify-between lg:pl-10">
             <div className="flex flex-wrap justify-around gap-6">
-              {Object.entries(stats).map(([stat, points]) => {
+              {Object.entries(attributeTree.stats).map(([stat, points]) => {
                 const stats = ['speed', 'evasion', 'armor', 'ward'];
                 return (
                   stats.includes(stat) && (
@@ -302,7 +288,7 @@ const CharacterSheet = () => {
         </ThemeContainer>
 
         <div className="mb-auto flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
-          {Object.entries(structuredTree).map(
+          {Object.entries(attributeTree.tree).map(
             ([attribute, { points, skills }]) => (
               <ThemeContainer
                 key={attribute}

@@ -5,6 +5,7 @@ const useWeaponsQuery = (apiUrl, authToken) => {
   return useQuery({
     queryKey: ['weapons'],
     queryFn: async () => await getWeapons(apiUrl, authToken),
+    throwOnError: false,
   });
 };
 

@@ -9,9 +9,9 @@ const useSigninMutation = (apiUrl, setErrors) => {
     mutationFn: async (formData) => {
       return await signin(formData, apiUrl);
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       // queryClient.clear();
-      navigate('/home');
+      navigate('/characters');
     },
     onError: (error) => {
       setErrors(error.errors);

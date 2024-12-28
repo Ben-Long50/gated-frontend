@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import useKeywordsQuery from './useKeywordQuery/useKeywordsQuery';
 import { AuthContext } from '../contexts/AuthContext';
 
@@ -28,49 +28,29 @@ const useKeywords = () => {
     isPending,
   } = useKeywordsQuery(apiUrl, authToken);
 
-  const [sortedKeywords, setSortedKeywords] = useState<List>({
-    weapon: [],
-    armor: [],
-  });
-  const [filteredKeywords, setFilteredKeywords] = useState<List>({
-    weapon: [],
-    armor: [],
-  });
+  const [query, setQuery] = useState('');
 
-  useEffect(() => {
-    if (keywords) {
-      setSortedKeywords(sortKeywords(keywords));
-      setFilteredKeywords(sortKeywords(keywords));
-    }
-  }, [keywords]);
-
-  // Oraganizes the keywords from the keyword list by keyword type
-  const sortKeywords = (keywordList: Keyword[]) => {
-    const weaponKeywords = keywordList.filter(
-      (keyword) => keyword.keywordType === 'Weapon',
-    );
-    const armorKeywords = keywordList.filter(
-      (keyword) => keyword.keywordType === 'Armor',
-    );
-
-    return {
-      weapon: weaponKeywords,
-      armor: armorKeywords,
-    };
+  const filteredKeywords: List = {
+    weapon:
+      keywords?.filter(
+        (keyword: Keyword) =>
+          keyword.keywordType === 'Weapon' &&
+          keyword.name.toLowerCase().includes(query.toLowerCase()),
+      ) ?? [],
+    armor:
+      keywords?.filter(
+        (keyword: Keyword) =>
+          keyword.keywordType === 'Armor' &&
+          keyword.name.toLowerCase().includes(query.toLowerCase()),
+      ) ?? [],
   };
 
   const filterByQuery = (query: string) => {
-    const filteredKeywords = { ...sortedKeywords };
-    Object.entries(sortedKeywords).map(([type, keywordList]) => {
-      filteredKeywords[type] = keywordList.filter((keyword: Partial<Keyword>) =>
-        keyword.name?.toLowerCase().includes(query.toLowerCase()),
-      );
-    });
-    setFilteredKeywords(filteredKeywords);
+    setQuery(query);
   };
 
   const resetList = () => {
-    setFilteredKeywords(sortedKeywords);
+    setQuery('');
   };
 
   return {

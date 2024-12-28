@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { Keyword } from './useKeywords';
 import useWeaponsQuery from './useWeaponsQuery/useWeaponsQuery';
@@ -31,24 +31,19 @@ const useWeapons = () => {
     isPending,
   } = useWeaponsQuery(apiUrl, authToken);
 
-  const [filteredWeapons, setFilteredWeapons] = useState<Weapon[]>([]);
+  const [query, setQuery] = useState<string>('');
 
-  useEffect(() => {
-    if (weapons) {
-      setFilteredWeapons(weapons);
-    }
-  }, [weapons]);
+  const filteredWeapons =
+    weapons?.filter((weapon: Weapon) =>
+      weapon.name.toLowerCase().includes(query.toLowerCase()),
+    ) ?? [];
 
-  const filterByQuery = (query: string) => {
-    const filteredWeapons = weapons.filter((weapon) =>
-      weapon.name?.toLowerCase().includes(query.toLowerCase()),
-    );
-
-    setFilteredWeapons(filteredWeapons);
+  const filterByQuery = (newQuery: string) => {
+    setQuery(newQuery);
   };
 
   const resetList = () => {
-    setFilteredWeapons(weapons);
+    setQuery('');
   };
 
   return {

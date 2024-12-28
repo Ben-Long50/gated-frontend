@@ -33,10 +33,11 @@ const CharacterForm = () => {
   const [checkedPerks, setCheckedPerks] = useState([]);
   const [imagePreview, setImagePreview] = useState('');
 
-  const perks = usePerks();
-  const createCharacter = useCreateCharacterMutation(apiUrl, authToken);
   const attributeTree = useAttributeTree();
-  const stats = attributeTree.calculateSkills(attributeTree.tree);
+
+  const perks = usePerks(attributeTree?.tree);
+
+  const createCharacter = useCreateCharacterMutation(apiUrl, authToken);
 
   const characterForm = useForm({
     defaultValues: {
@@ -65,18 +66,12 @@ const CharacterForm = () => {
   });
 
   useEffect(() => {
-    if (!perks.isLoading) {
-      perks.getSatisfiedPerks(attributeTree.tree);
-    }
-  }, [perks.isLoading, attributeTree.tree]);
-
-  useEffect(() => {
     characterForm.setFieldValue('attributes', attributeTree.destructureTree());
-  }, [attributeTree.tree, characterForm]);
+  }, [attributeTree, characterForm]);
 
   useEffect(() => {
-    characterForm.setFieldValue('perks', [checkedPerks]);
-  }, [checkedPerks]);
+    characterForm.setFieldValue('perks', checkedPerks);
+  }, [checkedPerks, characterForm]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]; // Get the selected file
@@ -215,39 +210,39 @@ const CharacterForm = () => {
         >
           <StatBar
             title="Health"
-            current={stats.health}
-            total={stats.health}
+            current={attributeTree.stats.health}
+            total={attributeTree.stats.health}
             color="rgb(248 113 113)"
           >
             <HealthIcon className="size-8" />
           </StatBar>
           <StatBar
             title="Sanity"
-            current={stats.sanity}
-            total={stats.sanity}
+            current={attributeTree.stats.sanity}
+            total={attributeTree.stats.sanity}
             color="rgb(96 165 250)"
           >
             <SanityIcon className="size-8" />
           </StatBar>
           <StatBar
             title="Cyber"
-            current={stats.cyber}
-            total={stats.cyber}
+            current={attributeTree.stats.cyber}
+            total={attributeTree.stats.cyber}
             color="rgb(52 211 153)"
           >
             <CyberIcon className="size-8" />
           </StatBar>
           <StatBar
             title="Equip"
-            current={stats.equip}
-            total={stats.equip}
+            current={attributeTree.stats.equip}
+            total={attributeTree.stats.equip}
             color="rgb(251 191 36)"
           >
             <EquipIcon className="size-8" />
           </StatBar>
         </div>
         <div className="flex flex-wrap justify-around gap-6">
-          {Object.entries(stats).map(([stat, points]) => {
+          {Object.entries(attributeTree.stats).map(([stat, points]) => {
             const stats = ['speed', 'evasion', 'armor', 'ward'];
             return (
               stats.includes(stat) && (
@@ -336,7 +331,7 @@ const CharacterForm = () => {
           point requirements)
         </p>
         <PerkList
-          perkTree={perks.filteredTree}
+          perkTree={perks.filteredPerkTree}
           mode="edit"
           checkedPerks={checkedPerks}
           setCheckedPerks={setCheckedPerks}

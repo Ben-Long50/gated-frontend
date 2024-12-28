@@ -6,7 +6,9 @@ import useAccountQuery from '../hooks/useAccountQuery/useAccountQuery';
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [authToken, setAuthToken] = useState(null);
+  const [authToken, setAuthToken] = useState<string>(() => {
+    return Cookies.get('token') || '';
+  });
   const navigate = useNavigate();
   const isMobile = window.location.href.includes('192.168.4.94');
 
@@ -14,23 +16,15 @@ const AuthProvider = ({ children }) => {
     ? import.meta.env.VITE_LOCAL_BACKEND_URL
     : import.meta.env.VITE_API_URL;
 
-  const user = useAccountQuery(apiUrl, authToken);
+  const { data: user } = useAccountQuery(apiUrl, authToken);
 
   useEffect(() => {
-    const token = Cookies.get('token');
-
-    if (token) {
-      setAuthToken(token);
+    if (authToken) {
       navigate('/characters');
     } else {
-      setAuthToken(null);
       navigate('/signin');
     }
   }, []);
-
-  // if (user.isPending) {
-  //   return <span></span>;
-  // }
 
   return (
     <AuthContext.Provider
@@ -38,7 +32,7 @@ const AuthProvider = ({ children }) => {
         apiUrl,
         authToken,
         setAuthToken,
-        user: user.data,
+        user,
       }}
     >
       {children}

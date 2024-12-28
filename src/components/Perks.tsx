@@ -10,7 +10,7 @@ import { LayoutContext } from '../contexts/LayoutContext';
 const Perks = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
-  const [activeFilter, setActivefilter] = useState('');
+  const [attributeFilter, setAttributefilter] = useState('');
 
   const perks = usePerks();
 
@@ -22,9 +22,9 @@ const Perks = () => {
       console.log(value);
 
       if (value.query === '') {
-        perks.handleFilter(activeFilter, value.query);
+        perks.filterPerks(attributeFilter, value.query);
       } else {
-        perks.handleFilter(activeFilter, value.query);
+        perks.filterPerks(attributeFilter, value.query);
       }
     },
   });
@@ -45,67 +45,55 @@ const Perks = () => {
             onClick={() => {
               perks.resetPerks();
               searchForm.setFieldValue('query', '');
-              setActivefilter('');
+              setAttributefilter('');
             }}
           >
             reset
           </button>
           <button
-            className={`${activeFilter === 'generalPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full rounded-l-md text-lg font-semibold lg:pt-1`}
+            className={`${attributeFilter === 'general' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full rounded-l-md text-lg font-semibold lg:pt-1`}
             onClick={() => {
-              perks.handleFilter(
-                'generalPerks',
-                searchForm.getFieldValue('query'),
-              );
-              setActivefilter('generalPerks');
+              perks.filterPerks('general', searchForm.getFieldValue('query'));
+              setAttributefilter('general');
             }}
           >
             G
           </button>
           <button
-            className={`${activeFilter === 'cyberneticaPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
+            className={`${attributeFilter === 'cybernetica' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
             onClick={() => {
-              perks.handleFilter(
-                'cyberneticaPerks',
+              perks.filterPerks(
+                'cybernetica',
                 searchForm.getFieldValue('query'),
               );
-              setActivefilter('cyberneticaPerks');
+              setAttributefilter('cybernetica');
             }}
           >
             C
           </button>
           <button
-            className={`${activeFilter === 'esotericaPerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
+            className={`${attributeFilter === 'esoterica' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
             onClick={() => {
-              perks.handleFilter(
-                'esotericaPerks',
-                searchForm.getFieldValue('query'),
-              );
-              setActivefilter('esotericaPerks');
+              perks.filterPerks('esoterica', searchForm.getFieldValue('query'));
+              setAttributefilter('esoterica');
             }}
           >
             E
           </button>
           <button
-            className={`${activeFilter === 'peacePerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
+            className={`${attributeFilter === 'peace' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full text-lg font-semibold lg:pt-1`}
             onClick={() => {
-              perks.handleFilter(
-                'peacePerks',
-                searchForm.getFieldValue('query'),
-              );
-              setActivefilter('peacePerks');
+              perks.filterPerks('peace', searchForm.getFieldValue('query'));
+              setAttributefilter('peace');
             }}
           >
             P
           </button>
           <button
-            className={`${activeFilter === 'violencePerks' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full rounded-r-md text-lg font-semibold lg:pt-1`}
+            className={`${attributeFilter === 'violence' ? 'accent-primary' : 'bg-primary text-secondary'} timing w-full rounded-r-md text-lg font-semibold lg:pt-1`}
             onClick={() => {
-              perks.handleFilter(
-                'violencePerks',
-                searchForm.getFieldValue('query'),
-              );
-              setActivefilter('violencePerks');
+              perks.filterPerks('violence', searchForm.getFieldValue('query'));
+              setAttributefilter('violence');
             }}
           >
             V
@@ -133,7 +121,7 @@ const Perks = () => {
               )}
             </searchForm.Field>
           </form>
-          <PerkList perkTree={perks.filteredTree} />
+          <PerkList perkTree={perks.filteredPerkTree} />
         </div>
       </ThemeContainer>
     </div>
