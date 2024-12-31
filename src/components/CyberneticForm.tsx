@@ -9,33 +9,37 @@ import TextAreaField from './TextAreaField';
 import useKeywords from '../hooks/useKeywords';
 import KeywordCard from './KeywordCard';
 import Icon from '@mdi/react';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
-import useCreateWeaponMutation from '../hooks/useCreateWeaponMutation/useCreateWeaponMutation';
+import { mdiCloseBox, mdiImagePlus, mdiMinus, mdiPlus } from '@mdi/js';
 import Loading from './Loading';
 import InputFieldBasic from './InputFieldBasic';
+import useCreateCyberneticMutation from '../hooks/useCreateCyberneticMutation copy/useCreateCyberneticMutation';
+import SelectField from './SelectField';
 
-const WeaponForm = () => {
+const CyberneticForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
 
   const keywords = useKeywords();
 
   const [imagePreview, setImagePreview] = useState('');
-  const createWeapon = useCreateWeaponMutation(apiUrl, authToken);
+  const createCybernetic = useCreateCyberneticMutation(apiUrl, authToken);
 
-  const weaponForm = useForm({
+  const cyberneticForm = useForm({
     defaultValues: {
       name: '',
+      cyberticType: '',
       picture: '',
       description: '',
+      cyber: '',
+      body: [''] as string[],
       stats: {
+        power: '',
         damage: '',
         salvo: '',
         flurry: '',
         range: '',
         magCapacity: '',
         magCount: '',
-        weight: '',
       },
       price: '',
       keywords: [] as { id: number; value?: number }[],
@@ -57,7 +61,7 @@ const WeaponForm = () => {
         }
       });
       // await createWeapon.mutate(formData);
-      // weaponForm.reset({
+      // cyberneticForm.reset({
       //   name: '',
       //   picture: '',
       //   description: '',
@@ -78,15 +82,11 @@ const WeaponForm = () => {
     },
   });
 
-  // useEffect(() => {
-  //   weaponForm.setFieldValue('keywords', checkedKeywords);
-  // }, [checkedKeywords, weaponForm]);
-
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]; // Get the selected file
 
     if (selectedFile) {
-      weaponForm.setFieldValue('picture', selectedFile);
+      cyberneticForm.setFieldValue('picture', selectedFile);
 
       // Create a URL for the selected file to preview
       const fileUrl = URL.createObjectURL(selectedFile);
@@ -109,25 +109,29 @@ const WeaponForm = () => {
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          weaponForm.handleSubmit();
+          cyberneticForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">Create Weapon</h1>
+        <h1 className="text-center">Create Cybernetic</h1>
         <div className="flex w-full gap-4 lg:gap-8">
-          <weaponForm.Field
+          <cyberneticForm.Field
             name="name"
             validators={{
               onChange: ({ value }) =>
                 value.length < 2
-                  ? 'Weapon name must be at least 2 characters long'
+                  ? 'Cybernetic name must be at least 2 characters long'
                   : undefined,
             }}
           >
             {(field) => (
-              <InputField className="grow" label="Weapon name" field={field} />
+              <InputField
+                className="grow"
+                label="Cybernetic name"
+                field={field}
+              />
             )}
-          </weaponForm.Field>
-          <weaponForm.Field name="price">
+          </cyberneticForm.Field>
+          <cyberneticForm.Field name="price">
             {(field) => (
               <InputField
                 className="max-w-28"
@@ -136,7 +140,42 @@ const WeaponForm = () => {
                 field={field}
               />
             )}
-          </weaponForm.Field>
+          </cyberneticForm.Field>
+        </div>
+        <div className="flex w-full gap-4 lg:gap-8">
+          <cyberneticForm.Field
+            name="cyberticType"
+            validators={{
+              onSubmit: ({ value }) =>
+                value.length < 1 ? 'You must select a keyword type' : undefined,
+            }}
+          >
+            {(field) => (
+              <SelectField
+                className="grow"
+                type="select"
+                label="Cybernetic type"
+                field={field}
+              >
+                <option defaultValue="" disabled></option>
+                <option value="Roll">Roll</option>
+                <option value="Stat">Stat</option>
+                <option value="Function">Function</option>
+                <option value="Defensive">Defensive</option>
+                <option value="Prototype">Prototype</option>
+              </SelectField>
+            )}
+          </cyberneticForm.Field>
+          <cyberneticForm.Field name="cyber">
+            {(field) => (
+              <InputField
+                className="max-w-28"
+                type="number"
+                label="Cyber"
+                field={field}
+              />
+            )}
+          </cyberneticForm.Field>
         </div>
         <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 sm:grid-rows-1">
           <ThemeContainer
@@ -153,7 +192,7 @@ const WeaponForm = () => {
                     size={3}
                   />
                   <p className="text-tertiary font-semibold">
-                    Upload character picture
+                    Upload cybernetic picture
                   </p>
                   <p className="text-tertiary">PNG, JPG, JPEG</p>
                 </div>
@@ -169,12 +208,12 @@ const WeaponForm = () => {
                 <img
                   className="fade-in-bottom"
                   src={imagePreview}
-                  alt="Preview"
+                  alt="Cybernetic preview"
                 />
                 <button
                   className="text-secondary absolute right-2 top-2"
                   onClick={() => {
-                    weaponForm.setFieldValue('picture', '');
+                    cyberneticForm.setFieldValue('picture', '');
                     setImagePreview('');
                   }}
                 >
@@ -185,27 +224,84 @@ const WeaponForm = () => {
               </div>
             )}
           </ThemeContainer>
-          <weaponForm.Field
+          <cyberneticForm.Field
             name="description"
             validators={{
               onChange: ({ value }) =>
                 value.length < 2
-                  ? 'Weapon description must be at least 2 characters long'
+                  ? 'Cybernetic description must be at least 2 characters long'
                   : undefined,
             }}
           >
             {(field) => (
               <TextAreaField
                 className="h-40 w-full sm:h-full"
-                label="Weapon description"
+                label="Cybernetic description"
                 field={field}
               />
             )}
-          </weaponForm.Field>
+          </cyberneticForm.Field>
         </div>
+        <cyberneticForm.Field
+          name="body"
+          mode="array"
+          validators={{
+            onSubmit: ({ value }) =>
+              value.length < 1 ? 'You must select a keyword type' : undefined,
+          }}
+        >
+          {(field) => {
+            return (
+              <div className="flex flex-col gap-4 lg:gap-8">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 lg:gap-8">
+                  {field.state.value.map((_, i) => {
+                    return (
+                      <cyberneticForm.Field key={i} name={`body[${i}]`}>
+                        {(subField) => {
+                          return (
+                            <InputField
+                              type="select"
+                              label="Body part replacement"
+                              field={subField}
+                            />
+                          );
+                        }}
+                      </cyberneticForm.Field>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center justify-center gap-4 self-end lg:gap-8">
+                  <BtnRect
+                    onClick={() =>
+                      field.removeValue(field.state.value.length - 1)
+                    }
+                    type="button"
+                  >
+                    <Icon path={mdiMinus} size={1.15} />
+                  </BtnRect>
+                  <p>Body parts</p>
+                  <BtnRect onClick={() => field.pushValue('')} type="button">
+                    <Icon path={mdiPlus} size={1.15} />
+                  </BtnRect>
+                </div>
+              </div>
+            );
+          }}
+        </cyberneticForm.Field>
+        <h2>Stats</h2>
         <div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
-            <weaponForm.Field name="stats.damage">
+            <cyberneticForm.Field name="stats.power">
+              {(field) => (
+                <InputField
+                  className="grow"
+                  type="number"
+                  label="Power"
+                  field={field}
+                />
+              )}
+            </cyberneticForm.Field>
+            <cyberneticForm.Field name="stats.damage">
               {(field) => (
                 <InputField
                   className="grow"
@@ -214,8 +310,8 @@ const WeaponForm = () => {
                   field={field}
                 />
               )}
-            </weaponForm.Field>
-            <weaponForm.Field name="stats.salvo">
+            </cyberneticForm.Field>
+            <cyberneticForm.Field name="stats.salvo">
               {(field) => (
                 <InputField
                   className="grow"
@@ -224,8 +320,8 @@ const WeaponForm = () => {
                   field={field}
                 />
               )}
-            </weaponForm.Field>
-            <weaponForm.Field name="stats.flurry">
+            </cyberneticForm.Field>
+            <cyberneticForm.Field name="stats.flurry">
               {(field) => (
                 <InputField
                   className="grow"
@@ -234,8 +330,8 @@ const WeaponForm = () => {
                   field={field}
                 />
               )}
-            </weaponForm.Field>
-            <weaponForm.Field name="stats.range">
+            </cyberneticForm.Field>
+            <cyberneticForm.Field name="stats.range">
               {(field) => (
                 <InputField
                   className="grow"
@@ -244,8 +340,8 @@ const WeaponForm = () => {
                   field={field}
                 />
               )}
-            </weaponForm.Field>
-            <weaponForm.Field name="stats.magCapacity">
+            </cyberneticForm.Field>
+            <cyberneticForm.Field name="stats.magCapacity">
               {(field) => (
                 <InputField
                   className="grow"
@@ -254,8 +350,8 @@ const WeaponForm = () => {
                   field={field}
                 />
               )}
-            </weaponForm.Field>
-            <weaponForm.Field name="stats.magCount">
+            </cyberneticForm.Field>
+            <cyberneticForm.Field name="stats.magCount">
               {(field) => (
                 <InputField
                   className="grow"
@@ -264,24 +360,14 @@ const WeaponForm = () => {
                   field={field}
                 />
               )}
-            </weaponForm.Field>
-            <weaponForm.Field name="stats.weight">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Weight"
-                  field={field}
-                />
-              )}
-            </weaponForm.Field>
+            </cyberneticForm.Field>
           </div>
         </div>
         <h2>Keywords</h2>
-        <weaponForm.Field name="keywords">
+        <cyberneticForm.Field name="keywords">
           {(field) => (
             <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-              {keywords.filteredKeywords.weapon.map((keyword) => {
+              {keywords.filteredKeywords.weapon?.map((keyword) => {
                 const inKeywords = field.state.value.some(
                   (item) => item.id === keyword.id,
                 );
@@ -331,9 +417,9 @@ const WeaponForm = () => {
               })}
             </div>
           )}
-        </weaponForm.Field>
+        </cyberneticForm.Field>
         <BtnRect type="submit" className="group w-full">
-          {createWeapon.isPending ? (
+          {createCybernetic.isPending ? (
             <Loading
               className="text-gray-900 group-hover:text-yellow-300"
               size={1.15}
@@ -347,4 +433,4 @@ const WeaponForm = () => {
   );
 };
 
-export default WeaponForm;
+export default CyberneticForm;

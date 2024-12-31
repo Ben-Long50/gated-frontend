@@ -15,6 +15,7 @@ import {
 import { useContext } from 'react';
 import { LayoutContext } from '../contexts/LayoutContext';
 import ArmorIcon from './icons/ArmorIcon';
+import CyberIcon from './icons/CyberIcon';
 
 const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
   const { layoutSize } = useContext(LayoutContext);
@@ -103,6 +104,32 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
             <ArmorIcon className="size-8" />
             <h3 className="flex items-center pt-1 text-inherit">
               Create Armor
+            </h3>
+          </BtnNav>
+        </Link>
+        <Link to="/cybernetics">
+          <BtnNav
+            onClick={() => {
+              if (layoutSize !== 'large') {
+                setSidebarVisibility(false);
+              }
+            }}
+          >
+            <CyberIcon className="size-8" />
+            <h3 className="flex items-center pt-1 text-inherit">Cybernetics</h3>
+          </BtnNav>
+        </Link>
+        <Link to="/cybernetics/create">
+          <BtnNav
+            onClick={() => {
+              if (layoutSize !== 'large') {
+                setSidebarVisibility(false);
+              }
+            }}
+          >
+            <CyberIcon className="size-8" />
+            <h3 className="flex items-center pt-1 text-inherit">
+              Create Cybernetic
             </h3>
           </BtnNav>
         </Link>

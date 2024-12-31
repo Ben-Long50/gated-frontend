@@ -55,18 +55,18 @@ const CharacterSheet = () => {
             chamfer="16"
             borderColor={accentPrimary}
           >
-            <div className="bg-primary flex h-full w-full items-center justify-between gap-8 px-8 clip-4">
-              <h1 className="py-1 text-center text-3xl font-semibold tracking-widest">
+            <div className="bg-primary flex h-full w-full items-center justify-between gap-4 px-4 py-2 clip-4 sm:px-8">
+              <h1 className="text-start text-3xl font-semibold tracking-widest">
                 {character.name}
               </h1>
-              <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold clip-2 sm:pt-1">
+              <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
                 {character.level}
               </p>
             </div>
           </ThemeContainer>
           <div className="flex flex-col items-center gap-1 pr-2">
             <h3 className="text-xl">Profits</h3>
-            <p className="text-xl">{character.profits} p</p>
+            <p className="text-xl">{character.profits}p</p>
           </div>
         </div>
         <div className="flex w-full items-center justify-evenly gap-2 sm:gap-8 lg:w-auto lg:justify-center">

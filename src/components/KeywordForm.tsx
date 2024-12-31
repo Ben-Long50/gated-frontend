@@ -87,6 +87,7 @@ const KeywordForm = () => {
               <option defaultValue="" disabled></option>
               <option value="Weapon">Weapon</option>
               <option value="Armor">Armor</option>
+              <option value="Cybernetic">Cybernetic</option>
             </SelectField>
           )}
         </keywordForm.Field>

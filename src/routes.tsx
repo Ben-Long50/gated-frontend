@@ -22,6 +22,8 @@ import WeaponForm from './components/WeaponForm';
 import Weapons from './components/Weapons';
 import ArmorForm from './components/ArmorForm';
 import Armor from './components/Armor';
+import CyberneticForm from './components/CyberneticForm';
+import Cybernetics from './components/Cybernetics';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,6 +45,8 @@ const router = createBrowserRouter(
         <Route path="weapons/create" element={<WeaponForm />} />
         <Route path="armor" element={<Armor />} />
         <Route path="armor/create" element={<ArmorForm />} />
+        <Route path="cybernetics" element={<Cybernetics />} />
+        <Route path="cybernetics/create" element={<CyberneticForm />} />
         <Route path="perks" element={<Perks />} />
         <Route path="perks/create" element={<PerkForm />} />
         <Route path="keywords" element={<Keywords />} />
