@@ -16,6 +16,7 @@ import { useContext } from 'react';
 import { LayoutContext } from '../contexts/LayoutContext';
 import ArmorIcon from './icons/ArmorIcon';
 import CyberIcon from './icons/CyberIcon';
+import WeaponIcon from './icons/WeaponIcon';
 
 const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
   const { layoutSize } = useContext(LayoutContext);
@@ -63,7 +64,7 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
               }
             }}
           >
-            <Icon path={mdiPistol} size={1.25} />
+            <WeaponIcon className="size-8" />
             <h3 className="flex items-center pt-1 text-inherit">Weapons</h3>
           </BtnNav>
         </Link>
@@ -75,7 +76,7 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
               }
             }}
           >
-            <Icon path={mdiPistol} size={1.25} />
+            <WeaponIcon className="size-8" />
             <h3 className="flex items-center pt-1 text-inherit">
               Create Weapon
             </h3>
@@ -180,6 +181,20 @@ const Sidebar = ({ sidebarVisibility, setSidebarVisibility, navbarHeight }) => {
             <Icon path={mdiKeyPlus} size={1.25} />
             <h3 className="flex items-center pt-1 text-inherit">
               Create Keyword
+            </h3>
+          </BtnNav>
+        </Link>
+        <Link to="/actions/create">
+          <BtnNav
+            onClick={() => {
+              if (layoutSize !== 'large') {
+                setSidebarVisibility(false);
+              }
+            }}
+          >
+            <Icon path={mdiKeyPlus} size={1.25} />
+            <h3 className="flex items-center pt-1 text-inherit">
+              Create Action
             </h3>
           </BtnNav>
         </Link>

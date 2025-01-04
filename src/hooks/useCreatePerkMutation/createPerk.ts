@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const createPerk = async (formData, apiUrl, authToken) => {
+const createPerk = async (formData, apiUrl, authToken, perkId) => {
   try {
     const response = await fetch(`${apiUrl}/perks`, {
       method: 'POST',
@@ -8,7 +8,7 @@ const createPerk = async (formData, apiUrl, authToken) => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${authToken}`,
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({ ...formData, perkId }),
     });
     const data = await handleResponse(response);
     return data;

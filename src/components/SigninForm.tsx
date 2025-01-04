@@ -88,9 +88,7 @@ const SigninForm = () => {
             )}
           </signinForm.Field>
         </div>
-        <BtnRect type="submit" className="w-full p-2 text-lg clip-4 md:text-xl">
-          Sign in
-        </BtnRect>
+        <BtnRect type="submit">Sign in</BtnRect>
         <div className="text-tertiary -my-2 flex items-center">
           <hr className="grow border-gray-400" />
           <p className="mx-4 text-gray-400">or</p>

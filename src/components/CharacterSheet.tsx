@@ -57,7 +57,7 @@ const CharacterSheet = () => {
           >
             <div className="bg-primary flex h-full w-full items-center justify-between gap-4 px-4 py-2 clip-4 sm:px-8">
               <h1 className="text-start text-3xl font-semibold tracking-widest">
-                {character.name}
+                {character.firstName + ' ' + character.lastName}
               </h1>
               <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
                 {character.level}
@@ -120,7 +120,9 @@ const CharacterSheet = () => {
         >
           <div className="bg-primary scrollbar-secondary max-h-96 overflow-y-auto p-4 clip-6">
             <div className="flex w-full items-center justify-between px-2">
-              <h3 className="">{character.name}'s Story</h3>
+              <h3 className="">
+                {character.firstName + ' ' + character.lastName}'s Story
+              </h3>
               <button
                 className="text-tertiary hover:underline"
                 onClick={() => setStoryVisibility(!storyVisibility)}

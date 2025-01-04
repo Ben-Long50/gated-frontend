@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const createKeyword = async (formData, apiUrl, authToken) => {
+const createKeyword = async (formData, apiUrl, authToken, keywordId) => {
   try {
     const response = await fetch(`${apiUrl}/keywords`, {
       method: 'POST',
@@ -8,7 +8,7 @@ const createKeyword = async (formData, apiUrl, authToken) => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${authToken}`,
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({ ...formData, keywordId }),
     });
     const data = await handleResponse(response);
     return data;

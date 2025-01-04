@@ -1,10 +1,11 @@
 import { useContext, useState } from 'react';
-import useKeywordsQuery from './useKeywordQuery/useKeywordsQuery';
+import useKeywordsQuery from './useKeywordsQuery/useKeywordsQuery';
 import { AuthContext } from '../contexts/AuthContext';
 
 enum KeywordType {
-  Weapon = 'Weapon',
-  Armor = 'Armor',
+  weapon = 'weapon',
+  armor = 'armor',
+  cybernetic = 'cybernetic',
 }
 
 export interface Keyword {
@@ -34,13 +35,19 @@ const useKeywords = () => {
     weapon:
       keywords?.filter(
         (keyword: Keyword) =>
-          keyword.keywordType === 'Weapon' &&
+          keyword.keywordType === 'weapon' &&
           keyword.name.toLowerCase().includes(query.toLowerCase()),
       ) ?? [],
     armor:
       keywords?.filter(
         (keyword: Keyword) =>
-          keyword.keywordType === 'Armor' &&
+          keyword.keywordType === 'armor' &&
+          keyword.name.toLowerCase().includes(query.toLowerCase()),
+      ) ?? [],
+    cybernetic:
+      keywords?.filter(
+        (keyword: Keyword) =>
+          keyword.keywordType === 'cybernetic' &&
           keyword.name.toLowerCase().includes(query.toLowerCase()),
       ) ?? [],
   };

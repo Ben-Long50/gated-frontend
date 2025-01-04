@@ -1,4 +1,4 @@
-import { mdiChevronDown } from '@mdi/js';
+import { mdiChevronDown, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import DamageIcon from './icons/DamageIcon';
 import SalvoIcon from './icons/SalvoIcon';
@@ -12,6 +12,8 @@ import Tag from './Tag';
 import ProfitsIcon from './icons/ProfitsIcon';
 import { LayoutContext } from '../contexts/LayoutContext';
 import MagCapacityIcon from './icons/MagCapacityIcon';
+import { Link } from 'react-router-dom';
+import { Keyword } from 'src/hooks/useKeywords';
 
 const WeaponCard = ({ weapon }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -27,34 +29,55 @@ const WeaponCard = ({ weapon }, props) => {
       }}
     >
       {layoutSize === 'small' || layoutSize === 'xsmall' ? (
-        <div className="relative flex h-full flex-col items-center gap-4 sm:gap-8">
+        <div className="relative flex h-full flex-col gap-4 sm:gap-8">
           <div className="flex w-full items-start justify-between gap-8">
-            <h2> {weapon.name}</h2>
+            <div className="flex items-center justify-start gap-4">
+              <h2> {weapon.name}</h2>
+              <Link to={`${weapon.id}/update`}>
+                <button className="text-accent hover:underline">Edit</button>
+              </Link>
+            </div>
             <div className="flex items-center justify-end gap-4">
-              <ProfitsIcon className="size-6" />
-              <p>{weapon.price}p</p>
+              <ProfitsIcon className="size-6 shrink-0" />
+              {weapon.price ? (
+                <p>{weapon.price + 'p'}</p>
+              ) : (
+                <Icon className="text-secondary" path={mdiClose} size={1.5} />
+              )}
             </div>
           </div>
           <div className="flex w-full flex-wrap items-center gap-1 justify-self-start">
-            {weapon.keywords.map((keyword) => {
-              return (
-                <Tag
-                  key={keyword.id}
-                  label={keyword.name}
-                  description={keyword.description}
-                />
-              );
-            })}
+            {weapon.keywords.map(
+              (item: { keyword: Keyword; value?: number }) => {
+                return (
+                  <Tag
+                    key={item.keyword.id}
+                    label={
+                      item.value
+                        ? item.keyword.name + ' ' + item.value
+                        : item.keyword.name
+                    }
+                    description={item.keyword.description}
+                  />
+                );
+              },
+            )}
           </div>
-          <div className="flex items-center justify-center gap-6">
-            <ThemeContainer chamfer="24" borderColor={accentPrimary}>
-              <img
-                className="aspect-square max-w-48 shrink clip-6"
-                src={weapon.picture.imageUrl}
-                alt="Weapon picture"
-              />
-            </ThemeContainer>
-            <div className="flex h-full flex-col items-start justify-between gap-4 sm:gap-8">
+          <div
+            className={`flex ${detailsOpen ? 'flex-col' : 'flex-row'} items-start justify-start gap-6`}
+          >
+            {weapon.picture && (
+              <ThemeContainer chamfer="24" borderColor={accentPrimary}>
+                <img
+                  className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
+                  src={weapon.picture?.imageUrl}
+                  alt={weapon.name + ' ' + 'image'}
+                />
+              </ThemeContainer>
+            )}
+            <div
+              className={`flex h-full ${weapon.picture && !detailsOpen ? 'flex-col' : 'flex-row'} flex-wrap items-start justify-between gap-4 sm:gap-8`}
+            >
               {weapon.stats.damage && (
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex items-center gap-2">
@@ -117,34 +140,54 @@ const WeaponCard = ({ weapon }, props) => {
               className={`text-secondary`}
             ></Icon>
           </span>
+          <p className={`${!detailsOpen ? 'hidden' : 'block'} text-secondary`}>
+            {weapon.description}
+          </p>
         </div>
       ) : (
         <div className="relative flex h-full gap-8">
-          <ThemeContainer chamfer="24" borderColor={accentPrimary}>
-            <img
-              className="aspect-square max-w-48 shrink clip-6"
-              src={weapon.picture.imageUrl}
-              alt="Weapon picture"
-            />
-          </ThemeContainer>
+          {weapon.picture && (
+            <ThemeContainer chamfer="24" borderColor={accentPrimary}>
+              <img
+                className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
+                src={weapon.picture?.imageUrl}
+                alt={weapon.name + ' ' + 'image'}
+              />
+            </ThemeContainer>
+          )}
           <div className="flex h-full grow flex-col items-start justify-between gap-6">
             <div className="flex w-full items-start justify-between gap-8">
-              <h2> {weapon.name}</h2>
+              <div className="flex items-center justify-start gap-4">
+                <h2> {weapon.name}</h2>
+                <Link to={`${weapon.id}/update`}>
+                  <button className="text-accent hover:underline">Edit</button>
+                </Link>
+              </div>
               <div className="flex items-center justify-end gap-4">
-                <ProfitsIcon className="size-6" />
-                <p>{weapon.price}p</p>
+                <ProfitsIcon className="size-6 shrink-0" />
+                {weapon.price ? (
+                  <p>{weapon.price + 'p'}</p>
+                ) : (
+                  <Icon className="text-secondary" path={mdiClose} size={1.5} />
+                )}
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {weapon.keywords.map((keyword) => {
-                return (
-                  <Tag
-                    key={keyword.id}
-                    label={keyword.name}
-                    description={keyword.description}
-                  />
-                );
-              })}
+              {weapon.keywords.map(
+                (item: { keyword: Keyword; value?: number }) => {
+                  return (
+                    <Tag
+                      key={item.keyword.id}
+                      label={
+                        item.value
+                          ? item.keyword.name + ' ' + item.value
+                          : item.keyword.name
+                      }
+                      description={item.keyword.description}
+                    />
+                  );
+                },
+              )}
             </div>
             <div className="flex flex-wrap items-center justify-start gap-8">
               {weapon.stats.damage && (
@@ -152,7 +195,7 @@ const WeaponCard = ({ weapon }, props) => {
                   <p>DMG</p>
                   <div className="flex items-center gap-2">
                     <DamageIcon className="size-8" />
-                    <p>{weapon.stats.damage}</p>
+                    <p className="sm:pt-1">{weapon.stats.damage}</p>
                   </div>
                 </div>
               )}
@@ -161,7 +204,7 @@ const WeaponCard = ({ weapon }, props) => {
                   <p>SLV</p>
                   <div className="flex items-center gap-2">
                     <SalvoIcon className="size-8" />
-                    <p>{weapon.stats.salvo}</p>
+                    <p className="sm:pt-1">{weapon.stats.salvo}</p>
                   </div>
                 </div>
               )}
@@ -170,7 +213,7 @@ const WeaponCard = ({ weapon }, props) => {
                   <p>FLR</p>
                   <div className="flex items-center gap-2">
                     <FlurryIcon className="size-8" />
-                    <p>{weapon.stats.flurry}</p>
+                    <p className="sm:pt-1">{weapon.stats.flurry}</p>
                   </div>
                 </div>
               )}
@@ -179,7 +222,7 @@ const WeaponCard = ({ weapon }, props) => {
                   <p>RNG</p>
                   <div className="flex items-center gap-2">
                     <RangeIcon className="size-8" />
-                    <p>{weapon.stats.range}</p>
+                    <p className="sm:pt-1">{weapon.stats.range}</p>
                   </div>
                 </div>
               )}
@@ -188,7 +231,7 @@ const WeaponCard = ({ weapon }, props) => {
                   <p>MAG</p>
                   <div className="flex items-center gap-2">
                     <MagCapacityIcon className="size-8" />
-                    <p>
+                    <p className="sm:pt-1">
                       {weapon.stats.magCapacity}/
                       {weapon.stats.magCapacity * (weapon.stats.magCount - 1)}
                     </p>
@@ -200,11 +243,16 @@ const WeaponCard = ({ weapon }, props) => {
                   <p>WGT</p>
                   <div className="flex items-center gap-2">
                     <EquipIcon className="size-8" />
-                    <p>{weapon.stats.weight}</p>
+                    <p className="sm:pt-1">{weapon.stats.weight}</p>
                   </div>
                 </div>
               )}
             </div>
+            <p
+              className={`${!detailsOpen ? 'hidden' : 'block'} text-secondary pr-8`}
+            >
+              {weapon.description}
+            </p>
           </div>
           <span
             className={`absolute bottom-0 right-0 transition duration-300 ${detailsOpen && '-rotate-180'}`}
@@ -217,14 +265,6 @@ const WeaponCard = ({ weapon }, props) => {
           </span>
         </div>
       )}
-      <div
-        className={`timing ease-in-out ${!detailsOpen ? 'hidden' : 'flex'} scrollbar-secondary mt-4 flex flex-col gap-2 overflow-y-auto`}
-      >
-        <strong className="text-primary text-lg tracking-wide">
-          Description:
-        </strong>
-        <p className="text-secondary">{weapon.description}</p>
-      </div>
     </div>
   );
 };

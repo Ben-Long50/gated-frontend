@@ -24,6 +24,8 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import SanityIcon from './icons/SanityIcon';
 import CyberIcon from './icons/CyberIcon';
 import EquipIcon from './icons/EquipIcon';
+import FormLayout from '../layouts/FormLayout';
+import Loading from './Loading';
 
 const CharacterForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
@@ -41,13 +43,18 @@ const CharacterForm = () => {
 
   const characterForm = useForm({
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       picture: '',
       height: '',
       weight: '',
       age: '',
       sex: '',
       background: '',
+      stats: {
+        currentHealth: 0,
+        currentSanity: 0,
+      },
       attributes: attributeTree.tree,
       perks: [],
     },
@@ -67,6 +74,14 @@ const CharacterForm = () => {
 
   useEffect(() => {
     characterForm.setFieldValue('attributes', attributeTree.destructureTree());
+    characterForm.setFieldValue(
+      'stats.currentHealth',
+      attributeTree.stats.health,
+    );
+    characterForm.setFieldValue(
+      'stats.currentSanity',
+      attributeTree.stats.sanity,
+    );
   }, [attributeTree, characterForm]);
 
   useEffect(() => {
@@ -90,11 +105,7 @@ const CharacterForm = () => {
   }
 
   return (
-    <ThemeContainer
-      className="mb-auto w-full max-w-2xl lg:max-w-4xl"
-      chamfer="32"
-      borderColor={accentPrimary}
-    >
+    <FormLayout>
       <form
         className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 lg:p-8"
         onSubmit={(e) => {
@@ -104,18 +115,24 @@ const CharacterForm = () => {
         }}
       >
         <h1 className="text-center">Create Character</h1>
-        <characterForm.Field
-          name="name"
-          validators={{
-            onChange: ({ value }) =>
-              value.length < 2
-                ? 'Perk name must be at least 2 characters long'
-                : undefined,
-          }}
-        >
-          {(field) => <InputField label="Name" field={field} />}
-        </characterForm.Field>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-8 lg:grid-cols-4 lg:gap-16">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
+          <characterForm.Field
+            name="firstName"
+            validators={{
+              onChange: ({ value }) =>
+                value.length < 2
+                  ? 'First name must be at least 2 characters long'
+                  : undefined,
+            }}
+          >
+            {(field) => <InputField label="First name" field={field} />}
+          </characterForm.Field>
+          <characterForm.Field name="lastName">
+            {(field) => <InputField label="Last name" field={field} />}
+          </characterForm.Field>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-8">
           <characterForm.Field name="height">
             {(field) => (
               <InputField type="number" label="Height (in)" field={field} />
@@ -192,7 +209,7 @@ const CharacterForm = () => {
             validators={{
               onChange: ({ value }) =>
                 value.length < 2
-                  ? 'Perk description must be at least 2 characters long'
+                  ? 'Character description must be at least 2 characters long'
                   : undefined,
             }}
           >
@@ -336,11 +353,18 @@ const CharacterForm = () => {
           checkedPerks={checkedPerks}
           setCheckedPerks={setCheckedPerks}
         />
-        <BtnRect type="submit" className="w-full">
-          Create
+        <BtnRect type="submit" className="group w-full">
+          {createCharacter.isPending ? (
+            <Loading
+              className="text-gray-900 group-hover:text-yellow-300"
+              size={1.15}
+            />
+          ) : (
+            'Create'
+          )}
         </BtnRect>
       </form>
-    </ThemeContainer>
+    </FormLayout>
   );
 };
 

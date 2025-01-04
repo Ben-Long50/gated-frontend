@@ -6,43 +6,68 @@ import ThemeContainer from './ThemeContainer';
 import BtnRect from './BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
-import useKeywords from '../hooks/useKeywords';
+import useKeywords, { Keyword } from '../hooks/useKeywords';
 import KeywordCard from './KeywordCard';
 import Icon from '@mdi/react';
 import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import useCreateArmorMutation from '../hooks/useCreateArmorMutation/useCreateArmorMutation';
+import FormLayout from '../layouts/FormLayout';
+import ArmorIcon from './icons/ArmorIcon';
+import { useParams } from 'react-router-dom';
+import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
+import InputFieldBasic from './InputFieldBasic';
 
 const ArmorForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const { armorId } = useParams();
 
-  const [checkedKeywords, setCheckedKeywords] = useState([]);
-  const [imagePreview, setImagePreview] = useState('');
-  const createArmor = useCreateArmorMutation(apiUrl, authToken);
+  const { data: armor } = useArmorPieceQuery(apiUrl, authToken, armorId);
 
   const keywords = useKeywords();
 
+  const [imagePreview, setImagePreview] = useState(
+    armor?.picture?.imageUrl || '',
+  );
+
+  const createArmor = useCreateArmorMutation(apiUrl, authToken);
+
+  const armorKeywordData = armor?.keywords.map(
+    (item: { keyword: Keyword; value?: number }) => {
+      return { keywordId: item.keyword.id, value: item.value };
+    },
+  );
+
+  useEffect(() => {
+    if (armor) {
+      setImagePreview(armor.picture?.imageUrl);
+    }
+  }, [armor]);
+
   const armorForm = useForm({
     defaultValues: {
-      name: '',
-      picture: '',
-      description: '',
+      name: armor?.name || '',
+      picture: armor?.picture || '',
+      description: armor?.description || '',
       stats: {
-        armor: '',
-        ward: '',
-        block: '',
-        power: '',
-        weight: '',
+        armor: armor?.stats.armor || null,
+        ward: armor?.stats.ward || null,
+        block: armor?.stats.block || null,
+        power: armor?.stats.power || null,
+        weight: armor?.stats.weight || null,
       },
-      price: '',
-      keywords: [],
+      price: armor?.price || null,
+      keywords:
+        armorKeywordData || ([] as { keywordId: number; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([stat, val]) => val),
       );
+
       value.stats = filteredStats;
+
       console.log(value);
 
       const formData = new FormData();
@@ -54,29 +79,10 @@ const ArmorForm = () => {
           formData.append(key, JSON.stringify(value));
         }
       });
+      formData.append('armorId', JSON.stringify(armorId || 0));
       await createArmor.mutate(formData);
-      armorForm.reset({
-        name: '',
-        picture: '',
-        description: '',
-        stats: {
-          armor: '',
-          ward: '',
-          block: '',
-          power: '',
-          weight: '',
-        },
-        price: '',
-        keywords: [],
-      });
-      setCheckedKeywords([]);
-      setImagePreview('');
     },
   });
-
-  useEffect(() => {
-    armorForm.setFieldValue('keywords', checkedKeywords);
-  }, [checkedKeywords, armorForm]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]; // Get the selected file
@@ -95,11 +101,7 @@ const ArmorForm = () => {
   }
 
   return (
-    <ThemeContainer
-      className="mb-auto w-full max-w-2xl lg:max-w-4xl"
-      chamfer="32"
-      borderColor={accentPrimary}
-    >
+    <FormLayout>
       <form
         className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
         onSubmit={(e) => {
@@ -108,7 +110,10 @@ const ArmorForm = () => {
           armorForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">Create Armor</h1>
+        <div className="flex items-center justify-center gap-4">
+          <ArmorIcon className="size-12" />
+          <h1>{armor ? 'Update Armor' : 'Create Armor'}</h1>
+        </div>
         <div className="flex w-full gap-4 lg:gap-8">
           <armorForm.Field
             name="name"
@@ -253,42 +258,84 @@ const ArmorForm = () => {
             </armorForm.Field>
           </div>
         </div>
-        <h2>Keywords</h2>
-        <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-          {keywords.filteredKeywords.armor.map((keyword) => {
-            return (
-              <div key={keyword.name} className="flex items-center gap-4">
-                <KeywordCard className="w-full" keyword={keyword} />
-                <input
-                  className="size-6 shrink-0"
-                  type="checkbox"
-                  checked={checkedKeywords.includes(keyword.id)}
-                  onChange={() => {
-                    if (!checkedKeywords.includes(keyword.id)) {
-                      setCheckedKeywords([...checkedKeywords, keyword.id]);
-                    } else {
-                      setCheckedKeywords((prevKeywords) =>
-                        prevKeywords.filter((id) => id !== keyword.id),
-                      );
-                    }
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
+        <hr className="border-yellow-300 border-opacity-50" />
+        <h2>Armor keywords</h2>
+        <armorForm.Field name="keywords">
+          {(field) => (
+            <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+              {keywords.filteredKeywords.armor.map((keyword) => {
+                const activeKeyword = field.state.value.find(
+                  (item: { keywordId: number; value?: number }) =>
+                    item.keywordId === keyword.id,
+                );
+                return (
+                  <div key={keyword.id} className="flex items-center gap-4">
+                    <KeywordCard className="w-full" keyword={keyword} />
+                    {activeKeyword && (
+                      <InputFieldBasic
+                        className="max-w-32"
+                        type="number"
+                        label="Value"
+                        value={activeKeyword.value}
+                        onChange={(value: number) => {
+                          const updatedValue = field.state.value.some(
+                            (item: { keywordId: number; value?: number }) =>
+                              item.keywordId === keyword.id,
+                          )
+                            ? field.state.value.map(
+                                (item: {
+                                  keywordId: number;
+                                  value?: number;
+                                }) =>
+                                  item.keywordId === keyword.id
+                                    ? { ...item, value }
+                                    : item,
+                              )
+                            : [...field.state.value, { ...keyword, value }];
+                          field.handleChange(updatedValue);
+                        }}
+                      />
+                    )}
+                    <input
+                      className="size-6 shrink-0"
+                      type="checkbox"
+                      checked={activeKeyword}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          field.handleChange([
+                            ...field.state.value,
+                            { keywordId: keyword.id },
+                          ]);
+                        } else {
+                          field.handleChange(
+                            field.state.value.filter(
+                              (item: { keywordId: number; value?: number }) =>
+                                item.keywordId !== keyword.id,
+                            ),
+                          );
+                        }
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </armorForm.Field>
         <BtnRect type="submit" className="group w-full">
           {createArmor.isPending ? (
             <Loading
               className="text-gray-900 group-hover:text-yellow-300"
               size={1.15}
             />
+          ) : armor ? (
+            'Update'
           ) : (
             'Create'
           )}
         </BtnRect>
       </form>
-    </ThemeContainer>
+    </FormLayout>
   );
 };
 

@@ -1,43 +1,37 @@
 import { useContext } from 'react';
 import InputField from './InputField';
-import ThemeContainer from './ThemeContainer';
-import { ThemeContext } from '../contexts/ThemeContext';
 import BtnRect from './BtnRect';
 import TextAreaField from './TextAreaField';
 import { AuthContext } from '../contexts/AuthContext';
 import { useForm } from '@tanstack/react-form';
 import SelectField from './SelectField';
 import useCreateKeywordMutation from '../hooks/useCreateKeywordMutation/useCreateKeywordMutation';
+import FormLayout from '../layouts/FormLayout';
+import Loading from './Loading';
+import { useParams } from 'react-router-dom';
+import useKeywordQuery from '../hooks/useKeywordQuery/useKeywordQuery';
 
 const KeywordForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
+  const { keywordId } = useParams();
 
-  const createKeyword = useCreateKeywordMutation(apiUrl, authToken);
+  const { data: keyword } = useKeywordQuery(apiUrl, authToken, keywordId);
+
+  const createKeyword = useCreateKeywordMutation(apiUrl, authToken, keywordId);
 
   const keywordForm = useForm({
     defaultValues: {
-      name: '',
-      description: '',
-      keywordType: '',
+      name: keyword?.name || '',
+      description: keyword?.description || '',
+      keywordType: keyword?.keywordType || '',
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
       await createKeyword.mutate(value);
-      keywordForm.reset({
-        name: '',
-        description: '',
-        keywordType: '',
-      });
     },
   });
 
   return (
-    <ThemeContainer
-      className="mb-auto w-full max-w-2xl lg:max-w-4xl"
-      chamfer="32"
-      borderColor={accentPrimary}
-    >
+    <FormLayout>
       <form
         className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
         onSubmit={(e) => {
@@ -46,7 +40,9 @@ const KeywordForm = () => {
           keywordForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">Create Keyword</h1>
+        <h1 className="text-center">
+          {keyword ? 'Update Keyword' : 'Create Keyword'}
+        </h1>
         <keywordForm.Field
           name="name"
           validators={{
@@ -85,17 +81,26 @@ const KeywordForm = () => {
           {(field) => (
             <SelectField type="select" label="Keyword type" field={field}>
               <option defaultValue="" disabled></option>
-              <option value="Weapon">Weapon</option>
-              <option value="Armor">Armor</option>
-              <option value="Cybernetic">Cybernetic</option>
+              <option value="weapon">Weapon</option>
+              <option value="armor">Armor</option>
+              <option value="cybernetic">Cybernetic</option>
             </SelectField>
           )}
         </keywordForm.Field>
-        <BtnRect type="submit" className="w-full">
-          Create
+        <BtnRect type="submit" className="group w-full">
+          {createKeyword.isPending ? (
+            <Loading
+              className="text-gray-900 group-hover:text-yellow-300"
+              size={1.15}
+            />
+          ) : keyword ? (
+            'Update'
+          ) : (
+            'Create'
+          )}
         </BtnRect>
       </form>
-    </ThemeContainer>
+    </FormLayout>
   );
 };
 

@@ -54,7 +54,8 @@ const CharacterUpdateForm = () => {
 
   const characterUpdateForm = useForm({
     defaultValues: {
-      name: character?.name ?? '',
+      firstName: character?.firstName ?? '',
+      lastName: character?.lastName ?? '',
       level: character?.level ?? '',
       profits: character?.profits ?? '',
       stats: {
@@ -129,7 +130,7 @@ const CharacterUpdateForm = () => {
     character.isLoading ||
     character.isPending
   ) {
-    return <span></span>;
+    return <Loading />;
   }
 
   return (
@@ -149,16 +150,21 @@ const CharacterUpdateForm = () => {
         <h1 className="text-center">Update Character</h1>
         <div className="grid gap-4 max-sm:grid-rows-2 sm:grid-cols-2 sm:gap-8">
           <characterUpdateForm.Field
-            name="name"
+            name="firstName"
             validators={{
               onChange: ({ value }) =>
                 value.length < 2
-                  ? 'Perk name must be at least 2 characters long'
+                  ? 'First name must be at least 2 characters long'
                   : undefined,
             }}
           >
             {(field) => (
-              <InputField className="w-full" label="Name" field={field} />
+              <InputField className="w-full" label="First name" field={field} />
+            )}
+          </characterUpdateForm.Field>
+          <characterUpdateForm.Field name="lastName">
+            {(field) => (
+              <InputField className="w-full" label="Last name" field={field} />
             )}
           </characterUpdateForm.Field>
           <div className="flex gap-4 sm:gap-8">

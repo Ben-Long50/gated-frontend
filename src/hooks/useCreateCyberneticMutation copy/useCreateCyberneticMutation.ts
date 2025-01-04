@@ -8,6 +8,22 @@ const useCreateCyberneticMutation = (apiUrl, authToken) => {
       return createCybernetic(formData, apiUrl, authToken);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['weapons'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['armor'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['actions'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['cybernetic'],
+        exact: false,
+      });
       return queryClient.invalidateQueries({
         queryKey: ['cybernetics'],
         exact: false,

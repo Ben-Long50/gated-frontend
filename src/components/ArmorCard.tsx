@@ -1,4 +1,4 @@
-import { mdiChevronDown } from '@mdi/js';
+import { mdiChevronDown, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useContext, useState } from 'react';
 import { LayoutContext } from '../contexts/LayoutContext';
@@ -11,6 +11,8 @@ import WardIcon from './icons/WardIcon';
 import BlockIcon from './icons/BlockIcon';
 import PowerIcon from './icons/PowerIcon';
 import EquipIcon from './icons/EquipIcon';
+import { Link } from 'react-router-dom';
+import { Keyword } from 'src/hooks/useKeywords';
 
 const ArmorCard = ({ armor }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -26,34 +28,55 @@ const ArmorCard = ({ armor }, props) => {
       }}
     >
       {layoutSize === 'small' || layoutSize === 'xsmall' ? (
-        <div className="relative flex h-full flex-col items-center gap-4 sm:gap-8">
+        <div className="relative flex h-full flex-col gap-4 sm:gap-8">
           <div className="flex w-full items-start justify-between gap-8">
-            <h2> {armor.name}</h2>
+            <div className="flex items-center justify-start gap-4">
+              <h2> {armor.name}</h2>
+              <Link to={`${armor.id}/update`}>
+                <button className="text-accent hover:underline">Edit</button>
+              </Link>
+            </div>
             <div className="flex items-center justify-end gap-4">
-              <ProfitsIcon className="size-6" />
-              <p>{armor.price}p</p>
+              <ProfitsIcon className="size-6 shrink-0" />
+              {armor.price ? (
+                <p>{armor.price + 'p'}</p>
+              ) : (
+                <Icon className="text-secondary" path={mdiClose} size={1.5} />
+              )}
             </div>
           </div>
           <div className="flex w-full flex-wrap items-center gap-1 justify-self-start">
-            {armor.keywords.map((keyword) => {
-              return (
-                <Tag
-                  key={keyword.id}
-                  label={keyword.name}
-                  description={keyword.description}
-                />
-              );
-            })}
+            {armor.keywords.map(
+              (item: { keyword: Keyword; value?: number }) => {
+                return (
+                  <Tag
+                    key={item.keyword.id}
+                    label={
+                      item.value
+                        ? item.keyword.name + ' ' + item.value
+                        : item.keyword.name
+                    }
+                    description={item.keyword.description}
+                  />
+                );
+              },
+            )}
           </div>
-          <div className="flex items-center justify-center gap-6">
-            <ThemeContainer chamfer="24" borderColor={accentPrimary}>
-              <img
-                className="aspect-square max-w-48 shrink clip-6"
-                src={armor.picture.imageUrl}
-                alt="armor picture"
-              />
-            </ThemeContainer>
-            <div className="flex h-full flex-col items-start justify-between gap-4 sm:gap-8">
+          <div
+            className={`flex ${detailsOpen ? 'flex-col' : 'flex-row'} items-start justify-start gap-6`}
+          >
+            {armor.picture && (
+              <ThemeContainer chamfer="24" borderColor={accentPrimary}>
+                <img
+                  className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
+                  src={armor.picture?.imageUrl}
+                  alt={armor.name + ' ' + 'image'}
+                />
+              </ThemeContainer>
+            )}
+            <div
+              className={`flex h-full ${armor.picture && !detailsOpen ? 'flex-col' : 'flex-row'} flex-wrap items-start justify-between gap-4 sm:gap-8`}
+            >
               {armor.stats.armor && (
                 <div className="flex flex-col items-center gap-1">
                   <div className="flex items-center gap-2">
@@ -96,6 +119,9 @@ const ArmorCard = ({ armor }, props) => {
               )}
             </div>
           </div>
+          <p className={`${!detailsOpen ? 'hidden' : 'block'} text-secondary`}>
+            {armor.description}
+          </p>
           <span
             className={`absolute bottom-0 right-0 transition duration-300 ${detailsOpen && '-rotate-180'}`}
           >
@@ -108,31 +134,48 @@ const ArmorCard = ({ armor }, props) => {
         </div>
       ) : (
         <div className="relative flex h-full gap-8">
-          <ThemeContainer chamfer="24" borderColor={accentPrimary}>
-            <img
-              className="aspect-square max-w-48 shrink clip-6"
-              src={armor.picture.imageUrl}
-              alt="armor picture"
-            />
-          </ThemeContainer>
+          {armor.picture && (
+            <ThemeContainer chamfer="24" borderColor={accentPrimary}>
+              <img
+                className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
+                src={armor.picture?.imageUrl}
+                alt={armor.name + ' ' + 'image'}
+              />
+            </ThemeContainer>
+          )}
           <div className="flex h-full grow flex-col items-start justify-between gap-6">
             <div className="flex w-full items-start justify-between gap-8">
-              <h2> {armor.name}</h2>
+              <div className="flex items-center justify-start gap-4">
+                <h2> {armor.name}</h2>
+                <Link to={`${armor.id}/update`}>
+                  <button className="text-accent hover:underline">Edit</button>
+                </Link>
+              </div>
               <div className="flex items-center justify-end gap-4">
-                <ProfitsIcon className="size-6" />
-                <p>{armor.price}p</p>
+                <ProfitsIcon className="size-6 shrink-0" />
+                {armor.price ? (
+                  <p>{armor.price + 'p'}</p>
+                ) : (
+                  <Icon className="text-secondary" path={mdiClose} size={1.5} />
+                )}
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {armor.keywords.map((keyword) => {
-                return (
-                  <Tag
-                    key={keyword.id}
-                    label={keyword.name}
-                    description={keyword.description}
-                  />
-                );
-              })}
+              {armor.keywords.map(
+                (item: { keyword: Keyword; value?: number }) => {
+                  return (
+                    <Tag
+                      key={item.keyword.id}
+                      label={
+                        item.value
+                          ? item.keyword.name + ' ' + item.value
+                          : item.keyword.name
+                      }
+                      description={item.keyword.description}
+                    />
+                  );
+                },
+              )}
             </div>
             <div className="flex flex-wrap items-center justify-start gap-8">
               {armor.stats.armor && (
@@ -140,7 +183,7 @@ const ArmorCard = ({ armor }, props) => {
                   <p>AV</p>
                   <div className="flex items-center gap-2">
                     <ArmorIcon className="size-8" />
-                    <p>{armor.stats.armor}</p>
+                    <p className="sm:pt-1">{armor.stats.armor}</p>
                   </div>
                 </div>
               )}
@@ -149,7 +192,7 @@ const ArmorCard = ({ armor }, props) => {
                   <p>WV</p>
                   <div className="flex items-center gap-2">
                     <WardIcon className="size-8" />
-                    <p>{armor.stats.ward}</p>
+                    <p className="sm:pt-1">{armor.stats.ward}</p>
                   </div>
                 </div>
               )}
@@ -158,7 +201,7 @@ const ArmorCard = ({ armor }, props) => {
                   <p>BP</p>
                   <div className="flex items-center gap-2">
                     <BlockIcon className="size-8" />
-                    <p>{armor.stats.block}</p>
+                    <p className="sm:pt-1">{armor.stats.block}</p>
                   </div>
                 </div>
               )}
@@ -167,7 +210,7 @@ const ArmorCard = ({ armor }, props) => {
                   <p>PWR</p>
                   <div className="flex items-center gap-2">
                     <PowerIcon className="size-8" />
-                    <p>{armor.stats.power}</p>
+                    <p className="sm:pt-1">{armor.stats.power}</p>
                   </div>
                 </div>
               )}
@@ -176,11 +219,16 @@ const ArmorCard = ({ armor }, props) => {
                   <p>WGT</p>
                   <div className="flex items-center gap-2">
                     <EquipIcon className="size-8" />
-                    <p>{armor.stats.weight}</p>
+                    <p className="sm:pt-1">{armor.stats.weight}</p>
                   </div>
                 </div>
               )}
             </div>
+            <p
+              className={`${!detailsOpen ? 'hidden' : 'block'} text-secondary pr-8`}
+            >
+              {armor.description}
+            </p>
           </div>
           <span
             className={`absolute bottom-0 right-0 transition duration-300 ${detailsOpen && '-rotate-180'}`}
@@ -193,14 +241,6 @@ const ArmorCard = ({ armor }, props) => {
           </span>
         </div>
       )}
-      <div
-        className={`timing ease-in-out ${!detailsOpen ? 'hidden' : 'flex'} scrollbar-secondary mt-4 flex flex-col gap-2 overflow-y-auto`}
-      >
-        <strong className="text-primary text-lg tracking-wide">
-          Description:
-        </strong>
-        <p className="text-secondary">{armor.description}</p>
-      </div>
     </div>
   );
 };

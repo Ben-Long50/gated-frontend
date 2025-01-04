@@ -1,7 +1,5 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import InputField from './InputField';
-import ThemeContainer from './ThemeContainer';
-import { ThemeContext } from '../contexts/ThemeContext';
 import BtnRect from './BtnRect';
 import AttributeCard from './AttributeCard';
 import TextAreaField from './TextAreaField';
@@ -9,43 +7,52 @@ import { AuthContext } from '../contexts/AuthContext';
 import useCreatePerkMutation from '../hooks/useCreatePerkMutation/useCreatePerkMutation';
 import { useForm } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
-import { useQueryClient } from '@tanstack/react-query';
+import FormLayout from '../layouts/FormLayout';
+import { useParams } from 'react-router-dom';
+import usePerkQuery from '../hooks/usePerkQuery/usePerkQuery';
+import Loading from './Loading';
 
 const PerkForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
-  const queryClient = useQueryClient();
+  const [formMessage, setFormMessage] = useState('');
+  const { perkId } = useParams();
 
-  const createPerk = useCreatePerkMutation(apiUrl, authToken);
-  const attributeTree = useAttributeTree();
+  const {
+    data: perk,
+    isLoading,
+    isPending,
+  } = usePerkQuery(apiUrl, authToken, perkId);
+
+  const createPerk = useCreatePerkMutation(
+    apiUrl,
+    authToken,
+    perkId,
+    setFormMessage,
+  );
+
+  const attributeTree = useAttributeTree(perk?.requirements);
 
   const perkForm = useForm({
     defaultValues: {
-      name: '',
-      description: '',
-      requirements: {},
+      name: perk?.name || '',
+      description: perk?.description || '',
+      requirements: attributeTree?.tree || null,
     },
     onSubmit: async ({ value }) => {
       await createPerk.mutate(value);
-      perkForm.reset({
-        name: '',
-        description: '',
-        requirements: {},
-      });
-      attributeTree.resetTree();
     },
   });
 
   useEffect(() => {
     perkForm.setFieldValue('requirements', attributeTree.destructureTree());
-  }, [attributeTree.tree, attributeTree, perkForm]);
+  }, [attributeTree.tree]);
+
+  if (isLoading || isPending) {
+    return <Loading />;
+  }
 
   return (
-    <ThemeContainer
-      className="mb-auto w-full max-w-2xl lg:max-w-4xl"
-      chamfer="32"
-      borderColor={accentPrimary}
-    >
+    <FormLayout>
       <form
         className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
         onSubmit={(e) => {
@@ -54,7 +61,7 @@ const PerkForm = () => {
           perkForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">Create Perk</h1>
+        <h1 className="text-center">{perk ? 'Update Perk' : 'Create Perk'}</h1>
         <perkForm.Field
           name="name"
           validators={{
@@ -98,11 +105,36 @@ const PerkForm = () => {
             ),
           )}
         </div>
-        <BtnRect type="submit" className="w-full">
-          Create
+        <BtnRect type="submit" className="group w-full">
+          {createPerk.isPending ? (
+            <Loading
+              className="text-gray-900 group-hover:text-yellow-300"
+              size={1.15}
+            />
+          ) : perk ? (
+            'Update'
+          ) : (
+            'Create'
+          )}
         </BtnRect>
+        {formMessage && (
+          <div className="flex w-full items-center justify-between">
+            <p>
+              {createPerk.isPending ? 'Submission loading...' : formMessage}
+            </p>
+            <button
+              className="text-accent text-xl hover:underline"
+              onClick={() => {
+                attributeTree.resetTree();
+                perkForm.reset();
+              }}
+            >
+              Reset form
+            </button>
+          </div>
+        )}
       </form>
-    </ThemeContainer>
+    </FormLayout>
   );
 };
 

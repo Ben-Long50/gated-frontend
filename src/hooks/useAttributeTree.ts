@@ -76,11 +76,9 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
     return updatedTree;
   };
 
-  const attributeTree: AttributeTree = partialTree
-    ? structureTree(partialTree)
-    : emptyAttributeTree;
-
-  console.log(attributeTree);
+  const [attributeTree, setAttributeTree] = useState<AttributeTree>(() =>
+    partialTree ? structureTree(partialTree) : emptyAttributeTree,
+  );
 
   //Returns the total number of attribute points found in an attribute tree
   const getAttributePoints = () => {
@@ -123,19 +121,19 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
     points: number,
     skill?: string,
   ) => {
+    const treeCopy = JSON.parse(JSON.stringify(attributeTree));
     if (skill) {
       const skillZeroCase =
         attributeTree[attribute].skills[skill].points === 1 && points === 1;
 
-      attributeTree[attribute].skills[skill].points = skillZeroCase
-        ? 0
-        : points;
+      treeCopy[attribute].skills[skill].points = skillZeroCase ? 0 : points;
     } else {
       const attributeZeroCase =
         attributeTree[attribute].points === 1 && points === 1;
 
-      attributeTree[attribute].points = attributeZeroCase ? 0 : points;
+      treeCopy[attribute].points = attributeZeroCase ? 0 : points;
     }
+    setAttributeTree(treeCopy);
   };
 
   // Remove the attribute and skill fields from a tree where the point values are 0
@@ -162,6 +160,10 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
     return result;
   };
 
+  const resetTree = () => {
+    setAttributeTree(emptyAttributeTree);
+  };
+
   const stats = {
     health: 10 + attributeTree.violence.skills.threshold.points * 2,
     sanity: 5 + attributeTree.esoterica.skills.mysticism.points * 2,
@@ -178,6 +180,7 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
     updatePoints,
     destructureTree,
     structureTree,
+    resetTree,
     stats,
   };
 };

@@ -114,9 +114,7 @@ const SignupForm = () => {
             )}
           </signupForm.Field>
         </div>
-        <BtnRect type="submit" className="w-full p-2 text-lg clip-4 md:text-xl">
-          Sign up
-        </BtnRect>
+        <BtnRect type="submit">Sign up</BtnRect>
         <p className="text-tertiary text-center">
           Already have an account?
           <Link to="/signin">

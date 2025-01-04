@@ -8,6 +8,10 @@ const useCreateArmorMutation = (apiUrl, authToken) => {
       return createArmor(formData, apiUrl, authToken);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['armorPiece'],
+        exact: false,
+      });
       return queryClient.invalidateQueries({
         queryKey: ['armor'],
         exact: false,

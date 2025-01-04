@@ -19,8 +19,6 @@ const Perks = () => {
       query: '',
     },
     onSubmit: ({ value }) => {
-      console.log(value);
-
       if (value.query === '') {
         perks.filterPerks(attributeFilter, value.query);
       } else {

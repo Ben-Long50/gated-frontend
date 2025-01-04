@@ -24,6 +24,7 @@ import ArmorForm from './components/ArmorForm';
 import Armor from './components/Armor';
 import CyberneticForm from './components/CyberneticForm';
 import Cybernetics from './components/Cybernetics';
+import ActionForm from './components/ActionForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,14 +44,23 @@ const router = createBrowserRouter(
         />
         <Route path="weapons" element={<Weapons />} />
         <Route path="weapons/create" element={<WeaponForm />} />
+        <Route path="weapons/:weaponId/update" element={<WeaponForm />} />
         <Route path="armor" element={<Armor />} />
         <Route path="armor/create" element={<ArmorForm />} />
+        <Route path="armor/:armorId/update" element={<ArmorForm />} />
         <Route path="cybernetics" element={<Cybernetics />} />
         <Route path="cybernetics/create" element={<CyberneticForm />} />
+        <Route
+          path="cybernetics/:cyberneticId/update"
+          element={<CyberneticForm />}
+        />
         <Route path="perks" element={<Perks />} />
         <Route path="perks/create" element={<PerkForm />} />
+        <Route path="perks/:perkId/update" element={<PerkForm />} />
         <Route path="keywords" element={<Keywords />} />
         <Route path="keywords/create" element={<KeywordForm />} />
+        <Route path="keywords/:keywordId/update" element={<KeywordForm />} />
+        <Route path="actions/create" element={<ActionForm />} />
       </Route>
     </Route>,
   ),

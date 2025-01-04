@@ -1,55 +1,137 @@
 import { useForm } from '@tanstack/react-form';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
 import BtnRect from './BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
-import useKeywords from '../hooks/useKeywords';
+import useKeywords, { Keyword } from '../hooks/useKeywords';
 import KeywordCard from './KeywordCard';
 import Icon from '@mdi/react';
-import { mdiCloseBox, mdiImagePlus, mdiMinus, mdiPlus } from '@mdi/js';
+import { mdiClose, mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import InputFieldBasic from './InputFieldBasic';
 import useCreateCyberneticMutation from '../hooks/useCreateCyberneticMutation copy/useCreateCyberneticMutation';
 import SelectField from './SelectField';
+import FormLayout from '../layouts/FormLayout';
+import useAttributeTree from '../hooks/useAttributeTree';
+import CyberIcon from './icons/CyberIcon';
+import useCyberneticQuery from '../hooks/useCyberneticQuery/useCyberneticQuery';
+import { useParams } from 'react-router-dom';
 
 const CyberneticForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const { cyberneticId } = useParams();
+
+  const { data: cybernetic } = useCyberneticQuery(
+    apiUrl,
+    authToken,
+    cyberneticId,
+  );
 
   const keywords = useKeywords();
+  const attributeTree = useAttributeTree();
 
-  const [imagePreview, setImagePreview] = useState('');
+  const [imagePreview, setImagePreview] = useState(
+    cybernetic?.picture?.imageUrl || '',
+  );
+
   const createCybernetic = useCreateCyberneticMutation(apiUrl, authToken);
+
+  const cyberneticKeywordData = cybernetic?.keywords.map(
+    (item: { keyword: Keyword; value?: number }) => {
+      return { keywordId: item.keyword.id, value: item.value };
+    },
+  );
+
+  useEffect(() => {
+    if (cybernetic) {
+      setImagePreview(cybernetic.picture?.imageUrl);
+    }
+  }, [cybernetic]);
 
   const cyberneticForm = useForm({
     defaultValues: {
-      name: '',
-      cyberticType: '',
-      picture: '',
-      description: '',
-      cyber: '',
-      body: [''] as string[],
+      name: cybernetic?.name || '',
+      cyberneticType: cybernetic?.cyberneticType || '',
+      picture: cybernetic?.picture || '',
+      description: cybernetic?.description || '',
       stats: {
-        power: '',
-        damage: '',
-        salvo: '',
-        flurry: '',
-        range: '',
-        magCapacity: '',
-        magCount: '',
-      },
-      price: '',
-      keywords: [] as { id: number; value?: number }[],
+        cyber: cybernetic?.stats.cyber || null,
+        power: cybernetic?.stats.power || null,
+      } as { cyber: number; power?: number },
+      body: cybernetic?.body || ([''] as string[]),
+      price: cybernetic?.price || null,
+      weapons:
+        cybernetic?.weapons ||
+        ([] as {
+          name: string;
+          stats: {
+            damage?: number;
+            salvo?: number;
+            flurry?: number;
+            range?: number;
+            magCapacity?: number;
+            magCount?: number;
+          };
+          keywords: { keywordId: number; value?: number }[];
+        }[]),
+      armor:
+        cybernetic?.armor ||
+        ([] as {
+          name: string;
+          stats: {
+            armor?: number;
+            ward?: number;
+            block?: number;
+          };
+          keywords: { keywordId: number; value?: number }[];
+        }[]),
+      actions:
+        cybernetic?.actions ||
+        ([] as {
+          name: string;
+          costs: { stat: string; value: number }[];
+          attribute: string;
+          skill: string;
+          actionType: string;
+          actionSubtypes: string[];
+          description: string;
+        }[]),
+      keywords:
+        cyberneticKeywordData ||
+        ([] as { keywordId: number; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
+      console.log(value);
+
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
       );
+
       value.stats = filteredStats;
-      console.log(value);
+
+      const filteredWeaponStats = value.weapons.map((weapon) =>
+        Object.fromEntries(
+          Object.entries(weapon.stats).filter(([_, val]) => val),
+        ),
+      );
+
+      value.weapons.forEach((weapon, index) => {
+        weapon.stats = filteredWeaponStats[index];
+      });
+
+      const filteredArmorStats = value.armor.map((armor) =>
+        Object.fromEntries(
+          Object.entries(armor.stats).filter(([_, val]) => val),
+        ),
+      );
+
+      value.armor.forEach((armor, index) => {
+        armor.stats = filteredArmorStats[index];
+      });
 
       const formData = new FormData();
 
@@ -57,28 +139,13 @@ const CyberneticForm = () => {
         if (key === 'picture' && value instanceof File) {
           formData.append(key, value);
         } else {
+          console.log(key);
+
           formData.append(key, JSON.stringify(value));
         }
       });
-      // await createWeapon.mutate(formData);
-      // cyberneticForm.reset({
-      //   name: '',
-      //   picture: '',
-      //   description: '',
-      //   stats: {
-      //     damage: '',
-      //     salvo: '',
-      //     flurry: '',
-      //     range: '',
-      //     magCapacity: '',
-      //     magCount: '',
-      //     weight: '',
-      //   },
-      //   price: '',
-      //   keywords: [],
-      // });
-      // setCheckedKeywords([]);
-      // setImagePreview('');
+      formData.append('cyberneticId', JSON.stringify(cyberneticId || 0));
+      await createCybernetic.mutate(formData);
     },
   });
 
@@ -95,25 +162,24 @@ const CyberneticForm = () => {
   };
 
   if (keywords.isLoading || keywords.isPending) {
-    return <span></span>;
+    return <Loading />;
   }
 
   return (
-    <ThemeContainer
-      className="mb-auto w-full max-w-2xl lg:max-w-4xl"
-      chamfer="32"
-      borderColor={accentPrimary}
-    >
+    <FormLayout>
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
+        className="bg-primary flex w-full min-w-96 flex-col gap-4 p-4 clip-8 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           cyberneticForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">Create Cybernetic</h1>
-        <div className="flex w-full gap-4 lg:gap-8">
+        <div className="flex items-center justify-center gap-4">
+          <CyberIcon className="size-12" />
+          <h1>{cybernetic ? 'Update Cybernetic' : 'Create Weapon'}</h1>
+        </div>
+        <div className="flex w-full gap-4 sm:gap-6 lg:gap-8">
           <cyberneticForm.Field
             name="name"
             validators={{
@@ -142,12 +208,30 @@ const CyberneticForm = () => {
             )}
           </cyberneticForm.Field>
         </div>
-        <div className="flex w-full gap-4 lg:gap-8">
+        <div className="flex w-full flex-wrap gap-4 sm:gap-6 lg:gap-8">
           <cyberneticForm.Field
-            name="cyberticType"
+            name="cyberneticType"
+            listeners={{
+              onChange: ({ value }) => {
+                if (value !== 'offensive') {
+                  const length = cyberneticForm.getFieldValue('weapons').length;
+                  for (let i = 0; i < length; i++) {
+                    cyberneticForm.removeFieldValue('weapons', i);
+                  }
+                }
+                if (value !== 'defensive') {
+                  const length = cyberneticForm.getFieldValue('armor').length;
+                  for (let i = 0; i < length; i++) {
+                    cyberneticForm.removeFieldValue('armor', i);
+                  }
+                }
+              },
+            }}
             validators={{
               onSubmit: ({ value }) =>
-                value.length < 1 ? 'You must select a keyword type' : undefined,
+                value.length < 1
+                  ? 'You must select a cybernetic type'
+                  : undefined,
             }}
           >
             {(field) => (
@@ -158,15 +242,15 @@ const CyberneticForm = () => {
                 field={field}
               >
                 <option defaultValue="" disabled></option>
-                <option value="Roll">Roll</option>
-                <option value="Stat">Stat</option>
-                <option value="Function">Function</option>
-                <option value="Defensive">Defensive</option>
-                <option value="Prototype">Prototype</option>
+                <option value="roll">Roll</option>
+                <option value="stat">Stat</option>
+                <option value="offensive">Offensive</option>
+                <option value="defensive">Defensive</option>
+                <option value="function">Function</option>
               </SelectField>
             )}
           </cyberneticForm.Field>
-          <cyberneticForm.Field name="cyber">
+          <cyberneticForm.Field name="stats.cyber">
             {(field) => (
               <InputField
                 className="max-w-28"
@@ -176,8 +260,18 @@ const CyberneticForm = () => {
               />
             )}
           </cyberneticForm.Field>
+          <cyberneticForm.Field name="stats.power">
+            {(field) => (
+              <InputField
+                className="max-w-28"
+                type="number"
+                label="Power"
+                field={field}
+              />
+            )}
+          </cyberneticForm.Field>
         </div>
-        <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 sm:grid-rows-1">
+        <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:grid-rows-1 sm:gap-6 lg:gap-8">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
             chamfer="24"
@@ -252,14 +346,15 @@ const CyberneticForm = () => {
         >
           {(field) => {
             return (
-              <div className="flex flex-col gap-4 lg:gap-8">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1 lg:gap-8">
-                  {field.state.value.map((_, i) => {
-                    return (
-                      <cyberneticForm.Field key={i} name={`body[${i}]`}>
+              <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
+                {field.state.value.map((_, i) => {
+                  return (
+                    <div key={i} className="flex w-full items-center gap-8">
+                      <cyberneticForm.Field name={`body[${i}]`}>
                         {(subField) => {
                           return (
                             <InputField
+                              className="w-full"
                               type="select"
                               label="Body part replacement"
                               field={subField}
@@ -267,128 +362,856 @@ const CyberneticForm = () => {
                           );
                         }}
                       </cyberneticForm.Field>
-                    );
-                  })}
-                </div>
-                <div className="flex items-center justify-center gap-4 self-end lg:gap-8">
-                  <BtnRect
-                    onClick={() =>
-                      field.removeValue(field.state.value.length - 1)
-                    }
-                    type="button"
-                  >
-                    <Icon path={mdiMinus} size={1.15} />
-                  </BtnRect>
-                  <p>Body parts</p>
-                  <BtnRect onClick={() => field.pushValue('')} type="button">
-                    <Icon path={mdiPlus} size={1.15} />
-                  </BtnRect>
-                </div>
+                      <button
+                        className="sm:-ml-2 lg:-ml-4"
+                        onClick={() => field.removeValue(i)}
+                        type="button"
+                      >
+                        <Icon
+                          className="text-tertiary"
+                          path={mdiClose}
+                          size={1}
+                        />
+                      </button>
+                    </div>
+                  );
+                })}
+                <button
+                  className="text-accent self-center justify-self-end hover:underline sm:col-start-2"
+                  onClick={() => field.pushValue('')}
+                  type="button"
+                >
+                  Add body part
+                </button>
               </div>
             );
           }}
         </cyberneticForm.Field>
-        <h2>Stats</h2>
-        <div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
-            <cyberneticForm.Field name="stats.power">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Power"
-                  field={field}
-                />
+
+        <cyberneticForm.Subscribe
+          selector={(state) => [state.values.cyberneticType]}
+        >
+          {([cyberneticType]) => (
+            <>
+              {cyberneticType === 'offensive' && (
+                <>
+                  <hr className="border-yellow-300 border-opacity-50" />
+                  <cyberneticForm.Field name="weapons" mode="array">
+                    {(field) => (
+                      <>
+                        {field.state.value.length > 0 && (
+                          <h2 className="text-left">Integrated weapons</h2>
+                        )}
+                        {field.state.value.map((_, i) => (
+                          <>
+                            <div className="flex w-full gap-4 lg:gap-8">
+                              <cyberneticForm.Field
+                                name={`weapons[${i}].name`}
+                                validators={{
+                                  onChange: ({ value }) =>
+                                    value.length < 2
+                                      ? 'Weapon name must be at least 2 characters long'
+                                      : undefined,
+                                }}
+                              >
+                                {(field) => (
+                                  <InputField
+                                    className="grow"
+                                    label="Weapon name"
+                                    field={field}
+                                  />
+                                )}
+                              </cyberneticForm.Field>
+                            </div>
+                            <div>
+                              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
+                                <cyberneticForm.Field
+                                  name={`weapons[${i}].stats.damage`}
+                                >
+                                  {(field) => (
+                                    <InputField
+                                      className="grow"
+                                      type="number"
+                                      label="Damage"
+                                      field={field}
+                                    />
+                                  )}
+                                </cyberneticForm.Field>
+                                <cyberneticForm.Field
+                                  name={`weapons[${i}].stats.salvo`}
+                                >
+                                  {(field) => (
+                                    <InputField
+                                      className="grow"
+                                      type="number"
+                                      label="Salvo"
+                                      field={field}
+                                    />
+                                  )}
+                                </cyberneticForm.Field>
+                                <cyberneticForm.Field
+                                  name={`weapons[${i}].stats.flurry`}
+                                >
+                                  {(field) => (
+                                    <InputField
+                                      className="grow"
+                                      type="number"
+                                      label="Flurry"
+                                      field={field}
+                                    />
+                                  )}
+                                </cyberneticForm.Field>
+                                <cyberneticForm.Field
+                                  name={`weapons[${i}].stats.range`}
+                                >
+                                  {(field) => (
+                                    <InputField
+                                      className="grow"
+                                      type="number"
+                                      label="Range"
+                                      field={field}
+                                    />
+                                  )}
+                                </cyberneticForm.Field>
+                                <cyberneticForm.Field
+                                  name={`weapons[${i}].stats.magCapacity`}
+                                >
+                                  {(field) => (
+                                    <InputField
+                                      className="grow"
+                                      type="number"
+                                      label="Mag. capacity"
+                                      field={field}
+                                    />
+                                  )}
+                                </cyberneticForm.Field>
+                                <cyberneticForm.Field
+                                  name={`weapons[${i}].stats.magCount`}
+                                >
+                                  {(field) => (
+                                    <InputField
+                                      className="grow"
+                                      type="number"
+                                      label="Mag. count"
+                                      field={field}
+                                    />
+                                  )}
+                                </cyberneticForm.Field>
+                              </div>
+                            </div>
+                            <h3>Integrated weapon keywords</h3>
+                            <cyberneticForm.Field
+                              name={`weapons[${i}].keywords`}
+                            >
+                              {(field) => (
+                                <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+                                  {keywords.filteredKeywords.weapon.map(
+                                    (keyword) => {
+                                      const activeKeyword =
+                                        field.state.value.find(
+                                          (item: {
+                                            keywordId: number;
+                                            value?: number;
+                                          }) => item.keywordId === keyword.id,
+                                        );
+                                      return (
+                                        <div
+                                          key={keyword.id}
+                                          className="flex items-center gap-4"
+                                        >
+                                          <KeywordCard
+                                            className="w-full"
+                                            keyword={keyword}
+                                          />
+                                          {activeKeyword && (
+                                            <InputFieldBasic
+                                              className="max-w-32"
+                                              type="number"
+                                              label="Value"
+                                              value={activeKeyword.value}
+                                              onChange={(value: number) => {
+                                                const updatedValue =
+                                                  field.state.value.some(
+                                                    (item: {
+                                                      keywordId: number;
+                                                      value?: number;
+                                                    }) =>
+                                                      item.keywordId ===
+                                                      keyword.id,
+                                                  )
+                                                    ? field.state.value.map(
+                                                        (item: {
+                                                          keywordId: number;
+                                                          value?: number;
+                                                        }) =>
+                                                          item.keywordId ===
+                                                          keyword.id
+                                                            ? { ...item, value }
+                                                            : item,
+                                                      )
+                                                    : [
+                                                        ...field.state.value,
+                                                        { ...keyword, value },
+                                                      ];
+                                                field.handleChange(
+                                                  updatedValue,
+                                                );
+                                              }}
+                                            />
+                                          )}
+                                          <input
+                                            className="size-6 shrink-0"
+                                            type="checkbox"
+                                            checked={activeKeyword}
+                                            onChange={(e) => {
+                                              if (e.target.checked) {
+                                                field.handleChange([
+                                                  ...field.state.value,
+                                                  { keywordId: keyword.id },
+                                                ]);
+                                              } else {
+                                                field.handleChange(
+                                                  field.state.value.filter(
+                                                    (item: {
+                                                      keywordId: number;
+                                                      value?: number;
+                                                    }) =>
+                                                      item.keywordId !==
+                                                      keyword.id,
+                                                  ),
+                                                );
+                                              }
+                                            }}
+                                          />
+                                        </div>
+                                      );
+                                    },
+                                  )}
+                                </div>
+                              )}
+                            </cyberneticForm.Field>
+                          </>
+                        ))}
+                        <div className="flex w-full items-center justify-between">
+                          <button
+                            className="text-accent hover:underline"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              field.pushValue({
+                                name: '',
+                                stats: {
+                                  damage: null,
+                                  salvo: null,
+                                  flurry: null,
+                                  range: null,
+                                  magCapacity: null,
+                                  magCount: null,
+                                },
+                                keywords: [],
+                              });
+                            }}
+                          >
+                            Add integrated weapon
+                          </button>
+                          {cyberneticForm.state.values.weapons.length > 0 && (
+                            <button
+                              className="text-accent hover:underline"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                field.removeValue(
+                                  cyberneticForm.state.values.weapons.length -
+                                    1,
+                                );
+                              }}
+                            >
+                              Remove integrated weapon
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </cyberneticForm.Field>
+                </>
               )}
-            </cyberneticForm.Field>
-            <cyberneticForm.Field name="stats.damage">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Damage"
-                  field={field}
-                />
+              {cyberneticType === 'defensive' && (
+                <>
+                  <hr className="border-yellow-300 border-opacity-50" />
+                  <cyberneticForm.Field name="armor" mode="array">
+                    {(field) => (
+                      <>
+                        {field.state.value.length > 0 && (
+                          <h2 className="text-left">Integrated Armor</h2>
+                        )}
+                        {field.state.value.map((_, i) => (
+                          <>
+                            <div className="flex w-full gap-4 lg:gap-8">
+                              <cyberneticForm.Field
+                                name={`armor[${i}].name`}
+                                validators={{
+                                  onChange: ({ value }) =>
+                                    value.length < 2
+                                      ? 'Armor name must be at least 2 characters long'
+                                      : undefined,
+                                }}
+                              >
+                                {(field) => (
+                                  <InputField
+                                    className="grow"
+                                    label="Armor name"
+                                    field={field}
+                                  />
+                                )}
+                              </cyberneticForm.Field>
+                            </div>
+                            <div>
+                              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
+                                <cyberneticForm.Field
+                                  name={`armor[${i}].stats.armor`}
+                                >
+                                  {(field) => (
+                                    <InputField
+                                      className="grow"
+                                      type="number"
+                                      label="Armor value"
+                                      field={field}
+                                    />
+                                  )}
+                                </cyberneticForm.Field>
+                                <cyberneticForm.Field
+                                  name={`armor[${i}].stats.ward`}
+                                >
+                                  {(field) => (
+                                    <InputField
+                                      className="grow"
+                                      type="number"
+                                      label="Ward"
+                                      field={field}
+                                    />
+                                  )}
+                                </cyberneticForm.Field>
+                                <cyberneticForm.Field
+                                  name={`armor[${i}].stats.block`}
+                                >
+                                  {(field) => (
+                                    <InputField
+                                      className="grow"
+                                      type="number"
+                                      label="Block points"
+                                      field={field}
+                                    />
+                                  )}
+                                </cyberneticForm.Field>
+                              </div>
+                            </div>
+                            <h3>Integrated armor keywords</h3>
+                            <cyberneticForm.Field name={`armor[${i}].keywords`}>
+                              {(field) => (
+                                <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+                                  {keywords.filteredKeywords.armor.map(
+                                    (keyword) => {
+                                      const activeKeyword =
+                                        field.state.value.find(
+                                          (item: {
+                                            keywordId: number;
+                                            value?: number;
+                                          }) => item.keywordId === keyword.id,
+                                        );
+                                      return (
+                                        <div
+                                          key={keyword.id}
+                                          className="flex items-center gap-4"
+                                        >
+                                          <KeywordCard
+                                            className="w-full"
+                                            keyword={keyword}
+                                          />
+                                          {activeKeyword && (
+                                            <InputFieldBasic
+                                              className="max-w-32"
+                                              type="number"
+                                              label="Value"
+                                              value={activeKeyword.value}
+                                              onChange={(value: number) => {
+                                                const updatedValue =
+                                                  field.state.value.some(
+                                                    (item: {
+                                                      keywordId: number;
+                                                      value?: number;
+                                                    }) =>
+                                                      item.keywordId ===
+                                                      keyword.id,
+                                                  )
+                                                    ? field.state.value.map(
+                                                        (item: {
+                                                          keywordId: number;
+                                                          value?: number;
+                                                        }) =>
+                                                          item.keywordId ===
+                                                          keyword.id
+                                                            ? { ...item, value }
+                                                            : item,
+                                                      )
+                                                    : [
+                                                        ...field.state.value,
+                                                        { ...keyword, value },
+                                                      ];
+                                                field.handleChange(
+                                                  updatedValue,
+                                                );
+                                              }}
+                                            />
+                                          )}
+                                          <input
+                                            className="size-6 shrink-0"
+                                            type="checkbox"
+                                            checked={activeKeyword}
+                                            onChange={(e) => {
+                                              if (e.target.checked) {
+                                                field.handleChange([
+                                                  ...field.state.value,
+                                                  { keywordId: keyword.id },
+                                                ]);
+                                              } else {
+                                                field.handleChange(
+                                                  field.state.value.filter(
+                                                    (item: {
+                                                      keywordId: number;
+                                                      value?: number;
+                                                    }) =>
+                                                      item.keywordId !==
+                                                      keyword.id,
+                                                  ),
+                                                );
+                                              }
+                                            }}
+                                          />
+                                        </div>
+                                      );
+                                    },
+                                  )}
+                                </div>
+                              )}
+                            </cyberneticForm.Field>
+                          </>
+                        ))}
+                        <div className="flex w-full items-center justify-between">
+                          <button
+                            className="text-accent hover:underline"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              field.pushValue({
+                                name: '',
+                                stats: {
+                                  armor: null,
+                                  ward: null,
+                                  block: null,
+                                },
+                                keywords: [],
+                              });
+                            }}
+                          >
+                            Add integrated armor
+                          </button>
+                          {cyberneticForm.state.values.armor.length > 0 && (
+                            <button
+                              className="text-accent hover:underline"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                field.removeValue(
+                                  cyberneticForm.state.values.armor.length - 1,
+                                );
+                              }}
+                            >
+                              Remove integrated armor
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </cyberneticForm.Field>
+                </>
               )}
-            </cyberneticForm.Field>
-            <cyberneticForm.Field name="stats.salvo">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Salvo"
-                  field={field}
-                />
+              {(cyberneticType === 'offensive' ||
+                cyberneticType === 'defensive' ||
+                cyberneticType === 'function') && (
+                <>
+                  <hr className="border-yellow-300 border-opacity-50" />
+                  <cyberneticForm.Field name="actions" mode="array">
+                    {(field) => (
+                      <>
+                        {field.state.value.length > 0 && (
+                          <h2 className="text-left">Unique actions</h2>
+                        )}
+                        {field.state.value.map((_, i) => {
+                          return (
+                            <>
+                              <cyberneticForm.Field
+                                name={`actions[${i}].name`}
+                                validators={{
+                                  onChange: ({ value }) =>
+                                    value.length < 2
+                                      ? 'Action name must be at least 2 characters long'
+                                      : undefined,
+                                }}
+                              >
+                                {(field) => (
+                                  <InputField
+                                    className="grow"
+                                    label="Action name"
+                                    field={field}
+                                  />
+                                )}
+                              </cyberneticForm.Field>
+                              <cyberneticForm.Field
+                                name={`actions[${i}].costs`}
+                                mode="array"
+                              >
+                                {(field) => {
+                                  return (
+                                    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
+                                      {field.state.value.map((_, j) => {
+                                        return (
+                                          <div
+                                            key={i}
+                                            className="flex gap-2 sm:gap-4 lg:gap-6"
+                                          >
+                                            <cyberneticForm.Field
+                                              name={`actions[${i}].costs[${j}].stat`}
+                                            >
+                                              {(subField) => {
+                                                return (
+                                                  <SelectField
+                                                    className="grow"
+                                                    label="Stat"
+                                                    field={subField}
+                                                  >
+                                                    <option defaultValue=""></option>
+                                                    <option value="actionPoints">
+                                                      Action points
+                                                    </option>
+                                                    <option value="power">
+                                                      Power
+                                                    </option>
+                                                    <option value="health">
+                                                      Health
+                                                    </option>
+                                                    <option value="sanity">
+                                                      Sanity
+                                                    </option>
+                                                  </SelectField>
+                                                );
+                                              }}
+                                            </cyberneticForm.Field>
+                                            <cyberneticForm.Field
+                                              key={i}
+                                              name={`actions[${i}].costs[${j}].value`}
+                                            >
+                                              {(subField) => {
+                                                return (
+                                                  <InputField
+                                                    className="max-w-28"
+                                                    type="number"
+                                                    label="Value"
+                                                    field={subField}
+                                                  />
+                                                );
+                                              }}
+                                            </cyberneticForm.Field>
+                                            <button
+                                              className="sm:-ml-2 lg:-ml-4"
+                                              onClick={() =>
+                                                field.removeValue(j)
+                                              }
+                                              type="button"
+                                            >
+                                              <Icon
+                                                className="text-tertiary"
+                                                path={mdiClose}
+                                                size={1}
+                                              />
+                                            </button>
+                                          </div>
+                                        );
+                                      })}
+                                      <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
+                                        <button
+                                          className="text-accent self-end hover:underline"
+                                          onClick={() =>
+                                            field.pushValue({
+                                              stat: '',
+                                              value: 1,
+                                            })
+                                          }
+                                          type="button"
+                                        >
+                                          Add cost
+                                        </button>
+                                      </div>
+                                    </div>
+                                  );
+                                }}
+                              </cyberneticForm.Field>
+                              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
+                                <cyberneticForm.Field
+                                  name={`actions[${i}].attribute`}
+                                  listeners={{
+                                    onChange: () => {
+                                      cyberneticForm.setFieldValue(
+                                        `actions[${i}].skill`,
+                                        '',
+                                      );
+                                    },
+                                  }}
+                                >
+                                  {(field) => (
+                                    <SelectField
+                                      label="Attribute"
+                                      field={field}
+                                    >
+                                      <option defaultValue=""></option>
+                                      {Object.entries(attributeTree.tree).map(
+                                        ([attribute, _]) => {
+                                          return (
+                                            <option
+                                              key={attribute}
+                                              value={`${attribute}`}
+                                            >
+                                              {attribute[0].toUpperCase() +
+                                                attribute.slice(1)}
+                                            </option>
+                                          );
+                                        },
+                                      )}
+                                    </SelectField>
+                                  )}
+                                </cyberneticForm.Field>
+                                <cyberneticForm.Field
+                                  name={`actions[${i}].skill`}
+                                >
+                                  {(field) => {
+                                    return (
+                                      <SelectField label="Skill" field={field}>
+                                        <option defaultValue=""></option>
+                                        {cyberneticForm.state.values.actions[i]
+                                          .attribute &&
+                                          Object.entries(
+                                            attributeTree.tree[
+                                              cyberneticForm.state.values
+                                                .actions[i].attribute
+                                            ].skills,
+                                          ).map(([skill, _]) => {
+                                            return (
+                                              <option
+                                                key={skill}
+                                                value={`${skill}`}
+                                              >
+                                                {skill[0].toUpperCase() +
+                                                  skill.slice(1)}
+                                              </option>
+                                            );
+                                          })}
+                                      </SelectField>
+                                    );
+                                  }}
+                                </cyberneticForm.Field>
+                              </div>
+                              <cyberneticForm.Field
+                                name={`actions[${i}].actionType`}
+                              >
+                                {(field) => (
+                                  <SelectField
+                                    label="Action type"
+                                    field={field}
+                                  >
+                                    <option defaultValue="" disabled></option>
+                                    <option value="action">Action</option>
+                                    <option value="extendedAction">
+                                      Ex. action
+                                    </option>
+                                    <option value="reaction">Reaction</option>
+                                  </SelectField>
+                                )}
+                              </cyberneticForm.Field>
+                              <cyberneticForm.Field
+                                name={`actions[${i}].actionSubtypes`}
+                                mode="array"
+                              >
+                                {(field) => {
+                                  const actionSubtypes = [
+                                    'attack',
+                                    'movement',
+                                    'upkeep',
+                                    'unique',
+                                  ];
+                                  return (
+                                    <div className="flex flex-col gap-4">
+                                      {field.state.value.map((_, j) => {
+                                        return (
+                                          <div
+                                            key={i}
+                                            className="flex gap-2 sm:gap-4 lg:gap-6"
+                                          >
+                                            <cyberneticForm.Field
+                                              name={`actions[${i}].actionSubtypes[${j}]`}
+                                            >
+                                              {(subField) => {
+                                                return (
+                                                  <SelectField
+                                                    className="grow"
+                                                    label="Action subtype"
+                                                    field={subField}
+                                                  >
+                                                    <option defaultValue=""></option>
+                                                    {actionSubtypes.map(
+                                                      (subtype) => {
+                                                        return (
+                                                          <option
+                                                            key={subtype}
+                                                            value={subtype}
+                                                          >
+                                                            {subtype[0].toUpperCase() +
+                                                              subtype.slice(1)}
+                                                          </option>
+                                                        );
+                                                      },
+                                                    )}
+                                                  </SelectField>
+                                                );
+                                              }}
+                                            </cyberneticForm.Field>
+                                            <button
+                                              className="sm:-ml-2 lg:-ml-4"
+                                              onClick={() =>
+                                                field.removeValue(j)
+                                              }
+                                              type="button"
+                                            >
+                                              <Icon
+                                                className="text-tertiary"
+                                                path={mdiClose}
+                                                size={1}
+                                              />
+                                            </button>
+                                          </div>
+                                        );
+                                      })}
+                                      <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
+                                        <button
+                                          className="text-accent self-end hover:underline"
+                                          onClick={() => field.pushValue('')}
+                                          type="button"
+                                        >
+                                          Add subtype
+                                        </button>
+                                      </div>
+                                    </div>
+                                  );
+                                }}
+                              </cyberneticForm.Field>
+                              <cyberneticForm.Field
+                                name={`actions[${i}].description`}
+                                validators={{
+                                  onChange: ({ value }) =>
+                                    value.length < 2
+                                      ? 'Action description must be at least 2 characters long'
+                                      : undefined,
+                                }}
+                              >
+                                {(field) => (
+                                  <TextAreaField
+                                    className="h-40 w-full"
+                                    label="Action description"
+                                    field={field}
+                                  />
+                                )}
+                              </cyberneticForm.Field>
+                            </>
+                          );
+                        })}
+                        <div className="flex w-full items-center justify-between">
+                          <button
+                            className="text-accent hover:underline"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              field.pushValue({
+                                name: '',
+                                costs: [{ stat: 'actionPoints', value: 1 }] as {
+                                  stat: string;
+                                  value: number;
+                                }[],
+                                attribute: '',
+                                skill: '',
+                                actionType: '',
+                                actionSubtypes: ['unique'] as string[],
+                                description: '',
+                              });
+                            }}
+                          >
+                            Add unique action
+                          </button>
+                          {cyberneticForm.state.values.actions.length > 0 && (
+                            <button
+                              className="text-accent hover:underline"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                field.removeValue(
+                                  cyberneticForm.state.values.actions.length -
+                                    1,
+                                );
+                              }}
+                            >
+                              Remove unique action
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </cyberneticForm.Field>
+                </>
               )}
-            </cyberneticForm.Field>
-            <cyberneticForm.Field name="stats.flurry">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Flurry"
-                  field={field}
-                />
-              )}
-            </cyberneticForm.Field>
-            <cyberneticForm.Field name="stats.range">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Range"
-                  field={field}
-                />
-              )}
-            </cyberneticForm.Field>
-            <cyberneticForm.Field name="stats.magCapacity">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Mag. capacity"
-                  field={field}
-                />
-              )}
-            </cyberneticForm.Field>
-            <cyberneticForm.Field name="stats.magCount">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Mag. count"
-                  field={field}
-                />
-              )}
-            </cyberneticForm.Field>
-          </div>
-        </div>
-        <h2>Keywords</h2>
+              <hr className="border-yellow-300 border-opacity-50" />
+            </>
+          )}
+        </cyberneticForm.Subscribe>
+        <h2>Cybernetic keywords</h2>
         <cyberneticForm.Field name="keywords">
           {(field) => (
             <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-              {keywords.filteredKeywords.weapon?.map((keyword) => {
-                const inKeywords = field.state.value.some(
-                  (item) => item.id === keyword.id,
+              {keywords.filteredKeywords.cybernetic.map((keyword) => {
+                const activeKeyword = field.state.value.find(
+                  (item: { keywordId: number; value?: number }) =>
+                    item.keywordId === keyword.id,
                 );
                 return (
                   <div key={keyword.id} className="flex items-center gap-4">
                     <KeywordCard className="w-full" keyword={keyword} />
-                    {inKeywords && (
+                    {activeKeyword && (
                       <InputFieldBasic
                         className="max-w-32"
                         type="number"
                         label="Value"
+                        value={activeKeyword.value}
                         onChange={(value: number) => {
                           const updatedValue = field.state.value.some(
-                            (item) => item.id === keyword.id,
+                            (item: { keywordId: number; value?: number }) =>
+                              item.keywordId === keyword.id,
                           )
-                            ? field.state.value.map((item) =>
-                                item.id === keyword.id
-                                  ? { ...item, value }
-                                  : item,
+                            ? field.state.value.map(
+                                (item: {
+                                  keywordId: number;
+                                  value?: number;
+                                }) =>
+                                  item.keywordId === keyword.id
+                                    ? { ...item, value }
+                                    : item,
                               )
-                            : [...field.state.value, { id: keyword.id, value }];
+                            : [
+                                ...field.state.value,
+                                {
+                                  ...keyword,
+                                  value,
+                                },
+                              ];
                           field.handleChange(updatedValue);
                         }}
                       />
@@ -396,17 +1219,18 @@ const CyberneticForm = () => {
                     <input
                       className="size-6 shrink-0"
                       type="checkbox"
-                      checked={inKeywords}
+                      checked={activeKeyword}
                       onChange={(e) => {
                         if (e.target.checked) {
                           field.handleChange([
                             ...field.state.value,
-                            { id: keyword.id },
+                            { keywordId: keyword.id },
                           ]);
                         } else {
                           field.handleChange(
                             field.state.value.filter(
-                              (item) => item.id !== keyword.id,
+                              (item: { keywordId: number; value?: number }) =>
+                                item.keywordId !== keyword.id,
                             ),
                           );
                         }
@@ -424,12 +1248,14 @@ const CyberneticForm = () => {
               className="text-gray-900 group-hover:text-yellow-300"
               size={1.15}
             />
+          ) : cybernetic ? (
+            'Update'
           ) : (
             'Create'
           )}
         </BtnRect>
       </form>
-    </ThemeContainer>
+    </FormLayout>
   );
 };
 

@@ -8,7 +8,15 @@ const SelectField = ({ field, ...props }) => {
   const { accentPrimary, errorPrimary } = useContext(ThemeContext);
 
   const handleBorder = () => {
-    if (field.state.meta.errors.length > 0) {
+    if (
+      (field.state.value?.length === 0 || field.state.value === null) &&
+      field.state.meta.errors.length === 0 &&
+      !focus
+    ) {
+      setBorderColor('transparent');
+    } else if (focus && field.state.meta.errors.length === 0) {
+      setBorderColor(accentPrimary);
+    } else if (field.state.meta.errors.length > 0) {
       setBorderColor(errorPrimary);
     } else if (field.state.value) {
       setBorderColor(accentPrimary);
@@ -17,7 +25,7 @@ const SelectField = ({ field, ...props }) => {
 
   useEffect(() => {
     handleBorder();
-  }, []);
+  }, [focus, field.state]);
 
   return (
     <div className={`${props.className}`}>
@@ -28,25 +36,24 @@ const SelectField = ({ field, ...props }) => {
           id={field.name}
           value={field.state.value}
           onFocus={() => {
-            handleBorder();
             setFocus(true);
           }}
           onBlur={() => {
-            if (field.state.value.length === 0) {
-              setBorderColor('transparent');
-            }
             setFocus(false);
           }}
           onChange={(e) => {
             field.handleChange(e.target.value);
             handleBorder();
+            if (props.onChange) {
+              props.onChange();
+            }
           }}
         >
           {props.children}
         </select>
         <label
           htmlFor={field.name}
-          className={` ${field.state.meta.errors.length > 0 ? 'text-error' : ''} ${field.state.value?.length > 0 || focus ? 'bg-primary text-accent -translate-y-6' : ''} ${field.state.value?.length === 0 && !focus ? 'text-gray-400' : ''} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
+          className={` ${field.state.meta.errors.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
         >
           {props.label}
         </label>

@@ -8,6 +8,10 @@ const useCreateWeaponMutation = (apiUrl, authToken) => {
       return createWeapon(formData, apiUrl, authToken);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['weapon'],
+        exact: false,
+      });
       return queryClient.invalidateQueries({
         queryKey: ['weapons'],
         exact: false,

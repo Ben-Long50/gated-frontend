@@ -8,7 +8,15 @@ const TextAreaField = ({ field, ...props }) => {
   const { accentPrimary, errorPrimary } = useContext(ThemeContext);
 
   const handleBorder = () => {
-    if (field.state.meta.errors.length > 0) {
+    if (
+      (field.state.value?.length === 0 || field.state.value === null) &&
+      field.state.meta.errors.length === 0 &&
+      !focus
+    ) {
+      setBorderColor('transparent');
+    } else if (focus && field.state.meta.errors.length === 0) {
+      setBorderColor(accentPrimary);
+    } else if (field.state.meta.errors.length > 0) {
       setBorderColor(errorPrimary);
     } else if (field.state.value) {
       setBorderColor(accentPrimary);
@@ -17,7 +25,7 @@ const TextAreaField = ({ field, ...props }) => {
 
   useEffect(() => {
     handleBorder();
-  }, []);
+  }, [focus, field.state]);
 
   return (
     <div className="flex flex-col">
@@ -27,18 +35,14 @@ const TextAreaField = ({ field, ...props }) => {
         borderColor={borderColor}
       >
         <textarea
-          className={`${props.className} text-secondary scrollbar-secondary-2 timing focus:bg-primary w-full grow resize-none rounded-none pr-3 clip-4 ${field.state.value?.length === 0 ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
+          className={`${props.className} text-secondary timing focus:bg-primary w-full rounded-none ${field.state.value?.length === 0 || field.state.value === null ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
           name={field.name}
           id={field.name}
           value={field.state.value}
           onFocus={() => {
-            handleBorder();
             setFocus(true);
           }}
           onBlur={() => {
-            if (field.state.value.length === 0) {
-              setBorderColor('transparent');
-            }
             setFocus(false);
           }}
           onChange={(e) => {
@@ -48,7 +52,7 @@ const TextAreaField = ({ field, ...props }) => {
         />
         <label
           htmlFor={field.name}
-          className={` ${field.state.meta.errors.length > 0 ? 'text-error' : ''} ${field.state.value?.length > 0 || focus ? 'bg-primary text-accent -translate-y-6' : ''} ${field.state.value?.length === 0 && !focus ? 'text-gray-400' : ''} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
+          className={` ${field.state.meta.errors.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
         >
           {props.label}
         </label>

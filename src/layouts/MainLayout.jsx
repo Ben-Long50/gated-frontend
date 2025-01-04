@@ -23,7 +23,7 @@ const MainLayout = () => {
         navbarHeight={navbarHeight}
       />
       <div
-        className={`timing col-end-3 ${sidebarVisibility ? 'col-start-2' : 'col-start-1'} row-start-2 flex flex-col items-center overflow-y-auto p-4 max-xl:col-start-1 sm:p-8 lg:px-16`}
+        className={`timing col-end-3 ${sidebarVisibility ? 'col-start-2' : 'col-start-1'} row-start-2 flex flex-col items-center overflow-y-auto px-2 py-4 max-xl:col-start-1 sm:p-8 lg:px-16`}
       >
         <Outlet />
       </div>

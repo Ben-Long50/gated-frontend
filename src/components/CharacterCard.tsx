@@ -30,13 +30,13 @@ const CharacterCard = ({ character }) => {
           <img
             className="aspect-square h-full w-full clip-6"
             src={character.picture.imageUrl}
-            alt={`${character.name}'s card`}
+            alt={`${character.firstName} ${character.lastName}'s card`}
           />
         </ThemeContainer>
         <div className="flex w-full flex-col justify-between gap-4 md:gap-6">
           <div className="flex w-full items-center justify-between md:px-8">
             <h1 className="text-center text-3xl font-semibold tracking-widest">
-              {character.name}
+              {character.firstName + ' ' + character.lastName}
             </h1>
             <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
               {character.level}

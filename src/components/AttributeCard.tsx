@@ -68,7 +68,7 @@ const AttributeCard = (props) => {
             />
             <h3 className="grow pl-2 text-xl">
               {skill.charAt(0).toUpperCase() + skill.slice(1)}
-            </h3>{' '}
+            </h3>
             <div className="flex gap-2 sm:gap-4">
               {Array.from({ length: 4 }).map((_, index) => (
                 <button
