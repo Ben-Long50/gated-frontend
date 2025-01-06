@@ -4,13 +4,9 @@ import useCharactersQuery from '../hooks/useCharactersQuery/useCharactersQuery';
 import CharacterCard from './CharacterCard';
 
 const CharacterList = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
 
-  const {
-    data: characters,
-    isLoading,
-    isPending,
-  } = useCharactersQuery(apiUrl, authToken);
+  const { data: characters, isLoading, isPending } = useCharactersQuery(apiUrl);
 
   if (isLoading || isPending) {
     return <span></span>;

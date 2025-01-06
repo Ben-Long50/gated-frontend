@@ -1,17 +1,17 @@
 import handleResponse from '../handleResponse';
 
-const deleteBookEntry = async (apiUrl, authToken, bookEntryId) => {
+const deleteBookEntry = async (apiUrl: string, bookEntryId: string) => {
   try {
     const response = await fetch(`${apiUrl}/book/${bookEntryId}`, {
       method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
+      credentials: 'include',
     });
     const data = await handleResponse(response);
     return data;
   } catch (error) {
-    console.error(error.message);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
     throw error;
   }
 };

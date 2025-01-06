@@ -2,10 +2,13 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import signup from './signup';
 
-const useSignupMutation = (apiUrl, setErrors) => {
+const useSignupMutation = (
+  apiUrl: string,
+  setErrors: (errors: string[]) => void,
+) => {
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: async (formData) => {
+    mutationFn: async (formData: object) => {
       return await signup(formData, apiUrl);
     },
     onSuccess: () => navigate('/signin'),

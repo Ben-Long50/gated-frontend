@@ -13,13 +13,9 @@ import { useContext } from 'react';
 import Loading from '../../components/Loading';
 
 const CodexLinks = ({ setSidebarVisibility }) => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
 
-  const {
-    data: bookEntries,
-    isLoading,
-    isPending,
-  } = useBookQuery(apiUrl, authToken);
+  const { data: bookEntries, isLoading, isPending } = useBookQuery(apiUrl);
 
   if (isLoading || isPending) {
     return <Loading />;

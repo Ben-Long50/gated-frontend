@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createKeyword from './createKeyword';
 
-const useCreateKeywordMutation = (apiUrl, authToken, keywordId) => {
+const useCreateKeywordMutation = (keywordId: string, apiUrl: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData) => {
-      return createKeyword(formData, apiUrl, authToken, keywordId);
+    mutationFn: (formData: object) => {
+      return createKeyword(formData, keywordId, apiUrl);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

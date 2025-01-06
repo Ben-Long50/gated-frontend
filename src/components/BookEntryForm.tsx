@@ -15,7 +15,7 @@ import { mdiAlertOutline } from '@mdi/js';
 import useDeleteBookEntryMutation from '../hooks/useDeleteBookEntryMutation/useDeleteBookEntryMutation';
 
 const BookEntryForm = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
   const { navbarHeight } = useOutletContext();
   const { bookEntryTitle } = useParams();
@@ -27,7 +27,7 @@ const BookEntryForm = () => {
     bookEntryTitle,
   );
 
-  const createBookEntry = useCreateBookEntryMutation(apiUrl, authToken);
+  const createBookEntry = useCreateBookEntryMutation(apiUrl);
   const deleteBookEntry = useDeleteBookEntryMutation(
     apiUrl,
     authToken,

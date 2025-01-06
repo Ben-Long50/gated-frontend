@@ -1,18 +1,18 @@
 import handleResponse from '../handleResponse';
 
-const createWeapon = async (formData, apiUrl, authToken) => {
+const createWeapon = async (formData: FormData, apiUrl: string) => {
   try {
     const response = await fetch(`${apiUrl}/weapons`, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
+      credentials: 'include',
       body: formData,
     });
     const data = await handleResponse(response);
     return data;
   } catch (error) {
-    console.error(error.message);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
     throw error;
   }
 };

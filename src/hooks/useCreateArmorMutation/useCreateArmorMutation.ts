@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createArmor from './createArmor';
 
-const useCreateArmorMutation = (apiUrl, authToken) => {
+const useCreateArmorMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData) => {
-      return createArmor(formData, apiUrl, authToken);
+    mutationFn: (formData: FormData) => {
+      return createArmor(formData, apiUrl);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

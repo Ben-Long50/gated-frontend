@@ -25,13 +25,9 @@ interface ActionList {
 }
 
 const useActions = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
 
-  const {
-    data: actions,
-    isLoading,
-    isPending,
-  } = useActionsQuery(apiUrl, authToken);
+  const { data: actions, isLoading, isPending } = useActionsQuery(apiUrl);
 
   const [query, setQuery] = useState('');
 

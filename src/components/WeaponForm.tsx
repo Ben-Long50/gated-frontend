@@ -19,11 +19,11 @@ import { useParams } from 'react-router-dom';
 import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
 
 const WeaponForm = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { weaponId } = useParams();
 
-  const { data: weapon } = useWeaponQuery(apiUrl, authToken, weaponId);
+  const { data: weapon } = useWeaponQuery(apiUrl, weaponId);
 
   const keywords = useKeywords();
 
@@ -31,7 +31,7 @@ const WeaponForm = () => {
     weapon?.picture?.imageUrl || '',
   );
 
-  const createWeapon = useCreateWeaponMutation(apiUrl, authToken);
+  const createWeapon = useCreateWeaponMutation(apiUrl);
 
   const weaponKeywordData = weapon?.keywords.map(
     (item: { keyword: Keyword; value?: number }) => {

@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { Keyword } from './useKeywords';
 import useWeaponsQuery from './useWeaponsQuery/useWeaponsQuery';
 
 interface Weapon {
@@ -9,7 +8,7 @@ interface Weapon {
   description: string;
   stats: Partial<WeaponStats>;
   price: number;
-  keywords: { keyword: Keyword; value?: number }[];
+  keywords: { keywordId: number; value?: number }[];
 }
 
 interface WeaponStats {
@@ -19,17 +18,13 @@ interface WeaponStats {
   range: number;
   magCapacity: number;
   magCount: number;
-  weight: number;
+  weight: string;
 }
 
 const useWeapons = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
 
-  const {
-    data: weapons,
-    isLoading,
-    isPending,
-  } = useWeaponsQuery(apiUrl, authToken);
+  const { data: weapons, isLoading, isPending } = useWeaponsQuery(apiUrl);
 
   const [query, setQuery] = useState<string>('');
   const [category, setCategory] = useState<string>('');

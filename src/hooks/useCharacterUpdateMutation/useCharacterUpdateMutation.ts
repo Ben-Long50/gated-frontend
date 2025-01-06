@@ -2,12 +2,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import updateCharacter from './updateCharacter';
 
-const useUpdateCharacterMutation = (characterId, apiUrl, authToken) => {
+const useUpdateCharacterMutation = (characterId: string, apiUrl: string) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: (formData) => {
-      return updateCharacter(formData, characterId, apiUrl, authToken);
+    mutationFn: (formData: FormData) => {
+      return updateCharacter(formData, characterId, apiUrl);
     },
     onSuccess: () => {
       navigate(`/glam/characters`);

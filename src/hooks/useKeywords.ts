@@ -13,7 +13,6 @@ export interface Keyword {
   name: string;
   description: string;
   keywordType: KeywordType;
-  value: number;
 }
 
 interface List {
@@ -21,13 +20,9 @@ interface List {
 }
 
 const useKeywords = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
 
-  const {
-    data: keywords,
-    isLoading,
-    isPending,
-  } = useKeywordsQuery(apiUrl, authToken);
+  const { data: keywords, isLoading, isPending } = useKeywordsQuery(apiUrl);
 
   const [query, setQuery] = useState('');
 

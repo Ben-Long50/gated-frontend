@@ -1,18 +1,20 @@
 import handleResponse from '../handleResponse';
 
-const getAccount = async (apiUrl, token) => {
+const getAccount = async (apiUrl: string) => {
   try {
     const response = await fetch(`${apiUrl}/users/authenticated`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      credentials: 'include',
     });
     const data = await handleResponse(response);
 
     return data;
   } catch (error) {
-    console.error(error.message);
+    if (error instanceof Error) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      }
+    }
     throw error;
   }
 };

@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createCybernetic from './createCybernetic';
 
-const useCreateCyberneticMutation = (apiUrl, authToken) => {
+const useCreateCyberneticMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData) => {
-      return createCybernetic(formData, apiUrl, authToken);
+    mutationFn: (formData: FormData) => {
+      return createCybernetic(formData, apiUrl);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

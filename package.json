@@ -15,6 +15,7 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+  "proxy": "http://localhost:3000",
   "dependencies": {
     "@designbycode/tailwindcss-text-shadow": "^2.2.1",
     "@mdi/js": "^7.4.47",

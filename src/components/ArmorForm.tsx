@@ -19,11 +19,11 @@ import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
 import InputFieldBasic from './InputFieldBasic';
 
 const ArmorForm = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { armorId } = useParams();
 
-  const { data: armor } = useArmorPieceQuery(apiUrl, authToken, armorId);
+  const { data: armor } = useArmorPieceQuery(apiUrl, armorId);
 
   const keywords = useKeywords();
 
@@ -31,7 +31,7 @@ const ArmorForm = () => {
     armor?.picture?.imageUrl || '',
   );
 
-  const createArmor = useCreateArmorMutation(apiUrl, authToken);
+  const createArmor = useCreateArmorMutation(apiUrl);
 
   const armorKeywordData = armor?.keywords.map(
     (item: { keyword: Keyword; value?: number }) => {

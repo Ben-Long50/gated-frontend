@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { Keyword } from './useKeywords';
 import useCyberneticsQuery from './useCyberneticsQuery/useCyberneticsQuery';
 
 export interface Cybernetic {
@@ -11,7 +10,7 @@ export interface Cybernetic {
   cyber: number;
   stats: Partial<CyberneticStats>;
   price: number;
-  keywords: Keyword[];
+  keywords: { keywordId: number; value?: number }[];
 }
 
 interface CyberneticStats {
@@ -25,13 +24,13 @@ interface CyberneticStats {
 }
 
 const useCybernetics = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
 
   const {
     data: cybernetics,
     isLoading,
     isPending,
-  } = useCyberneticsQuery(apiUrl, authToken);
+  } = useCyberneticsQuery(apiUrl);
 
   const [query, setQuery] = useState<string>('');
   const [category, setCategory] = useState<string>('');

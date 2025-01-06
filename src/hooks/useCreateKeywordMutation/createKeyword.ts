@@ -1,19 +1,25 @@
 import handleResponse from '../handleResponse';
 
-const createKeyword = async (formData, apiUrl, authToken, keywordId) => {
+const createKeyword = async (
+  formData: object,
+  keywordId: string,
+  apiUrl: string,
+) => {
   try {
     const response = await fetch(`${apiUrl}/keywords`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`,
       },
       body: JSON.stringify({ ...formData, keywordId }),
     });
     const data = await handleResponse(response);
     return data;
   } catch (error) {
-    console.error(error.message);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
     throw error;
   }
 };

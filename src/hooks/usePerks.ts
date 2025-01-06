@@ -50,13 +50,9 @@ export interface PerkTree {
 }
 
 const usePerks = (attributeTree?: AttributeTree) => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
 
-  const {
-    data: perks,
-    isLoading,
-    isPending,
-  } = usePerksQuery(apiUrl, authToken);
+  const { data: perks, isLoading, isPending } = usePerksQuery(apiUrl);
 
   const [query, setQuery] = useState('');
   const [attributeQuery, setAttributeQuery] = useState('');

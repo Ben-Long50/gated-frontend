@@ -28,7 +28,7 @@ import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';
 
 const CharacterForm = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
@@ -39,7 +39,7 @@ const CharacterForm = () => {
 
   const perks = usePerks(attributeTree?.tree);
 
-  const createCharacter = useCreateCharacterMutation(apiUrl, authToken);
+  const createCharacter = useCreateCharacterMutation(apiUrl);
 
   const characterForm = useForm({
     defaultValues: {

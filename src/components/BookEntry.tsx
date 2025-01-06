@@ -5,14 +5,14 @@ import useBookEntryQuery from '../hooks/useBookEntryQuery/useBookEntryQuery';
 import { Link, useParams } from 'react-router-dom';
 
 const BookEntry = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const { bookEntryTitle } = useParams();
 
   const {
     data: bookEntry,
     isLoading,
     isPending,
-  } = useBookEntryQuery(apiUrl, authToken, bookEntryTitle);
+  } = useBookEntryQuery(apiUrl, bookEntryTitle);
 
   console.log(bookEntry);
 

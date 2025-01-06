@@ -1,18 +1,18 @@
 import handleResponse from '../handleResponse';
 
-const createCybernetic = async (formData, apiUrl, authToken) => {
+const createCybernetic = async (formData: FormData, apiUrl: string) => {
   try {
     const response = await fetch(`${apiUrl}/cybernetics`, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
+      credentials: 'include',
       body: formData,
     });
     const data = await handleResponse(response);
     return data;
   } catch (error) {
-    console.error(error.message);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
     throw error;
   }
 };

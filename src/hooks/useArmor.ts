@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { Keyword } from './useKeywords';
 import useArmorQuery from './useArmorQuery/useArmorQuery';
 
 interface Armor {
@@ -9,7 +8,7 @@ interface Armor {
   description: string;
   stats: Partial<ArmorStats>;
   price: number;
-  keywords: { keyword: Keyword; value?: number }[];
+  keywords: { keywordId: number; value?: number }[];
 }
 
 interface ArmorStats {
@@ -21,13 +20,9 @@ interface ArmorStats {
 }
 
 const useArmor = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
 
-  const {
-    data: armor,
-    isLoading,
-    isPending,
-  } = useArmorQuery(apiUrl, authToken);
+  const { data: armor, isLoading, isPending } = useArmorQuery(apiUrl);
 
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<string>('');

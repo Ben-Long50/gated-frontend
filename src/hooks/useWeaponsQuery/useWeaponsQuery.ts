@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import getWeapons from './getWeapons';
 
-const useWeaponsQuery = (apiUrl, authToken) => {
+const useWeaponsQuery = (apiUrl: string) => {
   return useQuery({
     queryKey: ['weapons'],
-    queryFn: async () => await getWeapons(apiUrl, authToken),
+    queryFn: async () => await getWeapons(apiUrl),
     throwOnError: false,
   });
 };

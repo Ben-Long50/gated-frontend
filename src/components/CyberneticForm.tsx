@@ -21,7 +21,7 @@ import useCyberneticQuery from '../hooks/useCyberneticQuery/useCyberneticQuery';
 import { useParams } from 'react-router-dom';
 
 const CyberneticForm = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { cyberneticId } = useParams();
 
@@ -38,7 +38,7 @@ const CyberneticForm = () => {
     cybernetic?.picture?.imageUrl || '',
   );
 
-  const createCybernetic = useCreateCyberneticMutation(apiUrl, authToken);
+  const createCybernetic = useCreateCyberneticMutation(apiUrl);
 
   const cyberneticKeywordData = cybernetic?.keywords.map(
     (item: { keyword: Keyword; value?: number }) => {

@@ -15,12 +15,12 @@ import { useParams } from 'react-router-dom';
 import Loading from './Loading';
 
 const ActionForm = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const { actionId } = useParams();
 
-  const { data: action } = useActionQuery(apiUrl, authToken, actionId);
+  const { data: action } = useActionQuery(apiUrl, actionId);
 
-  const createAction = useCreateActionMutation(apiUrl, authToken, actionId);
+  const createAction = useCreateActionMutation(apiUrl, actionId);
 
   const attributeTree = useAttributeTree();
 

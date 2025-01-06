@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import getArmor from './getArmor';
 
-const useArmorQuery = (apiUrl, authToken) => {
+const useArmorQuery = (apiUrl: string) => {
   return useQuery({
     queryKey: ['armor'],
-    queryFn: async () => await getArmor(apiUrl, authToken),
+    queryFn: async () => await getArmor(apiUrl),
   });
 };
 

@@ -12,12 +12,12 @@ import { useParams } from 'react-router-dom';
 import useKeywordQuery from '../hooks/useKeywordQuery/useKeywordQuery';
 
 const KeywordForm = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const { keywordId } = useParams();
 
-  const { data: keyword } = useKeywordQuery(apiUrl, authToken, keywordId);
+  const { data: keyword } = useKeywordQuery(apiUrl, keywordId);
 
-  const createKeyword = useCreateKeywordMutation(apiUrl, authToken, keywordId);
+  const createKeyword = useCreateKeywordMutation(apiUrl, keywordId);
 
   const keywordForm = useForm({
     defaultValues: {

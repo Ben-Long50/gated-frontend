@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createWeapon from './createWeapon';
 
-const useCreateWeaponMutation = (apiUrl, authToken) => {
+const useCreateWeaponMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData) => {
-      return createWeapon(formData, apiUrl, authToken);
+    mutationFn: (formData: FormData) => {
+      return createWeapon(formData, apiUrl);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

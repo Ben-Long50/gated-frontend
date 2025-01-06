@@ -13,15 +13,11 @@ import usePerkQuery from '../hooks/usePerkQuery/usePerkQuery';
 import Loading from './Loading';
 
 const PerkForm = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const { perkId } = useParams();
 
-  const {
-    data: perk,
-    isLoading,
-    isPending,
-  } = usePerkQuery(apiUrl, authToken, perkId);
+  const { data: perk, isLoading, isPending } = usePerkQuery(apiUrl, perkId);
 
   const createPerk = useCreatePerkMutation(
     apiUrl,

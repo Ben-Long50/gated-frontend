@@ -13,7 +13,7 @@ const LinkListSidebar = ({ title, children, numberOfEntries }) => {
 
   return (
     <ThemeContainer
-      className="rounded-br-4xl rounded-tl-4xl w-full shadow-md shadow-slate-950"
+      className={`timing w-full rounded-br-4xl rounded-tl-4xl ${detailsOpen && 'shadow-list z-10 shadow-slate-950'}`}
       chamfer="16"
       borderColor={hover ? accentPrimary : 'transparent'}
     >

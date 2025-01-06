@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import getCharacters from './getCharacters';
 
-const useCharactersQuery = (apiUrl, authToken) => {
+const useCharactersQuery = (apiUrl: string) => {
   return useQuery({
-    queryKey: ['characters', authToken],
-    queryFn: async () => await getCharacters(apiUrl, authToken),
+    queryKey: ['characters'],
+    queryFn: async () => await getCharacters(apiUrl),
   });
 };
 

@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const signup = async (formData, apiUrl) => {
+const signup = async (formData: object, apiUrl: string) => {
   try {
     const response = await fetch(`${apiUrl}/auth/signup`, {
       method: 'POST',
@@ -12,7 +12,9 @@ const signup = async (formData, apiUrl) => {
     const data = await handleResponse(response);
     return data;
   } catch (error) {
-    console.error(error.message);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
     throw error;
   }
 };

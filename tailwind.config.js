@@ -52,6 +52,9 @@ export default {
         '5xl': '2.5rem',
         '6xl': '3rem',
       },
+      boxShadow: {
+        list: '0 5px 15px -3px rgb(0 0 0 / 0.1)',
+      },
     },
   },
   plugins: [

@@ -1,17 +1,18 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import signin from './signin';
 import { useNavigate } from 'react-router-dom';
 
-const useSigninMutation = (apiUrl, setErrors) => {
-  const queryClient = useQueryClient();
+const useSigninMutation = (
+  apiUrl: string,
+  setErrors: (errors: string[]) => void,
+) => {
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: async (formData) => {
+    mutationFn: async (formData: object) => {
       return await signin(formData, apiUrl);
     },
     onSuccess: () => {
-      // queryClient.clear();
-      navigate('/characters');
+      navigate('/glam/codex/book/introduction');
     },
     onError: (error) => {
       setErrors(error.errors);

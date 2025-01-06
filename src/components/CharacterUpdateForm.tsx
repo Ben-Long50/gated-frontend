@@ -25,14 +25,14 @@ import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 
 const CharacterUpdateForm = () => {
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
   const { characterId } = useParams();
 
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const { data: character } = useCharacterQuery(apiUrl, authToken, characterId);
+  const { data: character } = useCharacterQuery(apiUrl, characterId);
 
   const [checkedPerks, setCheckedPerks] = useState(() => {
     return character?.perks.map((perk) => perk.id);

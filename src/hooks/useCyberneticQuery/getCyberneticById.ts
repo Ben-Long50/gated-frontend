@@ -1,18 +1,18 @@
 import handleResponse from '../handleResponse';
 
-const getCyberneticById = async (apiUrl, authToken, cyberneticId) => {
+const getCyberneticById = async (apiUrl: string, cyberneticId: string) => {
   try {
     const response = await fetch(`${apiUrl}/cybernetics/${cyberneticId}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
+      credentials: 'include',
     });
     const data = await handleResponse(response);
 
     return data;
   } catch (error) {
-    console.error(error.message);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
     throw error;
   }
 };

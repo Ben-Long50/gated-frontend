@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createBookEntry from './createBookEntry';
 
-const useCreateBookEntryMutation = (apiUrl, authToken) => {
+const useCreateBookEntryMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData) => {
-      return createBookEntry(formData, apiUrl, authToken);
+    mutationFn: (formData: object) => {
+      return createBookEntry(formData, apiUrl);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

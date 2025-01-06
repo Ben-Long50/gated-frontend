@@ -25,7 +25,7 @@ import InsanityIcon from './icons/InsanityIcon';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { apiUrl, authToken } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
 
   const [storyVisibility, setStoryVisibility] = useState(
@@ -38,7 +38,7 @@ const CharacterSheet = () => {
     data: character,
     isPending,
     isLoading,
-  } = useCharacterQuery(apiUrl, authToken, characterId);
+  } = useCharacterQuery(apiUrl, characterId);
 
   const attributeTree = useAttributeTree(character?.attributes);
 

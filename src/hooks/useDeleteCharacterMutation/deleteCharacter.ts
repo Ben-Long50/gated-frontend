@@ -1,17 +1,17 @@
 import handleResponse from '../handleResponse';
 
-const deleteCharacter = async (characterId, apiUrl, authToken) => {
+const deleteCharacter = async (characterId: string, apiUrl: string) => {
   try {
     const response = await fetch(`${apiUrl}/characters/${characterId}`, {
       method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
+      credentials: 'include',
     });
     const data = await handleResponse(response);
     return data;
   } catch (error) {
-    console.error(error.message);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
     throw error;
   }
 };

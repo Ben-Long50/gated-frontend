@@ -1,18 +1,18 @@
 import handleResponse from '../handleResponse';
 
-const getBookEntry = async (apiUrl, authToken, bookEntryTitle) => {
+const getBookEntry = async (apiUrl: string, bookEntryTitle: string) => {
   try {
     const response = await fetch(`${apiUrl}/book/${bookEntryTitle}`, {
       method: 'GET',
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
+      credentials: 'include',
     });
     const data = await handleResponse(response);
 
     return data;
   } catch (error) {
-    console.error(error.message);
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
     throw error;
   }
 };
