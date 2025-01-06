@@ -9,7 +9,7 @@ interface Armor {
   description: string;
   stats: Partial<ArmorStats>;
   price: number;
-  keywords: Keyword[];
+  keywords: { keyword: Keyword; value?: number }[];
 }
 
 interface ArmorStats {
@@ -30,14 +30,26 @@ const useArmor = () => {
   } = useArmorQuery(apiUrl, authToken);
 
   const [query, setQuery] = useState('');
+  const [category, setCategory] = useState<string>('');
 
-  const filteredArmor =
-    armor?.filter((armor: Armor) =>
-      armor.name.toLowerCase().includes(query.toLowerCase()),
-    ) ?? [];
+  const filteredArmor = category
+    ? armor
+        ?.filter((armor: Armor) =>
+          armor.keywords.some((keyword) => keyword.keyword.name === category),
+        )
+        .filter((armor: Armor) =>
+          armor.name.toLowerCase().includes(query.toLowerCase()),
+        )
+    : (armor?.filter((armor: Armor) =>
+        armor.name.toLowerCase().includes(query.toLowerCase()),
+      ) ?? []);
 
   const filterByQuery = (query: string) => {
     setQuery(query);
+  };
+
+  const filterByCategory = (newCategory: string) => {
+    setCategory(newCategory);
   };
 
   const resetList = () => {
@@ -47,6 +59,7 @@ const useArmor = () => {
   return {
     filteredArmor,
     filterByQuery,
+    filterByCategory,
     resetList,
     isLoading,
     isPending,

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import InputField from './InputField';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import BtnRect from './BtnRect';
+import BtnRect from './buttons/BtnRect';
 import AttributeCard from './AttributeCard';
 import TextAreaField from './TextAreaField';
 import { AuthContext } from '../contexts/AuthContext';
@@ -22,6 +22,7 @@ import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import useUpdateCharacterMutation from '../hooks/useCharacterUpdateMutation/useCharacterUpdateMutation';
 import useDeleteCharacterMutation from '../hooks/useDeleteCharacterMutation/useDeleteCharacterMutation';
 import Loading from './Loading';
+import FormLayout from '../layouts/FormLayout';
 
 const CharacterUpdateForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
@@ -134,11 +135,7 @@ const CharacterUpdateForm = () => {
   }
 
   return (
-    <ThemeContainer
-      className="mb-auto w-full max-w-2xl lg:max-w-4xl"
-      chamfer="32"
-      borderColor={accentPrimary}
-    >
+    <FormLayout>
       <form
         className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 lg:p-8"
         onSubmit={(e) => {
@@ -411,7 +408,7 @@ const CharacterUpdateForm = () => {
           )}
         </div>
       </form>
-    </ThemeContainer>
+    </FormLayout>
   );
 };
 

@@ -3,10 +3,11 @@ import { AuthContext } from '../contexts/AuthContext';
 import { Keyword } from './useKeywords';
 import useCyberneticsQuery from './useCyberneticsQuery/useCyberneticsQuery';
 
-interface Cybernetic {
+export interface Cybernetic {
   id: number;
   name: string;
   description: string;
+  cyberneticType: string;
   cyber: number;
   stats: Partial<CyberneticStats>;
   price: number;
@@ -33,14 +34,26 @@ const useCybernetics = () => {
   } = useCyberneticsQuery(apiUrl, authToken);
 
   const [query, setQuery] = useState<string>('');
+  const [category, setCategory] = useState<string>('');
 
-  const filteredCybernetics =
-    cybernetics?.filter((cybernetic: Cybernetic) =>
-      cybernetic.name.toLowerCase().includes(query.toLowerCase()),
-    ) ?? [];
+  const filteredCybernetics = category
+    ? cybernetics
+        ?.filter(
+          (cybernetic: Cybernetic) => cybernetic.cyberneticType === category,
+        )
+        .filter((cybernetic: Cybernetic) =>
+          cybernetic.name.toLowerCase().includes(query.toLowerCase()),
+        )
+    : (cybernetics?.filter((cybernetic: Cybernetic) =>
+        cybernetic.name.toLowerCase().includes(query.toLowerCase()),
+      ) ?? []);
 
   const filterByQuery = (newQuery: string) => {
     setQuery(newQuery);
+  };
+
+  const filterByCategory = (newCategory: string) => {
+    setCategory(newCategory);
   };
 
   const resetList = () => {
@@ -50,6 +63,7 @@ const useCybernetics = () => {
   return {
     filteredCybernetics,
     filterByQuery,
+    filterByCategory,
     resetList,
     isLoading,
     isPending,

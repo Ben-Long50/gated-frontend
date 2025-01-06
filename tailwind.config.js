@@ -18,7 +18,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['Exo-regular'],
-        logo: ['Omnitrinx', 'Rovelink', 'Inter'],
+        logo: ['Omnitrinx', 'Exo-regular', 'Inter'],
       },
       clipPath: {
         2: 'polygon(0.5rem 0px, 100% 0px, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0px 100%, 0px 0.5rem)',
@@ -26,6 +26,31 @@ export default {
         6: 'polygon(1.5rem 0px, 100% 0px, 100% calc(100% - 1.5rem), calc(100% - 1.5rem) 100%, 0px 100%, 0px 1.5rem)',
         8: 'polygon(2rem 0px, 100% 0px, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0px 100%, 0px 2rem)',
         12: 'polygon(3rem 0px, 100% 0px, 100% calc(100% - 3rem), calc(100% - 3rem) 100%, 0px 100%, 0px 3rem)',
+      },
+      borderRadius: {
+        '4xl': '2rem',
+        '5xl': '2.5rem',
+        '6xl': '3rem',
+      },
+      borderBottomRightRadius: {
+        '4xl': '2rem',
+        '5xl': '2.5rem',
+        '6xl': '3rem',
+      },
+      borderTopLeftRadius: {
+        '4xl': '2rem',
+        '5xl': '2.5rem',
+        '6xl': '3rem',
+      },
+      borderTopRightRadius: {
+        '4xl': '2rem',
+        '5xl': '2.5rem',
+        '6xl': '3rem',
+      },
+      borderBottomLeftRadius: {
+        '4xl': '2rem',
+        '5xl': '2.5rem',
+        '6xl': '3rem',
       },
     },
   },

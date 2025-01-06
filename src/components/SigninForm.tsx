@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import InputField from './InputField';
-import BtnRect from './BtnRect';
+import BtnRect from './buttons/BtnRect';
 import { AuthContext } from '../contexts/AuthContext';
 import Icon from '@mdi/react';
 import { mdiFacebook, mdiGoogle } from '@mdi/js';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import BtnAuth from './BtnAuth';
+import BtnAuth from './buttons/BtnAuth';
 import { useForm } from '@tanstack/react-form';
 import useSigninMutation from '../hooks/useSigninMutation/useSigninMutation';
 
@@ -120,10 +120,10 @@ const SigninForm = () => {
             <span className="pl-2 hover:underline">Sign up</span>
           </Link>
         </p>
-        {errors.length > 0 && (
+        {errors?.length > 0 && (
           <div className="flex flex-col gap-3 self-start">
             <span className="text-primary">Error creating account:</span>
-            {errors.map((error, index) => (
+            {errors?.map((error, index) => (
               <p key={index} className="text-error">
                 {error}
               </p>

@@ -18,7 +18,7 @@ import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import { Link, useParams } from 'react-router-dom';
-import BtnRect from './BtnRect';
+import BtnRect from './buttons/BtnRect';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
@@ -323,7 +323,7 @@ const CharacterSheet = () => {
           </div>
         </div>
       </ThemeContainer>
-      <Link to={`/characters/${character.id}/update`}>
+      <Link to={`update`}>
         <BtnRect className="sm:w-1/2 sm:justify-self-end">
           Update character info
         </BtnRect>

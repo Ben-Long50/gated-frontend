@@ -1,5 +1,4 @@
 import { createContext, useState } from 'react';
-// import useServerStatusQuery from '../hooks/useServerStatusQuery';
 
 export const ThemeContext = createContext();
 
@@ -24,7 +23,6 @@ const ThemeProvider = ({ children }) => {
   const accentPrimary = 'rgb(253 224 71)';
   const accentSecondary = 'rgb(14 165 233)';
   const errorPrimary = 'rgb(239 68 68)';
-  // const serverStatus = useServerStatusQuery();
 
   const changeTheme = () => {
     const theme = localStorage.getItem('theme');
@@ -36,58 +34,6 @@ const ThemeProvider = ({ children }) => {
       setTheme('dark');
     }
   };
-
-  // if (serverStatus.isError) {
-  //   return (
-  //     <div className="h-dvh w-dvw">
-  //       <div
-  //         className={`${theme} bg-secondary flex h-full w-full flex-col items-center justify-center gap-4 px-8 md:gap-8`}
-  //       >
-  //         <h1 className="text-primary text-4xl font-semibold">
-  //           Could not connect to the server
-  //         </h1>
-  //         <p className="text-secondary text-2xl">Please try again later</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // if (serverStatus.isLoading || serverStatus.isPending) {
-  //   return (
-  //     <div className="h-dvh w-dvw">
-  //       <div
-  //         className={`${theme} bg-secondary flex h-full w-full flex-col items-center justify-center gap-4 px-8 md:gap-8`}
-  //       >
-  //         <h1 className="text-primary font-logo text-4xl">Please wait</h1>
-  //         <div>
-  //           <p className="text-secondary text-center text-xl">
-  //             Connecting to the server
-  //           </p>
-  //           <p className="text-tertiary text-center text-base">
-  //             (This can take up to about a minute)
-  //           </p>
-  //         </div>
-
-  //         <div className="flex">
-  //           <div className="pawprint-top-1">
-  //             <PawIcon className="size-12 translate-x-1/2 rotate-[78deg] md:size-16" />
-  //           </div>
-  //           <div className="pawprint-top-2 opacity-0">
-  //             <PawIcon className="size-12 -translate-x-1/2 rotate-[78deg] md:size-16" />
-  //           </div>
-  //         </div>
-  //         <div className="flex -translate-y-10 md:-translate-y-16">
-  //           <div className="pawprint-bottom-1 opacity-0">
-  //             <PawIcon className="size-12 translate-x-1/2 rotate-[78deg] md:size-16" />
-  //           </div>
-  //           <div className="pawprint-bottom-2 opacity-0">
-  //             <PawIcon className="size-12 -translate-x-1/2 rotate-[78deg] md:size-16" />
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <ThemeContext.Provider

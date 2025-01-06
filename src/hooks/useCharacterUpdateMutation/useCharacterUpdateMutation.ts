@@ -10,7 +10,7 @@ const useUpdateCharacterMutation = (characterId, apiUrl, authToken) => {
       return updateCharacter(formData, characterId, apiUrl, authToken);
     },
     onSuccess: () => {
-      navigate(`/characters`);
+      navigate(`/glam/characters`);
       queryClient.invalidateQueries({
         queryKey: ['character'],
         exact: false,

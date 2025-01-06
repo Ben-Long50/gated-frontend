@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
@@ -6,23 +6,20 @@ import { useForm } from '@tanstack/react-form';
 import { LayoutContext } from '../contexts/LayoutContext';
 import CyberneticCard from './CyberneticCard';
 import useCybernetics from '../hooks/useCybernetics';
+import SelectField from './SelectField';
 
 const Cybernetics = () => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
 
   const cybernetics = useCybernetics();
 
   const searchForm = useForm({
     defaultValues: {
+      category: '',
       query: '',
     },
     onSubmit: ({ value }) => {
-      if (value.query === '') {
-        cybernetics.resetList();
-      } else {
-        cybernetics.filterByQuery(value.query);
-      }
+      cybernetics.filterByQuery(value.query);
     },
   });
 
@@ -31,36 +28,50 @@ const Cybernetics = () => {
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-3">
-      <h1 className="text-center lg:mb-5">Cybernetics</h1>
+    <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
+      <h1 className="text-center">Cybernetics</h1>
       <ThemeContainer
-        chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
-        className="w-full"
+        className={`rounded-br-5xl rounded-tl-5xl ml-auto w-full shadow-lg shadow-zinc-950`}
+        chamfer="24"
         borderColor={accentPrimary}
       >
-        <div
-          className={`bg-primary flex w-full flex-col gap-4 px-3 py-4 ${layoutSize === 'small' || layoutSize === 'xsmall' ? 'clip-6' : 'clip-8'} sm:gap-6 sm:p-6 lg:gap-8 lg:p-8`}
-        >
-          <form>
-            <searchForm.Field name="query">
+        <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
+          <div className="flex w-full items-center justify-between pl-4">
+            <h3 className="">Filter options</h3>
+            <searchForm.Field name="category">
               {(field) => (
-                <InputField
-                  label="Search cybernetics"
+                <SelectField
                   field={field}
                   onChange={() => {
-                    searchForm.handleSubmit();
+                    cybernetics.filterByCategory(field.state.value);
                   }}
-                />
+                >
+                  <option value="">All augments</option>
+                  <option value="stat">Stat augment</option>
+                  <option value="roll">Roll augment</option>
+                  <option value="offensive">Offensive augment</option>
+                  <option value="defensive">Defensive augment</option>
+                  <option value="function">Function augment</option>
+                </SelectField>
               )}
             </searchForm.Field>
-          </form>
-          {cybernetics.filteredCybernetics.map((cybernetic) => {
-            return (
-              <CyberneticCard key={cybernetic.name} cybernetic={cybernetic} />
-            );
-          })}
-        </div>
+          </div>
+          <searchForm.Field name="query">
+            {(field) => (
+              <InputField
+                label="Search cybernetics"
+                field={field}
+                onChange={() => {
+                  searchForm.handleSubmit();
+                }}
+              />
+            )}
+          </searchForm.Field>
+        </form>
       </ThemeContainer>
+      {cybernetics.filteredCybernetics.map((cybernetic) => {
+        return <CyberneticCard key={cybernetic.name} cybernetic={cybernetic} />;
+      })}
     </div>
   );
 };

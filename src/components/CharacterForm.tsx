@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import InputField from './InputField';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import BtnRect from './BtnRect';
+import BtnRect from './buttons/BtnRect';
 import AttributeCard from './AttributeCard';
 import TextAreaField from './TextAreaField';
 import { AuthContext } from '../contexts/AuthContext';

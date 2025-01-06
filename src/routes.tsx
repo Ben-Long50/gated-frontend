@@ -25,6 +25,9 @@ import Armor from './components/Armor';
 import CyberneticForm from './components/CyberneticForm';
 import Cybernetics from './components/Cybernetics';
 import ActionForm from './components/ActionForm';
+import BookEntry from './components/BookEntry';
+import BookEntryForm from './components/BookEntryForm';
+import Actions from './components/Actions';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,33 +37,56 @@ const router = createBrowserRouter(
         <Route path="signup" element={<SignupForm />} />
         <Route path="signin" element={<SigninForm />} />
       </Route>
-      <Route path="/" element={<MainLayout />}>
-        <Route path="characters" element={<CharacterList />} />
-        <Route path="characters/:characterId" element={<CharacterSheet />} />
-        <Route path="characters/create" element={<CharacterForm />} />
-        <Route
-          path="characters/:characterId/update"
-          element={<CharacterUpdateForm />}
-        />
-        <Route path="weapons" element={<Weapons />} />
-        <Route path="weapons/create" element={<WeaponForm />} />
-        <Route path="weapons/:weaponId/update" element={<WeaponForm />} />
-        <Route path="armor" element={<Armor />} />
-        <Route path="armor/create" element={<ArmorForm />} />
-        <Route path="armor/:armorId/update" element={<ArmorForm />} />
-        <Route path="cybernetics" element={<Cybernetics />} />
-        <Route path="cybernetics/create" element={<CyberneticForm />} />
-        <Route
-          path="cybernetics/:cyberneticId/update"
-          element={<CyberneticForm />}
-        />
-        <Route path="perks" element={<Perks />} />
-        <Route path="perks/create" element={<PerkForm />} />
-        <Route path="perks/:perkId/update" element={<PerkForm />} />
-        <Route path="keywords" element={<Keywords />} />
-        <Route path="keywords/create" element={<KeywordForm />} />
-        <Route path="keywords/:keywordId/update" element={<KeywordForm />} />
-        <Route path="actions/create" element={<ActionForm />} />
+
+      <Route path="glam" element={<MainLayout />}>
+        <Route path="characters">
+          <Route index element={<CharacterList />} />
+          <Route path="create" element={<CharacterForm />} />
+          <Route path=":characterId" element={<CharacterSheet />} />
+          <Route path=":characterId/update" element={<CharacterUpdateForm />} />
+        </Route>
+
+        <Route path="codex">
+          <Route path="book">
+            <Route path=":bookEntryTitle" element={<BookEntry />} />
+            <Route path=":bookEntryTitle/update" element={<BookEntryForm />} />
+            <Route path="create" element={<BookEntryForm />} />
+          </Route>
+          <Route path="weapons">
+            <Route index element={<Weapons />} />
+            <Route path="create" element={<WeaponForm />} />
+            <Route path=":weaponId/update" element={<WeaponForm />} />
+          </Route>
+
+          <Route path="armor">
+            <Route index element={<Armor />} />
+            <Route path="create" element={<ArmorForm />} />
+            <Route path=":armorId/update" element={<ArmorForm />} />
+          </Route>
+
+          <Route path="cybernetics">
+            <Route index element={<Cybernetics />} />
+            <Route path="create" element={<CyberneticForm />} />
+            <Route path=":cyberneticId/update" element={<CyberneticForm />} />
+          </Route>
+
+          <Route path="perks">
+            <Route index element={<Perks />} />
+            <Route path="create" element={<PerkForm />} />
+            <Route path=":perkId/update" element={<PerkForm />} />
+          </Route>
+
+          <Route path="keywords">
+            <Route index element={<Keywords />} />
+            <Route path="create" element={<KeywordForm />} />
+            <Route path=":keywordId/update" element={<KeywordForm />} />
+          </Route>
+          <Route path="actions">
+            <Route index element={<Actions />} />
+            <Route path="create" element={<ActionForm />} />
+            <Route path=":actionId/update" element={<ActionForm />} />
+          </Route>
+        </Route>
       </Route>
     </Route>,
   ),

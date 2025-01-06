@@ -3,11 +3,6 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Rovelink';
-  src: url('/rovelink.otf') format('opentype');
-}
-
-@font-face {
   font-family: 'Omnitrinx';
   src: url('/Omnitrinx.otf') format('opentype');
 }
@@ -140,4 +135,17 @@
 
 .spin {
   animation: spin 0.75s linear infinite;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  background-position: center;
+  background-size: cover;
+  top: 0;
+  left: 0;
+  width: 100lvw;
+  height: 100lvh;
+  background-image: url('/public/tron_grid.jpg');
+  z-index: -1;
 }

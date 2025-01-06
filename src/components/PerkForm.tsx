@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import InputField from './InputField';
-import BtnRect from './BtnRect';
+import BtnRect from './buttons/BtnRect';
 import AttributeCard from './AttributeCard';
 import TextAreaField from './TextAreaField';
 import { AuthContext } from '../contexts/AuthContext';

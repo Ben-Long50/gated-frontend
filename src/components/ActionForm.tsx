@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import InputField from './InputField';
-import BtnRect from './BtnRect';
+import BtnRect from './buttons/BtnRect';
 import TextAreaField from './TextAreaField';
 import { AuthContext } from '../contexts/AuthContext';
 import { useForm } from '@tanstack/react-form';
@@ -10,40 +10,39 @@ import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import FormLayout from '../layouts/FormLayout';
 import useCreateActionMutation from '../hooks/useCreateActionMutation/useCreateActionMutation';
+import useActionQuery from '../hooks/useActionQuery/useActionQuery';
+import { useParams } from 'react-router-dom';
+import Loading from './Loading';
 
 const ActionForm = () => {
   const { apiUrl, authToken } = useContext(AuthContext);
+  const { actionId } = useParams();
 
-  const createAction = useCreateActionMutation(apiUrl, authToken);
+  const { data: action } = useActionQuery(apiUrl, authToken, actionId);
+
+  const createAction = useCreateActionMutation(apiUrl, authToken, actionId);
+
   const attributeTree = useAttributeTree();
 
   const actionForm = useForm({
     defaultValues: {
-      name: '',
-      costs: [{ stat: 'actionPoints', value: 1 }] as {
-        stat: string;
-        value: number;
-      }[],
-      attribute: '',
-      skill: '',
-      actionType: '',
-      actionSubtypes: [] as string[],
-      description: '',
+      name: action?.name || '',
+      costs:
+        action?.costs ||
+        ([{ stat: 'actionPoints', value: 1 }] as {
+          stat: string;
+          value: number;
+        }[]),
+      attribute: action?.attribute || '',
+      skill: action?.skill || '',
+      actionType: action?.actionType || '',
+      actionSubtypes: action?.actionSubtypes || ([] as string[]),
+      description: action?.description || '',
     },
     onSubmit: async ({ value }) => {
-      await createAction.mutate(value);
-
       console.log(value);
 
-      actionForm.reset({
-        name: '',
-        costs: [] as { stat: string; value: number }[],
-        attribute: '',
-        skill: '',
-        actionType: '',
-        actionSubtypes: [] as string[],
-        description: '',
-      });
+      await createAction.mutate(value);
     },
   });
 
@@ -57,7 +56,9 @@ const ActionForm = () => {
           actionForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">Create Action</h1>
+        <h1 className="text-center">
+          {action ? 'Update Action' : 'Create Action'}
+        </h1>
         <actionForm.Field
           name="name"
           validators={{
@@ -262,8 +263,17 @@ const ActionForm = () => {
             />
           )}
         </actionForm.Field>
-        <BtnRect type="submit" className="w-full">
-          Create
+        <BtnRect type="submit" className="group w-full">
+          {createAction.isPending ? (
+            <Loading
+              className="text-gray-900 group-hover:text-yellow-300"
+              size={1.15}
+            />
+          ) : action ? (
+            'Update'
+          ) : (
+            'Create'
+          )}
         </BtnRect>
       </form>
     </FormLayout>

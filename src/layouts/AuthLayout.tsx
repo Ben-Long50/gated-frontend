@@ -12,9 +12,8 @@ const AuthLayout = () => {
 
   return (
     <div
-      className={`${theme} bg-secondary max-lg:auth-layout-small lg:auth-layout-large min-h-dvh w-dvw items-center bg-cover bg-center p-4 md:p-8`}
+      className={`${theme} bg-secondary auth-layout-small min-h-dvh w-dvw items-center bg-opacity-80 p-4 md:p-8`}
     >
-      {/* <div className="absolute inset-0 bg-black opacity-70"></div> */}
       <LogoTitle className="col-start-2 row-start-1" />
       <Outlet />
       <div className="absolute left-2 top-2">

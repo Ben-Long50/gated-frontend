@@ -3,26 +3,22 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
-import { LayoutContext } from '../contexts/LayoutContext';
 import useArmor from '../hooks/useArmor';
 import ArmorCard from './ArmorCard';
+import SelectField from './SelectField';
 
 const Armor = () => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
 
   const armor = useArmor();
 
   const searchForm = useForm({
     defaultValues: {
+      category: '',
       query: '',
     },
     onSubmit: ({ value }) => {
-      if (value.query === '') {
-        armor.resetList();
-      } else {
-        armor.filterByQuery(value.query);
-      }
+      armor.filterByQuery(value.query);
     },
   });
 
@@ -31,34 +27,47 @@ const Armor = () => {
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-3">
-      <h1 className="text-center lg:mb-5">Armor</h1>
+    <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
+      <h1 className="text-center">Armor</h1>
       <ThemeContainer
-        chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
-        className="w-full"
+        className={`rounded-br-5xl rounded-tl-5xl ml-auto w-full shadow-lg shadow-zinc-950`}
+        chamfer="24"
         borderColor={accentPrimary}
       >
-        <div
-          className={`bg-primary flex w-full flex-col gap-4 px-3 py-4 ${layoutSize === 'small' || layoutSize === 'xsmall' ? 'clip-6' : 'clip-8'} sm:gap-6 sm:p-6 lg:gap-8 lg:p-8`}
-        >
-          <form>
-            <searchForm.Field name="query">
+        <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
+          <div className="flex w-full items-center justify-between pl-4">
+            <h3 className="">Filter options</h3>
+            <searchForm.Field name="category">
               {(field) => (
-                <InputField
-                  label="Search armor"
+                <SelectField
                   field={field}
                   onChange={() => {
-                    searchForm.handleSubmit();
+                    armor.filterByCategory(field.state.value);
                   }}
-                />
+                >
+                  <option value="">All armor</option>
+                  <option value="Armor">Basic armor</option>
+                  <option value="Power">Power armor</option>
+                </SelectField>
               )}
             </searchForm.Field>
-          </form>
-          {armor.filteredArmor.map((armor) => {
-            return <ArmorCard key={armor.name} armor={armor} />;
-          })}
-        </div>
+          </div>
+          <searchForm.Field name="query">
+            {(field) => (
+              <InputField
+                label="Search armor"
+                field={field}
+                onChange={() => {
+                  searchForm.handleSubmit();
+                }}
+              />
+            )}
+          </searchForm.Field>
+        </form>
       </ThemeContainer>
+      {armor.filteredArmor.map((armor) => {
+        return <ArmorCard key={armor.name} armor={armor} />;
+      })}
     </div>
   );
 };

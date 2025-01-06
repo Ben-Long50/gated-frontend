@@ -9,7 +9,7 @@ interface Weapon {
   description: string;
   stats: Partial<WeaponStats>;
   price: number;
-  keywords: Keyword[];
+  keywords: { keyword: Keyword; value?: number }[];
 }
 
 interface WeaponStats {
@@ -32,14 +32,26 @@ const useWeapons = () => {
   } = useWeaponsQuery(apiUrl, authToken);
 
   const [query, setQuery] = useState<string>('');
+  const [category, setCategory] = useState<string>('');
 
-  const filteredWeapons =
-    weapons?.filter((weapon: Weapon) =>
-      weapon.name.toLowerCase().includes(query.toLowerCase()),
-    ) ?? [];
+  const filteredWeapons = category
+    ? weapons
+        ?.filter((weapon: Weapon) =>
+          weapon.keywords.some((keyword) => keyword.keyword.name === category),
+        )
+        .filter((weapon: Weapon) =>
+          weapon.name.toLowerCase().includes(query.toLowerCase()),
+        )
+    : (weapons?.filter((weapon: Weapon) =>
+        weapon.name.toLowerCase().includes(query.toLowerCase()),
+      ) ?? []);
 
   const filterByQuery = (newQuery: string) => {
     setQuery(newQuery);
+  };
+
+  const filterByCategory = (newCategory: string) => {
+    setCategory(newCategory);
   };
 
   const resetList = () => {
@@ -49,6 +61,7 @@ const useWeapons = () => {
   return {
     filteredWeapons,
     filterByQuery,
+    filterByCategory,
     resetList,
     isLoading,
     isPending,

@@ -18,7 +18,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (authToken) {
-      navigate('/characters');
+      navigate('/glam/codex/book/create');
     } else {
       navigate('/signin');
     }

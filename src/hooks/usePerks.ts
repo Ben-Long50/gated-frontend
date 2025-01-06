@@ -58,8 +58,9 @@ const usePerks = (attributeTree?: AttributeTree) => {
     isPending,
   } = usePerksQuery(apiUrl, authToken);
 
-  const [attributeQuery, setAttributeQuery] = useState('');
   const [query, setQuery] = useState('');
+  const [attributeQuery, setAttributeQuery] = useState('');
+  const [skillQuery, setSkillQuery] = useState('');
 
   const emptyTree: PerkTree = {
     general: { general: [] },
@@ -156,18 +157,28 @@ const usePerks = (attributeTree?: AttributeTree) => {
         attribute.toLowerCase().includes(attributeQuery.toLowerCase()),
       )
       .flatMap(([_, skills]) =>
-        Object.entries(skills).flatMap(([_, perkList]) =>
-          perkList.filter((perk: Perk) =>
-            perk.name?.toLowerCase().includes(query.toLowerCase()),
+        Object.entries(skills)
+          .filter(([skill]) =>
+            skill.toLowerCase().includes(skillQuery.toLowerCase()),
+          )
+          .flatMap(([_, perkList]) =>
+            perkList.filter((perk: Perk) =>
+              perk.name.toLowerCase().includes(query.toLowerCase()),
+            ),
           ),
-        ),
       ),
   );
 
-  //Filters the perk tree to return only perks of a specified attribute
-  const filterPerks = (attribute: string, query: string) => {
-    setAttributeQuery(attribute);
+  const filterPerks = (query: string) => {
     setQuery(query);
+  };
+
+  const filterByAttribute = (newAttribute: string) => {
+    setAttributeQuery(newAttribute);
+  };
+
+  const filterBySkill = (newSkill: string) => {
+    setSkillQuery(newSkill);
   };
 
   const resetPerks = () => {
@@ -176,8 +187,11 @@ const usePerks = (attributeTree?: AttributeTree) => {
   };
 
   return {
+    emptyTree,
     filteredPerkTree,
     filterPerks,
+    filterByAttribute,
+    filterBySkill,
     resetPerks,
     isLoading,
     isPending,

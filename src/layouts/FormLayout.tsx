@@ -2,12 +2,12 @@ import { useContext } from 'react';
 import ThemeContainer from '../components/ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 
-const FormLayout = ({ children }) => {
+const FormLayout = ({ children }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
 
   return (
     <ThemeContainer
-      className="mb-auto w-full max-w-5xl"
+      className={`${props.className} mb-auto w-full max-w-5xl`}
       chamfer="32"
       borderColor={accentPrimary}
     >

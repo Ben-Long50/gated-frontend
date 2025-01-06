@@ -6,7 +6,7 @@ import SanityIcon from './icons/SanityIcon';
 import useAttributeTree from '../hooks/useAttributeTree';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { LayoutContext } from '../contexts/LayoutContext';
-import BtnRect from './BtnRect';
+import BtnRect from './buttons/BtnRect';
 import { Link } from 'react-router-dom';
 import WardIcon from './icons/WardIcon';
 import ArmorIcon from './icons/ArmorIcon';
@@ -128,10 +128,7 @@ const CharacterCard = ({ character }) => {
                 <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">0</p>
               </div>
             </div>
-            <Link
-              className="ml-auto mt-auto self-end"
-              to={`/characters/${character.id}`}
-            >
+            <Link className="ml-auto mt-auto self-end" to={`${character.id}`}>
               <BtnRect>Character sheet</BtnRect>
             </Link>
           </div>
