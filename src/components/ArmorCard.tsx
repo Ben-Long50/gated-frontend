@@ -13,6 +13,7 @@ import PowerIcon from './icons/PowerIcon';
 import EquipIcon from './icons/EquipIcon';
 import { Link } from 'react-router-dom';
 import { Keyword } from 'src/hooks/useKeywords';
+import CloudinaryImage from './CloudinaryImage';
 
 const ArmorCard = ({ armor }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -22,7 +23,7 @@ const ArmorCard = ({ armor }, props) => {
   return (
     <ThemeContainer
       chamfer="24"
-      className="rounded-br-5xl rounded-tl-5xl w-full shadow-lg shadow-slate-950"
+      className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
       borderColor={accentPrimary}
     >
       <div
@@ -71,13 +72,11 @@ const ArmorCard = ({ armor }, props) => {
               className={`flex ${detailsOpen ? 'flex-col' : 'flex-row'} items-start justify-start gap-6`}
             >
               {armor.picture && (
-                <ThemeContainer chamfer="24" borderColor={accentPrimary}>
-                  <img
-                    className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
-                    src={armor.picture?.imageUrl}
-                    alt={armor.name + ' ' + 'image'}
-                  />
-                </ThemeContainer>
+                <CloudinaryImage
+                  className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
+                  url={armor.picture?.imageUrl}
+                  alt={armor.name + ' ' + 'image'}
+                />
               )}
               <div
                 className={`flex h-full ${armor.picture && !detailsOpen ? 'flex-col' : 'flex-row'} flex-wrap items-start justify-between gap-4 sm:gap-8`}
@@ -142,13 +141,11 @@ const ArmorCard = ({ armor }, props) => {
         ) : (
           <div className="relative flex h-full gap-8">
             {armor.picture && (
-              <ThemeContainer chamfer="24" borderColor={accentPrimary}>
-                <img
-                  className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
-                  src={armor.picture?.imageUrl}
-                  alt={armor.name + ' ' + 'image'}
-                />
-              </ThemeContainer>
+              <CloudinaryImage
+                className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
+                url={armor.picture?.imageUrl}
+                alt={armor.name + ' ' + 'image'}
+              />
             )}
             <div className="flex h-full grow flex-col items-start justify-between gap-6">
               <div className="flex w-full items-start justify-between gap-8">

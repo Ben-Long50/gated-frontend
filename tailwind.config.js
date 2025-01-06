@@ -20,6 +20,9 @@ export default {
         sans: ['Exo-regular'],
         logo: ['Omnitrinx', 'Exo-regular', 'Inter'],
       },
+      maxHeight: {
+        '50dvh': '50dvh',
+      },
       clipPath: {
         2: 'polygon(0.5rem 0px, 100% 0px, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0px 100%, 0px 0.5rem)',
         4: 'polygon(1rem 0px, 100% 0px, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0px 100%, 0px 1rem)',

@@ -12,6 +12,7 @@ import WardIcon from './icons/WardIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import EvasionIcon from './icons/EvasionIcon';
 import SpeedIcon from './icons/SpeedIcon';
+import CloudinaryImage from './CloudinaryImage';
 
 const CharacterCard = ({ character }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -22,17 +23,11 @@ const CharacterCard = ({ character }) => {
   return (
     <ThemeContainer chamfer="32" borderColor={accentPrimary}>
       <div className="bg-primary flex flex-wrap gap-4 p-6 clip-8 sm:flex-nowrap md:gap-8">
-        <ThemeContainer
-          className="mx-auto my-auto aspect-square w-full max-w-72"
-          chamfer="24"
-          borderColor={accentPrimary}
-        >
-          <img
-            className="aspect-square h-full w-full clip-6"
-            src={character.picture.imageUrl}
-            alt={`${character.firstName} ${character.lastName}'s card`}
-          />
-        </ThemeContainer>
+        <CloudinaryImage
+          className={`mx-auto my-auto aspect-square w-full max-w-72 clip-6`}
+          url={character.picture?.imageUrl}
+          alt={`${character.firstName} ${character.lastName}'s image`}
+        />
         <div className="flex w-full flex-col justify-between gap-4 md:gap-6">
           <div className="flex w-full items-center justify-between md:px-8">
             <h1 className="text-center text-3xl font-semibold tracking-widest">

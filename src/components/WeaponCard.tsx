@@ -14,6 +14,7 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import MagCapacityIcon from './icons/MagCapacityIcon';
 import { Link } from 'react-router-dom';
 import { Keyword } from 'src/hooks/useKeywords';
+import CloudinaryImage from './CloudinaryImage';
 
 const WeaponCard = ({ weapon }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -23,7 +24,7 @@ const WeaponCard = ({ weapon }, props) => {
   return (
     <ThemeContainer
       chamfer="24"
-      className="rounded-br-5xl rounded-tl-5xl w-full shadow-lg shadow-slate-950"
+      className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
       borderColor={accentPrimary}
     >
       <div
@@ -72,13 +73,11 @@ const WeaponCard = ({ weapon }, props) => {
               className={`flex ${detailsOpen ? 'flex-col' : 'flex-row'} items-start justify-start gap-6`}
             >
               {weapon.picture && (
-                <ThemeContainer chamfer="24" borderColor={accentPrimary}>
-                  <img
-                    className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
-                    src={weapon.picture?.imageUrl}
-                    alt={weapon.name + ' ' + 'image'}
-                  />
-                </ThemeContainer>
+                <CloudinaryImage
+                  className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
+                  url={weapon.picture?.imageUrl}
+                  alt={weapon.name + ' ' + 'image'}
+                />
               )}
               <div
                 className={`flex h-full ${weapon.picture && !detailsOpen ? 'flex-col' : 'flex-row'} flex-wrap items-start justify-between gap-4 sm:gap-8`}
@@ -154,13 +153,11 @@ const WeaponCard = ({ weapon }, props) => {
         ) : (
           <div className="relative flex h-full gap-8">
             {weapon.picture && (
-              <ThemeContainer chamfer="24" borderColor={accentPrimary}>
-                <img
-                  className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
-                  src={weapon.picture?.imageUrl}
-                  alt={weapon.name + ' ' + 'image'}
-                />
-              </ThemeContainer>
+              <CloudinaryImage
+                className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
+                url={weapon.picture?.imageUrl}
+                alt={weapon.name + ' ' + 'image'}
+              />
             )}
             <div className="flex h-full grow flex-col items-start justify-between gap-6">
               <div className="flex w-full items-start justify-between gap-8">

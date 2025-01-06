@@ -22,6 +22,7 @@ import ActionIcon from './icons/ActionIcon';
 import HealthIcon from './icons/HealthIcon';
 import SanityIcon from './icons/SanityIcon';
 import { Keyword } from 'src/hooks/useKeywords';
+import CloudinaryImage from './CloudinaryImage';
 
 const CyberneticCard = ({ cybernetic }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -31,7 +32,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
   return (
     <ThemeContainer
       chamfer="24"
-      className="rounded-br-5xl rounded-tl-5xl w-full shadow-lg shadow-slate-950"
+      className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
       borderColor={accentPrimary}
     >
       <div
@@ -92,13 +93,11 @@ const CyberneticCard = ({ cybernetic }, props) => {
               className={`flex ${detailsOpen ? 'flex-col' : 'flex-row'} items-center justify-start gap-6`}
             >
               {cybernetic.picture && (
-                <ThemeContainer chamfer="24" borderColor={accentPrimary}>
-                  <img
-                    className={`aspect-square ${detailsOpen ? 'max-w-full' : 'max-w-48'} shrink clip-6`}
-                    src={cybernetic.picture?.imageUrl}
-                    alt={cybernetic.name + ' ' + 'image'}
-                  />
-                </ThemeContainer>
+                <CloudinaryImage
+                  className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
+                  url={cybernetic.picture?.imageUrl}
+                  alt={cybernetic.name + ' ' + 'image'}
+                />
               )}
               <div
                 className={`flex h-full ${detailsOpen ? 'flex-row items-center justify-start' : 'flex-col items-start justify-between'} w-full gap-4 sm:gap-8`}
@@ -151,13 +150,11 @@ const CyberneticCard = ({ cybernetic }, props) => {
         ) : (
           <div className="relative flex h-full gap-8">
             {cybernetic.picture && (
-              <ThemeContainer chamfer="24" borderColor={accentPrimary}>
-                <img
-                  className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
-                  src={cybernetic.picture?.imageUrl}
-                  alt={cybernetic.name + ' ' + 'image'}
-                />
-              </ThemeContainer>
+              <CloudinaryImage
+                className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
+                url={cybernetic.picture?.imageUrl}
+                alt={cybernetic.name + ' ' + 'image'}
+              />
             )}
             <div className="flex h-full grow flex-col items-start justify-between gap-6">
               <div className="flex w-full items-start justify-between gap-4">

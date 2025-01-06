@@ -28,17 +28,22 @@ import ActionForm from './components/ActionForm';
 import BookEntry from './components/BookEntry';
 import BookEntryForm from './components/BookEntryForm';
 import Actions from './components/Actions';
+import ErrorReport from './components/ErrorReport';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<App />} errorElement={<ErrorPage />}>
+    <Route path="/" element={<App />}>
       <Route element={<AuthLayout />}>
         <Route index element={<Navigate to="signin" replace />} />
         <Route path="signup" element={<SignupForm />} />
         <Route path="signin" element={<SigninForm />} />
       </Route>
 
-      <Route path="glam" element={<MainLayout />}>
+      <Route path="error">
+        <Route path="report" element={<ErrorReport />} />
+      </Route>
+
+      <Route path="glam" element={<MainLayout />} errorElement={<ErrorPage />}>
         <Route path="characters">
           <Route index element={<CharacterList />} />
           <Route path="create" element={<CharacterForm />} />

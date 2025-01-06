@@ -18,9 +18,7 @@ const MainLayout = () => {
   const [navbarHeight, setNavbarHeight] = useState(0);
 
   return (
-    <div
-      className={`${theme} bg-secondary main-layout-large relative min-h-dvh w-dvw bg-opacity-85`}
-    >
+    <div className={`${theme} main-layout-large relative min-h-dvh w-dvw`}>
       <Navbar setNavbarHeight={setNavbarHeight} />
       <Sidebar
         sidebarVisibility={sidebarVisibility}
