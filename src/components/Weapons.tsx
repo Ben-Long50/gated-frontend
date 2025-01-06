@@ -63,7 +63,7 @@ const Weapons = () => {
           <searchForm.Field name="query">
             {(field) => (
               <InputField
-                label="Search armor"
+                label="Search weapons"
                 field={field}
                 onChange={() => {
                   searchForm.handleSubmit();

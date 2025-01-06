@@ -47,11 +47,11 @@ const Cybernetics = () => {
                   }}
                 >
                   <option value="">All augments</option>
-                  <option value="stat">Stat augment</option>
-                  <option value="roll">Roll augment</option>
-                  <option value="offensive">Offensive augment</option>
-                  <option value="defensive">Defensive augment</option>
-                  <option value="function">Function augment</option>
+                  <option value="stat">Stat augments</option>
+                  <option value="roll">Roll augments</option>
+                  <option value="offensive">Offensive augments</option>
+                  <option value="defensive">Defensive augments</option>
+                  <option value="function">Function augments</option>
                 </SelectField>
               )}
             </searchForm.Field>
