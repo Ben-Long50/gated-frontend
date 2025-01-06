@@ -42,16 +42,8 @@ const CharacterUpdateForm = () => {
   const attributeTree = useAttributeTree(character?.attributes);
   const perks = usePerks(attributeTree?.tree);
 
-  const updateCharacter = useUpdateCharacterMutation(
-    characterId,
-    apiUrl,
-    authToken,
-  );
-  const deleteCharacter = useDeleteCharacterMutation(
-    characterId,
-    apiUrl,
-    authToken,
-  );
+  const updateCharacter = useUpdateCharacterMutation(apiUrl, characterId);
+  const deleteCharacter = useDeleteCharacterMutation(apiUrl, characterId);
 
   const characterUpdateForm = useForm({
     defaultValues: {

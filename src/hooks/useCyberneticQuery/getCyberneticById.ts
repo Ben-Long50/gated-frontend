@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const getCyberneticById = async (apiUrl: string, cyberneticId: string) => {
+const getCyberneticById = async (apiUrl: string, cyberneticId?: string) => {
   try {
     const response = await fetch(`${apiUrl}/cybernetics/${cyberneticId}`, {
       method: 'GET',

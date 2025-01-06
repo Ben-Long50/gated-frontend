@@ -5,7 +5,6 @@ import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import WeaponCard from './WeaponCard';
 import useWeapons from '../hooks/useWeapons';
-import { LayoutContext } from '../contexts/LayoutContext';
 import SelectField from './SelectField';
 
 const Weapons = () => {
@@ -31,7 +30,7 @@ const Weapons = () => {
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
       <h1 className="text-center">Weapons</h1>
       <ThemeContainer
-        className={`rounded-br-5xl rounded-tl-5xl ml-auto w-full shadow-lg shadow-zinc-950`}
+        className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
         chamfer="24"
         borderColor={accentPrimary}
       >

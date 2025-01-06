@@ -25,11 +25,7 @@ const CyberneticForm = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { cyberneticId } = useParams();
 
-  const { data: cybernetic } = useCyberneticQuery(
-    apiUrl,
-    authToken,
-    cyberneticId,
-  );
+  const { data: cybernetic } = useCyberneticQuery(apiUrl, cyberneticId);
 
   const keywords = useKeywords();
   const attributeTree = useAttributeTree();

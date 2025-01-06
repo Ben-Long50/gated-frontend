@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const deleteCharacter = async (characterId: string, apiUrl: string) => {
+const deleteCharacter = async (apiUrl: string, characterId?: string) => {
   try {
     const response = await fetch(`${apiUrl}/characters/${characterId}`, {
       method: 'DELETE',

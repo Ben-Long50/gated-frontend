@@ -21,18 +21,10 @@ const BookEntryForm = () => {
   const { bookEntryTitle } = useParams();
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const { data: bookEntry } = useBookEntryQuery(
-    apiUrl,
-    authToken,
-    bookEntryTitle,
-  );
+  const { data: bookEntry } = useBookEntryQuery(apiUrl, bookEntryTitle);
 
   const createBookEntry = useCreateBookEntryMutation(apiUrl);
-  const deleteBookEntry = useDeleteBookEntryMutation(
-    apiUrl,
-    authToken,
-    bookEntry?.id,
-  );
+  const deleteBookEntry = useDeleteBookEntryMutation(apiUrl, bookEntry?.id);
 
   const bookEntryForm = useForm({
     defaultValues: {

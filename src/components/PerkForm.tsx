@@ -19,12 +19,7 @@ const PerkForm = () => {
 
   const { data: perk, isLoading, isPending } = usePerkQuery(apiUrl, perkId);
 
-  const createPerk = useCreatePerkMutation(
-    apiUrl,
-    authToken,
-    perkId,
-    setFormMessage,
-  );
+  const createPerk = useCreatePerkMutation(apiUrl, perkId, setFormMessage);
 
   const attributeTree = useAttributeTree(perk?.requirements);
 
