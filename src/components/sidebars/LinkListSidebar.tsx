@@ -1,4 +1,3 @@
-import WeaponIcon from '../../components/icons/WeaponIcon';
 import ThemeContainer from '../../components/ThemeContainer';
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
@@ -14,7 +13,7 @@ const LinkListSidebar = ({ title, children, numberOfEntries }) => {
 
   return (
     <ThemeContainer
-      className="rounded-br-4xl rounded-tl-4xl w-full shadow-lg shadow-slate-950"
+      className="rounded-br-4xl rounded-tl-4xl w-full shadow-md shadow-slate-950"
       chamfer="16"
       borderColor={hover ? accentPrimary : 'transparent'}
     >

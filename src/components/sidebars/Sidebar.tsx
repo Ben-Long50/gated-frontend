@@ -19,7 +19,7 @@ const Sidebar = ({
         {children}
       </div>
       <button
-        className={`${!sidebarVisibility ? '-right-3 translate-x-full' : 'right-3'} accent-primary absolute bottom-3 flex size-14 shrink-0 items-center justify-center rounded-full text-2xl font-semibold shadow-md shadow-zinc-950 sm:pt-1`}
+        className={`${!sidebarVisibility ? '-right-3 translate-x-full' : 'right-3'} timing accent-primary absolute bottom-3 flex size-14 shrink-0 items-center justify-center rounded-full text-2xl font-semibold shadow-md shadow-zinc-950 sm:pt-1`}
         onClick={() => setSidebarVisibility(!sidebarVisibility)}
       >
         {!sidebarVisibility ? (
