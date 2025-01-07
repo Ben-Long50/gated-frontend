@@ -1,16 +1,25 @@
 import { mdiChevronDown, mdiSquare, mdiTriangleSmallUp } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 
 const PerkCard = ({ perk }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [detailHeight, setDetailHeight] = useState(1000);
+
+  const detailRef = useRef(null);
+
+  useEffect(() => {
+    if (detailRef.current) {
+      setDetailHeight(detailRef.current.offsetHeight);
+    }
+  }, [detailRef.current]);
 
   return (
     <div
-      className={`${props.className} bg-secondary ${detailsOpen && 'col-span-2'} flex w-full flex-col gap-4 p-4 clip-4`}
+      className={`${props.className} bg-secondary flex w-full flex-col p-4 clip-4`}
       onClick={async (e) => {
         e.preventDefault();
         setDetailsOpen(!detailsOpen);
@@ -31,9 +40,21 @@ const PerkCard = ({ perk }, props) => {
           ></Icon>
         </span>
       </div>
-      {detailsOpen && (
-        <>
-          <ul className="list-disc">
+      <div className="overflow-hidden">
+        <div
+          ref={detailRef}
+          className="timing"
+          style={
+            detailsOpen
+              ? {
+                  marginTop: 0,
+                }
+              : {
+                  marginTop: -detailHeight - 4,
+                }
+          }
+        >
+          <ul className="list-disc py-4">
             {Object.entries(perk.requirements).length === 0 ? (
               <p>N/A</p>
             ) : (
@@ -86,8 +107,8 @@ const PerkCard = ({ perk }, props) => {
             )}
           </ul>
           <p className="text-secondary">{perk.description}</p>
-        </>
-      )}
+        </div>
+      </div>
     </div>
   );
 };

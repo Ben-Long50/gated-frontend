@@ -9,7 +9,7 @@ const Sidebar = ({
 }) => {
   return (
     <nav
-      className={`z-20 ${!sidebarVisibility && '-translate-x-full'} bg-secondary timing sticky z-10 col-start-1 row-start-2 flex max-w-96 border-r border-yellow-300 border-opacity-50 bg-opacity-90`}
+      className={`z-20 ${!sidebarVisibility && '-translate-x-full'} bg-secondary timing sticky z-10 col-start-1 row-start-2 flex max-w-96 border-r border-yellow-300 border-opacity-50`}
       style={{
         height: `calc(100dvh - ${navbarHeight}px)`,
         top: `${navbarHeight}px`,

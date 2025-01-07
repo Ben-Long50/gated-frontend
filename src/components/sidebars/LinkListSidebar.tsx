@@ -18,7 +18,7 @@ const LinkListSidebar = ({ title, children, numberOfEntries }) => {
       borderColor={hover ? accentPrimary : 'transparent'}
     >
       <div
-        className="bg-secondary relative flex flex-col pr-3 clip-4"
+        className={` ${detailsOpen ? 'bg-tertiary' : 'bg-secondary'} timing relative flex flex-col pr-3 clip-4`}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >

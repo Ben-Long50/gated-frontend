@@ -19,7 +19,7 @@ const ErrorPage = () => {
           Oops looks like you've encountered an error
         </h1>
         <CloudinaryImage
-          className="max-h-50dvh mx-auto aspect-square rounded-full shadow-lg shadow-zinc-950"
+          className="aspect-square max-w-[500px] rounded-full shadow-lg shadow-zinc-950"
           url="https://res.cloudinary.com/dm4tmla72/image/upload/w_auto,c_scale/v1736199635/error_page_image_ugfdxr.jpg"
           alt="Error page image"
         />

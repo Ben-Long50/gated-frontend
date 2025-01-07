@@ -1,6 +1,6 @@
 import { mdiChevronDown, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { LayoutContext } from '../contexts/LayoutContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ProfitsIcon from './icons/ProfitsIcon';
@@ -28,6 +28,28 @@ const CyberneticCard = ({ cybernetic }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [detailHeight, setDetailHeight] = useState(1000);
+  const [toolTip, setToolTip] = useState(null);
+
+  useEffect(() => {
+    if (toolTip) {
+      document.addEventListener('click', () => setToolTip(null));
+    } else {
+      document.removeEventListener('click', () => setToolTip(null));
+    }
+
+    return () => {
+      document.removeEventListener('click', () => setToolTip(null));
+    };
+  }, [toolTip]);
+
+  const detailRef = useRef(null);
+
+  useEffect(() => {
+    if (detailRef.current) {
+      setDetailHeight(detailRef.current.offsetHeight);
+    }
+  }, [detailRef.current]);
 
   return (
     <ThemeContainer
@@ -43,7 +65,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
         }}
       >
         {layoutSize === 'small' || layoutSize === 'xsmall' ? (
-          <div className="relative flex h-full flex-col gap-2 sm:gap-8">
+          <div className="relative flex h-full flex-col gap-4 sm:gap-8">
             <div className="flex w-full items-start justify-between gap-8">
               <div>
                 <div className="flex items-center justify-start gap-4">
@@ -83,6 +105,8 @@ const CyberneticCard = ({ cybernetic }, props) => {
                             : item.keyword.name
                         }
                         description={item.keyword.description}
+                        toolTip={toolTip}
+                        setToolTip={setToolTip}
                       />
                     );
                   },
@@ -90,7 +114,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
               </div>
             )}
             <div
-              className={`flex ${detailsOpen ? 'flex-col' : 'flex-row'} items-center justify-start gap-6`}
+              className={`flex ${detailsOpen ? 'flex-col' : 'flex-row'} items-start justify-start gap-6`}
             >
               {cybernetic.picture && (
                 <CloudinaryImage
@@ -258,121 +282,36 @@ const CyberneticCard = ({ cybernetic }, props) => {
             </div>
           </div>
         )}
-        <div
-          className={`timing ease-in-out ${!detailsOpen ? 'hidden' : 'flex'} mt-8 flex-col gap-8`}
-        >
-          <p className="text-secondary">{cybernetic.description}</p>
-          {cybernetic.weapons.length > 0 && (
-            <ThemeContainer chamfer="16" borderColor={accentPrimary}>
-              <p className="text-accent absolute -top-3 left-5 z-20 text-base">
-                Integrated weapons
-              </p>
-              <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
-                {cybernetic.weapons.map((weapon, index) => {
-                  return (
-                    <div
-                      key={weapon.name}
-                      className="flex h-full grow flex-col items-start justify-between gap-4"
-                    >
-                      <h3> {weapon.name}</h3>
-                      <div className="flex items-center gap-2">
-                        {weapon.keywords?.map(
-                          (item: { keyword: Keyword; value?: number }) => {
-                            return (
-                              <Tag
-                                key={item.keyword.id}
-                                label={
-                                  item.value
-                                    ? item.keyword.name + ' ' + item.value
-                                    : item.keyword.name
-                                }
-                                description={item.keyword.description}
-                              />
-                            );
-                          },
-                        )}
-                      </div>
-                      <div className="flex flex-wrap items-center justify-start gap-8">
-                        {weapon.stats.damage && (
-                          <div className="flex flex-col items-center gap-1">
-                            {layoutSize !== 'small' &&
-                              layoutSize !== 'xsmall' && <p>DMG</p>}
-                            <div className="flex items-center gap-2">
-                              <DamageIcon className="size-8" />
-                              <p className="sm:pt-1">{weapon.stats.damage}</p>
-                            </div>
-                          </div>
-                        )}
-                        {weapon.stats.salvo && (
-                          <div className="flex flex-col items-center gap-1">
-                            {layoutSize !== 'small' &&
-                              layoutSize !== 'xsmall' && <p>SLV</p>}
-                            <div className="flex items-center gap-2">
-                              <SalvoIcon className="size-8" />
-                              <p className="sm:pt-1">{weapon.stats.salvo}</p>
-                            </div>
-                          </div>
-                        )}
-                        {weapon.stats.flurry && (
-                          <div className="flex flex-col items-center gap-1">
-                            {layoutSize !== 'small' &&
-                              layoutSize !== 'xsmall' && <p>FLR</p>}
-                            <div className="flex items-center gap-2">
-                              <FlurryIcon className="size-8" />
-                              <p className="sm:pt-1">{weapon.stats.flurry}</p>
-                            </div>
-                          </div>
-                        )}
-                        {weapon.stats.range && (
-                          <div className="flex flex-col items-center gap-1">
-                            {layoutSize !== 'small' &&
-                              layoutSize !== 'xsmall' && <p>RNG</p>}
-                            <div className="flex items-center gap-2">
-                              <RangeIcon className="size-8" />
-                              <p className="sm:pt-1">{weapon.stats.range}</p>
-                            </div>
-                          </div>
-                        )}
-                        {weapon.stats.magCapacity && (
-                          <div className="flex flex-col items-center gap-1">
-                            {layoutSize !== 'small' &&
-                              layoutSize !== 'xsmall' && <p>MAG</p>}
-                            <div className="flex items-center gap-2">
-                              <MagCapacityIcon className="size-8" />
-                              <p className="sm:pt-1">
-                                {weapon.stats.magCapacity}/
-                                {weapon.stats.magCapacity *
-                                  (weapon.stats.magCount - 1)}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      {index < cybernetic.weapons.length - 1 && (
-                        <hr className="w-full border-yellow-300 border-opacity-50" />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </ThemeContainer>
-          )}
-          {cybernetic.armor.length > 0 && (
-            <ThemeContainer chamfer="16" borderColor={accentPrimary}>
-              <p className="text-accent absolute -top-3 left-5 z-20 text-base">
-                Integrated armor
-              </p>
-              <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
-                {cybernetic.armor.map((armor, index) => {
-                  return (
-                    <>
+        <div className={`overflow-hidden`}>
+          <div
+            ref={detailRef}
+            className={`timing flex flex-col gap-8 p-0.5 pt-4`}
+            style={
+              detailsOpen
+                ? {
+                    marginTop: 0,
+                  }
+                : {
+                    marginTop: -detailHeight - 4,
+                  }
+            }
+          >
+            <p className="text-secondary">{cybernetic.description}</p>
+            {cybernetic.weapons.length > 0 && (
+              <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+                <p className="text-accent absolute -top-3 left-5 z-20 text-base">
+                  Integrated weapons
+                </p>
+                <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                  {cybernetic.weapons.map((weapon, index) => {
+                    return (
                       <div
-                        key={armor.name}
+                        key={weapon.name}
                         className="flex h-full grow flex-col items-start justify-between gap-4"
                       >
-                        <h3> {armor.name}</h3>
+                        <h3> {weapon.name}</h3>
                         <div className="flex items-center gap-2">
-                          {armor.keywords?.map(
+                          {weapon.keywords?.map(
                             (item: { keyword: Keyword; value?: number }) => {
                               return (
                                 <Tag
@@ -383,112 +322,211 @@ const CyberneticCard = ({ cybernetic }, props) => {
                                       : item.keyword.name
                                   }
                                   description={item.keyword.description}
+                                  toolTip={toolTip}
+                                  setToolTip={setToolTip}
                                 />
                               );
                             },
                           )}
                         </div>
                         <div className="flex flex-wrap items-center justify-start gap-8">
-                          {armor.stats.armor && (
+                          {weapon.stats.damage && (
                             <div className="flex flex-col items-center gap-1">
                               {layoutSize !== 'small' &&
-                                layoutSize !== 'xsmall' && <p>AV</p>}
+                                layoutSize !== 'xsmall' && <p>DMG</p>}
                               <div className="flex items-center gap-2">
-                                <ArmorIcon className="size-8" />
-                                <p className="sm:pt-1">{armor.stats.armor}</p>
+                                <DamageIcon className="size-8" />
+                                <p className="sm:pt-1">{weapon.stats.damage}</p>
                               </div>
                             </div>
                           )}
-                          {armor.stats.ward && (
+                          {weapon.stats.salvo && (
                             <div className="flex flex-col items-center gap-1">
                               {layoutSize !== 'small' &&
-                                layoutSize !== 'xsmall' && <p>WV</p>}
+                                layoutSize !== 'xsmall' && <p>SLV</p>}
                               <div className="flex items-center gap-2">
-                                <WardIcon className="size-8" />
-                                <p className="sm:pt-1">{armor.stats.ward}</p>
+                                <SalvoIcon className="size-8" />
+                                <p className="sm:pt-1">{weapon.stats.salvo}</p>
                               </div>
                             </div>
                           )}
-                          {armor.stats.block && (
+                          {weapon.stats.flurry && (
                             <div className="flex flex-col items-center gap-1">
                               {layoutSize !== 'small' &&
-                                layoutSize !== 'xsmall' && <p>BP</p>}
+                                layoutSize !== 'xsmall' && <p>FLR</p>}
                               <div className="flex items-center gap-2">
-                                <BlockIcon className="size-8" />
-                                <p className="sm:pt-1">{armor.stats.block}</p>
+                                <FlurryIcon className="size-8" />
+                                <p className="sm:pt-1">{weapon.stats.flurry}</p>
+                              </div>
+                            </div>
+                          )}
+                          {weapon.stats.range && (
+                            <div className="flex flex-col items-center gap-1">
+                              {layoutSize !== 'small' &&
+                                layoutSize !== 'xsmall' && <p>RNG</p>}
+                              <div className="flex items-center gap-2">
+                                <RangeIcon className="size-8" />
+                                <p className="sm:pt-1">{weapon.stats.range}</p>
+                              </div>
+                            </div>
+                          )}
+                          {weapon.stats.magCapacity && (
+                            <div className="flex flex-col items-center gap-1">
+                              {layoutSize !== 'small' &&
+                                layoutSize !== 'xsmall' && <p>MAG</p>}
+                              <div className="flex items-center gap-2">
+                                <MagCapacityIcon className="size-8" />
+                                <p className="sm:pt-1">
+                                  {weapon.stats.magCapacity}/
+                                  {weapon.stats.magCapacity *
+                                    (weapon.stats.magCount - 1)}
+                                </p>
                               </div>
                             </div>
                           )}
                         </div>
-                        {index < cybernetic.armor.length - 1 && (
+                        {index < cybernetic.weapons.length - 1 && (
                           <hr className="w-full border-yellow-300 border-opacity-50" />
                         )}
                       </div>
-                    </>
-                  );
-                })}
-              </div>
-            </ThemeContainer>
-          )}
-          {cybernetic.actions.length > 0 && (
-            <ThemeContainer chamfer="16" borderColor={accentPrimary}>
-              <p className="text-accent absolute -top-3 left-5 z-20 text-base">
-                Unique actions
-              </p>
-              <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
-                {cybernetic.actions.map((action, index) => {
-                  return (
-                    <div
-                      key={action.name}
-                      className="flex h-full grow flex-col items-start justify-start gap-4"
-                    >
-                      <div className="flex items-center justify-start gap-4">
-                        <h3> {action.name}</h3>
-                        <p className="text-tertiary">
-                          (
-                          {action.actionType[0].toUpperCase() +
-                            action.actionType.slice(1)}
-                          )
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap items-center justify-start gap-8">
-                        <p className="font-semibold tracking-widest">Costs</p>
-                        {action.costs.length > 0 &&
-                          action.costs.map((cost) => {
-                            return (
-                              <div
-                                key={cost.stat}
-                                className="flex flex-col items-center"
-                              >
+                    );
+                  })}
+                </div>
+              </ThemeContainer>
+            )}
+            {cybernetic.armor.length > 0 && (
+              <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+                <p className="text-accent absolute -top-3 left-5 z-20 text-base">
+                  Integrated armor
+                </p>
+                <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                  {cybernetic.armor.map((armor, index) => {
+                    return (
+                      <>
+                        <div
+                          key={armor.name}
+                          className="flex h-full grow flex-col items-start justify-between gap-4"
+                        >
+                          <h3> {armor.name}</h3>
+                          <div className="flex items-center gap-2">
+                            {armor.keywords?.map(
+                              (item: { keyword: Keyword; value?: number }) => {
+                                return (
+                                  <Tag
+                                    key={item.keyword.id}
+                                    label={
+                                      item.value
+                                        ? item.keyword.name + ' ' + item.value
+                                        : item.keyword.name
+                                    }
+                                    description={item.keyword.description}
+                                  />
+                                );
+                              },
+                            )}
+                          </div>
+                          <div className="flex flex-wrap items-center justify-start gap-8">
+                            {armor.stats.armor && (
+                              <div className="flex flex-col items-center gap-1">
+                                {layoutSize !== 'small' &&
+                                  layoutSize !== 'xsmall' && <p>AV</p>}
                                 <div className="flex items-center gap-2">
-                                  {cost.stat === 'health' && (
-                                    <HealthIcon className="size-8" />
-                                  )}
-                                  {cost.stat === 'sanity' && (
-                                    <SanityIcon className="size-8" />
-                                  )}
-                                  {cost.stat === 'actionPoints' && (
-                                    <ActionIcon className="size-8" />
-                                  )}
-                                  {cost.stat === 'power' && (
-                                    <PowerIcon className="size-8" />
-                                  )}
-                                  <p className="sm:pt-1">{cost.value}</p>
+                                  <ArmorIcon className="size-8" />
+                                  <p className="sm:pt-1">{armor.stats.armor}</p>
                                 </div>
                               </div>
-                            );
-                          })}
+                            )}
+                            {armor.stats.ward && (
+                              <div className="flex flex-col items-center gap-1">
+                                {layoutSize !== 'small' &&
+                                  layoutSize !== 'xsmall' && <p>WV</p>}
+                                <div className="flex items-center gap-2">
+                                  <WardIcon className="size-8" />
+                                  <p className="sm:pt-1">{armor.stats.ward}</p>
+                                </div>
+                              </div>
+                            )}
+                            {armor.stats.block && (
+                              <div className="flex flex-col items-center gap-1">
+                                {layoutSize !== 'small' &&
+                                  layoutSize !== 'xsmall' && <p>BP</p>}
+                                <div className="flex items-center gap-2">
+                                  <BlockIcon className="size-8" />
+                                  <p className="sm:pt-1">{armor.stats.block}</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          {index < cybernetic.armor.length - 1 && (
+                            <hr className="w-full border-yellow-300 border-opacity-50" />
+                          )}
+                        </div>
+                      </>
+                    );
+                  })}
+                </div>
+              </ThemeContainer>
+            )}
+            {cybernetic.actions.length > 0 && (
+              <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+                <p className="text-accent absolute -top-3 left-5 z-20 text-base">
+                  Unique actions
+                </p>
+                <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                  {cybernetic.actions.map((action, index) => {
+                    return (
+                      <div
+                        key={action.name}
+                        className="flex h-full grow flex-col items-start justify-start gap-4"
+                      >
+                        <div className="flex items-center justify-start gap-4">
+                          <h3> {action.name}</h3>
+                          <p className="text-tertiary">
+                            (
+                            {action.actionType[0].toUpperCase() +
+                              action.actionType.slice(1)}
+                            )
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap items-center justify-start gap-8">
+                          <p className="font-semibold tracking-widest">Costs</p>
+                          {action.costs.length > 0 &&
+                            action.costs.map((cost) => {
+                              return (
+                                <div
+                                  key={cost.stat}
+                                  className="flex flex-col items-center"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    {cost.stat === 'health' && (
+                                      <HealthIcon className="size-8" />
+                                    )}
+                                    {cost.stat === 'sanity' && (
+                                      <SanityIcon className="size-8" />
+                                    )}
+                                    {cost.stat === 'actionPoints' && (
+                                      <ActionIcon className="size-8" />
+                                    )}
+                                    {cost.stat === 'power' && (
+                                      <PowerIcon className="size-8" />
+                                    )}
+                                    <p className="sm:pt-1">{cost.value}</p>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                        </div>
+                        <p>{action.description}</p>
+                        {index < cybernetic.actions.length - 1 && (
+                          <hr className="w-full border-yellow-300 border-opacity-50" />
+                        )}
                       </div>
-                      <p>{action.description}</p>
-                      {index < cybernetic.actions.length - 1 && (
-                        <hr className="w-full border-yellow-300 border-opacity-50" />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </ThemeContainer>
-          )}
+                    );
+                  })}
+                </div>
+              </ThemeContainer>
+            )}
+          </div>
         </div>
       </div>
     </ThemeContainer>

@@ -27,7 +27,7 @@ const AuthProvider = ({ children }) => {
       navigate('/signin');
       queryClient.clear();
     }
-  }, [isError, isSuccess]);
+  }, []);
 
   return (
     <AuthContext.Provider

@@ -23,12 +23,19 @@ export default {
       maxHeight: {
         '50dvh': '50dvh',
       },
+      backgroundColor: {
+        'zinc-850': 'rgb(31, 31, 34)',
+        'zinc-150': 'rgb(236, 236, 238)',
+      },
       clipPath: {
         2: 'polygon(0.5rem 0px, 100% 0px, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0px 100%, 0px 0.5rem)',
         4: 'polygon(1rem 0px, 100% 0px, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0px 100%, 0px 1rem)',
         6: 'polygon(1.5rem 0px, 100% 0px, 100% calc(100% - 1.5rem), calc(100% - 1.5rem) 100%, 0px 100%, 0px 1.5rem)',
         8: 'polygon(2rem 0px, 100% 0px, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0px 100%, 0px 2rem)',
         12: 'polygon(3rem 0px, 100% 0px, 100% calc(100% - 3rem), calc(100% - 3rem) 100%, 0px 100%, 0px 3rem)',
+      },
+      spacing: {
+        'neg-full': '-100%',
       },
       borderRadius: {
         '4xl': '2rem',

@@ -1,15 +1,24 @@
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Tag from './Tag';
 import { Link } from 'react-router-dom';
 
 const KeywordCard = ({ keyword }, props) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [detailHeight, setDetailHeight] = useState(1000);
+
+  const detailRef = useRef(null);
+
+  useEffect(() => {
+    if (detailRef.current) {
+      setDetailHeight(detailRef.current.offsetHeight);
+    }
+  }, [detailRef.current]);
 
   return (
     <div
-      className={`${props.className} ${detailsOpen && 'col-span-2'} bg-secondary mb-auto w-full p-4 clip-4`}
+      className={`${props.className} bg-secondary mb-auto w-full p-4 clip-4`}
       onClick={async (e) => {
         e.preventDefault();
         setDetailsOpen(!detailsOpen);
@@ -32,11 +41,25 @@ const KeywordCard = ({ keyword }, props) => {
           ></Icon>
         </span>
       </summary>
-      <div
-        className={`${!detailsOpen ? 'hidden' : 'flex'} mt-4 flex-col gap-4`}
-      >
-        <Tag label={keyword.keywordType} />
-        <p className="text-secondary">{keyword.description}</p>
+      <div className="overflow-hidden">
+        <div
+          ref={detailRef}
+          className="timing"
+          style={
+            detailsOpen
+              ? {
+                  marginTop: 0,
+                }
+              : {
+                  marginTop: -detailHeight - 4,
+                }
+          }
+        >
+          <div className="flex py-4">
+            <Tag className="mr-auto" label={keyword.keywordType} />
+          </div>
+          <p className="text-secondary">{keyword.description}</p>
+        </div>
       </div>
     </div>
   );

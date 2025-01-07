@@ -14,13 +14,13 @@
 
 @layer components {
   .bg-primary {
-    @apply border-gray-400 bg-zinc-100 dark:border-gray-600 dark:bg-zinc-900;
-  }
-  .bg-blur {
-    @apply bg-opacity-95 backdrop-blur-sm;
+    @apply bg-zinc-100 dark:bg-zinc-900;
   }
   .bg-secondary {
-    @apply border-gray-400 bg-zinc-200 dark:border-gray-600 dark:bg-zinc-800;
+    @apply dark:bg-zinc-850 bg-zinc-150;
+  }
+  .bg-tertiary {
+    @apply bg-zinc-200 dark:bg-zinc-800;
   }
   .input-primary {
     @apply bg-zinc-200 dark:bg-zinc-800;
@@ -61,9 +61,6 @@
   .scrollbar-secondary-2 {
     @apply scrollbar-thin scrollbar-track-zinc-900 scrollbar-thumb-zinc-800;
   }
-  .focus {
-    @apply outline-none ring-yellow-300 focus:border-transparent focus:ring-2;
-  }
   .timing {
     @apply transition-all duration-300 ease-in-out md:duration-300;
   }
@@ -79,7 +76,10 @@
   h4 {
     @apply text-secondary text-lg font-semibold tracking-widest lg:text-xl;
   }
-  p {
+  p,
+  input,
+  select,
+  textarea {
     @apply text-secondary text-lg tracking-wide lg:text-xl;
   }
   .auth-layout-small {
@@ -148,4 +148,19 @@ body::before {
   height: 100lvh;
   background-image: url('/public/tron_grid.jpg');
   z-index: -1;
+}
+
+.image-container {
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.image-container img {
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  transform-style: preserve-3d;
 }

@@ -17,7 +17,7 @@ const AuthLayout = () => {
       <LogoTitle className="col-start-2 row-start-1" />
       <Outlet />
       <div className="absolute left-2 top-2">
-        <ThemeContainer chamfer="8" borderColor={accentPrimary}>
+        {/* <ThemeContainer chamfer="8" borderColor={accentPrimary}>
           <button
             className="bg-secondary text-secondary hover:text-accent timing z-10 flex items-center p-2 clip-2"
             aria-label="Change theme"
@@ -28,7 +28,7 @@ const AuthLayout = () => {
               size={1.2}
             />
           </button>
-        </ThemeContainer>
+        </ThemeContainer> */}
       </div>
     </div>
   );

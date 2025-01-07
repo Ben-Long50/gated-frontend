@@ -1,15 +1,24 @@
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Tag from './Tag';
 import { Link } from 'react-router-dom';
 
 const ActionCard = ({ action }) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [detailHeight, setDetailHeight] = useState(1000);
+
+  const detailRef = useRef(null);
+
+  useEffect(() => {
+    if (detailRef.current) {
+      setDetailHeight(detailRef.current.offsetHeight);
+    }
+  }, [detailRef.current]);
 
   return (
     <div
-      className={`${detailsOpen && 'col-span-2'} bg-secondary mb-auto w-full p-4 clip-4`}
+      className={`bg-secondary mb-auto w-full p-4 clip-4`}
       onClick={async (e) => {
         e.preventDefault();
         setDetailsOpen(!detailsOpen);
@@ -32,20 +41,32 @@ const ActionCard = ({ action }) => {
           ></Icon>
         </span>
       </summary>
-      <div
-        className={`${!detailsOpen ? 'hidden' : 'flex'} mt-4 flex-col gap-4`}
-      >
-        <div className="flex items-center gap-2">
-          {action.actionSubtypes.map((subtype) => {
-            return (
-              <Tag
-                key={subtype}
-                label={subtype[0].toUpperCase() + subtype.slice(1)}
-              />
-            );
-          })}
+      <div className="overflow-hidden">
+        <div
+          ref={detailRef}
+          className="timing"
+          style={
+            detailsOpen
+              ? {
+                  marginTop: 0,
+                }
+              : {
+                  marginTop: -detailHeight - 4,
+                }
+          }
+        >
+          <div className="flex items-center gap-2 py-4">
+            {action.actionSubtypes.map((subtype) => {
+              return (
+                <Tag
+                  key={subtype}
+                  label={subtype[0].toUpperCase() + subtype.slice(1)}
+                />
+              );
+            })}
+          </div>
+          <p className="text-secondary">{action.description}</p>
         </div>
-        <p className="text-secondary">{action.description}</p>
       </div>
     </div>
   );

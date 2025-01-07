@@ -11,7 +11,7 @@ import Loading from './Loading';
 
 const ErrorReport = () => {
   const { apiUrl } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const createErrorReport = useCreateErrorReportMutation(apiUrl);
 
   const errorReportForm = useForm({
@@ -64,7 +64,7 @@ const ErrorReport = () => {
             >
               {(field) => (
                 <TextAreaField
-                  className="h-40 w-full"
+                  className="h-60 w-full"
                   label="Tell your story"
                   field={field}
                 />
@@ -87,6 +87,15 @@ const ErrorReport = () => {
                 'Submit'
               )}
             </BtnRect>
+            <button
+              className="text-accent -mt-4 self-start hover:underline sm:-mb-4"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(-1);
+              }}
+            >
+              Back
+            </button>
           </form>
         </FormLayout>
       </div>

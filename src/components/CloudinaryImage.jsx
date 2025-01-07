@@ -6,7 +6,7 @@ const CloudinaryImage = forwardRef((props, ref) => {
   const splitUrl = props.url.split('upload/');
 
   const responsiveUrl = splitUrl[0]
-    .concat('upload/w_auto,c_scale/')
+    .concat('upload/w_500,c_scale/')
     .concat(splitUrl[1]);
 
   const infoUrl = splitUrl[0].concat('upload/fl_getinfo/').concat(splitUrl[1]);
@@ -66,7 +66,7 @@ const CloudinaryImage = forwardRef((props, ref) => {
 
   return (
     <div
-      className={`${props.className} timing flex justify-center overflow-hidden`}
+      className={`${props.className} image-container timing flex w-full shrink-0 justify-center overflow-hidden`}
       style={{
         aspectRatio: aspectRatio.width / aspectRatio.height,
       }}

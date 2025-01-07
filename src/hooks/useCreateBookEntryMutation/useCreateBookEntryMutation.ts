@@ -8,12 +8,8 @@ const useCreateBookEntryMutation = (apiUrl: string) => {
       return createBookEntry(formData, apiUrl);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['bookEntry'],
-        exact: false,
-      });
       return queryClient.invalidateQueries({
-        queryKey: ['book'],
+        queryKey: ['bookEntry'],
         exact: false,
       });
     },

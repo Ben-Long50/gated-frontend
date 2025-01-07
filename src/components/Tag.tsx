@@ -1,21 +1,22 @@
-import { useState } from 'react';
-
 const Tag = (props) => {
-  const [hover, setHover] = useState(false);
   return (
-    <div
-      className="bg-primary relative self-start rounded border border-yellow-300 border-opacity-50 px-2 text-base"
-      onClick={(e) => e.stopPropagation()}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
-      <p className="text-base">{props.label}</p>
-      {hover && (
-        <div className="bg-primary scrollbar-secondary absolute left-full top-full z-10 max-h-28 w-48 -translate-x-4 -translate-y-4 overflow-y-auto bg-opacity-90 p-3 clip-4">
-          <p className="text-tertiary text-sm">{props.description}</p>
-        </div>
-      )}
-    </div>
+    <>
+      <div
+        className={`${props.className} bg-primary relative rounded border border-yellow-300 border-opacity-50 px-2 text-base`}
+        onClick={(e) => {
+          e.stopPropagation();
+          props.setToolTip(props.label);
+        }}
+      >
+        <p className="text-base">{props.label}</p>
+      </div>
+
+      <div
+        className={`${props.toolTip === props.label ? 'visible opacity-100' : 'invisible opacity-0'} bg-secondary timing scrollbar-secondary absolute right-0 top-0 z-10 max-h-full w-1/2 min-w-72 overflow-y-auto rounded-md p-3 shadow-md shadow-zinc-950`}
+      >
+        <p className="text-secondary text-base">{props.description}</p>
+      </div>
+    </>
   );
 };
 

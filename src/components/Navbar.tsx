@@ -6,16 +6,18 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiMenu } from '@mdi/js';
 import PyramidIcon from './icons/PyramidIcon';
+import NavMenuMobile from './NavMenuMobile';
+import CharacterIcon from './icons/CharacterIcon';
+import NavMenuDesktop from './NavMenuDesktop';
 
-const Navbar = ({ setNavbarHeight }) => {
+const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
   const { user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const [menuVisibility, setMenuVisibility] = useState(false);
+  const [navMenuVisibility, setNavMenuVisibility] = useState(false);
+  const [accountMenuVisibility, setAccountMenuVisibility] = useState(false);
 
   const navbarRef = useRef(null);
-
-  const height = '200px';
 
   useEffect(() => {
     if (navbarRef.current) {
@@ -26,50 +28,77 @@ const Navbar = ({ setNavbarHeight }) => {
   return layoutSize === 'xsmall' || layoutSize === 'small' ? (
     <nav
       ref={navbarRef}
-      className={`bg-primary sticky top-0 z-30 col-span-2 flex w-full flex-col items-center justify-start py-1 shadow-md shadow-black`}
+      className={`bg-primary fixed top-0 z-30 col-span-2 flex w-full flex-col items-center justify-start shadow-md shadow-black`}
     >
-      <div className="flex w-full items-center justify-between px-4">
+      <div className="my-2 flex w-full items-center justify-between px-2">
         <PyramidIcon className="size-10" />
-        <button
-          className="z-10"
-          onClick={() => setMenuVisibility(!menuVisibility)}
-        >
-          <Icon path={mdiMenu} size={1.5} className="text-secondary" />
-        </button>
+        <div className="flex items-center justify-end gap-4">
+          <button
+            className={`${navMenuVisibility && 'scale-y-150'} timing z-10`}
+            onClick={() => {
+              setAccountMenuVisibility(false);
+              setNavMenuVisibility(!navMenuVisibility);
+            }}
+          >
+            <Icon path={mdiMenu} size={1.5} className={`text-secondary`} />
+          </button>
+          <button
+            className="z-10"
+            onClick={() => {
+              setNavMenuVisibility(false);
+              setAccountMenuVisibility(!accountMenuVisibility);
+            }}
+          >
+            {user?.profilePicture ? (
+              <img
+                className="size-10 rounded-full"
+                src={user?.profilePicture}
+                alt="Profile Picture"
+              />
+            ) : (
+              <CharacterIcon className="size-10" />
+            )}
+          </button>
+        </div>
       </div>
-      <div
-        className={`${!menuVisibility ? 'invisible opacity-0' : 'py-4 opacity-100'} timing bg-primary flex w-full flex-col items-start justify-items-end gap-4 overflow-hidden px-4`}
-        style={menuVisibility ? { maxHeight: height } : { maxHeight: 0 }}
-      >
-        <Link className="w-full" to="codex">
+      <NavMenuMobile menuVisibility={navMenuVisibility}>
+        <Link className="w-full p-2" to="codex">
           <BtnNavbar
             className="w-full text-left"
-            onClick={() => setMenuVisibility(false)}
+            onClick={() => {
+              setNavMenuVisibility(false);
+              setSidebarVisibility(true);
+            }}
           >
             Codex
           </BtnNavbar>
         </Link>
         <hr className="m-0 w-full border-yellow-300 border-opacity-50" />
-        <Link className="w-full" to="characters">
+        <Link className="w-full p-2" to="characters">
           <BtnNavbar
             className="bg-primary text-left"
-            onClick={() => setMenuVisibility(false)}
+            onClick={() => {
+              setNavMenuVisibility(false);
+              setSidebarVisibility(true);
+            }}
           >
             Character
           </BtnNavbar>
         </Link>
-        <hr className="m-0 w-full border-yellow-300 border-opacity-50" />
-        <Link className="w-full" to="account">
-          <div className="flex w-full items-center justify-start gap-4">
-            <img
-              className="size-10 rounded-full"
-              src={user?.profilePicture}
-              alt="Profile Picture"
-            />
-            <p className="text-xl">Account</p>
-          </div>
+      </NavMenuMobile>
+      <NavMenuMobile menuVisibility={accountMenuVisibility}>
+        <Link className="w-full p-2" to="/error/report">
+          <BtnNavbar
+            className="w-full text-left"
+            onClick={() => {
+              setAccountMenuVisibility(false);
+            }}
+          >
+            Error report
+            <span className="text-tertiary text-sm"> (do not abuse)</span>
+          </BtnNavbar>
         </Link>
-      </div>
+      </NavMenuMobile>
     </nav>
   ) : (
     <nav
@@ -77,20 +106,46 @@ const Navbar = ({ setNavbarHeight }) => {
       className="bg-primary sticky top-0 z-30 col-span-2 flex items-center justify-between gap-4 py-2 pl-4 pr-6 shadow-md shadow-black"
     >
       <PyramidIcon className="size-10" />
-      <div className="flex items-center justify-items-end gap-10">
+      <div className="relative flex items-center justify-items-end gap-10">
         <Link to="codex">
           <BtnNavbar className="bg-primary">Codex</BtnNavbar>
         </Link>
         <Link to="characters">
           <BtnNavbar className="bg-primary">Character</BtnNavbar>
         </Link>
-        <Link to="account">
-          <img
-            className="size-10 rounded-full"
-            src={user?.profilePicture}
-            alt="Profile Picture"
-          />
-        </Link>
+
+        <button
+          className="z-10 shrink-0"
+          onClick={() => {
+            setNavMenuVisibility(false);
+            setAccountMenuVisibility(!accountMenuVisibility);
+          }}
+        >
+          {user?.profilePicture ? (
+            <img
+              className="size-10 shrink-0 rounded-full"
+              src={user?.profilePicture}
+              alt="Profile Picture"
+            />
+          ) : (
+            <CharacterIcon className="size-10" />
+          )}
+        </button>
+        <NavMenuDesktop menuVisibility={accountMenuVisibility}>
+          <Link className="hover:text-accent w-full" to="/error/report">
+            <BtnNavbar
+              className="hover:bg-secondary timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
+              onClick={() => {
+                setAccountMenuVisibility(false);
+              }}
+            >
+              <div className="flex w-full items-center gap-2">
+                <p className="text-inherit">Error report</p>
+                <p className="text-tertiary text-sm"> (do not abuse)</p>
+              </div>
+            </BtnNavbar>
+          </Link>
+        </NavMenuDesktop>
       </div>
     </nav>
   );
