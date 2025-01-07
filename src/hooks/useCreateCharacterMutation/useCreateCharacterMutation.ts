@@ -14,7 +14,7 @@ const useCreateCharacterMutation = (apiUrl: string) => {
         queryKey: ['characters'],
         exact: false,
       });
-      navigate('/characters');
+      navigate('/glam/characters');
     },
     throwOnError: false,
   });

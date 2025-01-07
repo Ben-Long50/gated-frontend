@@ -22,6 +22,7 @@ import BtnRect from './buttons/BtnRect';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
+import Loading from './Loading';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -43,7 +44,7 @@ const CharacterSheet = () => {
   const attributeTree = useAttributeTree(character?.attributes);
 
   if (isLoading || isPending) {
-    return <span></span>;
+    return <Loading />;
   }
 
   return (
