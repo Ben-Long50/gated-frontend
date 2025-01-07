@@ -7,6 +7,7 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
 import useSignupMutation from '../hooks/useSignupMutation/useSignupMutation';
 import { useForm } from '@tanstack/react-form';
+import Loading from './Loading';
 
 const SignupForm = () => {
   const [errors, setErrors] = useState([]);
@@ -114,7 +115,16 @@ const SignupForm = () => {
             )}
           </signupForm.Field>
         </div>
-        <BtnRect type="submit">Sign up</BtnRect>
+        <BtnRect type="submit" className="group w-full min-w-40">
+          {signupMutation.isPending ? (
+            <Loading
+              className="text-gray-900 group-hover:text-yellow-300"
+              size={1.15}
+            />
+          ) : (
+            'Sign up'
+          )}
+        </BtnRect>
         <p className="text-tertiary text-center">
           Already have an account?
           <Link to="/signin">

@@ -10,6 +10,7 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import BtnAuth from './buttons/BtnAuth';
 import { useForm } from '@tanstack/react-form';
 import useSigninMutation from '../hooks/useSigninMutation/useSigninMutation';
+import Loading from './Loading';
 
 const SigninForm = () => {
   const [errors, setErrors] = useState([]);
@@ -88,7 +89,16 @@ const SigninForm = () => {
             )}
           </signinForm.Field>
         </div>
-        <BtnRect type="submit">Sign in</BtnRect>
+        <BtnRect type="submit" className="group w-full min-w-40">
+          {signinMutation.isPending ? (
+            <Loading
+              className="text-gray-900 group-hover:text-yellow-300"
+              size={1.15}
+            />
+          ) : (
+            'Sign in'
+          )}
+        </BtnRect>
         <div className="text-tertiary -my-2 flex items-center">
           <hr className="grow border-gray-400" />
           <p className="mx-4 text-gray-400">or</p>

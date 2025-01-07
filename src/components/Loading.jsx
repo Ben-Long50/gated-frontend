@@ -10,7 +10,7 @@ const Loading = (props) => {
       className={`${theme} flex h-full flex-col items-center justify-center bg-transparent md:gap-8`}
     >
       <Icon
-        className={`spin ${props.className}`}
+        className={`spin text-accent ${props.className}`}
         path={mdiLoading}
         size={props.size || 5}
       />

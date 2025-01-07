@@ -6,6 +6,7 @@ import useKeywords from '../hooks/useKeywords';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import { LayoutContext } from '../contexts/LayoutContext';
+import Loading from './Loading';
 
 const Keywords = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -27,7 +28,7 @@ const Keywords = () => {
   });
 
   if (keywords.isLoading || keywords.isPending) {
-    return <span></span>;
+    return <Loading />;
   }
 
   return (

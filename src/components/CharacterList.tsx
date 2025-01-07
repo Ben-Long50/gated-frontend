@@ -17,7 +17,7 @@ const CharacterList = () => {
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-3">
-      {characters?.length === 0 ? (
+      {!characters || characters?.length === 0 ? (
         <div className="flex w-full flex-col items-center justify-center gap-8">
           <h1>You haven't created any characters yet. Try it out</h1>
           <Link to="create">

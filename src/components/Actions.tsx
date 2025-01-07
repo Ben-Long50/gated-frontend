@@ -6,6 +6,7 @@ import { useForm } from '@tanstack/react-form';
 import { LayoutContext } from '../contexts/LayoutContext';
 import useActions from '../hooks/useActions';
 import ActionCard from './ActionCard';
+import Loading from './Loading';
 
 const Actions = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -23,7 +24,7 @@ const Actions = () => {
   });
 
   if (actions.isLoading || actions.isPending) {
-    return <span></span>;
+    return <Loading />;
   }
 
   return (

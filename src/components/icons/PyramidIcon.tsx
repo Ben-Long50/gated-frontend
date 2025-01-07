@@ -1,7 +1,7 @@
 const PyramidIcon = (props) => {
   return (
     <svg
-      className={`${props.className}`}
+      className={`${props.className} `}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="-5.0 -10.0 110.0 110.0"
     >

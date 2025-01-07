@@ -1,5 +1,5 @@
 import PerkList from './PerkList';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import usePerks from '../hooks/usePerks';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -7,11 +7,11 @@ import { useForm } from '@tanstack/react-form';
 import InputField from './InputField';
 import { LayoutContext } from '../contexts/LayoutContext';
 import SelectField from './SelectField';
+import Loading from './Loading';
 
 const Perks = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
-  const [attributeFilter, setAttributefilter] = useState('');
 
   const perks = usePerks();
 
@@ -27,7 +27,7 @@ const Perks = () => {
   });
 
   if (perks.isLoading || perks.isPending) {
-    return <span></span>;
+    return <Loading />;
   }
 
   return (

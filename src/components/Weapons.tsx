@@ -6,6 +6,7 @@ import { useForm } from '@tanstack/react-form';
 import WeaponCard from './WeaponCard';
 import useWeapons from '../hooks/useWeapons';
 import SelectField from './SelectField';
+import Loading from './Loading';
 
 const Weapons = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -23,7 +24,7 @@ const Weapons = () => {
   });
 
   if (weapons.isLoading || weapons.isPending) {
-    return <span></span>;
+    return <Loading />;
   }
 
   return (
