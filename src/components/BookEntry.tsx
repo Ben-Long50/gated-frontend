@@ -27,7 +27,7 @@ const BookEntry = () => {
         className="ql-editor whitespace-pre-wrap"
         dangerouslySetInnerHTML={{ __html: bookEntry.content }}
       />
-      {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+      {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
         <div className="flex w-full items-center justify-end">
           <Link to="update">
             <button className="text-accent hover:underline">Edit entry</button>

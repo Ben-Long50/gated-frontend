@@ -72,7 +72,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
               <div>
                 <div className="flex items-center justify-start gap-4">
                   <h2> {cybernetic.name}</h2>
-                  {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                  {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
                     <Link to={`${cybernetic.id}/update`}>
                       <button className="text-accent hover:underline">
                         Edit
@@ -189,7 +189,8 @@ const CyberneticCard = ({ cybernetic }, props) => {
                 <div>
                   <div className="flex items-center justify-start gap-4">
                     <h2> {cybernetic.name}</h2>
-                    {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                    {(user?.role === 'ADMIN' ||
+                      user?.role === 'SUPERADMIN') && (
                       <Link to={`${cybernetic.id}/update`}>
                         <button className="text-accent hover:underline">
                           Edit

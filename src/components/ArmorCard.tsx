@@ -65,7 +65,7 @@ const ArmorCard = ({ armor }, props) => {
               <div className="flex w-full items-start justify-between gap-8">
                 <div className="flex items-center justify-start gap-4">
                   <h2> {armor.name}</h2>
-                  {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                  {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
                     <Link to={`${armor.id}/update`}>
                       <button className="text-accent hover:underline">
                         Edit
@@ -202,7 +202,7 @@ const ArmorCard = ({ armor }, props) => {
               <div className="flex w-full items-start justify-between gap-8">
                 <div className="flex items-center justify-start gap-4">
                   <h2> {armor.name}</h2>
-                  {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                  {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
                     <Link to={`${armor.id}/update`}>
                       <button className="text-accent hover:underline">
                         Edit

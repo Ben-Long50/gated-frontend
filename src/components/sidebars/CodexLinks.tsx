@@ -42,7 +42,7 @@ const CodexLinks = ({ setSidebarVisibility }) => {
             />
           );
         })}
-        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <LinkSidebar
             title="Create entry"
             path="codex/book/create"
@@ -63,7 +63,7 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/weapons"
           setSidebarVisibility={setSidebarVisibility}
         />
-        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <LinkSidebar
             title="Create a new weapon"
             path="codex/weapons/create"
@@ -84,7 +84,7 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/armor"
           setSidebarVisibility={setSidebarVisibility}
         />
-        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <LinkSidebar
             title="Create new armor"
             path="codex/armor/create"
@@ -105,7 +105,7 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/cybernetics"
           setSidebarVisibility={setSidebarVisibility}
         />
-        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <LinkSidebar
             title="Create a new cybernetic"
             path="codex/cybernetics/create"
@@ -126,7 +126,7 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/perks"
           setSidebarVisibility={setSidebarVisibility}
         />
-        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <LinkSidebar
             title="Create a new perk"
             path="codex/perks/create"
@@ -147,7 +147,7 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/keywords"
           setSidebarVisibility={setSidebarVisibility}
         />
-        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <LinkSidebar
             title="Create a new keyword"
             path="codex/keywords/create"
@@ -168,7 +168,7 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/actions"
           setSidebarVisibility={setSidebarVisibility}
         />
-        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <LinkSidebar
             title="Create a new action"
             path="codex/actions/create"

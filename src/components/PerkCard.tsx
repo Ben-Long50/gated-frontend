@@ -30,7 +30,7 @@ const PerkCard = ({ perk }, props) => {
       <div className={`text-primary flex w-full items-center justify-between`}>
         <div className="flex w-full items-center justify-between gap-4 pr-2">
           <h3> {perk.name}</h3>
-          {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+          {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
             <Link to={`${perk.id}/update`}>
               <button className="text-accent hover:underline">Edit</button>
             </Link>

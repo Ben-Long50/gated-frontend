@@ -31,7 +31,7 @@ const KeywordCard = ({ keyword }, props) => {
       >
         <div className="flex w-full items-center justify-between gap-4 pr-2">
           <h3> {keyword.name}</h3>
-          {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+          {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
             <Link to={`${keyword.id}/update`}>
               <button className="text-accent hover:underline">Edit</button>
             </Link>
