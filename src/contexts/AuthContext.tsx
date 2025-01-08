@@ -16,7 +16,13 @@ const AuthProvider = ({ children }) => {
     ? import.meta.env.VITE_LOCAL_BACKEND_URL
     : import.meta.env.VITE_API_URL;
 
-  const { data: user, isError, isSuccess, isLoading } = useAccountQuery(apiUrl);
+  const {
+    data: user,
+    isError,
+    isSuccess,
+    isLoading,
+    isPending,
+  } = useAccountQuery(apiUrl);
 
   useEffect(() => {
     if (
@@ -30,7 +36,7 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  if (isLoading) {
+  if (isLoading || isPending) {
     return <Loading />;
   }
 
