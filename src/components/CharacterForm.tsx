@@ -107,7 +107,7 @@ const CharacterForm = () => {
   return (
     <FormLayout>
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 lg:p-8"
+        className="flex flex-col gap-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();

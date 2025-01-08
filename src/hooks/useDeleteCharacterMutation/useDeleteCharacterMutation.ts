@@ -14,7 +14,7 @@ const useDeleteCharacterMutation = (apiUrl: string, characterId?: string) => {
         queryKey: ['characters'],
         exact: false,
       });
-      navigate('/characters');
+      navigate('/glam/characters');
       console.log('Character successfully deleted');
     },
     onError: () => {

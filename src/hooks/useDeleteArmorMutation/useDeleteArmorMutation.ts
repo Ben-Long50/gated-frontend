@@ -1,26 +1,26 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import deleteArmor from './deleteArmor';
 import { useNavigate } from 'react-router-dom';
-import updateCharacter from './updateCharacter';
 
-const useUpdateCharacterMutation = (
+const useDeleteArmorMutation = (
   apiUrl: string,
-  characterId: string,
+  armorId: string,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: (formData: FormData) => {
-      return updateCharacter(formData, apiUrl, characterId);
+    mutationFn: () => {
+      return deleteArmor(apiUrl, armorId);
     },
     onSuccess: () => {
-      navigate(`/glam/characters`);
+      navigate('/glam/codex/armor');
       queryClient.invalidateQueries({
-        queryKey: ['character'],
+        queryKey: ['armorPiece'],
         exact: false,
       });
       return queryClient.invalidateQueries({
-        queryKey: ['characters'],
+        queryKey: ['armor'],
         exact: false,
       });
     },
@@ -31,4 +31,4 @@ const useUpdateCharacterMutation = (
   });
 };
 
-export default useUpdateCharacterMutation;
+export default useDeleteArmorMutation;

@@ -1,26 +1,26 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import deleteWeapon from './deleteWeapon';
 import { useNavigate } from 'react-router-dom';
-import updateCharacter from './updateCharacter';
 
-const useUpdateCharacterMutation = (
+const useDeleteWeaponMutation = (
   apiUrl: string,
-  characterId: string,
+  weaponId: string,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: (formData: FormData) => {
-      return updateCharacter(formData, apiUrl, characterId);
+    mutationFn: () => {
+      return deleteWeapon(apiUrl, weaponId);
     },
     onSuccess: () => {
-      navigate(`/glam/characters`);
+      navigate('/glam/codex/weapons');
       queryClient.invalidateQueries({
-        queryKey: ['character'],
+        queryKey: ['weapon'],
         exact: false,
       });
       return queryClient.invalidateQueries({
-        queryKey: ['characters'],
+        queryKey: ['weapons'],
         exact: false,
       });
     },
@@ -31,4 +31,4 @@ const useUpdateCharacterMutation = (
   });
 };
 
-export default useUpdateCharacterMutation;
+export default useDeleteWeaponMutation;

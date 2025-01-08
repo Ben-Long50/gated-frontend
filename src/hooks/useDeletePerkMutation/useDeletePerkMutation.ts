@@ -1,26 +1,26 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import deletePerk from './deletePerk';
 import { useNavigate } from 'react-router-dom';
-import updateCharacter from './updateCharacter';
 
-const useUpdateCharacterMutation = (
+const useDeletePerkMutation = (
   apiUrl: string,
-  characterId: string,
+  perkId: string,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: (formData: FormData) => {
-      return updateCharacter(formData, apiUrl, characterId);
+    mutationFn: () => {
+      return deletePerk(apiUrl, perkId);
     },
     onSuccess: () => {
-      navigate(`/glam/characters`);
+      navigate('/glam/codex/perks');
       queryClient.invalidateQueries({
-        queryKey: ['character'],
+        queryKey: ['perk'],
         exact: false,
       });
       return queryClient.invalidateQueries({
-        queryKey: ['characters'],
+        queryKey: ['perks'],
         exact: false,
       });
     },
@@ -31,4 +31,4 @@ const useUpdateCharacterMutation = (
   });
 };
 
-export default useUpdateCharacterMutation;
+export default useDeletePerkMutation;

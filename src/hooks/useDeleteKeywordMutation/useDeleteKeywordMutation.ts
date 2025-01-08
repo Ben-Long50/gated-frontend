@@ -1,26 +1,26 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import deleteKeyword from './deleteKeyword';
 import { useNavigate } from 'react-router-dom';
-import updateCharacter from './updateCharacter';
 
-const useUpdateCharacterMutation = (
+const useDeleteKeywordMutation = (
   apiUrl: string,
-  characterId: string,
+  keywordId: string,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: (formData: FormData) => {
-      return updateCharacter(formData, apiUrl, characterId);
+    mutationFn: () => {
+      return deleteKeyword(apiUrl, keywordId);
     },
     onSuccess: () => {
-      navigate(`/glam/characters`);
+      navigate('/glam/codex/keywords');
       queryClient.invalidateQueries({
-        queryKey: ['character'],
+        queryKey: ['keyword'],
         exact: false,
       });
       return queryClient.invalidateQueries({
-        queryKey: ['characters'],
+        queryKey: ['keywords'],
         exact: false,
       });
     },
@@ -31,4 +31,4 @@ const useUpdateCharacterMutation = (
   });
 };
 
-export default useUpdateCharacterMutation;
+export default useDeleteKeywordMutation;

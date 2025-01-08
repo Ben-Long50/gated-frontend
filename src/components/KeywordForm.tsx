@@ -10,10 +10,12 @@ import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';
 import { useParams } from 'react-router-dom';
 import useKeywordQuery from '../hooks/useKeywordQuery/useKeywordQuery';
+import useDeleteKeywordMutation from '../hooks/useDeleteKeywordMutation/useDeleteKeywordMutation';
 
 const KeywordForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
+  const [deleteMode, setDeleteMode] = useState(false);
   const { keywordId } = useParams();
 
   const { data: keyword } = useKeywordQuery(apiUrl, keywordId);
@@ -23,6 +25,23 @@ const KeywordForm = () => {
     keywordId,
     setFormMessage,
   );
+  const deleteKeyword = useDeleteKeywordMutation(
+    apiUrl,
+    keywordId,
+    setFormMessage,
+  );
+
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteKeyword.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
+
+  const handleReset = async () => {
+    keywordForm.reset();
+  };
 
   const keywordForm = useForm({
     defaultValues: {
@@ -36,9 +55,18 @@ const KeywordForm = () => {
   });
 
   return (
-    <FormLayout>
+    <FormLayout
+      itemId={keywordId}
+      createMutation={createKeyword}
+      deleteMutation={deleteKeyword}
+      handleDelete={handleDelete}
+      handleReset={handleReset}
+      formMessage={formMessage}
+      deleteMode={deleteMode}
+      setDeleteMode={setDeleteMode}
+    >
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
+        className="flex flex-col gap-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -104,28 +132,6 @@ const KeywordForm = () => {
             'Create'
           )}
         </BtnRect>
-        {formMessage && (
-          <div className="flex w-full items-center justify-between">
-            {createKeyword.isPending && <p>Submitting...</p>}
-            {createKeyword.isSuccess && <p>{formMessage}</p>}
-            {createKeyword.isError && (
-              <p>
-                Error creating keyword:{' '}
-                <span className="text-error">{formMessage}</span>
-              </p>
-            )}
-            <button
-              className="text-accent text-xl hover:underline"
-              onClick={() => {
-                e.preventDefault();
-                setFormMessage('');
-                keywordForm.reset();
-              }}
-            >
-              Reset form
-            </button>
-          </div>
-        )}
       </form>
     </FormLayout>
   );

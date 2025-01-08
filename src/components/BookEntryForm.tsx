@@ -123,7 +123,7 @@ const BookEntryForm = () => {
                     deleteMode ? deleteBookEntry.mutate() : setDeleteMode(true);
                   }}
                 >
-                  Delete Entry
+                  Delete entry
                 </button>
                 {deleteMode && (
                   <div className="grow">
@@ -162,18 +162,13 @@ const BookEntryForm = () => {
           )}
           {formMessage && (
             <div className="flex w-full items-center justify-between">
-              {createBookEntry.isPending && <p>Submitting...</p>}
-              {createBookEntry.isSuccess && <p>{formMessage}</p>}
-              {createBookEntry.isError && (
-                <p>
-                  Error creating book entry:{' '}
-                  <span className="text-error">{formMessage}</span>
-                </p>
+              {(createBookEntry.isPending || deleteBookEntry.isPaused) && (
+                <p>Submitting...</p>
               )}
-              {deleteBookEntry.isError && (
+              {createBookEntry.isSuccess && <p>{formMessage}</p>}
+              {(createBookEntry.isError || deleteBookEntry.isError) && (
                 <p>
-                  Error deleting book entry:{' '}
-                  <span className="text-error">{formMessage}</span>
+                  Error : <span className="text-error">{formMessage}</span>
                 </p>
               )}
               <button

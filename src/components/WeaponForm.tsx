@@ -17,11 +17,13 @@ import FormLayout from '../layouts/FormLayout';
 import WeaponIcon from './icons/WeaponIcon';
 import { useParams } from 'react-router-dom';
 import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
+import useDeleteWeaponMutation from '../hooks/useDeleteWeaponMutation/useDeleteWeaponMutation';
 
 const WeaponForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
+  const [deleteMode, setDeleteMode] = useState(false);
   const { weaponId } = useParams();
 
   const { data: weapon } = useWeaponQuery(apiUrl, weaponId);
@@ -33,6 +35,23 @@ const WeaponForm = () => {
   );
 
   const createWeapon = useCreateWeaponMutation(apiUrl, setFormMessage);
+  const deleteWeapon = useDeleteWeaponMutation(
+    apiUrl,
+    weaponId,
+    setFormMessage,
+  );
+
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteWeapon.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
+
+  const handleReset = async () => {
+    weaponForm.reset();
+  };
 
   const weaponKeywordData = weapon?.keywords.map(
     (item: { keyword: Keyword; value?: number }) => {
@@ -104,9 +123,18 @@ const WeaponForm = () => {
   }
 
   return (
-    <FormLayout>
+    <FormLayout
+      itemId={weaponId}
+      createMutation={createWeapon}
+      deleteMutation={deleteWeapon}
+      handleDelete={handleDelete}
+      handleReset={handleReset}
+      formMessage={formMessage}
+      deleteMode={deleteMode}
+      setDeleteMode={setDeleteMode}
+    >
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
+        className="flex flex-col gap-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -360,28 +388,6 @@ const WeaponForm = () => {
             'Create'
           )}
         </BtnRect>
-        {formMessage && (
-          <div className="flex w-full items-center justify-between">
-            {createWeapon.isPending && <p>Submitting...</p>}
-            {createWeapon.isSuccess && <p>{formMessage}</p>}
-            {createWeapon.isError && (
-              <p>
-                Error creating weapon:{' '}
-                <span className="text-error">{formMessage}</span>
-              </p>
-            )}
-            <button
-              className="text-accent text-xl hover:underline"
-              onClick={(e) => {
-                e.preventDefault();
-                setFormMessage('');
-                weaponForm.reset();
-              }}
-            >
-              Reset form
-            </button>
-          </div>
-        )}
       </form>
     </FormLayout>
   );

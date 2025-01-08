@@ -29,7 +29,7 @@ const CharacterUpdateForm = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
   const { characterId } = useParams();
-
+  const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
 
   const { data: character } = useCharacterQuery(apiUrl, characterId);
@@ -42,8 +42,24 @@ const CharacterUpdateForm = () => {
   const attributeTree = useAttributeTree(character?.attributes);
   const perks = usePerks(attributeTree?.tree);
 
-  const updateCharacter = useUpdateCharacterMutation(apiUrl, characterId);
+  const updateCharacter = useUpdateCharacterMutation(
+    apiUrl,
+    characterId,
+    setFormMessage,
+  );
   const deleteCharacter = useDeleteCharacterMutation(apiUrl, characterId);
+
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteCharacter.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
+
+  const handleReset = async () => {
+    characterUpdateForm.reset();
+  };
 
   const characterUpdateForm = useForm({
     defaultValues: {
@@ -127,9 +143,18 @@ const CharacterUpdateForm = () => {
   }
 
   return (
-    <FormLayout>
+    <FormLayout
+      itemId={characterId}
+      createMutation={updateCharacter}
+      deleteMutation={deleteCharacter}
+      handleDelete={handleDelete}
+      handleReset={handleReset}
+      formMessage={formMessage}
+      deleteMode={deleteMode}
+      setDeleteMode={setDeleteMode}
+    >
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 lg:p-8"
+        className="flex flex-col gap-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -272,10 +297,14 @@ const CharacterUpdateForm = () => {
           <characterUpdateForm.Field
             name="stats.currentHealth"
             validators={{
-              onChange: ({ value }) =>
-                value > attributeTree.stats.health
-                  ? 'Cannot exceed max health'
-                  : undefined,
+              onChange: ({ value }) => {
+                if (value > attributeTree.stats.health) {
+                  return 'Cannot exceed max health';
+                } else if (value < 0) {
+                  return 'Health cannot be lower than 0';
+                }
+                return undefined;
+              },
             }}
           >
             {(field) => (
@@ -301,10 +330,14 @@ const CharacterUpdateForm = () => {
           <characterUpdateForm.Field
             name="stats.currentSanity"
             validators={{
-              onChange: ({ value }) =>
-                value > attributeTree.stats.sanity
-                  ? 'Cannot exceed max sanity'
-                  : undefined,
+              onChange: ({ value }) => {
+                if (value > attributeTree.stats.sanity) {
+                  return 'Cannot exceed max sanity';
+                } else if (value < 0) {
+                  return 'Sanity cannot be lower than 0';
+                }
+                return undefined;
+              },
             }}
           >
             {(field) => (
@@ -354,7 +387,7 @@ const CharacterUpdateForm = () => {
           checkedPerks={checkedPerks}
           setCheckedPerks={setCheckedPerks}
         />
-        <div className="grid grid-cols-2 gap-4 sm:gap-8">
+        <div className="flex flex-col gap-4 sm:gap-8">
           <BtnRect type="submit" className="group w-full">
             {updateCharacter.isPending ? (
               <Loading
@@ -364,15 +397,6 @@ const CharacterUpdateForm = () => {
             ) : (
               'Update'
             )}
-          </BtnRect>
-          <BtnRect
-            className="ml-auto"
-            onClick={(e) => {
-              e.preventDefault();
-              !deleteMode ? setDeleteMode(true) : deleteCharacter.mutate();
-            }}
-          >
-            Delete character
           </BtnRect>
           {deleteMode && (
             <div className="col-span-2 flex flex-col items-center justify-center gap-2 lg:gap-4">
@@ -390,12 +414,6 @@ const CharacterUpdateForm = () => {
                 gone forever. To continue, click the "Delete character" button
                 again.
               </p>
-              <button
-                className="text-secondary self-end pr-4 text-xl hover:underline"
-                onClick={() => setDeleteMode(false)}
-              >
-                Cancel
-              </button>
             </div>
           )}
         </div>

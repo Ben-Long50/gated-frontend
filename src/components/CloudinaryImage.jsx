@@ -3,13 +3,18 @@ import { forwardRef, useEffect, useState } from 'react';
 const CloudinaryImage = forwardRef((props, ref) => {
   const [aspectRatio, setAspectRatio] = useState({ width: 1, height: 1 });
 
-  const splitUrl = props.url.split('upload/');
+  let responsiveUrl;
+  let infoUrl;
 
-  const responsiveUrl = splitUrl[0]
-    .concat('upload/w_500,c_scale/')
-    .concat(splitUrl[1]);
+  if (props.url) {
+    const splitUrl = props.url?.split('upload/');
 
-  const infoUrl = splitUrl[0].concat('upload/fl_getinfo/').concat(splitUrl[1]);
+    responsiveUrl = splitUrl[0]
+      .concat('upload/w_500,c_scale/')
+      .concat(splitUrl[1]);
+
+    infoUrl = splitUrl[0].concat('upload/fl_getinfo/').concat(splitUrl[1]);
+  }
 
   useEffect(() => {
     if (window.cloudinary) {
@@ -60,8 +65,9 @@ const CloudinaryImage = forwardRef((props, ref) => {
         setAspectRatio(1);
       }
     };
-
-    getAspecRatio();
+    if (infoUrl) {
+      getAspecRatio();
+    }
   }, [infoUrl]);
 
   return (
@@ -73,7 +79,7 @@ const CloudinaryImage = forwardRef((props, ref) => {
     >
       <img
         ref={ref}
-        className="cld-responsive object-cover"
+        className="cld-responsive text-secondary object-cover text-xl"
         width={props.width}
         height={props.height}
         data-src={responsiveUrl}

@@ -1,26 +1,26 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import deleteAction from './deleteAction';
 import { useNavigate } from 'react-router-dom';
-import updateCharacter from './updateCharacter';
 
-const useUpdateCharacterMutation = (
+const useDeleteActionMutation = (
   apiUrl: string,
-  characterId: string,
+  actionId: string,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: (formData: FormData) => {
-      return updateCharacter(formData, apiUrl, characterId);
+    mutationFn: () => {
+      return deleteAction(apiUrl, actionId);
     },
     onSuccess: () => {
-      navigate(`/glam/characters`);
+      navigate('/glam/codex/actions');
       queryClient.invalidateQueries({
-        queryKey: ['character'],
+        queryKey: ['action'],
         exact: false,
       });
       return queryClient.invalidateQueries({
-        queryKey: ['characters'],
+        queryKey: ['actions'],
         exact: false,
       });
     },
@@ -31,4 +31,4 @@ const useUpdateCharacterMutation = (
   });
 };
 
-export default useUpdateCharacterMutation;
+export default useDeleteActionMutation;

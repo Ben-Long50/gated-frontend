@@ -180,6 +180,7 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
 
   return {
     tree: attributeTree,
+    emptyAttributeTree,
     setAttributeTree,
     getAttributePoints,
     getSkillPoints,

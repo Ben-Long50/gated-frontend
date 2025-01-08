@@ -21,7 +21,11 @@ const CharacterCard = ({ character }) => {
   const attributeTree = useAttributeTree(character?.attributes);
 
   return (
-    <ThemeContainer chamfer="32" borderColor={accentPrimary}>
+    <ThemeContainer
+      className="rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
+      chamfer="32"
+      borderColor={accentPrimary}
+    >
       <div className="bg-primary flex flex-wrap gap-4 p-6 clip-8 sm:flex-nowrap md:gap-8">
         <CloudinaryImage
           className={`mx-auto my-auto aspect-square w-full max-w-72 clip-6`}

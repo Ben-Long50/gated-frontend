@@ -11,10 +11,13 @@ import FormLayout from '../layouts/FormLayout';
 import { useParams } from 'react-router-dom';
 import usePerkQuery from '../hooks/usePerkQuery/usePerkQuery';
 import Loading from './Loading';
+import useDeletePerkMutation from '../hooks/useDeletePerkMutation/useDeletePerkMutation';
 
 const PerkForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
+  const [deleteMode, setDeleteMode] = useState(false);
+
   const { perkId } = useParams();
 
   const {
@@ -26,6 +29,32 @@ const PerkForm = () => {
   } = usePerkQuery(apiUrl, perkId);
 
   const createPerk = useCreatePerkMutation(apiUrl, perkId, setFormMessage);
+  const deletePerk = useDeletePerkMutation(apiUrl, perkId, setFormMessage);
+
+  const handleDelete = () => {
+    if (deleteMode) {
+      deletePerk.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
+
+  const handleReset = async () => {
+    if (perkId) {
+      const { data: refetchedPerk } = await refetch();
+      attributeTree.setAttributeTree(
+        attributeTree.structureTree(refetchedPerk.requirements),
+      );
+      perkForm.reset({
+        name: refetchedPerk.name,
+        description: refetchedPerk.description,
+        requirements: attributeTree.structureTree(refetchedPerk.requirements),
+      });
+    } else {
+      attributeTree.setAttributeTree(attributeTree.emptyAttributeTree);
+      perkForm.reset();
+    }
+  };
 
   const attributeTree = useAttributeTree(perk?.requirements);
 
@@ -48,9 +77,18 @@ const PerkForm = () => {
   }
 
   return (
-    <FormLayout>
+    <FormLayout
+      itemId={perkId}
+      createMutation={createPerk}
+      deleteMutation={deletePerk}
+      handleDelete={handleDelete}
+      handleReset={handleReset}
+      formMessage={formMessage}
+      deleteMode={deleteMode}
+      setDeleteMode={setDeleteMode}
+    >
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
+        className="flex flex-col gap-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -113,43 +151,6 @@ const PerkForm = () => {
             'Create'
           )}
         </BtnRect>
-        {formMessage && (
-          <div className="flex w-full items-center justify-between">
-            {createPerk.isPending && <p>Submitting...</p>}
-            {createPerk.isSuccess && <p>{formMessage}</p>}
-            {createPerk.isError && (
-              <p>
-                Error creating perk:{' '}
-                <span className="text-error">{formMessage}</span>
-              </p>
-            )}
-            <button
-              className="text-accent text-xl hover:underline"
-              onClick={
-                perkId
-                  ? async (e) => {
-                      e.preventDefault();
-                      const { data: refetchedPerk } = await refetch();
-                      attributeTree.setAttributeTree(
-                        attributeTree.structureTree(refetchedPerk.requirements),
-                      );
-                      perkForm.reset({
-                        name: refetchedPerk.name,
-                        description: refetchedPerk.description,
-                        requirements: attributeTree.structureTree(
-                          refetchedPerk.requirements,
-                        ),
-                      });
-                    }
-                  : () => {
-                      perkForm.reset();
-                    }
-              }
-            >
-              Reset form
-            </button>
-          </div>
-        )}
       </form>
     </FormLayout>
   );

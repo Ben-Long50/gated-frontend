@@ -12,18 +12,20 @@ import Icon from '@mdi/react';
 import { mdiClose, mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import InputFieldBasic from './InputFieldBasic';
-import useCreateCyberneticMutation from '../hooks/useCreateCyberneticMutation copy/useCreateCyberneticMutation';
+import useCreateCyberneticMutation from '../hooks/useCreateCyberneticMutation/useCreateCyberneticMutation';
 import SelectField from './SelectField';
 import FormLayout from '../layouts/FormLayout';
 import useAttributeTree from '../hooks/useAttributeTree';
 import CyberIcon from './icons/CyberIcon';
 import useCyberneticQuery from '../hooks/useCyberneticQuery/useCyberneticQuery';
 import { useParams } from 'react-router-dom';
+import useDeleteCyberneticMutation from '../hooks/useDeleteCyberneticMutation/useDeleteCyberneticMutation';
 
 const CyberneticForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
+  const [deleteMode, setDeleteMode] = useState(false);
   const { cyberneticId } = useParams();
 
   const { data: cybernetic } = useCyberneticQuery(apiUrl, cyberneticId);
@@ -36,6 +38,23 @@ const CyberneticForm = () => {
   );
 
   const createCybernetic = useCreateCyberneticMutation(apiUrl, setFormMessage);
+  const deleteCybernetic = useDeleteCyberneticMutation(
+    apiUrl,
+    cyberneticId,
+    setFormMessage,
+  );
+
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteCybernetic.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
+
+  const handleReset = async () => {
+    cyberneticForm.reset();
+  };
 
   const cyberneticKeywordData = cybernetic?.keywords.map(
     (item: { keyword: Keyword; value?: number }) => {
@@ -174,7 +193,7 @@ const CyberneticForm = () => {
         }
       });
       formData.append('cyberneticId', JSON.stringify(cyberneticId || 0));
-      // await createCybernetic.mutate(formData);
+      await createCybernetic.mutate(formData);
     },
   });
 
@@ -195,9 +214,18 @@ const CyberneticForm = () => {
   }
 
   return (
-    <FormLayout>
+    <FormLayout
+      itemId={cyberneticId}
+      createMutation={createCybernetic}
+      deleteMutation={deleteCybernetic}
+      handleDelete={handleDelete}
+      handleReset={handleReset}
+      formMessage={formMessage}
+      deleteMode={deleteMode}
+      setDeleteMode={setDeleteMode}
+    >
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-4 p-4 clip-8 sm:gap-6 sm:p-6 lg:gap-8 lg:p-8"
+        className="flex flex-col gap-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -1295,28 +1323,6 @@ const CyberneticForm = () => {
             'Create'
           )}
         </BtnRect>
-        {formMessage && (
-          <div className="flex w-full items-center justify-between">
-            {createCybernetic.isPending && <p>Submitting...</p>}
-            {createCybernetic.isSuccess && <p>{formMessage}</p>}
-            {createCybernetic.isError && (
-              <p>
-                Error creating cybernetic:{' '}
-                <span className="text-error">{formMessage}</span>
-              </p>
-            )}
-            <button
-              className="text-accent text-xl hover:underline"
-              onClick={(e) => {
-                e.preventDefault();
-                setFormMessage('');
-                cyberneticForm.reset();
-              }}
-            >
-              Reset form
-            </button>
-          </div>
-        )}
       </form>
     </FormLayout>
   );

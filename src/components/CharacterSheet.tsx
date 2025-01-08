@@ -52,7 +52,7 @@ const CharacterSheet = () => {
       <div className="flex flex-col items-center justify-between gap-8 lg:flex-row">
         <div className="flex w-full gap-4">
           <ThemeContainer
-            className="w-full grow"
+            className="w-full grow rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
             chamfer="16"
             borderColor={accentPrimary}
           >
@@ -102,7 +102,7 @@ const CharacterSheet = () => {
       <div className="flex flex-col gap-8 sm:flex-row">
         {character.picture.imageUrl && (
           <ThemeContainer
-            className="size mx-auto aspect-square w-full max-w-96"
+            className="size mx-auto aspect-square w-full max-w-96 rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
             chamfer="24"
             borderColor={accentPrimary}
           >
@@ -116,7 +116,7 @@ const CharacterSheet = () => {
 
         <ThemeContainer
           chamfer="24"
-          className="mb-auto max-h-96 w-full"
+          className="mb-auto max-h-96 w-full rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
           borderColor={accentPrimary}
         >
           <div className="bg-primary scrollbar-secondary max-h-96 overflow-y-auto p-4 clip-6">
@@ -172,7 +172,11 @@ const CharacterSheet = () => {
         </StatBar>
       </div>
       <div className="flex flex-col gap-8">
-        <ThemeContainer chamfer="24" borderColor={accentPrimary}>
+        <ThemeContainer
+          className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
+          chamfer="24"
+          borderColor={accentPrimary}
+        >
           <div className="bg-primary flex flex-wrap justify-center gap-8 px-8 py-4 clip-6 lg:justify-between lg:pl-10">
             <div className="flex flex-wrap justify-around gap-6">
               {Object.entries(attributeTree.stats).map(([stat, points]) => {
@@ -295,6 +299,7 @@ const CharacterSheet = () => {
             ([attribute, { points, skills }]) => (
               <ThemeContainer
                 key={attribute}
+                className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
                 chamfer="24"
                 borderColor={accentPrimary}
               >
@@ -310,8 +315,12 @@ const CharacterSheet = () => {
           )}
         </div>
       </div>
-      <ThemeContainer chamfer="16" borderColor={accentPrimary}>
-        <div className="bg-primary p-4 clip-4">
+      <ThemeContainer
+        className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
+        chamfer="24"
+        borderColor={accentPrimary}
+      >
+        <div className="bg-primary p-4 clip-6">
           <h2 className="mb-2 py-2 pl-4 text-left text-2xl font-semibold tracking-widest">
             Perks
           </h2>

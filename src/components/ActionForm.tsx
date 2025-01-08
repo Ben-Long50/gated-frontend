@@ -13,10 +13,12 @@ import useCreateActionMutation from '../hooks/useCreateActionMutation/useCreateA
 import useActionQuery from '../hooks/useActionQuery/useActionQuery';
 import { useParams } from 'react-router-dom';
 import Loading from './Loading';
+import useDeleteActionMutation from '../hooks/useDeleteActionMutation/useDeleteActionMutation';
 
 const ActionForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
+  const [deleteMode, setDeleteMode] = useState(false);
   const { actionId } = useParams();
 
   const { data: action } = useActionQuery(apiUrl, actionId);
@@ -26,6 +28,23 @@ const ActionForm = () => {
     actionId,
     setFormMessage,
   );
+  const deleteAction = useDeleteActionMutation(
+    apiUrl,
+    actionId,
+    setFormMessage,
+  );
+
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteAction.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
+
+  const handleReset = async () => {
+    actionForm.reset();
+  };
 
   const attributeTree = useAttributeTree();
 
@@ -62,9 +81,18 @@ const ActionForm = () => {
   });
 
   return (
-    <FormLayout>
+    <FormLayout
+      itemId={actionId}
+      createMutation={createAction}
+      deleteMutation={deleteAction}
+      handleDelete={handleDelete}
+      handleReset={handleReset}
+      formMessage={formMessage}
+      deleteMode={deleteMode}
+      setDeleteMode={setDeleteMode}
+    >
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
+        className="flex flex-col gap-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -198,7 +226,13 @@ const ActionForm = () => {
             }}
           </actionForm.Field>
         </div>
-        <actionForm.Field name="actionType">
+        <actionForm.Field
+          name="actionType"
+          validators={{
+            onSubmit: ({ value }) =>
+              !value ? 'An action type must be selected' : undefined,
+          }}
+        >
           {(field) => (
             <SelectField label="Action type" field={field}>
               <option defaultValue="" disabled></option>
@@ -293,28 +327,6 @@ const ActionForm = () => {
             'Create'
           )}
         </BtnRect>
-        {formMessage && (
-          <div className="flex w-full items-center justify-between">
-            {createAction.isPending && <p>Submitting...</p>}
-            {createAction.isSuccess && <p>{formMessage}</p>}
-            {createAction.isError && (
-              <p>
-                Error creating action:{' '}
-                <span className="text-error">{formMessage}</span>
-              </p>
-            )}
-            <button
-              className="text-accent text-xl hover:underline"
-              onClick={(e) => {
-                e.preventDefault();
-                setFormMessage('');
-                actionForm.reset();
-              }}
-            >
-              Reset form
-            </button>
-          </div>
-        )}
       </form>
     </FormLayout>
   );

@@ -17,11 +17,13 @@ import ArmorIcon from './icons/ArmorIcon';
 import { useParams } from 'react-router-dom';
 import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
 import InputFieldBasic from './InputFieldBasic';
+import useDeleteArmorMutation from '../hooks/useDeleteArmorMutation/useDeleteArmorMutation';
 
 const ArmorForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
+  const [deleteMode, setDeleteMode] = useState(false);
   const { armorId } = useParams();
 
   const { data: armor } = useArmorPieceQuery(apiUrl, armorId);
@@ -33,6 +35,19 @@ const ArmorForm = () => {
   );
 
   const createArmor = useCreateArmorMutation(apiUrl, setFormMessage);
+  const deleteArmor = useDeleteArmorMutation(apiUrl, armorId, setFormMessage);
+
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteArmor.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
+
+  const handleReset = async () => {
+    armorForm.reset();
+  };
 
   const armorKeywordData = armor?.keywords.map(
     (item: { keyword: Keyword; value?: number }) => {
@@ -102,9 +117,18 @@ const ArmorForm = () => {
   }
 
   return (
-    <FormLayout>
+    <FormLayout
+      itemId={armorId}
+      createMutation={createArmor}
+      deleteMutation={deleteArmor}
+      handleDelete={handleDelete}
+      handleReset={handleReset}
+      formMessage={formMessage}
+      deleteMode={deleteMode}
+      setDeleteMode={setDeleteMode}
+    >
       <form
-        className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
+        className="flex flex-col gap-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -338,28 +362,6 @@ const ArmorForm = () => {
             'Create'
           )}
         </BtnRect>
-        {formMessage && (
-          <div className="flex w-full items-center justify-between">
-            {createArmor.isPending && <p>Submitting...</p>}
-            {createArmor.isSuccess && <p>{formMessage}</p>}
-            {createArmor.isError && (
-              <p>
-                Error creating armor:{' '}
-                <span className="text-error">{formMessage}</span>
-              </p>
-            )}
-            <button
-              className="text-accent text-xl hover:underline"
-              onClick={(e) => {
-                e.preventDefault();
-                setFormMessage('');
-                armorForm.reset();
-              }}
-            >
-              Reset form
-            </button>
-          </div>
-        )}
       </form>
     </FormLayout>
   );
