@@ -12,7 +12,7 @@ const AuthLayout = () => {
 
   return (
     <div
-      className={`${theme} auth-layout-small min-h-dvh w-dvw items-center p-4 md:p-8`}
+      className={`${theme} auth-layout-small min-h-dvh w-dvw items-center gap-8 p-4 sm:gap-20 md:p-8`}
     >
       <LogoTitle className="col-start-2 row-start-1" />
       <Outlet />

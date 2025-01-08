@@ -136,7 +136,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
   }
   .auth-layout-large {
     display: grid;

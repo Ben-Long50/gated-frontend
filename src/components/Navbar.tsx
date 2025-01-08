@@ -112,10 +112,23 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
               setAccountMenuVisibility(false);
             }}
           >
-            Error report
-            <span className="text-tertiary text-sm"> (do not abuse)</span>
+            <div className="flex w-full items-center gap-2">
+              <p className="text-inherit">Error report</p>
+              <p className="text-tertiary text-sm"> (do not abuse)</p>
+            </div>
           </BtnNavbar>
         </Link>
+        <BtnNavbar
+          className="hover:text-accent timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
+          onClick={() => {
+            setAccountMenuVisibility(false);
+            signout.mutate();
+          }}
+        >
+          <div className="flex w-full items-center gap-2">
+            <p className="text-inherit">Sign out</p>
+          </div>
+        </BtnNavbar>
       </NavMenuMobile>
     </nav>
   ) : (
