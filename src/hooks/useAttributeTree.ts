@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Skill {
   points: number;
@@ -88,6 +88,12 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
     );
   };
 
+  useEffect(() => {
+    if (partialTree) {
+      setAttributeTree(structureTree(partialTree));
+    }
+  }, [partialTree]);
+
   //Returns the total number of skill points found in an attribute tree
   const getSkillPoints = () => {
     return Object.values(attributeTree).reduce(
@@ -174,6 +180,7 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
 
   return {
     tree: attributeTree,
+    setAttributeTree,
     getAttributePoints,
     getSkillPoints,
     getPoints,

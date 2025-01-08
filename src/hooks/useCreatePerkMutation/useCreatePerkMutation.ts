@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createPerk from './createPerk';
 
 const useCreatePerkMutation = (
-  perkId: string,
   apiUrl: string,
+  perkId: string,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();

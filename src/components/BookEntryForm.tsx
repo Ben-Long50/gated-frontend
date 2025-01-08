@@ -18,12 +18,13 @@ const BookEntryForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
   const { navbarHeight } = useOutletContext();
+  const [formMessage, setFormMessage] = useState('');
   const { bookEntryTitle } = useParams();
   const [deleteMode, setDeleteMode] = useState(false);
 
   const { data: bookEntry } = useBookEntryQuery(apiUrl, bookEntryTitle);
 
-  const createBookEntry = useCreateBookEntryMutation(apiUrl);
+  const createBookEntry = useCreateBookEntryMutation(apiUrl, setFormMessage);
   const deleteBookEntry = useDeleteBookEntryMutation(apiUrl, bookEntry?.id);
 
   const bookEntryForm = useForm({
@@ -91,11 +92,8 @@ const BookEntryForm = () => {
         >
           {(field) => (
             <>
-              <div className="relative w-full grow">
-                <RichTextEditor
-                  className="text-secondary min-h-96"
-                  field={field}
-                />
+              <div className="w-full grow">
+                <RichTextEditor field={field} />
               </div>
               {field.state.meta.errors &&
                 field.state.meta.errors.map((error, index) => (
@@ -148,6 +146,21 @@ const BookEntryForm = () => {
               )}
             </BtnRect>
           </div>
+          {formMessage && (
+            <div className="flex w-full items-center justify-between">
+              <p>{createBookEntry.isPending ? 'Submitting...' : formMessage}</p>
+              <button
+                className="text-accent text-xl hover:underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setFormMessage('');
+                  bookEntryForm.reset();
+                }}
+              >
+                Reset form
+              </button>
+            </div>
+          )}
           {deleteMode && (
             <div className="flex items-center gap-4">
               <Icon className="text-error" path={mdiAlertOutline} size={1.5} />

@@ -1,13 +1,18 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createKeyword from './createKeyword';
 
-const useCreateKeywordMutation = (keywordId: string, apiUrl: string) => {
+const useCreateKeywordMutation = (
+  apiUrl: string,
+  keywordId: string,
+  setFormMessage: (message: string) => void,
+) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: object) => {
       return createKeyword(formData, keywordId, apiUrl);
     },
     onSuccess: () => {
+      setFormMessage('Keyword successfully created');
       queryClient.invalidateQueries({
         queryKey: ['keyword'],
         exact: false,
@@ -17,6 +22,10 @@ const useCreateKeywordMutation = (keywordId: string, apiUrl: string) => {
         exact: false,
       });
     },
+    onError: () => {
+      setFormMessage('Error creating keyword');
+    },
+    throwOnError: false,
   });
 };
 

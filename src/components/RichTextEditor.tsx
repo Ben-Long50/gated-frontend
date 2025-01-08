@@ -4,8 +4,8 @@ import RichTextToolbar, { formats, modules } from './RichTextToolbar';
 
 const RichTextEditor = (props) => {
   return (
-    <div className={props.className}>
-      <RichTextToolbar className="z-10" />
+    <>
+      <RichTextToolbar />
       <ReactQuill
         theme="snow"
         modules={modules}
@@ -15,7 +15,7 @@ const RichTextEditor = (props) => {
           props.field.handleChange(text);
         }}
       />
-    </div>
+    </>
   );
 };
 

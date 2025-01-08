@@ -1,10 +1,12 @@
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Tag from './Tag';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 const KeywordCard = ({ keyword }, props) => {
+  const { user } = useContext(AuthContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
 
@@ -29,9 +31,11 @@ const KeywordCard = ({ keyword }, props) => {
       >
         <div className="flex w-full items-center justify-between gap-4 pr-2">
           <h3> {keyword.name}</h3>
-          <Link to={`${keyword.id}/update`}>
-            <button className="text-accent hover:underline">Edit</button>
-          </Link>
+          {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+            <Link to={`${keyword.id}/update`}>
+              <button className="text-accent hover:underline">Edit</button>
+            </Link>
+          )}
         </div>
         <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>
           <Icon

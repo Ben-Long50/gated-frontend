@@ -13,7 +13,7 @@ import { useContext } from 'react';
 import Loading from '../../components/Loading';
 
 const CodexLinks = ({ setSidebarVisibility }) => {
-  const { apiUrl } = useContext(AuthContext);
+  const { apiUrl, user } = useContext(AuthContext);
 
   const { data: bookEntries, isLoading, isPending } = useBookQuery(apiUrl);
 
@@ -42,11 +42,13 @@ const CodexLinks = ({ setSidebarVisibility }) => {
             />
           );
         })}
-        <LinkSidebar
-          title="Create entry"
-          path="codex/book/create"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+          <LinkSidebar
+            title="Create entry"
+            path="codex/book/create"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
       </LinkListSidebar>
       <LinkListSidebar
         title={
@@ -61,11 +63,13 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/weapons"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
-          title="Create a new weapon"
-          path="codex/weapons/create"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+          <LinkSidebar
+            title="Create a new weapon"
+            path="codex/weapons/create"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
       </LinkListSidebar>
       <LinkListSidebar
         title={
@@ -80,11 +84,13 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/armor"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
-          title="Create new armor"
-          path="codex/armor/create"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+          <LinkSidebar
+            title="Create new armor"
+            path="codex/armor/create"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
       </LinkListSidebar>
       <LinkListSidebar
         title={
@@ -99,11 +105,13 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/cybernetics"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
-          title="Create a new cybernetic"
-          path="codex/cybernetics/create"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+          <LinkSidebar
+            title="Create a new cybernetic"
+            path="codex/cybernetics/create"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
       </LinkListSidebar>
       <LinkListSidebar
         title={
@@ -118,11 +126,13 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/perks"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
-          title="Create a new perk"
-          path="codex/perks/create"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+          <LinkSidebar
+            title="Create a new perk"
+            path="codex/perks/create"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
       </LinkListSidebar>
       <LinkListSidebar
         title={
@@ -137,11 +147,13 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/keywords"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
-          title="Create a new keyword"
-          path="codex/keywords/create"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+          <LinkSidebar
+            title="Create a new keyword"
+            path="codex/keywords/create"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
       </LinkListSidebar>
       <LinkListSidebar
         title={
@@ -156,11 +168,13 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/actions"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
-          title="Create a new action"
-          path="codex/actions/create"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+          <LinkSidebar
+            title="Create a new action"
+            path="codex/actions/create"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
       </LinkListSidebar>
     </>
   );

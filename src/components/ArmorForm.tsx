@@ -21,6 +21,7 @@ import InputFieldBasic from './InputFieldBasic';
 const ArmorForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const [formMessage, setFormMessage] = useState('');
   const { armorId } = useParams();
 
   const { data: armor } = useArmorPieceQuery(apiUrl, armorId);
@@ -31,7 +32,7 @@ const ArmorForm = () => {
     armor?.picture?.imageUrl || '',
   );
 
-  const createArmor = useCreateArmorMutation(apiUrl);
+  const createArmor = useCreateArmorMutation(apiUrl, setFormMessage);
 
   const armorKeywordData = armor?.keywords.map(
     (item: { keyword: Keyword; value?: number }) => {
@@ -42,8 +43,8 @@ const ArmorForm = () => {
   useEffect(() => {
     if (armor) {
       setImagePreview(armor.picture?.imageUrl);
-    }
-  }, [armor]);
+    } else setImagePreview('');
+  }, [armor, armorId]);
 
   const armorForm = useForm({
     defaultValues: {
@@ -334,6 +335,21 @@ const ArmorForm = () => {
             'Create'
           )}
         </BtnRect>
+        {formMessage && (
+          <div className="flex w-full items-center justify-between">
+            <p>{createArmor.isPending ? 'Submitting...' : formMessage}</p>
+            <button
+              className="text-accent text-xl hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                setFormMessage('');
+                armorForm.reset();
+              }}
+            >
+              Reset form
+            </button>
+          </div>
+        )}
       </form>
     </FormLayout>
   );

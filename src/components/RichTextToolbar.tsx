@@ -42,6 +42,20 @@ export const modules = {
       return data;
     },
   },
+  keyboard: {
+    bindings: {
+      // Custom keyboard bindings can be added here
+      tab: {
+        key: 9, // Tab key
+        handler: function (range, context) {
+          const quill = this.quill;
+          quill.insertText(range.index, '\t'); // Insert a tab character
+          quill.setSelection(range.index + 1); // Move the cursor forward
+          return false; // Prevent default behavior
+        },
+      },
+    },
+  },
 };
 
 export const formats = [
@@ -66,9 +80,9 @@ export const formats = [
 ];
 
 const RichTextToolbar = (props) => (
-  <div id="toolbar" className={props.className}>
+  <div id="toolbar" className={`${props.className}`}>
     <span className="ql-formats">
-      <select className="ql-font" defaultValue="arial">
+      <select className="ql-font" defaultValue="Exo-Regular">
         <option value="Exo-Regular">Exo-Regular</option>
         <option value="Omnitrinx">Omnitrinx</option>
       </select>
@@ -84,6 +98,7 @@ const RichTextToolbar = (props) => (
         <option value="3">Normal</option>
       </select>
     </span>
+
     <span className="ql-formats">
       <button className="ql-bold" />
       <button className="ql-italic" />

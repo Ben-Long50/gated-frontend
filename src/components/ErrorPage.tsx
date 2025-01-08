@@ -8,7 +8,7 @@ const ErrorPage = () => {
   const navigate = useNavigate();
   return (
     <div className="flex h-dvh w-dvw items-center">
-      <div className="mx-auto my-auto flex max-w-4xl flex-col items-center justify-center gap-8 p-4 sm:gap-12 sm:p-8">
+      <div className="mx-auto my-auto flex h-full max-w-4xl flex-col items-center justify-center gap-8 p-4 sm:gap-12 sm:p-8">
         <h1 className="text-center">
           <span>
             <Icon

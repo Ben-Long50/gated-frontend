@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import InputField from './InputField';
 import BtnRect from './buttons/BtnRect';
 import TextAreaField from './TextAreaField';
@@ -13,11 +13,16 @@ import useKeywordQuery from '../hooks/useKeywordQuery/useKeywordQuery';
 
 const KeywordForm = () => {
   const { apiUrl } = useContext(AuthContext);
+  const [formMessage, setFormMessage] = useState('');
   const { keywordId } = useParams();
 
   const { data: keyword } = useKeywordQuery(apiUrl, keywordId);
 
-  const createKeyword = useCreateKeywordMutation(apiUrl, keywordId);
+  const createKeyword = useCreateKeywordMutation(
+    apiUrl,
+    keywordId,
+    setFormMessage,
+  );
 
   const keywordForm = useForm({
     defaultValues: {
@@ -99,6 +104,21 @@ const KeywordForm = () => {
             'Create'
           )}
         </BtnRect>
+        {formMessage && (
+          <div className="flex w-full items-center justify-between">
+            <p>{createKeyword.isPending ? 'Submitting...' : formMessage}</p>
+            <button
+              className="text-accent text-xl hover:underline"
+              onClick={() => {
+                e.preventDefault();
+                setFormMessage('');
+                keywordForm.reset();
+              }}
+            >
+              Reset form
+            </button>
+          </div>
+        )}
       </form>
     </FormLayout>
   );

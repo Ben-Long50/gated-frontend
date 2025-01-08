@@ -1,13 +1,18 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createAction from './createAction';
 
-const useCreateActionMutation = (actionId: string, apiUrl: string) => {
+const useCreateActionMutation = (
+  apiUrl: string,
+  actionId: string,
+  setFormMessage: (message: string) => void,
+) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: object) => {
       return createAction(formData, actionId, apiUrl);
     },
     onSuccess: () => {
+      setFormMessage('Action successfully created');
       queryClient.invalidateQueries({
         queryKey: ['action'],
         exact: false,
@@ -17,6 +22,10 @@ const useCreateActionMutation = (actionId: string, apiUrl: string) => {
         exact: false,
       });
     },
+    onError: () => {
+      setFormMessage('Error creating action');
+    },
+    throwOnError: false,
   });
 };
 

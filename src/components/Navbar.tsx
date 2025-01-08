@@ -9,15 +9,33 @@ import PyramidIcon from './icons/PyramidIcon';
 import NavMenuMobile from './NavMenuMobile';
 import CharacterIcon from './icons/CharacterIcon';
 import NavMenuDesktop from './NavMenuDesktop';
+import useSignoutMutation from '../hooks/useSignoutMutation/useSignoutMutation';
 
 const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
-  const { user } = useContext(AuthContext);
+  const { apiUrl, user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
 
   const [navMenuVisibility, setNavMenuVisibility] = useState(false);
   const [accountMenuVisibility, setAccountMenuVisibility] = useState(false);
 
+  const signout = useSignoutMutation(apiUrl);
+
   const navbarRef = useRef(null);
+
+  useEffect(() => {
+    const closeMenus = (e) => {
+      if (navbarRef.current && !navbarRef.current.contains(e.target)) {
+        setNavMenuVisibility(false);
+        setAccountMenuVisibility(false);
+      }
+    };
+
+    document.addEventListener('click', closeMenus);
+
+    return () => {
+      document.removeEventListener('click', closeMenus);
+    };
+  }, []);
 
   useEffect(() => {
     if (navbarRef.current) {
@@ -82,7 +100,7 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
               setSidebarVisibility(true);
             }}
           >
-            Character
+            Characters
           </BtnNavbar>
         </Link>
       </NavMenuMobile>
@@ -111,7 +129,7 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
           <BtnNavbar className="bg-primary">Codex</BtnNavbar>
         </Link>
         <Link to="characters">
-          <BtnNavbar className="bg-primary">Character</BtnNavbar>
+          <BtnNavbar className="bg-primary">Characters</BtnNavbar>
         </Link>
 
         <button
@@ -132,9 +150,9 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
           )}
         </button>
         <NavMenuDesktop menuVisibility={accountMenuVisibility}>
-          <Link className="hover:text-accent w-full" to="/error/report">
+          <Link className="w-full" to="/error/report">
             <BtnNavbar
-              className="hover:bg-secondary timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
+              className="hover:text-accent timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
               onClick={() => {
                 setAccountMenuVisibility(false);
               }}
@@ -145,6 +163,17 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
               </div>
             </BtnNavbar>
           </Link>
+          <BtnNavbar
+            className="hover:text-accent timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
+            onClick={() => {
+              setAccountMenuVisibility(false);
+              signout.mutate();
+            }}
+          >
+            <div className="flex w-full items-center gap-2">
+              <p className="text-inherit">Sign out</p>
+            </div>
+          </BtnNavbar>
         </NavMenuDesktop>
       </div>
     </nav>

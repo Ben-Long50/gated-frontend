@@ -32,7 +32,7 @@ const Actions = () => {
       <h1 className="text-center lg:mb-5">Actions</h1>
       <ThemeContainer
         chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
-        className="w-full"
+        className="w-full rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
         borderColor={accentPrimary}
       >
         <div

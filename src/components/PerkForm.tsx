@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import InputField from './InputField';
 import BtnRect from './buttons/BtnRect';
 import AttributeCard from './AttributeCard';
@@ -17,7 +17,13 @@ const PerkForm = () => {
   const [formMessage, setFormMessage] = useState('');
   const { perkId } = useParams();
 
-  const { data: perk, isLoading, isPending } = usePerkQuery(apiUrl, perkId);
+  const {
+    data: perk,
+    isLoading,
+    isPending,
+    refetch,
+    isRefetching,
+  } = usePerkQuery(apiUrl, perkId);
 
   const createPerk = useCreatePerkMutation(apiUrl, perkId, setFormMessage);
 
@@ -25,20 +31,19 @@ const PerkForm = () => {
 
   const perkForm = useForm({
     defaultValues: {
-      name: perk?.name || '',
+      name: perk?.name ?? '',
       description: perk?.description || '',
       requirements: attributeTree?.tree || null,
     },
     onSubmit: async ({ value }) => {
+      value.requirements = attributeTree.destructureTree(value.requirements);
+      console.log(value);
+
       await createPerk.mutate(value);
     },
   });
 
-  useEffect(() => {
-    perkForm.setFieldValue('requirements', attributeTree.destructureTree());
-  }, [attributeTree.tree]);
-
-  if (isLoading || isPending) {
+  if (isLoading || isPending || isRefetching) {
     return <Loading />;
   }
 
@@ -110,15 +115,29 @@ const PerkForm = () => {
         </BtnRect>
         {formMessage && (
           <div className="flex w-full items-center justify-between">
-            <p>
-              {createPerk.isPending ? 'Submission loading...' : formMessage}
-            </p>
+            <p>{createPerk.isPending ? 'Submitting...' : formMessage}</p>
             <button
               className="text-accent text-xl hover:underline"
-              onClick={() => {
-                attributeTree.resetTree();
-                perkForm.reset();
-              }}
+              onClick={
+                perkId
+                  ? async (e) => {
+                      e.preventDefault();
+                      const { data: refetchedPerk } = await refetch();
+                      attributeTree.setAttributeTree(
+                        attributeTree.structureTree(refetchedPerk.requirements),
+                      );
+                      perkForm.reset({
+                        name: refetchedPerk.name,
+                        description: refetchedPerk.description,
+                        requirements: attributeTree.structureTree(
+                          refetchedPerk.requirements,
+                        ),
+                      });
+                    }
+                  : () => {
+                      perkForm.reset();
+                    }
+              }
             >
               Reset form
             </button>

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -141,7 +141,7 @@ const CharacterSheet = () => {
         <StatBar
           title="Health"
           current={character.stats.currentHealth}
-          total={attributeTree.stats.health}
+          total={attributeTree?.stats.health}
           color="rgb(248 113 113)"
         >
           <HealthIcon className="size-8" />
@@ -149,7 +149,7 @@ const CharacterSheet = () => {
         <StatBar
           title="Sanity"
           current={character.stats.currentSanity}
-          total={attributeTree.stats.sanity}
+          total={attributeTree?.stats.sanity}
           color="rgb(96 165 250)"
         >
           <SanityIcon className="size-8" />
@@ -157,7 +157,7 @@ const CharacterSheet = () => {
         <StatBar
           title="Cyber"
           current={attributeTree.stats.cyber}
-          total={attributeTree.stats.cyber}
+          total={attributeTree?.stats.cyber}
           color="rgb(52 211 153)"
         >
           <CyberIcon className="size-8" />
@@ -165,7 +165,7 @@ const CharacterSheet = () => {
         <StatBar
           title="Equip"
           current={attributeTree.stats.equip}
-          total={attributeTree.stats.equip}
+          total={attributeTree?.stats.equip}
           color="rgb(251 191 36)"
         >
           <EquipIcon className="size-8" />

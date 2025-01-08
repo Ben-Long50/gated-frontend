@@ -5,7 +5,7 @@ import useBookEntryQuery from '../hooks/useBookEntryQuery/useBookEntryQuery';
 import { Link, useParams } from 'react-router-dom';
 
 const BookEntry = () => {
-  const { apiUrl } = useContext(AuthContext);
+  const { apiUrl, user } = useContext(AuthContext);
   const { bookEntryTitle } = useParams();
 
   const {
@@ -21,13 +21,19 @@ const BookEntry = () => {
   }
 
   return (
-    <div className='p-2" flex max-w-4xl flex-col gap-4'>
-      <div dangerouslySetInnerHTML={{ __html: bookEntry.content }} />
-      <div className="flex w-full items-center justify-end">
-        <Link to="update">
-          <button className="text-accent hover:underline">Edit entry</button>
-        </Link>
-      </div>
+    <div className="flex max-w-4xl flex-col gap-4">
+      <div
+        id="quill-display"
+        className="ql-editor whitespace-pre-wrap"
+        dangerouslySetInnerHTML={{ __html: bookEntry.content }}
+      />
+      {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+        <div className="flex w-full items-center justify-end">
+          <Link to="update">
+            <button className="text-accent hover:underline">Edit entry</button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

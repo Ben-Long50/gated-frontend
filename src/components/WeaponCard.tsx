@@ -15,9 +15,11 @@ import MagCapacityIcon from './icons/MagCapacityIcon';
 import { Link } from 'react-router-dom';
 import { Keyword } from 'src/hooks/useKeywords';
 import CloudinaryImage from './CloudinaryImage';
+import { AuthContext } from '../contexts/AuthContext';
 
 const WeaponCard = ({ weapon }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const { user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
@@ -64,11 +66,13 @@ const WeaponCard = ({ weapon }, props) => {
               <div className="flex w-full items-start justify-between gap-8">
                 <div className="flex items-center justify-start gap-4">
                   <h2> {weapon.name}</h2>
-                  <Link to={`${weapon.id}/update`}>
-                    <button className="text-accent hover:underline">
-                      Edit
-                    </button>
-                  </Link>
+                  {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                    <Link to={`${weapon.id}/update`}>
+                      <button className="text-accent hover:underline">
+                        Edit
+                      </button>
+                    </Link>
+                  )}
                 </div>
                 <div className="flex items-center justify-end gap-4">
                   <ProfitsIcon className="size-6 shrink-0" />
@@ -210,11 +214,13 @@ const WeaponCard = ({ weapon }, props) => {
               <div className="flex w-full items-start justify-between gap-8">
                 <div className="flex items-center justify-start gap-4">
                   <h2> {weapon.name}</h2>
-                  <Link to={`${weapon.id}/update`}>
-                    <button className="text-accent hover:underline">
-                      Edit
-                    </button>
-                  </Link>
+                  {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                    <Link to={`${weapon.id}/update`}>
+                      <button className="text-accent hover:underline">
+                        Edit
+                      </button>
+                    </Link>
+                  )}
                 </div>
                 <div className="flex items-center justify-end gap-4">
                   <ProfitsIcon className="size-6 shrink-0" />

@@ -23,6 +23,7 @@ import { useParams } from 'react-router-dom';
 const CyberneticForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const [formMessage, setFormMessage] = useState('');
   const { cyberneticId } = useParams();
 
   const { data: cybernetic } = useCyberneticQuery(apiUrl, cyberneticId);
@@ -34,7 +35,7 @@ const CyberneticForm = () => {
     cybernetic?.picture?.imageUrl || '',
   );
 
-  const createCybernetic = useCreateCyberneticMutation(apiUrl);
+  const createCybernetic = useCreateCyberneticMutation(apiUrl, setFormMessage);
 
   const cyberneticKeywordData = cybernetic?.keywords.map(
     (item: { keyword: Keyword; value?: number }) => {
@@ -1250,6 +1251,21 @@ const CyberneticForm = () => {
             'Create'
           )}
         </BtnRect>
+        {formMessage && (
+          <div className="flex w-full items-center justify-between">
+            <p>{createCybernetic.isPending ? 'Submitting...' : formMessage}</p>
+            <button
+              className="text-accent text-xl hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                setFormMessage('');
+                cyberneticForm.reset();
+              }}
+            >
+              Reset form
+            </button>
+          </div>
+        )}
       </form>
     </FormLayout>
   );

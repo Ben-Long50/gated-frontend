@@ -34,7 +34,7 @@ const Perks = () => {
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
       <h1 className="text-center">Perks</h1>
       <ThemeContainer
-        className="w-full"
+        className="w-full rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
         chamfer="24"
         borderColor={accentPrimary}
       >
@@ -106,7 +106,7 @@ const Perks = () => {
       </ThemeContainer>
       <ThemeContainer
         chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
-        className="w-full"
+        className="w-full rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
         borderColor={accentPrimary}
       >
         <div

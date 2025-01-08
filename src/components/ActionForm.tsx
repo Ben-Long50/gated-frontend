@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import InputField from './InputField';
 import BtnRect from './buttons/BtnRect';
 import TextAreaField from './TextAreaField';
@@ -16,11 +16,16 @@ import Loading from './Loading';
 
 const ActionForm = () => {
   const { apiUrl } = useContext(AuthContext);
+  const [formMessage, setFormMessage] = useState('');
   const { actionId } = useParams();
 
   const { data: action } = useActionQuery(apiUrl, actionId);
 
-  const createAction = useCreateActionMutation(apiUrl, actionId);
+  const createAction = useCreateActionMutation(
+    apiUrl,
+    actionId,
+    setFormMessage,
+  );
 
   const attributeTree = useAttributeTree();
 
@@ -275,6 +280,21 @@ const ActionForm = () => {
             'Create'
           )}
         </BtnRect>
+        {formMessage && (
+          <div className="flex w-full items-center justify-between">
+            <p>{createAction.isPending ? 'Submitting...' : formMessage}</p>
+            <button
+              className="text-accent text-xl hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                setFormMessage('');
+                actionForm.reset();
+              }}
+            >
+              Reset form
+            </button>
+          </div>
+        )}
       </form>
     </FormLayout>
   );

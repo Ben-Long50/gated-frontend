@@ -17,7 +17,7 @@
     @apply bg-zinc-100 dark:bg-zinc-900;
   }
   .bg-secondary {
-    @apply dark:bg-zinc-850 bg-zinc-150;
+    @apply bg-zinc-150 dark:bg-zinc-850;
   }
   .bg-tertiary {
     @apply bg-zinc-200 dark:bg-zinc-800;
@@ -29,7 +29,7 @@
     @apply text-gray-900 dark:text-gray-50;
   }
   .text-secondary {
-    @apply text-gray-700 dark:text-gray-200;
+    @apply stroke-gray-700 text-gray-700 dark:stroke-gray-200 dark:text-gray-200;
   }
   .text-tertiary {
     @apply text-gray-500 dark:text-gray-400;
@@ -81,6 +81,55 @@
   select,
   textarea {
     @apply text-secondary text-lg tracking-wide lg:text-xl;
+  }
+  #toolbar {
+    @apply bg-tertiary;
+  }
+  #toolbar > span > select *,
+  #toolbar > span > button *,
+  #toolbar > span * {
+    @apply text-secondary bg-tertiary;
+  }
+
+  #toolbar,
+  .ql-container.ql-snow {
+    @apply text-secondary border-2 border-yellow-300 border-opacity-50;
+  }
+
+  #quill-display {
+    @apply max-h-none bg-transparent px-2;
+  }
+  .ql-editor {
+    @apply max-h-75dvh scrollbar-primary-2;
+  }
+  span.ql-formats {
+    @apply flex flex-col;
+  }
+  .ql-editor p.ql-indent-1 {
+    @apply ml-4 border-l border-yellow-300 border-opacity-50;
+  }
+  .ql-editor .ql-indent-1:not(.ql-direction-rtl) {
+    @apply pl-4;
+  }
+  .ql-editor ul li {
+    @apply text-secondary text-lg lg:text-xl;
+  }
+  li::before {
+    @apply pt-2;
+  }
+  .ql-editor ol,
+  .ql-editor ul {
+    @apply text-secondary pl-2 font-mono text-lg lg:text-xl;
+  }
+  .ql-editor {
+    tab-size: 8;
+    -moz-tab-size: 8;
+    -o-tab-size: 8;
+  }
+  .ql-editor li::before {
+    display: inline-block;
+    white-space: nowrap;
+    width: 1em;
   }
   .auth-layout-small {
     display: flex;

@@ -21,6 +21,7 @@ import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
 const WeaponForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const [formMessage, setFormMessage] = useState('');
   const { weaponId } = useParams();
 
   const { data: weapon } = useWeaponQuery(apiUrl, weaponId);
@@ -31,7 +32,7 @@ const WeaponForm = () => {
     weapon?.picture?.imageUrl || '',
   );
 
-  const createWeapon = useCreateWeaponMutation(apiUrl);
+  const createWeapon = useCreateWeaponMutation(apiUrl, setFormMessage);
 
   const weaponKeywordData = weapon?.keywords.map(
     (item: { keyword: Keyword; value?: number }) => {
@@ -356,6 +357,21 @@ const WeaponForm = () => {
             'Create'
           )}
         </BtnRect>
+        {formMessage && (
+          <div className="flex w-full items-center justify-between">
+            <p>{createWeapon.isPending ? 'Submitting...' : formMessage}</p>
+            <button
+              className="text-accent text-xl hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                setFormMessage('');
+                weaponForm.reset();
+              }}
+            >
+              Reset form
+            </button>
+          </div>
+        )}
       </form>
     </FormLayout>
   );

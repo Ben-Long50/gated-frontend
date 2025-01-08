@@ -22,6 +22,7 @@ export default {
       },
       maxHeight: {
         '50dvh': '50dvh',
+        '75dvh': '75dvh',
       },
       backgroundColor: {
         'zinc-850': 'rgb(31, 31, 34)',

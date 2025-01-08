@@ -7,7 +7,7 @@ const FormLayout = ({ children }, props) => {
 
   return (
     <ThemeContainer
-      className={`${props.className} mb-auto w-full max-w-5xl`}
+      className={`${props.className} mb-auto w-full max-w-5xl rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950`}
       chamfer="32"
       borderColor={accentPrimary}
     >

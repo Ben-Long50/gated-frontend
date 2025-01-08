@@ -3,9 +3,11 @@ import Icon from '@mdi/react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 const PerkCard = ({ perk }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const { user } = useContext(AuthContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
 
@@ -28,9 +30,11 @@ const PerkCard = ({ perk }, props) => {
       <div className={`text-primary flex w-full items-center justify-between`}>
         <div className="flex w-full items-center justify-between gap-4 pr-2">
           <h3> {perk.name}</h3>
-          <Link to={`${perk.id}/update`}>
-            <button className="text-accent hover:underline">Edit</button>
-          </Link>
+          {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+            <Link to={`${perk.id}/update`}>
+              <button className="text-accent hover:underline">Edit</button>
+            </Link>
+          )}
         </div>
         <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>
           <Icon

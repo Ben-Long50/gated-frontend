@@ -23,9 +23,11 @@ import HealthIcon from './icons/HealthIcon';
 import SanityIcon from './icons/SanityIcon';
 import { Keyword } from 'src/hooks/useKeywords';
 import CloudinaryImage from './CloudinaryImage';
+import { AuthContext } from '../contexts/AuthContext';
 
 const CyberneticCard = ({ cybernetic }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const { user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
@@ -70,11 +72,13 @@ const CyberneticCard = ({ cybernetic }, props) => {
               <div>
                 <div className="flex items-center justify-start gap-4">
                   <h2> {cybernetic.name}</h2>
-                  <Link to={`${cybernetic.id}/update`}>
-                    <button className="text-accent hover:underline">
-                      Edit
-                    </button>
-                  </Link>
+                  {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                    <Link to={`${cybernetic.id}/update`}>
+                      <button className="text-accent hover:underline">
+                        Edit
+                      </button>
+                    </Link>
+                  )}
                 </div>
                 <p className="text-tertiary flex-1 whitespace-nowrap text-left">
                   (
@@ -185,11 +189,13 @@ const CyberneticCard = ({ cybernetic }, props) => {
                 <div>
                   <div className="flex items-center justify-start gap-4">
                     <h2> {cybernetic.name}</h2>
-                    <Link to={`${cybernetic.id}/update`}>
-                      <button className="text-accent hover:underline">
-                        Edit
-                      </button>
-                    </Link>
+                    {(user.role === 'ADMIN' || user.role === 'SUPERADMIN') && (
+                      <Link to={`${cybernetic.id}/update`}>
+                        <button className="text-accent hover:underline">
+                          Edit
+                        </button>
+                      </Link>
+                    )}
                   </div>
                   <p className="text-tertiary flex-1 whitespace-nowrap text-left">
                     (
@@ -420,6 +426,8 @@ const CyberneticCard = ({ cybernetic }, props) => {
                                         : item.keyword.name
                                     }
                                     description={item.keyword.description}
+                                    toolTip={toolTip}
+                                    setToolTip={setToolTip}
                                   />
                                 );
                               },
