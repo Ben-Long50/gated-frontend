@@ -22,8 +22,8 @@ const useCreateKeywordMutation = (
         exact: false,
       });
     },
-    onError: () => {
-      setFormMessage('Error creating keyword');
+    onError: (error) => {
+      setFormMessage(error.message);
     },
     throwOnError: false,
   });

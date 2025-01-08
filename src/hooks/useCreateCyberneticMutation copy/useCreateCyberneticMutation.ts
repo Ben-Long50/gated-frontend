@@ -33,8 +33,8 @@ const useCreateCyberneticMutation = (
         exact: false,
       });
     },
-    onError: () => {
-      setFormMessage('Error creating cybernetic');
+    onError: (error) => {
+      setFormMessage(error.message);
     },
     throwOnError: false,
   });

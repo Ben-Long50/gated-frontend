@@ -21,8 +21,8 @@ const useCreateWeaponMutation = (
         exact: false,
       });
     },
-    onError: () => {
-      setFormMessage('Error creating weapon');
+    onError: (error) => {
+      setFormMessage(error.message);
     },
     throwOnError: false,
   });

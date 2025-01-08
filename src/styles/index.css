@@ -63,13 +63,13 @@
     @apply text-gray-500 dark:text-gray-400;
   }
   .text-accent {
-    @apply text-yellow-300;
+    @apply text-yellow-300 dark:text-yellow-300;
   }
   .text-error {
-    @apply text-red-500;
+    @apply text-red-500 dark:text-red-500;
   }
   .accent-primary {
-    @apply bg-yellow-300 text-gray-900;
+    @apply bg-yellow-300 text-gray-900 dark:bg-yellow-300 dark:text-gray-900;
   }
   .shadow-standard {
     @apply shadow shadow-gray-300 dark:shadow dark:shadow-black;
@@ -128,7 +128,7 @@
     @apply max-h-none bg-transparent px-2;
   }
   .ql-editor {
-    @apply max-h-75dvh scrollbar-primary-2;
+    @apply scrollbar-primary-2 max-h-75dvh;
   }
   span.ql-formats {
     @apply flex flex-col;

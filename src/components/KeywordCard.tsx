@@ -5,7 +5,7 @@ import Tag from './Tag';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 
-const KeywordCard = ({ keyword }, props) => {
+const KeywordCard = ({ keyword, children }, props) => {
   const { user } = useContext(AuthContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
@@ -20,7 +20,7 @@ const KeywordCard = ({ keyword }, props) => {
 
   return (
     <div
-      className={`${props.className} bg-secondary mb-auto w-full p-4 clip-4`}
+      className={`${props.className} bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
       onClick={async (e) => {
         e.preventDefault();
         setDetailsOpen(!detailsOpen);
@@ -31,11 +31,17 @@ const KeywordCard = ({ keyword }, props) => {
       >
         <div className="flex w-full items-center justify-between gap-4 pr-2">
           <h3> {keyword.name}</h3>
-          {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-            <Link to={`${keyword.id}/update`}>
-              <button className="text-accent hover:underline">Edit</button>
-            </Link>
-          )}
+          <div
+            className="pointer-events-auto -my-2 flex items-center gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {children}
+            {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+              <Link to={`${keyword.id}/update`}>
+                <button className="text-accent hover:underline">Edit</button>
+              </Link>
+            )}
+          </div>
         </div>
         <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>
           <Icon

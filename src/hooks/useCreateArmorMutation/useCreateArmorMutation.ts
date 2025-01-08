@@ -21,8 +21,8 @@ const useCreateArmorMutation = (
         exact: false,
       });
     },
-    onError: () => {
-      setFormMessage('Error creating armor');
+    onError: (error) => {
+      setFormMessage(error.message);
     },
     throwOnError: false,
   });

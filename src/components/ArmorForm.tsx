@@ -271,52 +271,55 @@ const ArmorForm = () => {
                 );
                 return (
                   <div key={keyword.id} className="flex items-center gap-4">
-                    <KeywordCard className="w-full" keyword={keyword} />
-                    {activeKeyword && (
-                      <InputFieldBasic
-                        className="max-w-32"
-                        type="number"
-                        label="Value"
-                        value={activeKeyword.value}
-                        onChange={(value: number) => {
-                          const updatedValue = field.state.value.some(
-                            (item: { keywordId: number; value?: number }) =>
-                              item.keywordId === keyword.id,
-                          )
-                            ? field.state.value.map(
-                                (item: {
-                                  keywordId: number;
-                                  value?: number;
-                                }) =>
-                                  item.keywordId === keyword.id
-                                    ? { ...item, value }
-                                    : item,
-                              )
-                            : [...field.state.value, { ...keyword, value }];
-                          field.handleChange(updatedValue);
+                    <KeywordCard className="w-full" keyword={keyword}>
+                      {activeKeyword && (
+                        <InputFieldBasic
+                          className="max-w-20"
+                          type="number"
+                          label="Value"
+                          value={activeKeyword.value}
+                          onChange={(value: number) => {
+                            const updatedValue = field.state.value.some(
+                              (item: { keywordId: number; value?: number }) =>
+                                item.keywordId === keyword.id,
+                            )
+                              ? field.state.value.map(
+                                  (item: {
+                                    keywordId: number;
+                                    value?: number;
+                                  }) =>
+                                    item.keywordId === keyword.id
+                                      ? { ...item, value }
+                                      : item,
+                                )
+                              : [...field.state.value, { ...keyword, value }];
+                            field.handleChange(updatedValue);
+                          }}
+                        />
+                      )}
+                    </KeywordCard>
+                    <div className="flex flex-col items-center gap-4">
+                      <input
+                        className="size-6 shrink-0"
+                        type="checkbox"
+                        checked={activeKeyword}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            field.handleChange([
+                              ...field.state.value,
+                              { keywordId: keyword.id },
+                            ]);
+                          } else {
+                            field.handleChange(
+                              field.state.value.filter(
+                                (item: { keywordId: number; value?: number }) =>
+                                  item.keywordId !== keyword.id,
+                              ),
+                            );
+                          }
                         }}
                       />
-                    )}
-                    <input
-                      className="size-6 shrink-0"
-                      type="checkbox"
-                      checked={activeKeyword}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          field.handleChange([
-                            ...field.state.value,
-                            { keywordId: keyword.id },
-                          ]);
-                        } else {
-                          field.handleChange(
-                            field.state.value.filter(
-                              (item: { keywordId: number; value?: number }) =>
-                                item.keywordId !== keyword.id,
-                            ),
-                          );
-                        }
-                      }}
-                    />
+                    </div>
                   </div>
                 );
               })}
@@ -337,7 +340,14 @@ const ArmorForm = () => {
         </BtnRect>
         {formMessage && (
           <div className="flex w-full items-center justify-between">
-            <p>{createArmor.isPending ? 'Submitting...' : formMessage}</p>
+            {createArmor.isPending && <p>Submitting...</p>}
+            {createArmor.isSuccess && <p>{formMessage}</p>}
+            {createArmor.isError && (
+              <p>
+                Error creating armor:{' '}
+                <span className="text-error">{formMessage}</span>
+              </p>
+            )}
             <button
               className="text-accent text-xl hover:underline"
               onClick={(e) => {

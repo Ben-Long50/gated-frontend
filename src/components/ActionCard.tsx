@@ -4,6 +4,12 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import Tag from './Tag';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import HealthIcon from './icons/HealthIcon';
+import SanityIcon from './icons/SanityIcon';
+import ActionIcon from './icons/ActionIcon';
+import PowerIcon from './icons/PowerIcon';
+import ReactionIcon from './icons/ReactionIcon';
+import DieIcon from './icons/DieIcon';
 
 const ActionCard = ({ action }) => {
   const { user } = useContext(AuthContext);
@@ -20,7 +26,7 @@ const ActionCard = ({ action }) => {
 
   return (
     <div
-      className={`bg-secondary mb-auto w-full p-4 clip-4`}
+      className={`bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
       onClick={async (e) => {
         e.preventDefault();
         setDetailsOpen(!detailsOpen);
@@ -48,7 +54,7 @@ const ActionCard = ({ action }) => {
       <div className="overflow-hidden">
         <div
           ref={detailRef}
-          className="timing"
+          className="timing flex flex-col gap-4"
           style={
             detailsOpen
               ? {
@@ -59,8 +65,8 @@ const ActionCard = ({ action }) => {
                 }
           }
         >
-          <div className="flex items-center gap-2 py-4">
-            {action.actionSubtypes.map((subtype) => {
+          <div className="flex items-center gap-2 pt-4">
+            {action.actionSubtypes?.map((subtype) => {
               return (
                 <Tag
                   key={subtype}
@@ -69,6 +75,47 @@ const ActionCard = ({ action }) => {
               );
             })}
           </div>
+          {action.attribute && (
+            <div className="flex items-center gap-4">
+              <DieIcon className="size-8" />
+              <p>
+                {action.attribute[0].toUpperCase() +
+                  action.attribute.slice(1) +
+                  ': ' +
+                  action.skill[0].toUpperCase() +
+                  action.skill.slice(1)}
+              </p>
+            </div>
+          )}
+          {action.costs.length > 0 && (
+            <div className="flex flex-wrap items-center justify-start gap-4">
+              <p className="font-semibold tracking-widest">Costs</p>
+              {action.costs.map((cost) => {
+                return (
+                  <div key={cost.stat} className="flex flex-col items-center">
+                    <div className="flex items-center gap-2">
+                      {cost.stat === 'health' && (
+                        <HealthIcon className="size-8" />
+                      )}
+                      {cost.stat === 'sanity' && (
+                        <SanityIcon className="size-8" />
+                      )}
+                      {cost.stat === 'actionPoints' && (
+                        <ActionIcon className="size-8" />
+                      )}
+                      {cost.stat === 'reactionPoints' && (
+                        <ReactionIcon className="size-8" />
+                      )}
+                      {cost.stat === 'power' && (
+                        <PowerIcon className="size-8" />
+                      )}
+                      <p className="sm:pt-1">{cost.value}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
           <p className="text-secondary">{action.description}</p>
         </div>
       </div>

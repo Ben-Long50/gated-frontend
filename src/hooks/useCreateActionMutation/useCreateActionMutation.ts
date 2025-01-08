@@ -22,8 +22,8 @@ const useCreateActionMutation = (
         exact: false,
       });
     },
-    onError: () => {
-      setFormMessage('Error creating action');
+    onError: (error) => {
+      setFormMessage(error.message);
     },
     throwOnError: false,
   });

@@ -22,8 +22,8 @@ const useCreatePerkMutation = (
         exact: false,
       });
     },
-    onError: () => {
-      setFormMessage('Error creating perk');
+    onError: (error) => {
+      setFormMessage(error.message);
     },
     throwOnError: false,
   });

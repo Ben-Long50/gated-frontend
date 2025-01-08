@@ -45,6 +45,16 @@ const ActionForm = () => {
       description: action?.description || '',
     },
     onSubmit: async ({ value }) => {
+      const filteredCosts = value.costs.filter((cost) => cost.stat);
+
+      value.costs = filteredCosts;
+
+      const filteredSubtypes = value.actionSubtypes.filter(
+        (subtype) => subtype.length,
+      );
+
+      value.actionSubtypes = filteredSubtypes;
+
       console.log(value);
 
       await createAction.mutate(value);
@@ -95,6 +105,9 @@ const ActionForm = () => {
                               <option defaultValue=""></option>
                               <option value="actionPoints">
                                 Action points
+                              </option>
+                              <option value="reactionPoints">
+                                Reaction points
                               </option>
                               <option value="power">Power</option>
                               <option value="health">Health</option>
@@ -282,7 +295,14 @@ const ActionForm = () => {
         </BtnRect>
         {formMessage && (
           <div className="flex w-full items-center justify-between">
-            <p>{createAction.isPending ? 'Submitting...' : formMessage}</p>
+            {createAction.isPending && <p>Submitting...</p>}
+            {createAction.isSuccess && <p>{formMessage}</p>}
+            {createAction.isError && (
+              <p>
+                Error creating action:{' '}
+                <span className="text-error">{formMessage}</span>
+              </p>
+            )}
             <button
               className="text-accent text-xl hover:underline"
               onClick={(e) => {

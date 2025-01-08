@@ -25,7 +25,11 @@ const BookEntryForm = () => {
   const { data: bookEntry } = useBookEntryQuery(apiUrl, bookEntryTitle);
 
   const createBookEntry = useCreateBookEntryMutation(apiUrl, setFormMessage);
-  const deleteBookEntry = useDeleteBookEntryMutation(apiUrl, bookEntry?.id);
+  const deleteBookEntry = useDeleteBookEntryMutation(
+    apiUrl,
+    bookEntry?.id,
+    setFormMessage,
+  );
 
   const bookEntryForm = useForm({
     defaultValues: {
@@ -108,7 +112,7 @@ const BookEntryForm = () => {
             </>
           )}
         </bookEntryForm.Field>
-        <div className="flex w-full flex-col gap-2">
+        <div className="flex w-full flex-col gap-4">
           <div className="flex w-full items-center justify-between gap-8">
             {bookEntry && (
               <>
@@ -146,9 +150,32 @@ const BookEntryForm = () => {
               )}
             </BtnRect>
           </div>
+
+          {deleteMode && (
+            <div className="flex items-center gap-4">
+              <Icon className="text-error" path={mdiAlertOutline} size={1.5} />
+              <p className="text-error text-base">
+                Press the delete button one more time to permenantly delete this
+                book entry
+              </p>
+            </div>
+          )}
           {formMessage && (
             <div className="flex w-full items-center justify-between">
-              <p>{createBookEntry.isPending ? 'Submitting...' : formMessage}</p>
+              {createBookEntry.isPending && <p>Submitting...</p>}
+              {createBookEntry.isSuccess && <p>{formMessage}</p>}
+              {createBookEntry.isError && (
+                <p>
+                  Error creating book entry:{' '}
+                  <span className="text-error">{formMessage}</span>
+                </p>
+              )}
+              {deleteBookEntry.isError && (
+                <p>
+                  Error deleting book entry:{' '}
+                  <span className="text-error">{formMessage}</span>
+                </p>
+              )}
               <button
                 className="text-accent text-xl hover:underline"
                 onClick={(e) => {
@@ -159,15 +186,6 @@ const BookEntryForm = () => {
               >
                 Reset form
               </button>
-            </div>
-          )}
-          {deleteMode && (
-            <div className="flex items-center gap-4">
-              <Icon className="text-error" path={mdiAlertOutline} size={1.5} />
-              <p className="text-error text-base">
-                Press the delete button one more time to permenantly delete this
-                book entry
-              </p>
             </div>
           )}
         </div>

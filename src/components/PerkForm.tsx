@@ -115,7 +115,14 @@ const PerkForm = () => {
         </BtnRect>
         {formMessage && (
           <div className="flex w-full items-center justify-between">
-            <p>{createPerk.isPending ? 'Submitting...' : formMessage}</p>
+            {createPerk.isPending && <p>Submitting...</p>}
+            {createPerk.isSuccess && <p>{formMessage}</p>}
+            {createPerk.isError && (
+              <p>
+                Error creating perk:{' '}
+                <span className="text-error">{formMessage}</span>
+              </p>
+            )}
             <button
               className="text-accent text-xl hover:underline"
               onClick={

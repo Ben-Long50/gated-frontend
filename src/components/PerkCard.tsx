@@ -21,7 +21,7 @@ const PerkCard = ({ perk }, props) => {
 
   return (
     <div
-      className={`${props.className} bg-secondary flex w-full flex-col p-4 clip-4`}
+      className={`${props.className} bg-secondary flex w-full cursor-pointer flex-col p-4 clip-4`}
       onClick={async (e) => {
         e.preventDefault();
         setDetailsOpen(!detailsOpen);

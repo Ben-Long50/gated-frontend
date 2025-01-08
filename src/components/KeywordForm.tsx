@@ -106,7 +106,14 @@ const KeywordForm = () => {
         </BtnRect>
         {formMessage && (
           <div className="flex w-full items-center justify-between">
-            <p>{createKeyword.isPending ? 'Submitting...' : formMessage}</p>
+            {createKeyword.isPending && <p>Submitting...</p>}
+            {createKeyword.isSuccess && <p>{formMessage}</p>}
+            {createKeyword.isError && (
+              <p>
+                Error creating keyword:{' '}
+                <span className="text-error">{formMessage}</span>
+              </p>
+            )}
             <button
               className="text-accent text-xl hover:underline"
               onClick={() => {

@@ -43,6 +43,26 @@ const CyberneticForm = () => {
     },
   );
 
+  const weaponData = cybernetic?.weapons.map((weapon) => {
+    const parsedKeywords = weapon.keywords.map(
+      (item: { keyword: Keyword; value?: number }) => ({
+        keywordId: item.keyword.id,
+        value: item?.value,
+      }),
+    );
+    return { ...weapon, keywords: parsedKeywords };
+  });
+
+  const armorData = cybernetic?.armor.map((armor) => {
+    const parsedKeywords = armor.keywords.map(
+      (item: { keyword: Keyword; value?: number }) => ({
+        keywordId: item.keyword.id,
+        value: item?.value,
+      }),
+    );
+    return { ...armor, keywords: parsedKeywords };
+  });
+
   useEffect(() => {
     if (cybernetic) {
       setImagePreview(cybernetic.picture?.imageUrl);
@@ -62,7 +82,7 @@ const CyberneticForm = () => {
       body: cybernetic?.body || ([''] as string[]),
       price: cybernetic?.price || null,
       weapons:
-        cybernetic?.weapons ||
+        weaponData ||
         ([] as {
           name: string;
           stats: {
@@ -76,7 +96,7 @@ const CyberneticForm = () => {
           keywords: { keywordId: number; value?: number }[];
         }[]),
       armor:
-        cybernetic?.armor ||
+        armorData ||
         ([] as {
           name: string;
           stats: {
@@ -130,19 +150,31 @@ const CyberneticForm = () => {
         armor.stats = filteredArmorStats[index];
       });
 
+      const filteredActions = value.actions.map((action) => {
+        const filteredCosts = action.costs.filter((cost) => cost.stat);
+        const filteredSubtypes = action.actionSubtypes.filter(
+          (subtype) => subtype.length,
+        );
+        return {
+          ...action,
+          costs: filteredCosts,
+          actionSubtypes: filteredSubtypes,
+        };
+      });
+
+      value.actions = filteredActions;
+
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, value]) => {
         if (key === 'picture' && value instanceof File) {
           formData.append(key, value);
         } else {
-          console.log(key);
-
           formData.append(key, JSON.stringify(value));
         }
       });
       formData.append('cyberneticId', JSON.stringify(cyberneticId || 0));
-      await createCybernetic.mutate(formData);
+      // await createCybernetic.mutate(formData);
     },
   });
 
@@ -174,7 +206,7 @@ const CyberneticForm = () => {
       >
         <div className="flex items-center justify-center gap-4">
           <CyberIcon className="size-12" />
-          <h1>{cybernetic ? 'Update Cybernetic' : 'Create Weapon'}</h1>
+          <h1>{cybernetic ? 'Update Cybernetic' : 'Create Cybernetic'}</h1>
         </div>
         <div className="flex w-full gap-4 sm:gap-6 lg:gap-8">
           <cyberneticForm.Field
@@ -519,67 +551,73 @@ const CyberneticForm = () => {
                                           <KeywordCard
                                             className="w-full"
                                             keyword={keyword}
-                                          />
-                                          {activeKeyword && (
-                                            <InputFieldBasic
-                                              className="max-w-32"
-                                              type="number"
-                                              label="Value"
-                                              value={activeKeyword.value}
-                                              onChange={(value: number) => {
-                                                const updatedValue =
-                                                  field.state.value.some(
-                                                    (item: {
-                                                      keywordId: number;
-                                                      value?: number;
-                                                    }) =>
-                                                      item.keywordId ===
-                                                      keyword.id,
-                                                  )
-                                                    ? field.state.value.map(
-                                                        (item: {
-                                                          keywordId: number;
-                                                          value?: number;
-                                                        }) =>
-                                                          item.keywordId ===
-                                                          keyword.id
-                                                            ? { ...item, value }
-                                                            : item,
-                                                      )
-                                                    : [
-                                                        ...field.state.value,
-                                                        { ...keyword, value },
-                                                      ];
-                                                field.handleChange(
-                                                  updatedValue,
-                                                );
+                                          >
+                                            {activeKeyword && (
+                                              <InputFieldBasic
+                                                className="max-w-20"
+                                                type="number"
+                                                label="Value"
+                                                value={activeKeyword.value}
+                                                onChange={(value: number) => {
+                                                  const updatedValue =
+                                                    field.state.value.some(
+                                                      (item: {
+                                                        keywordId: number;
+                                                        value?: number;
+                                                      }) =>
+                                                        item.keywordId ===
+                                                        keyword.id,
+                                                    )
+                                                      ? field.state.value.map(
+                                                          (item: {
+                                                            keywordId: number;
+                                                            value?: number;
+                                                          }) =>
+                                                            item.keywordId ===
+                                                            keyword.id
+                                                              ? {
+                                                                  ...item,
+                                                                  value,
+                                                                }
+                                                              : item,
+                                                        )
+                                                      : [
+                                                          ...field.state.value,
+                                                          { ...keyword, value },
+                                                        ];
+                                                  field.handleChange(
+                                                    updatedValue,
+                                                  );
+                                                }}
+                                              />
+                                            )}
+                                          </KeywordCard>
+                                          <div className="flex flex-col items-center gap-4">
+                                            <input
+                                              className="size-6 shrink-0"
+                                              type="checkbox"
+                                              checked={activeKeyword}
+                                              onChange={(e) => {
+                                                if (e.target.checked) {
+                                                  field.handleChange([
+                                                    ...field.state.value,
+                                                    { keywordId: keyword.id },
+                                                  ]);
+                                                } else {
+                                                  field.handleChange(
+                                                    field.state.value.filter(
+                                                      (item: {
+                                                        keywordId: number;
+                                                        value?: number;
+                                                      }) =>
+                                                        item.keywordId !==
+                                                        keyword.id,
+                                                    ),
+                                                  );
+                                                }
                                               }}
                                             />
-                                          )}
-                                          <input
-                                            className="size-6 shrink-0"
-                                            type="checkbox"
-                                            checked={activeKeyword}
-                                            onChange={(e) => {
-                                              if (e.target.checked) {
-                                                field.handleChange([
-                                                  ...field.state.value,
-                                                  { keywordId: keyword.id },
-                                                ]);
-                                              } else {
-                                                field.handleChange(
-                                                  field.state.value.filter(
-                                                    (item: {
-                                                      keywordId: number;
-                                                      value?: number;
-                                                    }) =>
-                                                      item.keywordId !==
-                                                      keyword.id,
-                                                  ),
-                                                );
-                                              }
-                                            }}
-                                          />
+                                          </div>
                                         </div>
                                       );
                                     },
@@ -721,67 +759,73 @@ const CyberneticForm = () => {
                                           <KeywordCard
                                             className="w-full"
                                             keyword={keyword}
-                                          />
-                                          {activeKeyword && (
-                                            <InputFieldBasic
-                                              className="max-w-32"
-                                              type="number"
-                                              label="Value"
-                                              value={activeKeyword.value}
-                                              onChange={(value: number) => {
-                                                const updatedValue =
-                                                  field.state.value.some(
-                                                    (item: {
-                                                      keywordId: number;
-                                                      value?: number;
-                                                    }) =>
-                                                      item.keywordId ===
-                                                      keyword.id,
-                                                  )
-                                                    ? field.state.value.map(
-                                                        (item: {
-                                                          keywordId: number;
-                                                          value?: number;
-                                                        }) =>
-                                                          item.keywordId ===
-                                                          keyword.id
-                                                            ? { ...item, value }
-                                                            : item,
-                                                      )
-                                                    : [
-                                                        ...field.state.value,
-                                                        { ...keyword, value },
-                                                      ];
-                                                field.handleChange(
-                                                  updatedValue,
-                                                );
+                                          >
+                                            {activeKeyword && (
+                                              <InputFieldBasic
+                                                className="max-w-20"
+                                                type="number"
+                                                label="Value"
+                                                value={activeKeyword.value}
+                                                onChange={(value: number) => {
+                                                  const updatedValue =
+                                                    field.state.value.some(
+                                                      (item: {
+                                                        keywordId: number;
+                                                        value?: number;
+                                                      }) =>
+                                                        item.keywordId ===
+                                                        keyword.id,
+                                                    )
+                                                      ? field.state.value.map(
+                                                          (item: {
+                                                            keywordId: number;
+                                                            value?: number;
+                                                          }) =>
+                                                            item.keywordId ===
+                                                            keyword.id
+                                                              ? {
+                                                                  ...item,
+                                                                  value,
+                                                                }
+                                                              : item,
+                                                        )
+                                                      : [
+                                                          ...field.state.value,
+                                                          { ...keyword, value },
+                                                        ];
+                                                  field.handleChange(
+                                                    updatedValue,
+                                                  );
+                                                }}
+                                              />
+                                            )}
+                                          </KeywordCard>
+                                          <div className="flex flex-col items-center gap-4">
+                                            <input
+                                              className="size-6 shrink-0"
+                                              type="checkbox"
+                                              checked={activeKeyword}
+                                              onChange={(e) => {
+                                                if (e.target.checked) {
+                                                  field.handleChange([
+                                                    ...field.state.value,
+                                                    { keywordId: keyword.id },
+                                                  ]);
+                                                } else {
+                                                  field.handleChange(
+                                                    field.state.value.filter(
+                                                      (item: {
+                                                        keywordId: number;
+                                                        value?: number;
+                                                      }) =>
+                                                        item.keywordId !==
+                                                        keyword.id,
+                                                    ),
+                                                  );
+                                                }
                                               }}
                                             />
-                                          )}
-                                          <input
-                                            className="size-6 shrink-0"
-                                            type="checkbox"
-                                            checked={activeKeyword}
-                                            onChange={(e) => {
-                                              if (e.target.checked) {
-                                                field.handleChange([
-                                                  ...field.state.value,
-                                                  { keywordId: keyword.id },
-                                                ]);
-                                              } else {
-                                                field.handleChange(
-                                                  field.state.value.filter(
-                                                    (item: {
-                                                      keywordId: number;
-                                                      value?: number;
-                                                    }) =>
-                                                      item.keywordId !==
-                                                      keyword.id,
-                                                  ),
-                                                );
-                                              }
-                                            }}
-                                          />
+                                          </div>
                                         </div>
                                       );
                                     },
@@ -885,6 +929,9 @@ const CyberneticForm = () => {
                                                     <option defaultValue=""></option>
                                                     <option value="actionPoints">
                                                       Action points
+                                                    </option>
+                                                    <option value="reactionPoints">
+                                                      Reaction points
                                                     </option>
                                                     <option value="power">
                                                       Power
@@ -1181,58 +1228,55 @@ const CyberneticForm = () => {
                 );
                 return (
                   <div key={keyword.id} className="flex items-center gap-4">
-                    <KeywordCard className="w-full" keyword={keyword} />
-                    {activeKeyword && (
-                      <InputFieldBasic
-                        className="max-w-32"
-                        type="number"
-                        label="Value"
-                        value={activeKeyword.value}
-                        onChange={(value: number) => {
-                          const updatedValue = field.state.value.some(
-                            (item: { keywordId: number; value?: number }) =>
-                              item.keywordId === keyword.id,
-                          )
-                            ? field.state.value.map(
-                                (item: {
-                                  keywordId: number;
-                                  value?: number;
-                                }) =>
-                                  item.keywordId === keyword.id
-                                    ? { ...item, value }
-                                    : item,
-                              )
-                            : [
-                                ...field.state.value,
-                                {
-                                  ...keyword,
-                                  value,
-                                },
-                              ];
-                          field.handleChange(updatedValue);
+                    <KeywordCard className="w-full" keyword={keyword}>
+                      {activeKeyword && (
+                        <InputFieldBasic
+                          className="max-w-20"
+                          type="number"
+                          label="Value"
+                          value={activeKeyword.value}
+                          onChange={(value: number) => {
+                            const updatedValue = field.state.value.some(
+                              (item: { keywordId: number; value?: number }) =>
+                                item.keywordId === keyword.id,
+                            )
+                              ? field.state.value.map(
+                                  (item: {
+                                    keywordId: number;
+                                    value?: number;
+                                  }) =>
+                                    item.keywordId === keyword.id
+                                      ? { ...item, value }
+                                      : item,
+                                )
+                              : [...field.state.value, { ...keyword, value }];
+                            field.handleChange(updatedValue);
+                          }}
+                        />
+                      )}
+                    </KeywordCard>
+                    <div className="flex flex-col items-center gap-4">
+                      <input
+                        className="size-6 shrink-0"
+                        type="checkbox"
+                        checked={activeKeyword}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            field.handleChange([
+                              ...field.state.value,
+                              { keywordId: keyword.id },
+                            ]);
+                          } else {
+                            field.handleChange(
+                              field.state.value.filter(
+                                (item: { keywordId: number; value?: number }) =>
+                                  item.keywordId !== keyword.id,
+                              ),
+                            );
+                          }
                         }}
                       />
-                    )}
-                    <input
-                      className="size-6 shrink-0"
-                      type="checkbox"
-                      checked={activeKeyword}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          field.handleChange([
-                            ...field.state.value,
-                            { keywordId: keyword.id },
-                          ]);
-                        } else {
-                          field.handleChange(
-                            field.state.value.filter(
-                              (item: { keywordId: number; value?: number }) =>
-                                item.keywordId !== keyword.id,
-                            ),
-                          );
-                        }
-                      }}
-                    />
+                    </div>
                   </div>
                 );
               })}
@@ -1253,7 +1297,14 @@ const CyberneticForm = () => {
         </BtnRect>
         {formMessage && (
           <div className="flex w-full items-center justify-between">
-            <p>{createCybernetic.isPending ? 'Submitting...' : formMessage}</p>
+            {createCybernetic.isPending && <p>Submitting...</p>}
+            {createCybernetic.isSuccess && <p>{formMessage}</p>}
+            {createCybernetic.isError && (
+              <p>
+                Error creating cybernetic:{' '}
+                <span className="text-error">{formMessage}</span>
+              </p>
+            )}
             <button
               className="text-accent text-xl hover:underline"
               onClick={(e) => {

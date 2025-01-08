@@ -12,13 +12,17 @@ const useCreateBookEntryMutation = (
     },
     onSuccess: () => {
       setFormMessage('Book entry successfully created');
+      queryClient.invalidateQueries({
+        queryKey: ['book'],
+        exact: false,
+      });
       return queryClient.invalidateQueries({
         queryKey: ['bookEntry'],
         exact: false,
       });
     },
-    onError: () => {
-      setFormMessage('Error creating book entry');
+    onError: (error) => {
+      setFormMessage(error.message);
     },
     throwOnError: false,
   });

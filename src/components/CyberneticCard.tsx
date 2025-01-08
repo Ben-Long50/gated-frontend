@@ -24,6 +24,8 @@ import SanityIcon from './icons/SanityIcon';
 import { Keyword } from 'src/hooks/useKeywords';
 import CloudinaryImage from './CloudinaryImage';
 import { AuthContext } from '../contexts/AuthContext';
+import ReactionIcon from './icons/ReactionIcon';
+import DieIcon from './icons/DieIcon';
 
 const CyberneticCard = ({ cybernetic }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -63,7 +65,9 @@ const CyberneticCard = ({ cybernetic }, props) => {
         className={`${props.className} bg-primary timing flex cursor-pointer flex-col p-4 clip-6`}
         onClick={async (e) => {
           e.preventDefault();
-          setDetailsOpen(!detailsOpen);
+          if (!toolTip) {
+            setDetailsOpen(!detailsOpen);
+          }
         }}
       >
         {layoutSize === 'small' || layoutSize === 'xsmall' ? (
@@ -499,10 +503,24 @@ const CyberneticCard = ({ cybernetic }, props) => {
                             )
                           </p>
                         </div>
-                        <div className="flex flex-wrap items-center justify-start gap-8">
-                          <p className="font-semibold tracking-widest">Costs</p>
-                          {action.costs.length > 0 &&
-                            action.costs.map((cost) => {
+                        {action.attribute && (
+                          <div className="flex items-center gap-4">
+                            <DieIcon className="size-8" />
+                            <p>
+                              {action.attribute[0].toUpperCase() +
+                                action.attribute.slice(1) +
+                                ': ' +
+                                action.skill[0].toUpperCase() +
+                                action.skill.slice(1)}
+                            </p>
+                          </div>
+                        )}
+                        {action.costs.length > 0 && (
+                          <div className="flex flex-wrap items-center justify-start gap-8">
+                            <p className="font-semibold tracking-widest">
+                              Costs
+                            </p>
+                            {action.costs.map((cost) => {
                               return (
                                 <div
                                   key={cost.stat}
@@ -518,6 +536,9 @@ const CyberneticCard = ({ cybernetic }, props) => {
                                     {cost.stat === 'actionPoints' && (
                                       <ActionIcon className="size-8" />
                                     )}
+                                    {cost.stat === 'reactionPoints' && (
+                                      <ReactionIcon className="size-8" />
+                                    )}
                                     {cost.stat === 'power' && (
                                       <PowerIcon className="size-8" />
                                     )}
@@ -526,7 +547,8 @@ const CyberneticCard = ({ cybernetic }, props) => {
                                 </div>
                               );
                             })}
-                        </div>
+                          </div>
+                        )}
                         <p>{action.description}</p>
                         {index < cybernetic.actions.length - 1 && (
                           <hr className="w-full border-yellow-300 border-opacity-50" />
