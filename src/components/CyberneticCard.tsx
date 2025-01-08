@@ -249,6 +249,8 @@ const CyberneticCard = ({ cybernetic }, props) => {
                                 : item.keyword.name
                             }
                             description={item.keyword.description}
+                            toolTip={toolTip}
+                            setToolTip={setToolTip}
                           />
                         );
                       },
