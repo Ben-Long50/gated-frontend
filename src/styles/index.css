@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Omnitrinx';
-  src: url('/Omnitrinx.otf') format('opentype');
+  font-family: 'omnitrinx';
+  src: url('/omnitrinx.otf') format('opentype');
 }
 
 @font-face {
-  font-family: 'Exo-regular';
-  src: url('/Exo-Regular.otf') format('opentype');
+  font-family: 'exo-regular';
+  src: url('/exo-regular.otf') format('opentype');
 }
 
 @layer base {
@@ -29,8 +29,10 @@
   .dark body::before {
     content: '';
     position: fixed;
+    background-color: black;
     background-position: center;
     background-size: cover;
+    background-repeat: no-repeat;
     top: 0;
     left: 0;
     width: 100lvw;
@@ -128,27 +130,27 @@
     @apply max-h-none bg-transparent px-2;
   }
   .ql-editor {
-    @apply scrollbar-primary-2 max-h-75dvh;
-  }
-  span.ql-formats {
-    @apply flex flex-col;
+    @apply scrollbar-primary-2 max-h-75dvh font-sans;
   }
   .ql-editor p.ql-indent-1 {
-    @apply ml-4 border-l border-yellow-300 border-opacity-50;
+    @apply border-l border-yellow-300 border-opacity-50 dark:border-yellow-300;
   }
-  .ql-editor .ql-indent-1:not(.ql-direction-rtl) {
+  .ql-editor .ql-indent-1:not(.ql-direction-rtl),
+  .ql-editor .ql-indent-1 {
     @apply pl-4;
   }
-  .ql-editor ul li {
-    @apply text-secondary text-lg lg:text-xl;
+  .ql-editor ul li,
+  .ql-editor ol li {
+    @apply text-secondary p-0 text-lg lg:text-xl;
   }
   li::before {
     @apply pt-2;
   }
   .ql-editor ol,
   .ql-editor ul {
-    @apply text-secondary pl-2 font-mono text-lg lg:text-xl;
+    @apply text-secondary pl-0 text-lg lg:text-xl;
   }
+
   .ql-editor {
     tab-size: 8;
     -moz-tab-size: 8;

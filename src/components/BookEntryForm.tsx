@@ -31,6 +31,18 @@ const BookEntryForm = () => {
     setFormMessage,
   );
 
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteBookEntry.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
+
+  const handleReset = async () => {
+    bookEntryForm.reset();
+  };
+
   const bookEntryForm = useForm({
     defaultValues: {
       title: bookEntry?.title || '',
@@ -51,9 +63,18 @@ const BookEntryForm = () => {
     layoutSize === 'xsmall' || layoutSize === 'small' ? '32px' : '64px';
 
   return (
-    <FormLayout>
+    <FormLayout
+      itemId={bookEntryTitle}
+      createMutation={createBookEntry}
+      deleteMutation={deleteBookEntry}
+      handleDelete={handleDelete}
+      handleReset={handleReset}
+      formMessage={formMessage}
+      deleteMode={deleteMode}
+      setDeleteMode={setDeleteMode}
+    >
       <form
-        className="bg-primary flex flex-col items-start gap-4 p-4 clip-8 sm:gap-8 sm:p-8"
+        className="flex flex-col items-start gap-8"
         style={{
           minHeight: `calc(100dvh - ${navbarHeight}px - ${offsetHeight})`,
         }}
@@ -114,30 +135,7 @@ const BookEntryForm = () => {
         </bookEntryForm.Field>
         <div className="flex w-full flex-col gap-4">
           <div className="flex w-full items-center justify-between gap-8">
-            {bookEntry && (
-              <>
-                <button
-                  className="text-accent hover:underline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    deleteMode ? deleteBookEntry.mutate() : setDeleteMode(true);
-                  }}
-                >
-                  Delete entry
-                </button>
-                {deleteMode && (
-                  <div className="grow">
-                    <button
-                      className="text-secondary text-left hover:underline"
-                      onClick={() => setDeleteMode(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-            <BtnRect type="submit" className="group ml-auto w-full max-w-64">
+            <BtnRect type="submit" className="group w-full">
               {bookEntry?.isPending ? (
                 <Loading
                   className="text-gray-900 group-hover:text-yellow-300"
@@ -150,39 +148,6 @@ const BookEntryForm = () => {
               )}
             </BtnRect>
           </div>
-
-          {deleteMode && (
-            <div className="flex items-center gap-4">
-              <Icon className="text-error" path={mdiAlertOutline} size={1.5} />
-              <p className="text-error text-base">
-                Press the delete button one more time to permenantly delete this
-                book entry
-              </p>
-            </div>
-          )}
-          {formMessage && (
-            <div className="flex w-full items-center justify-between">
-              {(createBookEntry.isPending || deleteBookEntry.isPaused) && (
-                <p>Submitting...</p>
-              )}
-              {createBookEntry.isSuccess && <p>{formMessage}</p>}
-              {(createBookEntry.isError || deleteBookEntry.isError) && (
-                <p>
-                  Error : <span className="text-error">{formMessage}</span>
-                </p>
-              )}
-              <button
-                className="text-accent text-xl hover:underline"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setFormMessage('');
-                  bookEntryForm.reset();
-                }}
-              >
-                Reset form
-              </button>
-            </div>
-          )}
         </div>
       </form>
     </FormLayout>

@@ -8,7 +8,7 @@ Size.whitelist = ['extra-small', 'small', 'medium', 'large'];
 Quill.register(Size, true);
 
 const Font = Quill.import('attributors/style/font');
-Font.whitelist = ['Exo-Regular', 'Omnitrinx'];
+Font.whitelist = ['exo-regular', 'omnitrinx'];
 
 Quill.register(Font, true);
 
