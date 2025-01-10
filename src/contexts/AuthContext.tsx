@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
       (isSuccess && pathname === '/signin') ||
       (isSuccess && pathname === '/signup')
     ) {
-      navigate('/glam/codex/book/introduction');
+      navigate('/glam/codex/');
     } else if (isError) {
       navigate('/signin');
       queryClient.clear();

@@ -9,7 +9,7 @@ const useCreateErrorReportMutation = (apiUrl: string) => {
       return createKeyword(formData, apiUrl);
     },
     onSettled: () => {
-      navigate('/glam/codex/book/introduction');
+      navigate('/glam/codex');
     },
     throwOnError: false,
   });

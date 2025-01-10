@@ -12,7 +12,7 @@ const useSigninMutation = (
       return await signin(formData, apiUrl);
     },
     onSuccess: () => {
-      navigate('/glam/codex/book/introduction');
+      navigate('/glam/codex');
     },
     onError: (error) => {
       setErrors(error.errors);

@@ -14,7 +14,7 @@ const useDeleteBookEntryMutation = (
       return deleteBookEntry(apiUrl, bookEntryId);
     },
     onSuccess: () => {
-      navigate('/glam/codex/book/introduction');
+      navigate('/glam/codex');
       queryClient.invalidateQueries({
         queryKey: ['book'],
         exact: false,
