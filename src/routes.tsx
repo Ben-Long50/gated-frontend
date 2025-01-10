@@ -29,6 +29,7 @@ import BookEntry from './components/BookEntry';
 import BookEntryForm from './components/BookEntryForm';
 import Actions from './components/Actions';
 import ErrorReport from './components/ErrorReport';
+import BookManage from './components/BookManage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -53,8 +54,9 @@ const router = createBrowserRouter(
 
         <Route path="codex">
           <Route path="book">
-            <Route path=":bookEntryTitle" element={<BookEntry />} />
-            <Route path=":bookEntryTitle/update" element={<BookEntryForm />} />
+            <Route path=":bookEntryId" element={<BookEntry />} />
+            <Route path=":bookEntryId/update" element={<BookEntryForm />} />
+            <Route path="manage" element={<BookManage />} />
             <Route path="create" element={<BookEntryForm />} />
           </Route>
           <Route path="weapons">

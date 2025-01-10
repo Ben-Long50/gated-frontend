@@ -21,6 +21,9 @@ export default {
         sans: ['Exo-regular'],
         logo: ['Omnitrinx', 'Exo-regular', 'Inter'],
       },
+      height: {
+        '70dvh': '70dvh',
+      },
       maxHeight: {
         '50dvh': '50dvh',
         '75dvh': '75dvh',

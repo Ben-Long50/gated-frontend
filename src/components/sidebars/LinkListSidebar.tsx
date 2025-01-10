@@ -1,7 +1,7 @@
 import ThemeContainer from '../../components/ThemeContainer';
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useContext, useState } from 'react';
+import { Children, isValidElement, useContext, useState } from 'react';
 import { ThemeContext } from '../../contexts/ThemeContext';
 
 const LinkListSidebar = ({ title, children, numberOfEntries }) => {
@@ -9,16 +9,33 @@ const LinkListSidebar = ({ title, children, numberOfEntries }) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [hover, setHover] = useState(false);
 
-  const height = (numberOfEntries + 1 || children.length) * 44 + 16;
+  function countChildren(children) {
+    let count = 0;
+
+    function recurse(childNodes) {
+      Children.forEach(childNodes, (child) => {
+        count++;
+        if (isValidElement(child) && child.props.children) {
+          recurse(child.props.children);
+        }
+      });
+    }
+
+    recurse(children);
+
+    return count;
+  }
+
+  const height = countChildren(children) * 60;
 
   return (
     <ThemeContainer
-      className={`timing w-full rounded-br-4xl rounded-tl-4xl ${detailsOpen && 'shadow-list z-10 shadow-slate-950'}`}
+      className={`timing w-full rounded-br-4xl rounded-tl-4xl ${detailsOpen && 'z-10 shadow-list shadow-slate-950'}`}
       chamfer="16"
       borderColor={hover ? accentPrimary : 'transparent'}
     >
       <div
-        className={` ${detailsOpen ? 'bg-tertiary' : 'bg-secondary'} timing relative flex flex-col pr-3 clip-4`}
+        className={`${detailsOpen ? 'bg-tertiary' : 'bg-secondary'} timing relative flex flex-col pr-3 clip-4`}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >

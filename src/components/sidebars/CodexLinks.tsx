@@ -7,15 +7,20 @@ import LinkSidebar from './LinkSidebar';
 import ActionIcon from '../icons/ActionIcon';
 import KeywordIcon from '../icons/KeywordIcon';
 import PerkIcon from '../icons/PerkIcon';
-import useBookQuery from '../../hooks/useBookQuery/useBookQuery';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useContext } from 'react';
 import Loading from '../../components/Loading';
+import useBookSectionsQuery from '../../hooks/useBookSectionsQuery/useBookSectionsQuery';
+import LinkSublistSidebar from './LinkSublistSidebar';
 
 const CodexLinks = ({ setSidebarVisibility }) => {
   const { apiUrl, user } = useContext(AuthContext);
 
-  const { data: bookEntries, isLoading, isPending } = useBookQuery(apiUrl);
+  const {
+    data: bookSections,
+    isLoading,
+    isPending,
+  } = useBookSectionsQuery(apiUrl);
 
   if (isLoading || isPending) {
     return <Loading />;
@@ -30,18 +35,34 @@ const CodexLinks = ({ setSidebarVisibility }) => {
             <p className="text-inherit">The Book</p>
           </>
         }
-        numberOfEntries={bookEntries.length}
+        numberOfEntries={bookSections?.length + 1 || 2}
       >
-        {bookEntries.map((entry) => {
+        {bookSections?.map((section) => {
           return (
-            <LinkSidebar
-              key={entry.id}
-              title={entry.title[0].toUpperCase() + entry.title.slice(1)}
-              path={`codex/book/${entry.title}`}
-              setSidebarVisibility={setSidebarVisibility}
-            />
+            <LinkSublistSidebar
+              key={section.id}
+              title={section.title[0].toUpperCase() + section.title.slice(1)}
+            >
+              {section.entries?.map((entry) => {
+                return (
+                  <LinkSidebar
+                    key={entry.id}
+                    title={entry.title[0].toUpperCase() + entry.title.slice(1)}
+                    path={`codex/book/${entry.id}`}
+                    setSidebarVisibility={setSidebarVisibility}
+                  />
+                );
+              })}
+            </LinkSublistSidebar>
           );
         })}
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+          <LinkSidebar
+            title="Manage book"
+            path="codex/book/manage"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <LinkSidebar
             title="Create entry"

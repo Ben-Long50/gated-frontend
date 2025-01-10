@@ -179,7 +179,7 @@ const ArmorForm = () => {
                     size={3}
                   />
                   <p className="text-tertiary font-semibold">
-                    Upload character picture
+                    Upload armor picture
                   </p>
                   <p className="text-tertiary">PNG, JPG, JPEG</p>
                 </div>

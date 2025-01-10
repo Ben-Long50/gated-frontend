@@ -6,13 +6,13 @@ import { Link, useParams } from 'react-router-dom';
 
 const BookEntry = () => {
   const { apiUrl, user } = useContext(AuthContext);
-  const { bookEntryTitle } = useParams();
+  const { bookEntryId } = useParams();
 
   const {
     data: bookEntry,
     isLoading,
     isPending,
-  } = useBookEntryQuery(apiUrl, bookEntryTitle);
+  } = useBookEntryQuery(apiUrl, bookEntryId);
 
   console.log(bookEntry);
 
@@ -25,7 +25,7 @@ const BookEntry = () => {
       <div
         id="quill-display"
         className="ql-editor whitespace-pre-wrap"
-        dangerouslySetInnerHTML={{ __html: bookEntry.content }}
+        dangerouslySetInnerHTML={{ __html: bookEntry.content.html }}
       />
       {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
         <div className="flex w-full items-center justify-end">

@@ -109,57 +109,31 @@
   p,
   input,
   select,
-  textarea {
+  textarea,
+  li {
     @apply text-secondary text-lg tracking-wide lg:text-xl;
   }
-  #toolbar {
-    @apply bg-tertiary;
+  ul {
+    @apply ml-8 list-disc;
   }
-  #toolbar > span > select *,
-  #toolbar > span > button *,
-  #toolbar > span * {
-    @apply text-secondary bg-tertiary;
+  ul > ul,
+  ol > ol {
+    @apply ml-12 list-none;
   }
-
-  #toolbar,
-  .ql-container.ql-snow {
-    @apply text-secondary border-2 border-yellow-300 border-opacity-50;
+  ol {
+    @apply ml-8 flex list-decimal flex-col gap-1;
   }
-
-  #quill-display {
-    @apply max-h-none bg-transparent px-2;
+  .editor-underline {
+    @apply underline;
   }
-  .ql-editor {
-    @apply scrollbar-primary-2 max-h-75dvh font-sans;
+  .editor-strikethrough {
+    @apply line-through;
   }
-  .ql-editor p.ql-indent-1 {
-    @apply border-l border-yellow-300 border-opacity-50 dark:border-yellow-300;
+  .editor-table {
+    @apply w-full table-fixed;
   }
-  .ql-editor .ql-indent-1:not(.ql-direction-rtl),
-  .ql-editor .ql-indent-1 {
-    @apply pl-4;
-  }
-  .ql-editor ul li,
-  .ql-editor ol li {
-    @apply text-secondary p-0 text-lg lg:text-xl;
-  }
-  li::before {
-    @apply pt-2;
-  }
-  .ql-editor ol,
-  .ql-editor ul {
-    @apply text-secondary pl-0 text-lg lg:text-xl;
-  }
-
-  .ql-editor {
-    tab-size: 8;
-    -moz-tab-size: 8;
-    -o-tab-size: 8;
-  }
-  .ql-editor li::before {
-    display: inline-block;
-    white-space: nowrap;
-    width: 1em;
+  .editor-table-cell {
+    @apply !border-2 !border-zinc-400 bg-transparent p-2;
   }
   .auth-layout-small {
     display: flex;

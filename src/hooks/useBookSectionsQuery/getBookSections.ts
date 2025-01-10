@@ -1,8 +1,8 @@
 import handleResponse from '../handleResponse';
 
-const getBook = async (apiUrl: string) => {
+const getBookSections = async (apiUrl: string) => {
   try {
-    const response = await fetch(`${apiUrl}/book`, {
+    const response = await fetch(`${apiUrl}/book/sections`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -17,4 +17,4 @@ const getBook = async (apiUrl: string) => {
   }
 };
 
-export default getBook;
+export default getBookSections;
