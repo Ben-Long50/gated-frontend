@@ -142,7 +142,7 @@ const PerkForm = () => {
         <BtnRect type="submit" className="group w-full">
           {createPerk.isPending ? (
             <Loading
-              className="text-gray-900 group-hover:text-yellow-300"
+              className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
           ) : perk ? (

@@ -2,7 +2,7 @@ import handleResponse from '../handleResponse';
 
 const deleteBookEntry = async (apiUrl: string, bookEntryId: string) => {
   try {
-    const response = await fetch(`${apiUrl}/book/${bookEntryId}`, {
+    const response = await fetch(`${apiUrl}/book/entries/${bookEntryId}`, {
       method: 'DELETE',
       credentials: 'include',
     });

@@ -2,7 +2,7 @@ import handleResponse from '../handleResponse';
 
 const createBookEntry = async (formData: object, apiUrl: string) => {
   try {
-    const response = await fetch(`${apiUrl}/book`, {
+    const response = await fetch(`${apiUrl}/book/entries`, {
       method: 'POST',
       credentials: 'include',
       headers: {

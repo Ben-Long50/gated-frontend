@@ -49,6 +49,7 @@ const Weapons = () => {
                   <option value="">All weapons</option>
                   <option value="1H">1H weapons</option>
                   <option value="2H">2H weapons</option>
+                  <option value="Melee">Melee</option>
                   <option value="Pistol">Pistols</option>
                   <option value="Shotgun">Shotguns</option>
                   <option value="SMG">SMGs</option>

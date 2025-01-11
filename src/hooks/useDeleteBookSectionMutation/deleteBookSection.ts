@@ -1,13 +1,12 @@
 import handleResponse from '../handleResponse';
 
-const getBookEntry = async (apiUrl: string, bookEntryTitle: string) => {
+const deleteBookSection = async (apiUrl: string, bookSectionId: string) => {
   try {
-    const response = await fetch(`${apiUrl}/book/entries/${bookEntryTitle}`, {
-      method: 'GET',
+    const response = await fetch(`${apiUrl}/book/sections/${bookSectionId}`, {
+      method: 'DELETE',
       credentials: 'include',
     });
     const data = await handleResponse(response);
-
     return data;
   } catch (error) {
     if (error instanceof Error) {
@@ -17,4 +16,4 @@ const getBookEntry = async (apiUrl: string, bookEntryTitle: string) => {
   }
 };
 
-export default getBookEntry;
+export default deleteBookSection;

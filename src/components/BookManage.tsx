@@ -1,5 +1,4 @@
 import FormLayout from '../layouts/FormLayout';
-import { useParams } from 'react-router-dom';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import BtnRect from './buttons/BtnRect';
@@ -10,13 +9,14 @@ import useBookSectionsQuery from '../hooks/useBookSectionsQuery/useBookSectionsQ
 import useCreateBookSectionMutation from '../hooks/useCreateBookSectionMutation/useCreateBookSectionMutation';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
+import useDeleteBookSectionMutation from '../hooks/useDeleteBookSectionMutation/useDeleteBookSectionMutation';
 
 const BookManage = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
-  const { bookEntryTitle } = useParams();
   const [deleteMode, setDeleteMode] = useState(false);
+  const [section, setSection] = useState({});
 
   const {
     data: bookSections,
@@ -29,30 +29,35 @@ const BookManage = () => {
     setFormMessage,
   );
 
-  //   const deleteBookSection = useDeleteBookEntryMutation(
-  //     apiUrl,
-  //     bookEntry?.id,
-  //     setFormMessage,
-  //   );
+  const deleteBookSection = useDeleteBookSectionMutation(
+    apiUrl,
+    setFormMessage,
+  );
 
-  //   const handleDelete = () => {
-  //     if (deleteMode) {
-  //       deleteBookEntry.mutate();
-  //     } else {
-  //       setDeleteMode(true);
-  //     }
-  //   };
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteBookSection.mutate(section.id);
+      setDeleteMode(false);
+    } else {
+      setDeleteMode(true);
+    }
+  };
 
   const handleReset = async () => {
-    bookSectionForm.reset();
+    bookSectionForm.reset({ title: '' });
+    setSection({});
+    setFormMessage('');
   };
 
   const bookSectionForm = useForm({
     defaultValues: {
-      title: '',
+      title: section.title || '',
     },
     onSubmit: async ({ value }) => {
       console.log(value);
+      if (section.id) {
+        value.bookSectionId = section.id;
+      }
 
       await createBookSection.mutate(value);
     },
@@ -81,7 +86,15 @@ const BookManage = () => {
                   <h3>
                     {section.title[0].toUpperCase() + section.title.slice(1)}
                   </h3>
-                  <h3 className="text-accent">{section.order}</h3>
+                  <div className="flex items-center gap-8">
+                    <button
+                      className="text-accent hover:underline"
+                      onClick={() => setSection(section)}
+                    >
+                      Edit
+                    </button>
+                    <h3 className="text-accent">{section.order}</h3>
+                  </div>
                 </div>
 
                 {section.entries.length > 0 && (
@@ -111,10 +124,10 @@ const BookManage = () => {
         </div>
       </ThemeContainer>
       <FormLayout
-        itemId={bookEntryTitle}
+        itemId={section.id}
         createMutation={createBookSection}
-        //   deleteMutation={deleteBookEntry}
-        //   handleDelete={handleDelete}
+        deleteMutation={deleteBookSection}
+        handleDelete={handleDelete}
         handleReset={handleReset}
         formMessage={formMessage}
         deleteMode={deleteMode}
@@ -129,7 +142,9 @@ const BookManage = () => {
           }}
         >
           <div className="grid w-full grid-flow-row items-center gap-4 sm:gap-8 sm:px-8 lg:grid-flow-col">
-            <h2 className="text-center sm:text-left">Create Book Section</h2>
+            <h2 className="text-center sm:text-left">
+              {section.id ? 'Update book section' : 'Create Book Section'}
+            </h2>
             <bookSectionForm.Field
               name="title"
               validators={{
@@ -149,9 +164,11 @@ const BookManage = () => {
               <BtnRect type="submit" className="group w-full">
                 {createBookSection.isPending ? (
                   <Loading
-                    className="text-gray-900 group-hover:text-yellow-300"
+                    className="group-hover:text-yellow-300 dark:text-gray-900"
                     size={1.15}
                   />
+                ) : section.id ? (
+                  'Update'
                 ) : (
                   'Create'
                 )}
