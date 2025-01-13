@@ -167,7 +167,7 @@ const CodexLinks = ({ setSidebarVisibility }) => {
             />
             <LinkSidebar
               title="Create a new mod"
-              path="codex/vehicles/modifictions/create"
+              path="codex/vehicles/modifications/create"
               setSidebarVisibility={setSidebarVisibility}
             />
           </>

@@ -8,31 +8,26 @@ import Tag from './Tag';
 import ThemeContainer from './ThemeContainer';
 import CyberIcon from './icons/CyberIcon';
 import PowerIcon from './icons/PowerIcon';
-import DamageIcon from './icons/DamageIcon';
-import SalvoIcon from './icons/SalvoIcon';
-import FlurryIcon from './icons/FlurryIcon';
-import RangeIcon from './icons/RangeIcon';
-import MagCapacityIcon from './icons/MagCapacityIcon';
-import ArmorIcon from './icons/ArmorIcon';
-import WardIcon from './icons/WardIcon';
-import BlockIcon from './icons/BlockIcon';
 import BodyIcon from './icons/BodyIcon';
 import { Link } from 'react-router-dom';
-import ActionIcon from './icons/ActionIcon';
-import HealthIcon from './icons/HealthIcon';
-import SanityIcon from './icons/SanityIcon';
-import { Keyword } from 'src/hooks/useKeywords';
 import CloudinaryImage from './CloudinaryImage';
 import { AuthContext } from '../contexts/AuthContext';
-import ReactionIcon from './icons/ReactionIcon';
-import DieIcon from './icons/DieIcon';
+import SubweaponCard from './SubweaponCard';
+import SubarmorCard from './SubarmorCard';
+import { Keyword } from '../types/keyword';
+import SubactionCard from './SubactionCard';
+import { Action } from 'src/types/action';
+import { ArmorWithKeywords } from 'src/types/armor';
+import { WeaponWithKeywords } from 'src/types/weapon';
 
 const CyberneticCard = ({ cybernetic }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
+  const [descriptionHeight, setDescriptionHeight] = useState(1000);
   const [toolTip, setToolTip] = useState(null);
 
   useEffect(() => {
@@ -48,10 +43,14 @@ const CyberneticCard = ({ cybernetic }, props) => {
   }, [toolTip]);
 
   const detailRef = useRef(null);
+  const descriptionRef = useRef(null);
 
   useEffect(() => {
     if (detailRef.current) {
       setDetailHeight(detailRef.current.offsetHeight);
+    }
+    if (descriptionRef.current) {
+      setDescriptionHeight(descriptionRef.current.offsetHeight);
     }
   }, [detailRef.current]);
 
@@ -63,10 +62,11 @@ const CyberneticCard = ({ cybernetic }, props) => {
     >
       <div
         className={`${props.className} bg-primary timing flex cursor-pointer flex-col p-4 clip-6`}
-        onClick={async (e) => {
+        onClick={(e) => {
           e.preventDefault();
           if (!toolTip) {
             setDetailsOpen(!detailsOpen);
+            setDescriptionOpen(!detailsOpen);
           }
         }}
       >
@@ -283,6 +283,23 @@ const CyberneticCard = ({ cybernetic }, props) => {
                   </div>
                 )}
               </div>
+              <div className={`timing overflow-hidden`}>
+                <p
+                  ref={descriptionRef}
+                  className={`timing text-secondary flex flex-col gap-8 pr-8`}
+                  style={
+                    descriptionOpen
+                      ? {
+                          marginTop: 0,
+                        }
+                      : {
+                          marginTop: -descriptionHeight - 4,
+                        }
+                  }
+                >
+                  {cybernetic.description}
+                </p>
+              </div>
               <span
                 className={`absolute bottom-0 right-0 transition duration-300 ${detailsOpen && '-rotate-180'}`}
               >
@@ -298,7 +315,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
         <div className={`overflow-hidden`}>
           <div
             ref={detailRef}
-            className={`timing flex flex-col gap-8 p-0.5 pt-4`}
+            className={`timing flex flex-col gap-8 p-0.5`}
             style={
               detailsOpen
                 ? {
@@ -309,176 +326,67 @@ const CyberneticCard = ({ cybernetic }, props) => {
                   }
             }
           >
-            <p className="text-secondary">{cybernetic.description}</p>
+            {layoutSize === 'small' ||
+              (layoutSize === 'xsmall' && <p>{cybernetic.description}</p>)}
             {cybernetic.weapons.length > 0 && (
-              <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+              <ThemeContainer
+                className={` ${detailsOpen && 'mt-6'}`}
+                chamfer="16"
+                borderColor={accentPrimary}
+              >
                 <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                   Integrated weapons
                 </p>
                 <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
-                  {cybernetic.weapons.map((weapon, index) => {
-                    return (
-                      <div
-                        key={weapon.name}
-                        className="flex h-full grow flex-col items-start justify-between gap-4"
-                      >
-                        <h3> {weapon.name}</h3>
-                        <div className="flex items-center gap-2">
-                          {weapon.keywords?.map(
-                            (item: { keyword: Keyword; value?: number }) => {
-                              return (
-                                <Tag
-                                  key={item.keyword.id}
-                                  label={
-                                    item.value
-                                      ? item.keyword.name + ' ' + item.value
-                                      : item.keyword.name
-                                  }
-                                  description={item.keyword.description}
-                                  toolTip={toolTip}
-                                  setToolTip={setToolTip}
-                                />
-                              );
-                            },
+                  {cybernetic.weapons.map(
+                    (weapon: WeaponWithKeywords, index: number) => {
+                      return (
+                        <div
+                          key={weapon.name}
+                          className="flex h-full grow flex-col items-start justify-between gap-4"
+                        >
+                          <SubweaponCard
+                            weapon={weapon}
+                            toolTip={toolTip}
+                            setToolTip={setToolTip}
+                          />
+                          {index < cybernetic.weapons.length - 1 && (
+                            <hr className="w-full border-yellow-300 border-opacity-50" />
                           )}
                         </div>
-                        <div className="flex flex-wrap items-center justify-start gap-8">
-                          {weapon.stats.damage && (
-                            <div className="flex flex-col items-center gap-1">
-                              {layoutSize !== 'small' &&
-                                layoutSize !== 'xsmall' && <p>DMG</p>}
-                              <div className="flex items-center gap-2">
-                                <DamageIcon className="size-8" />
-                                <p className="sm:pt-1">{weapon.stats.damage}</p>
-                              </div>
-                            </div>
-                          )}
-                          {weapon.stats.salvo && (
-                            <div className="flex flex-col items-center gap-1">
-                              {layoutSize !== 'small' &&
-                                layoutSize !== 'xsmall' && <p>SLV</p>}
-                              <div className="flex items-center gap-2">
-                                <SalvoIcon className="size-8" />
-                                <p className="sm:pt-1">{weapon.stats.salvo}</p>
-                              </div>
-                            </div>
-                          )}
-                          {weapon.stats.flurry && (
-                            <div className="flex flex-col items-center gap-1">
-                              {layoutSize !== 'small' &&
-                                layoutSize !== 'xsmall' && <p>FLR</p>}
-                              <div className="flex items-center gap-2">
-                                <FlurryIcon className="size-8" />
-                                <p className="sm:pt-1">{weapon.stats.flurry}</p>
-                              </div>
-                            </div>
-                          )}
-                          {weapon.stats.range && (
-                            <div className="flex flex-col items-center gap-1">
-                              {layoutSize !== 'small' &&
-                                layoutSize !== 'xsmall' && <p>RNG</p>}
-                              <div className="flex items-center gap-2">
-                                <RangeIcon className="size-8" />
-                                <p className="sm:pt-1">{weapon.stats.range}</p>
-                              </div>
-                            </div>
-                          )}
-                          {weapon.stats.magCapacity && (
-                            <div className="flex flex-col items-center gap-1">
-                              {layoutSize !== 'small' &&
-                                layoutSize !== 'xsmall' && <p>MAG</p>}
-                              <div className="flex items-center gap-2">
-                                <MagCapacityIcon className="size-8" />
-                                <p className="sm:pt-1">
-                                  {weapon.stats.magCapacity}/
-                                  {weapon.stats.magCapacity *
-                                    (weapon.stats.magCount - 1)}
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        {index < cybernetic.weapons.length - 1 && (
-                          <hr className="w-full border-yellow-300 border-opacity-50" />
-                        )}
-                      </div>
-                    );
-                  })}
+                      );
+                    },
+                  )}
                 </div>
               </ThemeContainer>
             )}
             {cybernetic.armor.length > 0 && (
-              <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+              <ThemeContainer
+                className={` ${detailsOpen && 'mt-6'}`}
+                chamfer="16"
+                borderColor={accentPrimary}
+              >
                 <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                   Integrated armor
                 </p>
                 <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
-                  {cybernetic.armor.map((armor, index) => {
-                    return (
-                      <>
-                        <div
-                          key={armor.name}
-                          className="flex h-full grow flex-col items-start justify-between gap-4"
-                        >
-                          <h3> {armor.name}</h3>
-                          <div className="flex items-center gap-2">
-                            {armor.keywords?.map(
-                              (item: { keyword: Keyword; value?: number }) => {
-                                return (
-                                  <Tag
-                                    key={item.keyword.id}
-                                    label={
-                                      item.value
-                                        ? item.keyword.name + ' ' + item.value
-                                        : item.keyword.name
-                                    }
-                                    description={item.keyword.description}
-                                    toolTip={toolTip}
-                                    setToolTip={setToolTip}
-                                  />
-                                );
-                              },
-                            )}
-                          </div>
-                          <div className="flex flex-wrap items-center justify-start gap-8">
-                            {armor.stats.armor && (
-                              <div className="flex flex-col items-center gap-1">
-                                {layoutSize !== 'small' &&
-                                  layoutSize !== 'xsmall' && <p>AV</p>}
-                                <div className="flex items-center gap-2">
-                                  <ArmorIcon className="size-8" />
-                                  <p className="sm:pt-1">{armor.stats.armor}</p>
-                                </div>
-                              </div>
-                            )}
-                            {armor.stats.ward && (
-                              <div className="flex flex-col items-center gap-1">
-                                {layoutSize !== 'small' &&
-                                  layoutSize !== 'xsmall' && <p>WV</p>}
-                                <div className="flex items-center gap-2">
-                                  <WardIcon className="size-8" />
-                                  <p className="sm:pt-1">{armor.stats.ward}</p>
-                                </div>
-                              </div>
-                            )}
-                            {armor.stats.block && (
-                              <div className="flex flex-col items-center gap-1">
-                                {layoutSize !== 'small' &&
-                                  layoutSize !== 'xsmall' && <p>BP</p>}
-                                <div className="flex items-center gap-2">
-                                  <BlockIcon className="size-8" />
-                                  <p className="sm:pt-1">{armor.stats.block}</p>
-                                </div>
-                              </div>
-                            )}
-                          </div>
+                  {cybernetic.armor.map(
+                    (armor: ArmorWithKeywords, index: number) => {
+                      return (
+                        <>
+                          <SubarmorCard
+                            key={armor.id}
+                            armor={armor}
+                            toolTip={toolTip}
+                            setToolTip={setToolTip}
+                          />
                           {index < cybernetic.armor.length - 1 && (
                             <hr className="w-full border-yellow-300 border-opacity-50" />
                           )}
-                        </div>
-                      </>
-                    );
-                  })}
+                        </>
+                      );
+                    },
+                  )}
                 </div>
               </ThemeContainer>
             )}
@@ -488,72 +396,14 @@ const CyberneticCard = ({ cybernetic }, props) => {
                   Unique actions
                 </p>
                 <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
-                  {cybernetic.actions.map((action, index) => {
+                  {cybernetic.actions.map((action: Action, index: number) => {
                     return (
-                      <div
-                        key={action.name}
-                        className="flex h-full grow flex-col items-start justify-start gap-4"
-                      >
-                        <div className="flex items-center justify-start gap-4">
-                          <h3> {action.name}</h3>
-                          <p className="text-tertiary">
-                            (
-                            {action.actionType[0].toUpperCase() +
-                              action.actionType.slice(1)}
-                            )
-                          </p>
-                        </div>
-                        {action.attribute && (
-                          <div className="flex items-center gap-4">
-                            <DieIcon className="size-8" />
-                            <p>
-                              {action.attribute[0].toUpperCase() +
-                                action.attribute.slice(1) +
-                                ': ' +
-                                action.skill[0].toUpperCase() +
-                                action.skill.slice(1)}
-                            </p>
-                          </div>
-                        )}
-                        {action.costs.length > 0 && (
-                          <div className="flex flex-wrap items-center justify-start gap-8">
-                            <p className="font-semibold tracking-widest">
-                              Costs
-                            </p>
-                            {action.costs.map((cost) => {
-                              return (
-                                <div
-                                  key={cost.stat}
-                                  className="flex flex-col items-center"
-                                >
-                                  <div className="flex items-center gap-2">
-                                    {cost.stat === 'health' && (
-                                      <HealthIcon className="size-8" />
-                                    )}
-                                    {cost.stat === 'sanity' && (
-                                      <SanityIcon className="size-8" />
-                                    )}
-                                    {cost.stat === 'actionPoints' && (
-                                      <ActionIcon className="size-8" />
-                                    )}
-                                    {cost.stat === 'reactionPoints' && (
-                                      <ReactionIcon className="size-8" />
-                                    )}
-                                    {cost.stat === 'power' && (
-                                      <PowerIcon className="size-8" />
-                                    )}
-                                    <p className="sm:pt-1">{cost.value}</p>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-                        <p>{action.description}</p>
+                      <>
+                        <SubactionCard key={action.id} action={action} />
                         {index < cybernetic.actions.length - 1 && (
                           <hr className="w-full border-yellow-300 border-opacity-50" />
                         )}
-                      </div>
+                      </>
                     );
                   })}
                 </div>

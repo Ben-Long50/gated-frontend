@@ -20,6 +20,9 @@ import InputFieldBasic from './InputFieldBasic';
 import useCreateVehicleMutation from '../hooks/useCreateVehicleMutation/useCreateVehicleMutation';
 import useDeleteVehicleMutation from '../hooks/useDeleteVehicleMutation/useDeleteVehicleMutation';
 import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
+import useModifications from '../hooks/useModifications';
+import ModCard from './ModCard';
+import SubweaponCard from './SubweaponCard';
 
 const VehicleForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -28,11 +31,13 @@ const VehicleForm = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const [weaponDetailsOpen, setWeaponDetailsOpen] = useState(false);
   const [modDetailsOpen, setModDetailsOpen] = useState(false);
+  const [toolTip, setToolTip] = useState('');
   const { vehicleId } = useParams();
 
   const { data: vehicle } = useVehicleQuery(apiUrl, vehicleId);
 
   const vehicleWeapons = useWeapons('Vehicle');
+  const modifications = useModifications();
 
   const [imagePreview, setImagePreview] = useState(
     vehicle?.picture?.imageUrl || '',
@@ -66,7 +71,9 @@ const VehicleForm = () => {
     },
   );
 
-  console.log(vehicleWeaponDetails);
+  const modIds = vehicle?.modifications?.map(
+    (modification: Modification) => modification.id,
+  );
 
   useEffect(() => {
     if (vehicle) {
@@ -92,7 +99,7 @@ const VehicleForm = () => {
       },
       price: vehicle?.price || null,
       weapons: vehicleWeaponDetails || [],
-      modifications: vehicle?.modifications || [],
+      modifications: modIds || [],
     },
     onSubmit: async ({ value }) => {
       const filteredStats = Object.fromEntries(
@@ -358,7 +365,7 @@ const VehicleForm = () => {
           </div>
         </div>
         <hr className="border-yellow-300 border-opacity-50" />
-        <div className="flex flex-col">
+        <div className="relative flex flex-col" onClick={() => setToolTip('')}>
           <div
             className={`${weaponDetailsOpen && 'pb-8'} timing flex cursor-pointer items-center justify-between`}
             onClick={() => setWeaponDetailsOpen(!weaponDetailsOpen)}
@@ -389,15 +396,17 @@ const VehicleForm = () => {
             <vehicleForm.Field name="weapons">
               {(field) =>
                 vehicleWeapons.filteredWeapons?.map((weapon: Weapon) => {
-                  console.log(field.state.value);
-
                   const activeWeapon = field.state.value.find(
                     (item: { weaponId: number; quantity?: number }) =>
                       item.weaponId === weapon.id,
                   );
                   return (
                     <div className="flex items-center gap-8" key={weapon.id}>
-                      <WeaponCard weapon={weapon} />
+                      <SubweaponCard
+                        weapon={weapon}
+                        toolTip={toolTip}
+                        setToolTip={setToolTip}
+                      />
                       {activeWeapon && (
                         <InputFieldBasic
                           className="max-w-20"
@@ -475,21 +484,20 @@ const VehicleForm = () => {
             </div>
           </div>
           <div
-            className={`${modDetailsOpen ? 'max-h-[500px] py-1' : 'max-h-0'} timing scrollbar-primary flex flex-col gap-8 overflow-y-auto pl-1 pr-4`}
+            className={`${modDetailsOpen ? 'max-h-[500px] py-1' : 'max-h-0'} timing scrollbar-primary grid grid-cols-1 gap-8 overflow-y-auto pl-1 pr-4 sm:grid-cols-2`}
           >
             <vehicleForm.Field name="modifications">
               {(field) =>
-                modifications?.map((modification: Modification) => {
+                modifications.filteredMods.map((modification: Modification) => {
                   const activeModification = field.state.value.find(
                     (item: number) => item === modification.id,
                   );
                   return (
                     <div
-                      className="flex items-center gap-8"
+                      className="flex items-center gap-4"
                       key={modification.id}
                     >
-                      <div>{modification.name}</div>
-
+                      <ModCard modification={modification} />
                       <input
                         type="checkbox"
                         className="size-6"

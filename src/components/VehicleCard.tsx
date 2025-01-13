@@ -21,6 +21,9 @@ import CargoIcon from './icons/CargoIcon';
 import PassIcon from './icons/PassIcon';
 import VehicleWeaponIcon from './icons/VehicleWeaponIcon';
 import HangarIcon from './icons/HangarIcon';
+import SubweaponCard from './SubweaponCard';
+import { Modification } from 'src/types/vehicle';
+import SubmodificationCard from './SubmodificationCard';
 
 const VehicleCard = ({ vehicle }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -110,7 +113,7 @@ const VehicleCard = ({ vehicle }, props) => {
                   />
                 )}
                 <div
-                  className={`timing flex h-full ${vehicle.picture && !detailsOpen ? 'flex-col' : 'flex-row pb-4'} flex-wrap items-start justify-between gap-4 sm:gap-8`}
+                  className={`timing grid ${vehicle.picture && !detailsOpen ? 'grid-flow-row grid-cols-2' : 'grid-flow-col grid-rows-2 pb-4'} items-start justify-start gap-4 sm:gap-8 sm:gap-y-4`}
                 >
                   {vehicle.stats.size && (
                     <div className="flex flex-col items-center gap-1">
@@ -197,9 +200,9 @@ const VehicleCard = ({ vehicle }, props) => {
               </span>
             </div>
             <div className="overflow-hidden">
-              <p
+              <div
                 ref={detailRef}
-                className={`timing text-secondary pr-8`}
+                className={`timing text-secondary flex flex-col gap-6 p-0.5`}
                 style={
                   detailsOpen
                     ? {
@@ -210,8 +213,41 @@ const VehicleCard = ({ vehicle }, props) => {
                       }
                 }
               >
-                {vehicle.description}
-              </p>
+                <p>{vehicle.description}</p>
+                {vehicle.weapons.length > 0 && (
+                  <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+                    <p className="text-accent absolute -top-3 left-5 z-20 text-base">
+                      Mounted weapons
+                    </p>
+                    <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                      {vehicle.weapons?.map(
+                        (
+                          weapon: {
+                            weapon: WeaponWithKeywords;
+                            quantity: number;
+                          },
+                          index: number,
+                        ) => {
+                          return (
+                            <>
+                              <SubweaponCard
+                                key={weapon.weapon.id}
+                                weapon={weapon.weapon}
+                                quantity={weapon.quantity}
+                                toolTip={toolTip}
+                                setToolTip={setToolTip}
+                              />
+                              {index < vehicle.weapons.length - 1 && (
+                                <hr className="w-full border-yellow-300 border-opacity-50" />
+                              )}
+                            </>
+                          );
+                        },
+                      )}
+                    </div>
+                  </ThemeContainer>
+                )}
+              </div>
             </div>
           </>
         ) : (
@@ -250,7 +286,7 @@ const VehicleCard = ({ vehicle }, props) => {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center justify-start gap-8">
+                <div className="flex flex-wrap items-center justify-start gap-8 gap-y-4">
                   {vehicle.stats.size && (
                     <div className="flex flex-col items-center gap-1">
                       <p>SZE</p>
@@ -355,7 +391,7 @@ const VehicleCard = ({ vehicle }, props) => {
             <div className={`${detailsOpen && 'pt-8'} timing overflow-hidden`}>
               <div
                 ref={detailRef}
-                className={`timing text-secondary flex flex-col gap-8 pr-8`}
+                className={`${detailsOpen && 'py-1'} timing text-secondary flex flex-col gap-8 pl-1 pr-8`}
                 style={
                   detailsOpen
                     ? {
@@ -366,22 +402,63 @@ const VehicleCard = ({ vehicle }, props) => {
                       }
                 }
               >
-                <div className="flex flex-col gap-6 px-1 py-1">
-                  <h3>Vehicle weapons</h3>
-                  {vehicle.weapons?.map(
-                    (weapon: {
-                      weapon: WeaponWithKeywords;
-                      quantity: number;
-                    }) => {
-                      return (
-                        <WeaponCard
-                          key={weapon.weapon.id}
-                          weapon={weapon.weapon}
-                        />
-                      );
-                    },
-                  )}
-                </div>
+                {vehicle.weapons.length > 0 && (
+                  <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+                    <p className="text-accent absolute -top-3 left-5 z-20 text-base">
+                      Mounted weapons
+                    </p>
+                    <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                      {vehicle.weapons?.map(
+                        (
+                          weapon: {
+                            weapon: WeaponWithKeywords;
+                            quantity: number;
+                          },
+                          index: number,
+                        ) => {
+                          return (
+                            <>
+                              <SubweaponCard
+                                key={weapon.weapon.id}
+                                weapon={weapon.weapon}
+                                quantity={weapon.quantity}
+                                toolTip={toolTip}
+                                setToolTip={setToolTip}
+                              />
+                              {index < vehicle.weapons.length - 1 && (
+                                <hr className="w-full border-yellow-300 border-opacity-50" />
+                              )}
+                            </>
+                          );
+                        },
+                      )}
+                    </div>
+                  </ThemeContainer>
+                )}
+                {vehicle.modifications.length > 0 && (
+                  <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+                    <p className="text-accent absolute -top-3 left-5 z-20 text-base">
+                      Modifications
+                    </p>
+                    <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                      {vehicle.modifications?.map(
+                        (modification: Modification, index: number) => {
+                          return (
+                            <>
+                              <SubmodificationCard
+                                key={modification.id}
+                                modification={modification}
+                              />
+                              {index < vehicle.modifications.length - 1 && (
+                                <hr className="w-full border-yellow-300 border-opacity-50" />
+                              )}
+                            </>
+                          );
+                        },
+                      )}
+                    </div>
+                  </ThemeContainer>
+                )}
               </div>
             </div>
             <span
