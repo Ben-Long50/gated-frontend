@@ -12,14 +12,14 @@ const ErrorPage = () => {
         <h1 className="text-center">
           <span>
             <Icon
-              className="text-error size-32 max-sm:mx-auto max-sm:pb-2 sm:inline sm:pr-8"
+              className="text-error size-20 max-sm:mx-auto max-sm:pb-2 sm:inline sm:size-32 sm:pr-8"
               path={mdiAlertOutline}
             />
           </span>
           Oops looks like you've encountered an error
         </h1>
         <CloudinaryImage
-          className="aspect-square max-w-[500px] rounded-full shadow-lg shadow-zinc-950"
+          className="aspect-square max-w-[300px] rounded-full shadow-lg shadow-zinc-950 sm:max-w-[500px]"
           url="https://res.cloudinary.com/dm4tmla72/image/upload/w_auto,c_scale/v1736199635/error_page_image_ugfdxr.jpg"
           alt="Error page image"
         />

@@ -67,8 +67,8 @@ const BookEntryForm = () => {
     },
   });
 
-  const offsetHeight =
-    layoutSize === 'xsmall' || layoutSize === 'small' ? '64px' : '128px';
+  // const offsetHeight =
+  //   layoutSize === 'xsmall' || layoutSize === 'small' ? '64px' : '128px';
 
   return (
     <FormLayout
@@ -83,9 +83,9 @@ const BookEntryForm = () => {
     >
       <form
         className="flex flex-col items-start gap-8"
-        style={{
-          height: `calc(100dvh - ${navbarHeight}px - ${offsetHeight})`,
-        }}
+        // style={{
+        //   height: `calc(100dvh - ${navbarHeight}px - ${offsetHeight})`,
+        // }}
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
