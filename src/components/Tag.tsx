@@ -2,7 +2,7 @@ const Tag = (props) => {
   return (
     <>
       <div
-        className={`${props.className} bg-primary relative rounded border border-yellow-300 border-opacity-50 px-2 text-base`}
+        className={`${props.className} bg-primary relative cursor-pointer rounded border border-yellow-300 border-opacity-50 px-2 text-base`}
         onClick={(e) => {
           e.stopPropagation();
           props.setToolTip(props.label);

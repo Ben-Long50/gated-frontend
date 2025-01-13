@@ -7,6 +7,7 @@ import WeaponCard from './WeaponCard';
 import useWeapons from '../hooks/useWeapons';
 import SelectField from './SelectField';
 import Loading from './Loading';
+import { WeaponWithKeywords } from 'src/types/weapon';
 
 const Weapons = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -74,7 +75,7 @@ const Weapons = () => {
           </searchForm.Field>
         </form>
       </ThemeContainer>
-      {weapons.filteredWeapons.map((weapon) => {
+      {weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
         return <WeaponCard key={weapon.name} weapon={weapon} />;
       })}
     </div>

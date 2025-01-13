@@ -63,8 +63,6 @@ const VehicleForm = () => {
     vehicleForm.reset();
   };
 
-  console.log(vehicle);
-
   const vehicleWeaponDetails = vehicle?.weapons?.map(
     (weapon: { weapon: WeaponWithKeywords; quantity: number }) => {
       return { weaponId: weapon.weapon.id, quantity: weapon.quantity };

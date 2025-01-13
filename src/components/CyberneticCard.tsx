@@ -28,17 +28,17 @@ const CyberneticCard = ({ cybernetic }, props) => {
   const [descriptionOpen, setDescriptionOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
   const [descriptionHeight, setDescriptionHeight] = useState(1000);
-  const [toolTip, setToolTip] = useState(null);
+  const [toolTip, setToolTip] = useState('');
 
   useEffect(() => {
     if (toolTip) {
-      document.addEventListener('click', () => setToolTip(null));
+      document.addEventListener('click', () => setToolTip(''));
     } else {
-      document.removeEventListener('click', () => setToolTip(null));
+      document.removeEventListener('click', () => setToolTip(''));
     }
 
     return () => {
-      document.removeEventListener('click', () => setToolTip(null));
+      document.removeEventListener('click', () => setToolTip(''));
     };
   }, [toolTip]);
 
@@ -64,9 +64,12 @@ const CyberneticCard = ({ cybernetic }, props) => {
         className={`${props.className} bg-primary timing flex cursor-pointer flex-col p-4 clip-6`}
         onClick={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           if (!toolTip) {
             setDetailsOpen(!detailsOpen);
             setDescriptionOpen(!detailsOpen);
+          } else {
+            setToolTip('');
           }
         }}
       >
