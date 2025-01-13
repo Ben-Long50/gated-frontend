@@ -35,6 +35,8 @@ import VehicleWeapons from './components/VehicleWeapons';
 import Vehicles from './components/Vehicles';
 import VehicleModForm from './components/VehicleModForm';
 import VehicleMods from './components/VehicleMods';
+import PatchNotes from './components/PatchNotes';
+import PatchNoteForm from './components/PatchNotesForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -58,6 +60,12 @@ const router = createBrowserRouter(
         </Route>
 
         <Route path="codex">
+          <Route index element={<PatchNotes />} />
+          <Route path="patchNotes">
+            <Route path="create" element={<PatchNoteForm />} />
+            <Route path=":patchNoteId/update" element={<PatchNoteForm />} />
+          </Route>
+
           <Route path="book">
             <Route path=":bookEntryId" element={<BookEntry />} />
             <Route path=":bookEntryId/update" element={<BookEntryForm />} />

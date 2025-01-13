@@ -1,12 +1,11 @@
 import FormLayout from '../layouts/FormLayout';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import BtnRect from './buttons/BtnRect';
 import useCreateBookEntryMutation from '../hooks/useCreateBookEntryMutation/useCreateBookEntryMutation';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { LayoutContext } from '../contexts/LayoutContext';
 import useBookEntryQuery from '../hooks/useBookEntryQuery/useBookEntryQuery';
 import Loading from './Loading';
 import useDeleteBookEntryMutation from '../hooks/useDeleteBookEntryMutation/useDeleteBookEntryMutation';
@@ -16,18 +15,11 @@ import useBookSectionsQuery from '../hooks/useBookSectionsQuery/useBookSectionsQ
 
 const BookEntryForm = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { layoutSize } = useContext(LayoutContext);
-  const { navbarHeight } = useOutletContext();
   const [formMessage, setFormMessage] = useState('');
   const { bookEntryId } = useParams();
   const [deleteMode, setDeleteMode] = useState(false);
-  console.log(bookEntryId);
 
-  const {
-    data: bookSections,
-    isLoading,
-    isPending,
-  } = useBookSectionsQuery(apiUrl);
+  const { data: bookSections } = useBookSectionsQuery(apiUrl);
   const { data: bookEntry } = useBookEntryQuery(apiUrl, bookEntryId);
 
   const createBookEntry = useCreateBookEntryMutation(apiUrl, setFormMessage);
@@ -67,9 +59,6 @@ const BookEntryForm = () => {
     },
   });
 
-  // const offsetHeight =
-  //   layoutSize === 'xsmall' || layoutSize === 'small' ? '64px' : '128px';
-
   return (
     <FormLayout
       itemId={bookEntryId}
@@ -83,9 +72,6 @@ const BookEntryForm = () => {
     >
       <form
         className="flex flex-col items-start gap-8"
-        // style={{
-        //   height: `calc(100dvh - ${navbarHeight}px - ${offsetHeight})`,
-        // }}
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();

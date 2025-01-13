@@ -49,7 +49,9 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
       className={`bg-primary fixed top-0 z-30 col-span-2 flex w-full flex-col items-center justify-start shadow-md shadow-black`}
     >
       <div className="my-2 flex w-full items-center justify-between px-2">
-        <PyramidIcon className="size-10" />
+        <Link to="/glam/codex">
+          <PyramidIcon className="size-10" />
+        </Link>
         <div className="flex items-center justify-end gap-4">
           <button
             className={`${navMenuVisibility && 'scale-y-150'} timing z-10`}
@@ -105,6 +107,20 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
         </Link>
       </NavMenuMobile>
       <NavMenuMobile menuVisibility={accountMenuVisibility}>
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+          <Link className="w-full p-2" to="/glam/codex/patchNotes/create">
+            <BtnNavbar
+              className="w-full text-left"
+              onClick={() => {
+                setAccountMenuVisibility(false);
+              }}
+            >
+              <div className="flex w-full items-center gap-2">
+                <p className="text-inherit">Create patch note</p>
+              </div>
+            </BtnNavbar>
+          </Link>
+        )}
         <Link className="w-full p-2" to="/error/report">
           <BtnNavbar
             className="w-full text-left"
@@ -136,7 +152,9 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
       ref={navbarRef}
       className="bg-primary sticky top-0 z-30 col-span-2 flex items-center justify-between gap-4 py-2 pl-4 pr-6 shadow-md shadow-black"
     >
-      <PyramidIcon className="size-10" />
+      <Link to="/glam/codex">
+        <PyramidIcon className="size-10" />
+      </Link>
       <div className="relative flex items-center justify-items-end gap-10">
         <Link to="codex">
           <BtnNavbar className="bg-primary">Codex</BtnNavbar>
@@ -163,28 +181,42 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
           )}
         </button>
         <NavMenuDesktop menuVisibility={accountMenuVisibility}>
+          {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+            <Link className="w-full" to="/glam/codex/patchNotes/create">
+              <BtnNavbar
+                className="timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
+                onClick={() => {
+                  setAccountMenuVisibility(false);
+                }}
+              >
+                <p className="hover:text-accent w-full text-left">
+                  Create patch note
+                </p>
+              </BtnNavbar>
+            </Link>
+          )}
           <Link className="w-full" to="/error/report">
             <BtnNavbar
-              className="hover:text-accent timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
+              className="timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
               onClick={() => {
                 setAccountMenuVisibility(false);
               }}
             >
-              <div className="flex w-full items-center gap-2">
-                <p className="text-inherit">Error report</p>
+              <div className="hover:text-accent flex w-full items-center gap-2 text-left">
+                <p className="hover:text-accent">Error report</p>
                 <p className="text-tertiary text-sm"> (do not abuse)</p>
               </div>
             </BtnNavbar>
           </Link>
           <BtnNavbar
-            className="hover:text-accent timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
+            className="timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
             onClick={() => {
               setAccountMenuVisibility(false);
               signout.mutate();
             }}
           >
             <div className="flex w-full items-center gap-2">
-              <p className="text-inherit">Sign out</p>
+              <p className="hover:text-accent w-full text-left">Sign out</p>
             </div>
           </BtnNavbar>
         </NavMenuDesktop>
