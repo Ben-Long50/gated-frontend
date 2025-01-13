@@ -36,7 +36,9 @@ const ModCard = ({ modification }, props) => {
             onClick={(e) => e.stopPropagation()}
           >
             {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-              <Link to={`${modification.id}/update`}>
+              <Link
+                to={`/glam/codex/vehicles/modifications/${modification.id}/update`}
+              >
                 <button className="text-accent hover:underline">Edit</button>
               </Link>
             )}

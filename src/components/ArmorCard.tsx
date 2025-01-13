@@ -69,7 +69,7 @@ const ArmorCard = ({ armor }, props) => {
                 <div className="flex items-center justify-start gap-4">
                   <h2> {armor.name}</h2>
                   {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-                    <Link to={`${armor.id}/update`}>
+                    <Link to={`/glam/codex/armor/${armor.id}/update`}>
                       <button className="text-accent hover:underline">
                         Edit
                       </button>

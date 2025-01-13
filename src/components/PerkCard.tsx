@@ -31,7 +31,7 @@ const PerkCard = ({ perk }, props) => {
         <div className="flex w-full items-center justify-between gap-4 pr-2">
           <h3> {perk.name}</h3>
           {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-            <Link to={`${perk.id}/update`}>
+            <Link to={`/glam/codex/perks/${perk.id}/update`}>
               <button className="text-accent hover:underline">Edit</button>
             </Link>
           )}

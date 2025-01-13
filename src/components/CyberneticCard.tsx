@@ -80,7 +80,9 @@ const CyberneticCard = ({ cybernetic }, props) => {
                 <div className="flex items-center justify-start gap-4">
                   <h2> {cybernetic.name}</h2>
                   {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-                    <Link to={`${cybernetic.id}/update`}>
+                    <Link
+                      to={`/glam/codex/cybernetics/${cybernetic.id}/update`}
+                    >
                       <button className="text-accent hover:underline">
                         Edit
                       </button>

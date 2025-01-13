@@ -38,7 +38,7 @@ const ActionCard = ({ action }) => {
         <div className="flex w-full items-center justify-between gap-4 pr-2">
           <h3> {action.name}</h3>
           {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-            <Link to={`${action.id}/update`}>
+            <Link to={`/glam/codex/actions/${action.id}/update`}>
               <button className="text-accent hover:underline">Edit</button>
             </Link>
           )}

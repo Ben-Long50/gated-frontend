@@ -82,7 +82,7 @@ const VehicleCard = ({ vehicle }, props) => {
                 <div className="flex items-center justify-start gap-4">
                   <h2> {vehicle.name}</h2>
                   {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-                    <Link to={`${vehicle.id}/update`}>
+                    <Link to={`/glam/codex/vehicles/${vehicle.id}/update`}>
                       <button className="text-accent hover:underline">
                         Edit
                       </button>

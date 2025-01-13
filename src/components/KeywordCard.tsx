@@ -37,7 +37,7 @@ const KeywordCard = ({ keyword, children }, props) => {
           >
             {children}
             {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-              <Link to={`${keyword.id}/update`}>
+              <Link to={`/glam/codex/keywords/${keyword.id}/update`}>
                 <button className="text-accent hover:underline">Edit</button>
               </Link>
             )}
