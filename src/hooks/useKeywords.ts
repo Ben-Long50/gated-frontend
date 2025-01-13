@@ -1,23 +1,7 @@
 import { useContext, useState } from 'react';
 import useKeywordsQuery from './useKeywordsQuery/useKeywordsQuery';
 import { AuthContext } from '../contexts/AuthContext';
-
-enum KeywordType {
-  weapon = 'weapon',
-  armor = 'armor',
-  cybernetic = 'cybernetic',
-}
-
-export interface Keyword {
-  id: number;
-  name: string;
-  description: string;
-  keywordType: KeywordType;
-}
-
-interface List {
-  [key: string]: Keyword[];
-}
+import { Keyword } from '../types/keyword';
 
 const useKeywords = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -26,7 +10,11 @@ const useKeywords = () => {
 
   const [query, setQuery] = useState('');
 
-  const filteredKeywords: List = {
+  const filteredKeywords: {
+    weapon: Keyword[];
+    armor: Keyword[];
+    cybernetic: Keyword[];
+  } = {
     weapon:
       keywords?.filter(
         (keyword: Keyword) =>

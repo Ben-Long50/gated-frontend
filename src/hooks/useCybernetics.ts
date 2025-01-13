@@ -1,27 +1,7 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useCyberneticsQuery from './useCyberneticsQuery/useCyberneticsQuery';
-
-export interface Cybernetic {
-  id: number;
-  name: string;
-  description: string;
-  cyberneticType: string;
-  cyber: number;
-  stats: Partial<CyberneticStats>;
-  price: number;
-  keywords: { keywordId: number; value?: number }[];
-}
-
-interface CyberneticStats {
-  power: number;
-  damage: number;
-  salvo: number;
-  flurry: number;
-  range: number;
-  magCapacity: number;
-  magCount: number;
-}
+import { CyberneticWithKeywords } from 'src/types/cybernetic';
 
 const useCybernetics = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -38,12 +18,13 @@ const useCybernetics = () => {
   const filteredCybernetics = category
     ? cybernetics
         ?.filter(
-          (cybernetic: Cybernetic) => cybernetic.cyberneticType === category,
+          (cybernetic: CyberneticWithKeywords) =>
+            cybernetic.cyberneticType === category,
         )
-        .filter((cybernetic: Cybernetic) =>
+        .filter((cybernetic: CyberneticWithKeywords) =>
           cybernetic.name.toLowerCase().includes(query.toLowerCase()),
         )
-    : (cybernetics?.filter((cybernetic: Cybernetic) =>
+    : (cybernetics?.filter((cybernetic: CyberneticWithKeywords) =>
         cybernetic.name.toLowerCase().includes(query.toLowerCase()),
       ) ?? []);
 

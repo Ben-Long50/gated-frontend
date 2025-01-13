@@ -30,6 +30,9 @@ import BookEntryForm from './components/BookEntryForm';
 import Actions from './components/Actions';
 import ErrorReport from './components/ErrorReport';
 import BookManage from './components/BookManage';
+import VehicleForm from './components/VehicleForm';
+import VehicleWeapons from './components/VehicleWeapons';
+import Vehicles from './components/Vehicles';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -75,6 +78,15 @@ const router = createBrowserRouter(
             <Route index element={<Cybernetics />} />
             <Route path="create" element={<CyberneticForm />} />
             <Route path=":cyberneticId/update" element={<CyberneticForm />} />
+          </Route>
+
+          <Route path="vehicles">
+            <Route index element={<Vehicles />} />
+            <Route path="weapons" element={<VehicleWeapons />} />
+            <Route path="weapons/:weaponId/update" element={<WeaponForm />} />
+            <Route path="modifications" element={<VehicleForm />} />
+            <Route path="create" element={<VehicleForm />} />
+            <Route path=":vehicleId/update" element={<VehicleForm />} />
           </Route>
 
           <Route path="perks">

@@ -1,43 +1,25 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useWeaponsQuery from './useWeaponsQuery/useWeaponsQuery';
+import { WeaponWithKeywords } from '../types/weapon';
 
-interface Weapon {
-  id: number;
-  name: string;
-  description: string;
-  stats: Partial<WeaponStats>;
-  price: number;
-  keywords: { keywordId: number; value?: number }[];
-}
-
-interface WeaponStats {
-  damage: number;
-  salvo: number;
-  flurry: number;
-  range: number;
-  magCapacity: number;
-  magCount: number;
-  weight: string;
-}
-
-const useWeapons = () => {
+const useWeapons = (initialCategory: string) => {
   const { apiUrl } = useContext(AuthContext);
 
   const { data: weapons, isLoading, isPending } = useWeaponsQuery(apiUrl);
 
   const [query, setQuery] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
+  const [category, setCategory] = useState<string>(initialCategory || '');
 
   const filteredWeapons = category
     ? weapons
-        ?.filter((weapon: Weapon) =>
+        ?.filter((weapon: WeaponWithKeywords) =>
           weapon.keywords.some((keyword) => keyword.keyword.name === category),
         )
-        .filter((weapon: Weapon) =>
+        .filter((weapon: WeaponWithKeywords) =>
           weapon.name.toLowerCase().includes(query.toLowerCase()),
         )
-    : (weapons?.filter((weapon: Weapon) =>
+    : (weapons?.filter((weapon: WeaponWithKeywords) =>
         weapon.name.toLowerCase().includes(query.toLowerCase()),
       ) ?? []);
 

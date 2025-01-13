@@ -13,9 +13,9 @@ import ProfitsIcon from './icons/ProfitsIcon';
 import { LayoutContext } from '../contexts/LayoutContext';
 import MagCapacityIcon from './icons/MagCapacityIcon';
 import { Link } from 'react-router-dom';
-import { Keyword } from 'src/hooks/useKeywords';
 import CloudinaryImage from './CloudinaryImage';
 import { AuthContext } from '../contexts/AuthContext';
+import { Keyword } from '../types/keyword';
 
 const WeaponCard = ({ weapon }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -55,6 +55,7 @@ const WeaponCard = ({ weapon }, props) => {
         className={`${props.className} bg-primary timing flex cursor-pointer flex-col p-4 clip-6`}
         onClick={async (e) => {
           e.preventDefault();
+          e.stopPropagation();
           if (!toolTip) {
             setDetailsOpen(!detailsOpen);
           }
@@ -236,7 +237,7 @@ const WeaponCard = ({ weapon }, props) => {
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                {weapon.keywords.map(
+                {weapon.keywords?.map(
                   (item: { keyword: Keyword; value?: number }) => {
                     return (
                       <Tag

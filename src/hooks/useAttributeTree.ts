@@ -1,20 +1,5 @@
 import { useEffect, useState } from 'react';
-
-interface Skill {
-  points: number;
-}
-
-interface Attribute {
-  points: number;
-  skills: Record<string, Skill>;
-}
-
-export interface AttributeTree {
-  cybernetica: Attribute;
-  esoterica: Attribute;
-  peace: Attribute;
-  violence: Attribute;
-}
+import { Attribute, AttributeTree, Skill } from '../types/attributeTree';
 
 const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
   const emptyAttributeTree: AttributeTree = {
@@ -149,7 +134,7 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
     for (const [attributeKey, attributeValue] of Object.entries(
       attributeTree,
     )) {
-      const nonZeroSkills: Record<string, Skill> = Object.fromEntries(
+      const nonZeroSkills = Object.fromEntries(
         Object.entries(attributeValue.skills).filter(
           ([, skill]) => skill.points > 0,
         ),
@@ -158,7 +143,7 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
       if (attributeValue.points > 0 || Object.keys(nonZeroSkills).length > 0) {
         result[attributeKey as keyof AttributeTree] = {
           points: attributeValue.points,
-          skills: nonZeroSkills,
+          skills: nonZeroSkills as Record<string, Skill>,
         };
       }
     }

@@ -1,53 +1,15 @@
 import { useContext, useState } from 'react';
-import { AttributeTree } from './useAttributeTree';
 import usePerksQuery from './usePerksQuery/usePerksQuery';
 import { AuthContext } from '../contexts/AuthContext';
-
-interface Perk {
-  name: string;
-  description: string;
-  requirements: Partial<AttributeTree>;
-}
-
-interface GeneralPerks {
-  general: Perk[];
-}
-
-interface CyberneticaPerks {
-  chromebits: Perk[];
-  hardwired: Perk[];
-  motorized: Perk[];
-  networked: Perk[];
-}
-
-interface EsotericaPerks {
-  gestalt: Perk[];
-  godhead: Perk[];
-  mysticism: Perk[];
-  outerworld: Perk[];
-}
-
-interface PeacePerks {
-  barter: Perk[];
-  erudition: Perk[];
-  rhetoric: Perk[];
-  treatment: Perk[];
-}
-
-interface ViolencePerks {
-  assault: Perk[];
-  shooting: Perk[];
-  subterfuge: Perk[];
-  threshold: Perk[];
-}
-
-export interface PerkTree {
-  general: GeneralPerks;
-  cybernetica: CyberneticaPerks;
-  esoterica: EsotericaPerks;
-  peace: PeacePerks;
-  violence: ViolencePerks;
-}
+import {
+  CyberneticaPerks,
+  EsotericaPerks,
+  PeacePerks,
+  Perk,
+  PerkTree,
+  ViolencePerks,
+} from '../types/perk';
+import { AttributeTree } from '../types/attributeTree';
 
 const usePerks = (attributeTree?: AttributeTree) => {
   const { apiUrl } = useContext(AuthContext);

@@ -12,6 +12,7 @@ import { useContext } from 'react';
 import Loading from '../../components/Loading';
 import useBookSectionsQuery from '../../hooks/useBookSectionsQuery/useBookSectionsQuery';
 import LinkSublistSidebar from './LinkSublistSidebar';
+import VehicleIcon from '../../components/icons/VehicleIcon';
 
 const CodexLinks = ({ setSidebarVisibility }) => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -132,6 +133,44 @@ const CodexLinks = ({ setSidebarVisibility }) => {
             path="codex/cybernetics/create"
             setSidebarVisibility={setSidebarVisibility}
           />
+        )}
+      </LinkListSidebar>
+      <LinkListSidebar
+        title={
+          <>
+            <VehicleIcon className="size-8" />
+            <p className="text-inherit">Vehicles</p>
+          </>
+        }
+      >
+        <LinkSidebar
+          title="All vehicles"
+          path="codex/vehicles"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Vehicle weapons"
+          path="codex/vehicles/weapons"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Vehicle mods"
+          path="codex/vehicles/modifications"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+          <>
+            <LinkSidebar
+              title="Create a new vehicle"
+              path="codex/vehicles/create"
+              setSidebarVisibility={setSidebarVisibility}
+            />
+            <LinkSidebar
+              title="Create a new mod"
+              path="codex/vehicles/modifictions/create"
+              setSidebarVisibility={setSidebarVisibility}
+            />
+          </>
         )}
       </LinkListSidebar>
       <LinkListSidebar

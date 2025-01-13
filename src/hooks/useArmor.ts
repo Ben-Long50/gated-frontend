@@ -1,23 +1,7 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useArmorQuery from './useArmorQuery/useArmorQuery';
-
-interface Armor {
-  id: number;
-  name: string;
-  description: string;
-  stats: Partial<ArmorStats>;
-  price: number;
-  keywords: { keywordId: number; value?: number }[];
-}
-
-interface ArmorStats {
-  armor: number;
-  ward: number;
-  block: number;
-  power: number;
-  weight: number;
-}
+import { ArmorWithKeywords } from '../types/armor';
 
 const useArmor = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -29,13 +13,13 @@ const useArmor = () => {
 
   const filteredArmor = category
     ? armor
-        ?.filter((armor: Armor) =>
+        ?.filter((armor: ArmorWithKeywords) =>
           armor.keywords.some((keyword) => keyword.keyword.name === category),
         )
-        .filter((armor: Armor) =>
+        .filter((armor: ArmorWithKeywords) =>
           armor.name.toLowerCase().includes(query.toLowerCase()),
         )
-    : (armor?.filter((armor: Armor) =>
+    : (armor?.filter((armor: ArmorWithKeywords) =>
         armor.name.toLowerCase().includes(query.toLowerCase()),
       ) ?? []);
 

@@ -1,0 +1,33 @@
+import { ArmorWithKeywords } from './armor';
+import { AttributeTree } from './attributeTree';
+import { CyberneticWithKeywords } from './cybernetic';
+import { Perk } from './perk';
+import { Picture } from './picture';
+import { WeaponWithKeywords } from './weapon';
+
+interface Character {
+  id: number;
+  level: number;
+  picture: Picture;
+  profits: number;
+  stats: CharacterStats;
+  height: number;
+  weight: number;
+  age: number;
+  sex: string;
+  background: string;
+  attributes: Partial<AttributeTree>;
+  firstName: string;
+  lastName: string;
+  perks: Perk[];
+  weapons: WeaponWithKeywords[];
+  armor: ArmorWithKeywords[];
+  cybernetics: CyberneticWithKeywords[];
+}
+
+interface CharacterStats {
+  currentHealth: number;
+  currentSanity: number;
+  injuries: number;
+  insanities: number;
+}

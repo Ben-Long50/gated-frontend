@@ -1,28 +1,7 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { Cybernetic } from './useCybernetics';
 import useActionsQuery from './useActionsQuery/useActionsQuery';
-
-enum ActionType {
-  action = 'action',
-  extendedAction = 'extendedAction',
-  reaction = 'reaction',
-}
-
-export interface Action {
-  id: number;
-  name: string;
-  description: string;
-  actionType: ActionType;
-  attribute: string;
-  skill: string;
-  actionSubtypes: string[];
-  cybernetics: Cybernetic[];
-}
-
-interface ActionList {
-  [key: string]: Action[];
-}
+import { Action } from '../types/action';
 
 const useActions = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -31,7 +10,11 @@ const useActions = () => {
 
   const [query, setQuery] = useState('');
 
-  const filteredActions: ActionList = {
+  const filteredActions: {
+    action: Action[];
+    extendedAction: Action[];
+    reaction: Action[];
+  } = {
     action:
       actions?.filter(
         (action: Action) =>
