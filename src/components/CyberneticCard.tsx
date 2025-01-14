@@ -1,6 +1,6 @@
 import { mdiChevronDown, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { Children, useContext, useEffect, useRef, useState } from 'react';
 import { LayoutContext } from '../contexts/LayoutContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ProfitsIcon from './icons/ProfitsIcon';
@@ -324,7 +324,10 @@ const CyberneticCard = ({ cybernetic }, props) => {
             style={
               detailsOpen
                 ? {
-                    marginTop: 0,
+                    marginTop:
+                      detailRef.current && detailRef.current.children.length > 0
+                        ? 28
+                        : 0,
                   }
                 : {
                     marginTop: -detailHeight - 4,
@@ -334,11 +337,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
             {layoutSize === 'small' ||
               (layoutSize === 'xsmall' && <p>{cybernetic.description}</p>)}
             {cybernetic.weapons.length > 0 && (
-              <ThemeContainer
-                className={` ${detailsOpen && 'mt-6'}`}
-                chamfer="16"
-                borderColor={accentPrimary}
-              >
+              <ThemeContainer chamfer="16" borderColor={accentPrimary}>
                 <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                   Integrated weapons
                 </p>
@@ -366,11 +365,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
               </ThemeContainer>
             )}
             {cybernetic.armor.length > 0 && (
-              <ThemeContainer
-                className={` ${detailsOpen && 'mt-6'}`}
-                chamfer="16"
-                borderColor={accentPrimary}
-              >
+              <ThemeContainer chamfer="16" borderColor={accentPrimary}>
                 <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                   Integrated armor
                 </p>

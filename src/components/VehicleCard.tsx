@@ -388,14 +388,18 @@ const VehicleCard = ({ vehicle }, props) => {
                 </div>
               </div>
             </div>
-            <div className={`${detailsOpen && 'pt-8'} timing overflow-hidden`}>
+            <div className={`timing overflow-hidden`}>
               <div
                 ref={detailRef}
                 className={`${detailsOpen && 'py-1'} timing text-secondary flex flex-col gap-8 pl-1 pr-8`}
                 style={
                   detailsOpen
                     ? {
-                        marginTop: 0,
+                        marginTop:
+                          detailRef.current &&
+                          detailRef.current.children.length > 0
+                            ? 28
+                            : 0,
                       }
                     : {
                         marginTop: -detailHeight - 4,
