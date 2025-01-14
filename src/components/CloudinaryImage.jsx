@@ -72,7 +72,7 @@ const CloudinaryImage = forwardRef((props, ref) => {
 
   return (
     <div
-      className={`${props.className} image-container timing flex w-full shrink-0 justify-center overflow-hidden`}
+      className={`${props.className} ${props.detailsOpen ? 'max-w-full sm:w-1/2 sm:max-w-[400px]' : 'max-w-48 sm:max-w-60'} image-container timing my-auto flex aspect-square w-full shrink-0 justify-center overflow-hidden clip-6 sm:min-w-60`}
       style={{
         aspectRatio: aspectRatio.width / aspectRatio.height,
       }}

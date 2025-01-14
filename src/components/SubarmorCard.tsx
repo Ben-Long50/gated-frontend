@@ -12,7 +12,7 @@ const SubarmorCard = ({ armor, toolTip, setToolTip }) => {
   return (
     <div className="flex h-full grow flex-col items-start justify-between gap-4">
       <h3> {armor.name}</h3>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {armor.keywords?.map((item: { keyword: Keyword; value?: number }) => {
           return (
             <Tag

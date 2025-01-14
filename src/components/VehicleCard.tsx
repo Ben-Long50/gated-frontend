@@ -107,9 +107,9 @@ const VehicleCard = ({ vehicle }, props) => {
               >
                 {vehicle.picture && (
                   <CloudinaryImage
-                    className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
                     url={vehicle.picture?.imageUrl}
                     alt={vehicle.name + ' ' + 'image'}
+                    detailsOpen={detailsOpen}
                   />
                 )}
                 <div
@@ -255,9 +255,9 @@ const VehicleCard = ({ vehicle }, props) => {
             <div className="flex h-full gap-8">
               {vehicle.picture && (
                 <CloudinaryImage
-                  className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
                   url={vehicle.picture?.imageUrl}
                   alt={vehicle.name + ' ' + 'image'}
+                  detailsOpen={detailsOpen}
                 />
               )}
               <div className="flex h-full grow flex-col items-start justify-between gap-6">

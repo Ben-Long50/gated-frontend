@@ -32,7 +32,7 @@ const SubweaponCard = ({
         <h3>{weapon.name}</h3>
       )}
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {weapon.keywords?.map((item: { keyword: Keyword; value?: number }) => {
           return (
             <Tag
@@ -91,14 +91,12 @@ const SubweaponCard = ({
             {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>MAG</p>}
             <div className="flex items-center gap-2">
               <MagCapacityIcon className="size-8" />
-              {weapon.stats.magCount ? (
-                <p className="sm:pt-1">
-                  {weapon.stats.magCapacity}/
-                  {weapon.stats.magCapacity * (weapon.stats.magCount - 1)}
-                </p>
-              ) : (
-                <p className="sm:pt-1">{weapon.stats.magCapacity}/X</p>
-              )}
+              <p>
+                {weapon.stats.magCapacity}/
+                {weapon.stats.magCount
+                  ? weapon.stats.magCapacity * (weapon.stats.magCount - 1)
+                  : 'X'}
+              </p>
             </div>
           </div>
         )}

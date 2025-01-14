@@ -4,14 +4,14 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import WeaponCard from './WeaponCard';
-import useWeapons from '../hooks/useWeapons';
 import Loading from './Loading';
 import { WeaponWithKeywords } from 'src/types/weapon';
+import useWeaponsByKeyword from '../hooks/useWeaponsByKeyword';
 
 const VehicleWeapons = () => {
   const { accentPrimary } = useContext(ThemeContext);
 
-  const weapons = useWeapons('Vehicle');
+  const weapons = useWeaponsByKeyword('Vehicle');
 
   const searchForm = useForm({
     defaultValues: {
@@ -51,7 +51,7 @@ const VehicleWeapons = () => {
           </searchForm.Field>
         </form>
       </ThemeContainer>
-      {weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
+      {weapons.filteredWeapons?.map((weapon: WeaponWithKeywords) => {
         return <WeaponCard key={weapon.name} weapon={weapon} />;
       })}
     </div>

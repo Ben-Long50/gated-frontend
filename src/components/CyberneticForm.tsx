@@ -95,11 +95,11 @@ const CyberneticForm = () => {
       picture: cybernetic?.picture || '',
       description: cybernetic?.description || '',
       stats: {
-        cyber: cybernetic?.stats.cyber || null,
-        power: cybernetic?.stats.power || null,
+        cyber: cybernetic?.stats.cyber || '',
+        power: cybernetic?.stats.power || '',
       } as { cyber: number; power?: number },
       body: cybernetic?.body || ([''] as string[]),
-      price: cybernetic?.price || null,
+      price: cybernetic?.price || '',
       weapons:
         weaponData ||
         ([] as {
@@ -663,12 +663,12 @@ const CyberneticForm = () => {
                               field.pushValue({
                                 name: '',
                                 stats: {
-                                  damage: null,
-                                  salvo: null,
-                                  flurry: null,
-                                  range: null,
-                                  magCapacity: null,
-                                  magCount: null,
+                                  damage: '',
+                                  salvo: '',
+                                  flurry: '',
+                                  range: '',
+                                  magCapacity: '',
+                                  magCount: '',
                                 },
                                 keywords: [],
                               });
@@ -871,9 +871,9 @@ const CyberneticForm = () => {
                               field.pushValue({
                                 name: '',
                                 stats: {
-                                  armor: null,
-                                  ward: null,
-                                  block: null,
+                                  armor: '',
+                                  ward: '',
+                                  block: '',
                                 },
                                 keywords: [],
                               });

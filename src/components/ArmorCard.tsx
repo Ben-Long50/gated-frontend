@@ -113,9 +113,9 @@ const ArmorCard = ({ armor }, props) => {
               >
                 {armor.picture && (
                   <CloudinaryImage
-                    className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
                     url={armor.picture?.imageUrl}
                     alt={armor.name + ' ' + 'image'}
+                    detailsOpen={detailsOpen}
                   />
                 )}
                 <div
@@ -196,9 +196,9 @@ const ArmorCard = ({ armor }, props) => {
           <div className="relative flex h-full gap-8">
             {armor.picture && (
               <CloudinaryImage
-                className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
                 url={armor.picture?.imageUrl}
                 alt={armor.name + ' ' + 'image'}
+                detailsOpen={detailsOpen}
               />
             )}
             <div className="flex h-full grow flex-col items-start justify-between gap-6">
@@ -226,7 +226,7 @@ const ArmorCard = ({ armor }, props) => {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center gap-1">
                 {armor.keywords.map(
                   (item: { keyword: Keyword; value?: number }) => {
                     return (

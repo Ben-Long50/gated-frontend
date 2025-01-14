@@ -1,8 +1,8 @@
 import handleResponse from '../handleResponse';
 
-const getVehicleById = async (apiUrl: string, vehicleId?: string) => {
+const getWeaponsByKeyword = async (apiUrl: string, keywordName: string) => {
   try {
-    const response = await fetch(`${apiUrl}/vehicles/${vehicleId}`, {
+    const response = await fetch(`${apiUrl}/weapons/keywords/${keywordName}`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -17,4 +17,4 @@ const getVehicleById = async (apiUrl: string, vehicleId?: string) => {
   }
 };
 
-export default getVehicleById;
+export default getWeaponsByKeyword;

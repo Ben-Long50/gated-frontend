@@ -114,9 +114,9 @@ const WeaponCard = ({ weapon }, props) => {
               >
                 {weapon.picture && (
                   <CloudinaryImage
-                    className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
                     url={weapon.picture?.imageUrl}
                     alt={weapon.name + ' ' + 'image'}
+                    detailsOpen={detailsOpen}
                   />
                 )}
                 <div
@@ -160,8 +160,10 @@ const WeaponCard = ({ weapon }, props) => {
                         <MagCapacityIcon className="size-8" />
                         <p>
                           {weapon.stats.magCapacity}/
-                          {weapon.stats.magCapacity *
-                            (weapon.stats.magCount - 1)}
+                          {weapon.stats.magCount
+                            ? weapon.stats.magCapacity *
+                              (weapon.stats.magCount - 1)
+                            : 'X'}
                         </p>
                       </div>
                     </div>
@@ -208,9 +210,9 @@ const WeaponCard = ({ weapon }, props) => {
           <div className="relative flex h-full gap-8">
             {weapon.picture && (
               <CloudinaryImage
-                className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
                 url={weapon.picture?.imageUrl}
                 alt={weapon.name + ' ' + 'image'}
+                detailsOpen={detailsOpen}
               />
             )}
             <div className="flex h-full grow flex-col items-start justify-between gap-6">
@@ -238,7 +240,7 @@ const WeaponCard = ({ weapon }, props) => {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex flex-wrap items-center gap-1">
                 {weapon.keywords?.map(
                   (item: { keyword: Keyword; value?: number }) => {
                     return (
@@ -299,9 +301,12 @@ const WeaponCard = ({ weapon }, props) => {
                     <p>MAG</p>
                     <div className="flex items-center gap-2">
                       <MagCapacityIcon className="size-8" />
-                      <p className="sm:pt-1">
+                      <p>
                         {weapon.stats.magCapacity}/
-                        {weapon.stats.magCapacity * (weapon.stats.magCount - 1)}
+                        {weapon.stats.magCount
+                          ? weapon.stats.magCapacity *
+                            (weapon.stats.magCount - 1)
+                          : 'X'}
                       </p>
                     </div>
                   </div>

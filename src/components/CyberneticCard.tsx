@@ -131,9 +131,9 @@ const CyberneticCard = ({ cybernetic }, props) => {
             >
               {cybernetic.picture && (
                 <CloudinaryImage
-                  className={`${detailsOpen ? 'max-w-full' : 'max-w-48'} aspect-square shrink clip-6`}
                   url={cybernetic.picture?.imageUrl}
                   alt={cybernetic.name + ' ' + 'image'}
+                  detailsOpen={detailsOpen}
                 />
               )}
               <div
@@ -188,9 +188,9 @@ const CyberneticCard = ({ cybernetic }, props) => {
           <div className="relative flex h-full gap-8">
             {cybernetic.picture && (
               <CloudinaryImage
-                className={`${detailsOpen ? 'max-w-96' : 'max-w-60'} aspect-square shrink clip-6`}
                 url={cybernetic.picture?.imageUrl}
                 alt={cybernetic.name + ' ' + 'image'}
+                detailsOpen={detailsOpen}
               />
             )}
             <div className="flex h-full grow flex-col items-start justify-between gap-6">
