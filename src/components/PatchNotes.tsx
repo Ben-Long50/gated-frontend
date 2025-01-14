@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 
 const PatchNotes = () => {
   const { apiUrl, user } = useContext(AuthContext);
-  const [patchNoteIndex, setPatchNoteIndex] = useState(0);
+  const [index, setIndex] = useState(0);
 
   const { data: patchNotes, isLoading, isPending } = usePatchNotesQuery(apiUrl);
 
@@ -19,28 +19,32 @@ const PatchNotes = () => {
   return (
     <div className="flex w-full max-w-4xl flex-col gap-8">
       <div className="flex w-full items-center justify-between">
-        <p>Version - {patchNotes[patchNoteIndex].version}</p>
-        <p>{format(patchNotes[patchNoteIndex].createdAt, 'PP')}</p>
+        <p>Patch notes: EDO version - {patchNotes[index].version}</p>
+        <p>{format(patchNotes[index].createdAt, 'PP')}</p>
       </div>
+      <h1 className="text-center">
+        {patchNotes[index].title[0].toUpperCase() +
+          patchNotes[index].title.slice(1)}
+      </h1>
       <div
         className="whitespace-pre-wrap"
         dangerouslySetInnerHTML={{
-          __html: patchNotes[patchNoteIndex].content.html,
+          __html: patchNotes[index].content.html,
         }}
       />
       <div className="flex w-full justify-end gap-8">
-        {patchNotes[patchNoteIndex - 1] && (
+        {patchNotes[index - 1] && (
           <BtnRect
             className="w-28"
-            onClick={() => setPatchNoteIndex((prevIndex) => prevIndex - 1)}
+            onClick={() => setIndex((prevIndex) => prevIndex - 1)}
           >
             Prev
           </BtnRect>
         )}
-        {patchNotes[patchNoteIndex + 1] && (
+        {patchNotes[index + 1] && (
           <BtnRect
             className="w-28"
-            onClick={() => setPatchNoteIndex((prevIndex) => prevIndex + 1)}
+            onClick={() => setIndex((prevIndex) => prevIndex + 1)}
           >
             Next
           </BtnRect>
@@ -48,7 +52,7 @@ const PatchNotes = () => {
       </div>
       {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
         <div className="flex w-full items-center justify-end">
-          <Link to={`patchNotes/${patchNotes[patchNoteIndex].id}/update`}>
+          <Link to={`patchNotes/${patchNotes[index].id}/update`}>
             <button className="text-accent hover:underline">
               Edit patch notes
             </button>

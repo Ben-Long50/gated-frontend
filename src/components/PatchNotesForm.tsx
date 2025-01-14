@@ -7,17 +7,25 @@ import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import LexicalEditor from './lexical/LexicalEditor';
-import usePatchNoteQuery from '../hooks/usePatchNoteQuery/usePatchNoteQuery';
 import useCreatePatchNoteMutation from '../hooks/useCreatePatchNoteMutation/useCreatePatchNoteMutation';
 import useDeletePatchNoteMutation from '../hooks/useDeletePatchNoteMutation/useDeletePatchNoteMutation';
+import { useQueryClient } from '@tanstack/react-query';
 
 const PatchNoteForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const { patchNoteId } = useParams();
   const [deleteMode, setDeleteMode] = useState(false);
+  const queryClient = useQueryClient();
 
-  const { data: patchNote } = usePatchNoteQuery(apiUrl, patchNoteId);
+  const patchNotesCache = queryClient.getQueryData(['patchNotes']) || null;
+
+  const patchNote = (() => {
+    if (patchNotesCache) {
+      return patchNotesCache.find((patchNote) => patchNote.id == patchNoteId);
+    }
+    return null;
+  })();
 
   const createPatchNote = useCreatePatchNoteMutation(apiUrl, setFormMessage);
   const deletePatchNote = useDeletePatchNoteMutation(
@@ -40,9 +48,9 @@ const PatchNoteForm = () => {
 
   const patchNoteForm = useForm({
     defaultValues: {
-      version: patchNote?.page || '',
-      title: patchNote?.title || '',
-      content: patchNote?.content || ({} as { html: string; nodes: string }),
+      version: patchNote?.version ?? '',
+      title: patchNote?.title ?? '',
+      content: patchNote?.content ?? ({} as { html: string; nodes: object }),
     },
     onSubmit: async ({ value }) => {
       if (patchNote) {
@@ -84,7 +92,7 @@ const PatchNoteForm = () => {
               validators={{
                 onChange: ({ value }) =>
                   value.length < 2
-                    ? 'Section title be at least 2 characters long'
+                    ? 'Patch notes title needs be at least 2 characters long'
                     : undefined,
               }}
             >
@@ -96,7 +104,7 @@ const PatchNoteForm = () => {
               name="version"
               validators={{
                 onChange: ({ value }) =>
-                  !value ? 'A page number must be provided' : undefined,
+                  !value ? 'A version number must be provided' : undefined,
               }}
             >
               {(field) => (
