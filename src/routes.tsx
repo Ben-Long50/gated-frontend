@@ -135,8 +135,8 @@ const router = createBrowserRouter(
               path="explosives"
               element={
                 <Weapons
-                  title="Explosives"
-                  keywordList={['Grenades', 'Mines', 'Launcher']}
+                  title="Launchers and Explosives"
+                  keywordList={['Grenade', 'Mine', 'Launcher']}
                 />
               }
             />
