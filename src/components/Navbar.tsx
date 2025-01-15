@@ -181,6 +181,20 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
           )}
         </button>
         <NavMenuDesktop menuVisibility={accountMenuVisibility}>
+          {user?.role === 'SUPERADMIN' && (
+            <Link className="w-full" to="/glam/error">
+              <BtnNavbar
+                className="timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
+                onClick={() => {
+                  setAccountMenuVisibility(false);
+                }}
+              >
+                <div className="hover:text-accent flex w-full items-center gap-2 text-left">
+                  <p className="hover:text-accent">Error reports</p>
+                </div>
+              </BtnNavbar>
+            </Link>
+          )}
           {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
             <Link className="w-full" to="/glam/codex/patchNotes/create">
               <BtnNavbar
@@ -195,6 +209,7 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
               </BtnNavbar>
             </Link>
           )}
+
           <Link className="w-full" to="/error/report">
             <BtnNavbar
               className="timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"

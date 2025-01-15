@@ -31,15 +31,12 @@ import Actions from './components/Actions';
 import ErrorReport from './components/ErrorReport';
 import BookManage from './components/BookManage';
 import VehicleForm from './components/VehicleForm';
-import VehicleWeapons from './components/VehicleWeapons';
 import Vehicles from './components/Vehicles';
 import VehicleModForm from './components/VehicleModForm';
 import VehicleMods from './components/VehicleMods';
 import PatchNotes from './components/PatchNotes';
 import PatchNoteForm from './components/PatchNotesForm';
-import Explosives from './components/Explosives';
-import MeleeWeapons from './components/MeleeWeapons';
-import RangedWeapons from './components/RangedWeapons';
+import ErrorReports from './components/ErrorReports';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -55,6 +52,10 @@ const router = createBrowserRouter(
       </Route>
 
       <Route path="glam" element={<MainLayout />} errorElement={<ErrorPage />}>
+        <Route path="error">
+          <Route index element={<ErrorReports />} />
+        </Route>
+
         <Route path="characters">
           <Route index element={<CharacterList />} />
           <Route path="create" element={<CharacterForm />} />

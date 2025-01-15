@@ -1,17 +1,14 @@
 const handleResponse = async (response) => {
-  const data = await response.json();
-  console.log(data);
+  if (response.status === 401) {
+    console.log('authentication required');
 
-  if (data.errors) {
-    const errorMessages = data.errors.map((error) => error.msg);
-    const validationError = new Error('Validation Errors');
-    validationError.errors = errorMessages;
-    throw validationError;
-  } else if (response.status === 401) {
-    throw new Error(`${data.message}. Sign in to complete this action`);
+    throw new Error(`${response.statusText}. Sign in to complete this action`);
   } else if (!response.ok) {
-    throw new Error(`${data.error}`);
+    console.log('general');
+
+    throw new Error(`${response.statusText}`);
   }
+  const data = await response.json();
   return data;
 };
 

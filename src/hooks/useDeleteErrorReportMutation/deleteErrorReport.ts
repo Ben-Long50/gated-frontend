@@ -1,14 +1,12 @@
 import handleResponse from '../handleResponse';
 
-const getActions = async (apiUrl: string) => {
+const deleteErrorReport = async (apiUrl: string, errorReportId: number) => {
   try {
-    const response = await fetch(`${apiUrl}/actions`, {
-      method: 'GET',
+    const response = await fetch(`${apiUrl}/errors/${errorReportId}`, {
+      method: 'DELETE',
       credentials: 'include',
     });
-
     const data = await handleResponse(response);
-
     return data;
   } catch (error) {
     if (error instanceof Error) {
@@ -18,4 +16,4 @@ const getActions = async (apiUrl: string) => {
   }
 };
 
-export default getActions;
+export default deleteErrorReport;

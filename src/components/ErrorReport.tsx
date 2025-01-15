@@ -29,10 +29,10 @@ const ErrorReport = () => {
 
   return (
     <div className="flex h-dvh w-dvw items-center">
-      <div className="mx-auto my-auto flex w-full max-w-4xl flex-col items-center justify-center gap-8 p-4 sm:gap-12 sm:p-8">
+      <div className="mx-auto my-auto flex w-full max-w-4xl flex-col items-center justify-center gap-4 p-2 sm:gap-8 sm:p-8">
         <FormLayout>
           <form
-            className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8"
+            className="bg-primary flex w-full flex-col gap-4 p-0.5 clip-8 sm:gap-8"
             onSubmit={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -74,7 +74,7 @@ const ErrorReport = () => {
               selector={(state) => [state.values.content]}
             >
               {([content]) => (
-                <p className="text-tertiary -my-4 self-end text-base">{`${content.length} / 500`}</p>
+                <p className="text-tertiary self-end text-base">{`${content.length} / 500`}</p>
               )}
             </errorReportForm.Subscribe>
             <BtnRect type="submit" className="group w-full min-w-40">
@@ -88,7 +88,7 @@ const ErrorReport = () => {
               )}
             </BtnRect>
             <button
-              className="text-accent -mt-4 self-start hover:underline sm:-mb-4"
+              className="text-accent self-start hover:underline"
               onClick={(e) => {
                 e.preventDefault();
                 navigate(-1);

@@ -58,9 +58,17 @@ const PerkCard = ({ perk }, props) => {
                 }
           }
         >
-          <ul className="list-disc py-4">
+          <div className="list-disc py-4">
             {Object.entries(perk.requirements).length === 0 ? (
-              <p>N/A</p>
+              <div className="flex items-center gap-2">
+                <Icon
+                  className="text-primary"
+                  path={mdiTriangleSmallUp}
+                  rotate={90}
+                  size={1}
+                />
+                <p>No skill requirements</p>
+              </div>
             ) : (
               Object.entries(perk.requirements).map(
                 ([attribute, { points, skills }]) => (
@@ -109,7 +117,7 @@ const PerkCard = ({ perk }, props) => {
                 ),
               )
             )}
-          </ul>
+          </div>
           <p className="text-secondary">{perk.description}</p>
         </div>
       </div>

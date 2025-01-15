@@ -1,12 +1,11 @@
 import handleResponse from '../handleResponse';
 
-const getActions = async (apiUrl: string) => {
+const getErrorReports = async (apiUrl: string) => {
   try {
-    const response = await fetch(`${apiUrl}/actions`, {
+    const response = await fetch(`${apiUrl}/errors`, {
       method: 'GET',
       credentials: 'include',
     });
-
     const data = await handleResponse(response);
 
     return data;
@@ -18,4 +17,4 @@ const getActions = async (apiUrl: string) => {
   }
 };
 
-export default getActions;
+export default getErrorReports;
