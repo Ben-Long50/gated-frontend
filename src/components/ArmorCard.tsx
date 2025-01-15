@@ -67,7 +67,7 @@ const ArmorCard = ({ armor }, props) => {
             <div className="relative flex h-full flex-col gap-4 sm:gap-8">
               <div className="flex w-full items-start justify-between gap-8">
                 <div className="flex items-center justify-start gap-4">
-                  <h2> {armor.name}</h2>
+                  <h2 className="pl-4">{armor.name}</h2>
                   {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
                     <Link to={`/glam/codex/armor/${armor.id}/update`}>
                       <button className="text-accent hover:underline">
@@ -204,7 +204,9 @@ const ArmorCard = ({ armor }, props) => {
             <div className="flex h-full grow flex-col items-start justify-between gap-6">
               <div className="flex w-full items-start justify-between gap-8">
                 <div className="flex items-center justify-start gap-4">
-                  <h2> {armor.name}</h2>
+                  <h2 className={`${!armor.picture && 'pl-4'}`}>
+                    {armor.name}
+                  </h2>
                   {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
                     <Link to={`${armor.id}/update`}>
                       <button className="text-accent hover:underline">
@@ -227,7 +229,7 @@ const ArmorCard = ({ armor }, props) => {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-1">
-                {armor.keywords.map(
+                {armor.keywords?.map(
                   (item: { keyword: Keyword; value?: number }) => {
                     return (
                       <Tag

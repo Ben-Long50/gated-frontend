@@ -19,6 +19,10 @@ const useDeleteWeaponMutation = (
         queryKey: ['weapon'],
         exact: false,
       });
+      queryClient.invalidateQueries({
+        queryKey: ['weaponsByKeyword'],
+        exact: false,
+      });
       return queryClient.invalidateQueries({
         queryKey: ['weapons'],
         exact: false,

@@ -24,7 +24,12 @@ const Cybernetics = () => {
     },
   });
 
-  if (cybernetics.isLoading || cybernetics.isPending) {
+  if (
+    cybernetics.isLoading ||
+    cybernetics.isPending ||
+    cybernetics.keywordsLoading ||
+    cybernetics.keywordsPending
+  ) {
     return <Loading />;
   }
 

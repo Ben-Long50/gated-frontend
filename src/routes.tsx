@@ -37,6 +37,9 @@ import VehicleModForm from './components/VehicleModForm';
 import VehicleMods from './components/VehicleMods';
 import PatchNotes from './components/PatchNotes';
 import PatchNoteForm from './components/PatchNotesForm';
+import Explosives from './components/Explosives';
+import MeleeWeapons from './components/MeleeWeapons';
+import RangedWeapons from './components/RangedWeapons';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -73,13 +76,84 @@ const router = createBrowserRouter(
             <Route path="create" element={<BookEntryForm />} />
           </Route>
           <Route path="weapons">
-            <Route index element={<Weapons />} />
+            <Route index element={<Weapons title="All Weapons" />} />
+            <Route
+              path="pistols"
+              element={
+                <Weapons
+                  title="Pistols"
+                  keywordList={['Pistol', 'Heavy Pistol']}
+                />
+              }
+            />
+            <Route
+              path="shotguns"
+              element={
+                <Weapons
+                  title="Shotguns"
+                  keywordList={['Shotgun', 'Heavy Shotgun']}
+                />
+              }
+            />
+            <Route
+              path="smgs"
+              element={
+                <Weapons title="SMGs" keywordList={['SMG', 'Heavy SMG']} />
+              }
+            />
+            <Route
+              path="rifles"
+              element={
+                <Weapons
+                  title="Rifles"
+                  keywordList={['Rifle', 'Heavy Rifle']}
+                />
+              }
+            />
+            <Route
+              path="heavyWeapons"
+              element={
+                <Weapons
+                  title="Heavy Weapons"
+                  keywordList={[
+                    'HW',
+                    'Heavy Pistol',
+                    'Heavy Rifle',
+                    'Heavy Shotgun',
+                    'Heavy SMG',
+                  ]}
+                />
+              }
+            />
+            <Route
+              path="melee"
+              element={
+                <Weapons title="Melee Weapons" keywordList={['Melee']} />
+              }
+            />
+            <Route
+              path="explosives"
+              element={
+                <Weapons
+                  title="Explosives"
+                  keywordList={['Grenades', 'Mines', 'Launcher']}
+                />
+              }
+            />
             <Route path="create" element={<WeaponForm />} />
             <Route path=":weaponId/update" element={<WeaponForm />} />
           </Route>
 
           <Route path="armor">
-            <Route index element={<Armor />} />
+            <Route index element={<Armor title="All Armor" />} />
+            <Route
+              path="basic"
+              element={<Armor title="Basic Armor" keywordList={['Armor']} />}
+            />
+            <Route
+              path="power"
+              element={<Armor title="Power Armor" keywordList={['Power']} />}
+            />
             <Route path="create" element={<ArmorForm />} />
             <Route path=":armorId/update" element={<ArmorForm />} />
           </Route>
@@ -92,7 +166,12 @@ const router = createBrowserRouter(
 
           <Route path="vehicles">
             <Route index element={<Vehicles />} />
-            <Route path="weapons" element={<VehicleWeapons />} />
+            <Route
+              path="weapons"
+              element={
+                <Weapons title="Vehicle Weapons" keywordList={['Vehicle']} />
+              }
+            />
             <Route path="weapons/:weaponId/update" element={<WeaponForm />} />
             <Route path="modifications" element={<VehicleMods />} />
             <Route path="create" element={<VehicleForm />} />

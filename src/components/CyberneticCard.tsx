@@ -78,7 +78,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
             <div className="flex w-full items-start justify-between gap-8">
               <div>
                 <div className="flex items-center justify-start gap-4">
-                  <h2> {cybernetic.name}</h2>
+                  <h2 className="pl-4">{cybernetic.name}</h2>
                   {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
                     <Link
                       to={`/glam/codex/cybernetics/${cybernetic.id}/update`}
@@ -89,7 +89,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
                     </Link>
                   )}
                 </div>
-                <p className="text-tertiary flex-1 whitespace-nowrap text-left">
+                <p className="text-tertiary flex-1 whitespace-nowrap pl-4 text-left">
                   (
                   {cybernetic.cyberneticType[0].toUpperCase() +
                     cybernetic.cyberneticType.slice(1)}{' '}
@@ -197,7 +197,9 @@ const CyberneticCard = ({ cybernetic }, props) => {
               <div className="flex w-full items-start justify-between gap-4">
                 <div>
                   <div className="flex items-center justify-start gap-4">
-                    <h2> {cybernetic.name}</h2>
+                    <h2 className={`${!cybernetic.picture && 'pl-4'}`}>
+                      {cybernetic.name}
+                    </h2>
                     {(user?.role === 'ADMIN' ||
                       user?.role === 'SUPERADMIN') && (
                       <Link to={`${cybernetic.id}/update`}>
@@ -207,7 +209,9 @@ const CyberneticCard = ({ cybernetic }, props) => {
                       </Link>
                     )}
                   </div>
-                  <p className="text-tertiary flex-1 whitespace-nowrap text-left">
+                  <p
+                    className={`${!cybernetic.picture && 'pl-4'} text-tertiary flex-1 whitespace-nowrap text-left`}
+                  >
                     (
                     {cybernetic.cyberneticType[0].toUpperCase() +
                       cybernetic.cyberneticType.slice(1)}{' '}
@@ -247,7 +251,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
                 )}
                 {cybernetic.keywords.length > 0 && (
                   <div className="flex w-full flex-wrap items-center gap-2 justify-self-start">
-                    {cybernetic.keywords.map(
+                    {cybernetic.keywords?.map(
                       (item: { keyword: Keyword; value?: number }) => {
                         return (
                           <Tag
@@ -336,7 +340,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
           >
             {layoutSize === 'small' ||
               (layoutSize === 'xsmall' && <p>{cybernetic.description}</p>)}
-            {cybernetic.weapons.length > 0 && (
+            {cybernetic.weapons?.length > 0 && (
               <ThemeContainer chamfer="16" borderColor={accentPrimary}>
                 <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                   Integrated weapons
@@ -364,7 +368,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
                 </div>
               </ThemeContainer>
             )}
-            {cybernetic.armor.length > 0 && (
+            {cybernetic.armor?.length > 0 && (
               <ThemeContainer chamfer="16" borderColor={accentPrimary}>
                 <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                   Integrated armor
@@ -390,7 +394,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
                 </div>
               </ThemeContainer>
             )}
-            {cybernetic.actions.length > 0 && (
+            {cybernetic.actions?.length > 0 && (
               <ThemeContainer chamfer="16" borderColor={accentPrimary}>
                 <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                   Unique actions

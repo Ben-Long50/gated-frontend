@@ -85,6 +85,41 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           path="codex/weapons"
           setSidebarVisibility={setSidebarVisibility}
         />
+        <LinkSidebar
+          title="Pistols"
+          path="codex/weapons/pistols"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Shotguns"
+          path="codex/weapons/shotguns"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="SMGs"
+          path="codex/weapons/smgs"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Rifles"
+          path="codex/weapons/rifles"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Heavy weapons"
+          path="codex/weapons/heavyWeapons"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Melee weapons"
+          path="codex/weapons/melee"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Launcers & explosives"
+          path="codex/weapons/explosives"
+          setSidebarVisibility={setSidebarVisibility}
+        />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <LinkSidebar
             title="Create a new weapon"
@@ -104,6 +139,16 @@ const CodexLinks = ({ setSidebarVisibility }) => {
         <LinkSidebar
           title="All armor"
           path="codex/armor"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Basic armor"
+          path="codex/armor/basic"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Power armor"
+          path="codex/armor/power"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (

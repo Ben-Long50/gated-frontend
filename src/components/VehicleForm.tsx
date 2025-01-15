@@ -13,7 +13,7 @@ import FormLayout from '../layouts/FormLayout';
 import VehicleIcon from './icons/VehicleIcon';
 import { useParams } from 'react-router-dom';
 import { Modification, VehicleStats } from '../types/vehicle';
-import { Weapon, WeaponWithKeywords } from '../types/weapon';
+import { WeaponWithKeywords } from '../types/weapon';
 import InputFieldBasic from './InputFieldBasic';
 import useCreateVehicleMutation from '../hooks/useCreateVehicleMutation/useCreateVehicleMutation';
 import useDeleteVehicleMutation from '../hooks/useDeleteVehicleMutation/useDeleteVehicleMutation';
@@ -21,7 +21,7 @@ import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
 import useModifications from '../hooks/useModifications';
 import ModCard from './ModCard';
 import SubweaponCard from './SubweaponCard';
-import useWeaponsByKeyword from '../hooks/useWeaponsByKeyword';
+import useWeapons from '../hooks/useWeapons';
 
 const VehicleForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -35,7 +35,7 @@ const VehicleForm = () => {
 
   const { data: vehicle } = useVehicleQuery(apiUrl, vehicleId);
 
-  const vehicleWeapons = useWeaponsByKeyword('Vehicle');
+  const vehicleWeapons = useWeapons(['Vehicle']);
 
   const modifications = useModifications();
 

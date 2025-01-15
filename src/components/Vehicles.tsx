@@ -22,7 +22,12 @@ const Vehicles = () => {
     },
   });
 
-  if (vehicles.isLoading || vehicles.isPending) {
+  if (
+    vehicles.isLoading ||
+    vehicles.isPending ||
+    vehicles.weaponsLoading ||
+    vehicles.weaponsPending
+  ) {
     return <Loading />;
   }
 

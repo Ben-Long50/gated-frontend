@@ -9,10 +9,16 @@ import SelectField from './SelectField';
 import Loading from './Loading';
 import { WeaponWithKeywords } from 'src/types/weapon';
 
-const Weapons = () => {
+const Weapons = ({
+  title,
+  keywordList,
+}: {
+  title: string;
+  keywordList?: string[];
+}) => {
   const { accentPrimary } = useContext(ThemeContext);
 
-  const weapons = useWeapons();
+  const weapons = useWeapons(keywordList);
 
   const searchForm = useForm({
     defaultValues: {
@@ -24,13 +30,18 @@ const Weapons = () => {
     },
   });
 
-  if (weapons.isLoading || weapons.isPending) {
+  if (
+    weapons.isLoading ||
+    weapons.isPending ||
+    weapons.keywordsLoading ||
+    weapons.keywordsPending
+  ) {
     return <Loading />;
   }
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">Weapons</h1>
+      <h1 className="text-center">{title}</h1>
       <ThemeContainer
         className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
         chamfer="24"
@@ -47,17 +58,14 @@ const Weapons = () => {
                     weapons.filterByCategory(field.state.value);
                   }}
                 >
-                  <option value="">All weapons</option>
-                  <option value="1H">1H weapons</option>
-                  <option value="2H">2H weapons</option>
-                  <option value="Melee">Melee</option>
-                  <option value="Pistol">Pistols</option>
-                  <option value="Shotgun">Shotguns</option>
-                  <option value="SMG">SMGs</option>
-                  <option value="Rifle">Rifles</option>
-                  <option value="HW">HWs</option>
-                  <option value="Launcher">Launchers</option>
-                  <option value="Cybernetic">Cybernetics</option>
+                  <option value="">All keywords</option>
+                  {weapons.filteredKeywords?.map((keyword) => {
+                    return (
+                      <option key={keyword} value={keyword}>
+                        {keyword}
+                      </option>
+                    );
+                  })}
                 </SelectField>
               )}
             </searchForm.Field>

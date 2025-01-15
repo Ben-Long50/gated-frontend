@@ -80,7 +80,7 @@ const VehicleCard = ({ vehicle }, props) => {
             <div className="relative flex h-full flex-col gap-4 sm:gap-8">
               <div className="flex w-full items-start justify-between gap-8">
                 <div className="flex items-center justify-start gap-4">
-                  <h2> {vehicle.name}</h2>
+                  <h2 className="pl-4">{vehicle.name}</h2>
                   {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
                     <Link to={`/glam/codex/vehicles/${vehicle.id}/update`}>
                       <button className="text-accent hover:underline">
@@ -263,7 +263,9 @@ const VehicleCard = ({ vehicle }, props) => {
               <div className="flex h-full grow flex-col items-start justify-between gap-6">
                 <div className="flex w-full items-start justify-between gap-8">
                   <div className="flex items-center justify-start gap-4">
-                    <h2> {vehicle.name}</h2>
+                    <h2 className={`${!vehicle.picture && 'pl-4'}`}>
+                      {vehicle.name}
+                    </h2>
                     {(user?.role === 'ADMIN' ||
                       user?.role === 'SUPERADMIN') && (
                       <Link to={`${vehicle.id}/update`}>

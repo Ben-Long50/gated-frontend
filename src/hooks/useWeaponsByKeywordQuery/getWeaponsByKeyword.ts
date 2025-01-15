@@ -1,10 +1,16 @@
 import handleResponse from '../handleResponse';
 
-const getWeaponsByKeyword = async (apiUrl: string, keywordName: string) => {
+const getWeaponsByKeyword = async (apiUrl: string, keywordNames: string[]) => {
   try {
-    const response = await fetch(`${apiUrl}/weapons/keywords/${keywordName}`, {
-      method: 'GET',
+    console.log(JSON.stringify(keywordNames));
+
+    const response = await fetch(`${apiUrl}/weapons/keywords`, {
+      method: 'POST',
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ keywordNames }),
     });
     const data = await handleResponse(response);
 

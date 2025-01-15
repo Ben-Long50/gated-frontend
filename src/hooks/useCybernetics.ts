@@ -1,10 +1,16 @@
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useCyberneticsQuery from './useCyberneticsQuery/useCyberneticsQuery';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
+import { Cybernetic, CyberneticWithKeywords } from 'src/types/cybernetic';
+import { Weapon } from 'src/types/weapon';
+import useKeywords from './useKeywords';
+import { Keyword } from 'src/types/keyword';
+import { Armor } from 'src/types/armor';
 
 const useCybernetics = () => {
   const { apiUrl } = useContext(AuthContext);
+
+  const keywords = useKeywords();
 
   const {
     data: cybernetics,
@@ -12,11 +18,58 @@ const useCybernetics = () => {
     isPending,
   } = useCyberneticsQuery(apiUrl);
 
-  const [query, setQuery] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
+  const getWeaponsKeywords = (weapons: Weapon[]) => {
+    if (weapons.length === 0) return;
+    return weapons?.map((weapon: Weapon) => {
+      const keywordDetails = weapon.keywords.map((keyword) => {
+        const details = keywords.filteredKeywords.weapon.find(
+          (item: Keyword) => item.id === keyword.keywordId,
+        );
+        return { keyword: details, value: keyword.value };
+      });
+      return { ...weapon, keywords: keywordDetails };
+    });
+  };
+
+  const getArmorKeywords = (armor: Armor[]) => {
+    if (armor.length === 0) return;
+    return armor?.map((armorSet: Weapon) => {
+      const keywordDetails = armorSet.keywords.map((keyword) => {
+        const details = keywords.filteredKeywords.armor.find(
+          (item: Keyword) => item.id === keyword.keywordId,
+        );
+        return { keyword: details, value: keyword.value };
+      });
+      return { ...armorSet, keywords: keywordDetails };
+    });
+  };
+
+  const cyberneticsWithKeywords = useMemo(() => {
+    if (!cybernetics || !keywords) return null;
+
+    return cybernetics?.map((cybernetic: Cybernetic) => {
+      const keywordDetails = cybernetic.keywords.map((keyword) => {
+        const details = keywords.filteredKeywords.cybernetic.find(
+          (item: Keyword) => item.id === keyword.keywordId,
+        );
+        return { keyword: details, value: keyword.value };
+      });
+      const integratedWeaopns = getWeaponsKeywords(cybernetic.weapons);
+      const integratedArmor = getArmorKeywords(cybernetic.armor);
+      return {
+        ...cybernetic,
+        keywords: keywordDetails,
+        weapons: integratedWeaopns,
+        armor: integratedArmor,
+      };
+    });
+  }, [cybernetics, keywords]);
+
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState('');
 
   const filteredCybernetics = category
-    ? cybernetics
+    ? cyberneticsWithKeywords
         ?.filter(
           (cybernetic: CyberneticWithKeywords) =>
             cybernetic.cyberneticType === category,
@@ -24,7 +77,7 @@ const useCybernetics = () => {
         .filter((cybernetic: CyberneticWithKeywords) =>
           cybernetic.name.toLowerCase().includes(query.toLowerCase()),
         )
-    : (cybernetics?.filter((cybernetic: CyberneticWithKeywords) =>
+    : (cyberneticsWithKeywords?.filter((cybernetic: CyberneticWithKeywords) =>
         cybernetic.name.toLowerCase().includes(query.toLowerCase()),
       ) ?? []);
 
@@ -47,6 +100,8 @@ const useCybernetics = () => {
     resetList,
     isLoading,
     isPending,
+    keywordsLoading: keywords.isLoading,
+    keywordsPending: keywords.isPending,
   };
 };
 

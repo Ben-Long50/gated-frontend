@@ -8,10 +8,16 @@ import ArmorCard from './ArmorCard';
 import SelectField from './SelectField';
 import Loading from './Loading';
 
-const Armor = () => {
+const Armor = ({
+  title,
+  keywordList,
+}: {
+  title: string;
+  keywordList?: string[];
+}) => {
   const { accentPrimary } = useContext(ThemeContext);
 
-  const armor = useArmor();
+  const armor = useArmor(keywordList);
 
   const searchForm = useForm({
     defaultValues: {
@@ -23,13 +29,18 @@ const Armor = () => {
     },
   });
 
-  if (armor.isLoading || armor.isPending) {
+  if (
+    armor.isLoading ||
+    armor.isPending ||
+    armor.keywordsLoading ||
+    armor.keywordsPending
+  ) {
     return <Loading />;
   }
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">Armor</h1>
+      <h1 className="text-center">{title}</h1>
       <ThemeContainer
         className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
         chamfer="24"
@@ -46,9 +57,14 @@ const Armor = () => {
                     armor.filterByCategory(field.state.value);
                   }}
                 >
-                  <option value="">All armor</option>
-                  <option value="Armor">Basic armor</option>
-                  <option value="Power">Power armor</option>
+                  <option value="">All keywords</option>
+                  {armor.filteredKeywords?.map((keyword) => {
+                    return (
+                      <option key={keyword} value={keyword}>
+                        {keyword}
+                      </option>
+                    );
+                  })}
                 </SelectField>
               )}
             </searchForm.Field>

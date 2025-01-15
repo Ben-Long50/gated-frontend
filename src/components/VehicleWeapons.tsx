@@ -6,12 +6,12 @@ import { useForm } from '@tanstack/react-form';
 import WeaponCard from './WeaponCard';
 import Loading from './Loading';
 import { WeaponWithKeywords } from 'src/types/weapon';
-import useWeaponsByKeyword from '../hooks/useWeaponsByKeyword';
+import useWeapons from '../hooks/useWeapons';
 
 const VehicleWeapons = () => {
   const { accentPrimary } = useContext(ThemeContext);
 
-  const weapons = useWeaponsByKeyword('Vehicle');
+  const weapons = useWeapons(['Vehicle']);
 
   const searchForm = useForm({
     defaultValues: {
