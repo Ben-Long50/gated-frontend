@@ -38,7 +38,7 @@ const useWeapons = (keywordList?: string[]) => {
           return true;
         }
       });
-  }, [weapons, keywords.filteredKeywords]);
+  }, [weapons, keywordList, keywords.filteredKeywords]);
 
   const filteredKeywords = useMemo(() => {
     if (!weaponsWithKeywords) return null;

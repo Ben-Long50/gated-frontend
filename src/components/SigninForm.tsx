@@ -62,7 +62,9 @@ const SigninForm = () => {
           signinForm.handleSubmit();
         }}
       >
-        <h1 className="text-accent text-center md:text-5xl">Credentials</h1>
+        <h1 className="text-accent text-center font-normal md:text-5xl">
+          Credentials
+        </h1>
         <div className="flex flex-col gap-4 md:gap-6">
           <signinForm.Field
             name="email"
@@ -111,7 +113,11 @@ const SigninForm = () => {
               googleSignin();
             }}
           >
-            <Icon className="mr-2 text-inherit" path={mdiGoogle} size={1.5} />
+            <Icon
+              className="mr-2 stroke-inherit text-inherit"
+              path={mdiGoogle}
+              size={1.5}
+            />
             Google
           </BtnAuth>
           <BtnAuth
@@ -120,7 +126,11 @@ const SigninForm = () => {
               facebookSignin();
             }}
           >
-            <Icon className="mr-2 text-inherit" path={mdiFacebook} size={1.5} />
+            <Icon
+              className="mr-2 stroke-inherit text-inherit"
+              path={mdiFacebook}
+              size={1.5}
+            />
             Facebook
           </BtnAuth>
         </div>

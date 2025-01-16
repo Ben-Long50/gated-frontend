@@ -47,7 +47,7 @@ const SignupForm = () => {
           signupForm.handleSubmit();
         }}
       >
-        <h1 className="text-accent text-center text-4xl font-semibold md:text-5xl">
+        <h1 className="text-accent text-center text-4xl font-normal font-semibold md:text-5xl">
           Create credentials
         </h1>
         <div className="flex flex-col gap-4 md:gap-6">

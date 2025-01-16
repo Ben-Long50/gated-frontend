@@ -11,28 +11,37 @@ const useActions = () => {
   const [query, setQuery] = useState('');
 
   const filteredActions: {
-    action: Action[];
-    extendedAction: Action[];
-    reaction: Action[];
+    action: { title: string; list: Action[] };
+    extendedAction: { title: string; list: Action[] };
+    reaction: { title: string; list: Action[] };
   } = {
-    action:
-      actions?.filter(
-        (action: Action) =>
-          action.actionType === 'action' &&
-          action.name.toLowerCase().includes(query.toLowerCase()),
-      ) ?? [],
-    extendedAction:
-      actions?.filter(
-        (action: Action) =>
-          action.actionType === 'extendedAction' &&
-          action.name.toLowerCase().includes(query.toLowerCase()),
-      ) ?? [],
-    reaction:
-      actions?.filter(
-        (action: Action) =>
-          action.actionType === 'reaction' &&
-          action.name.toLowerCase().includes(query.toLowerCase()),
-      ) ?? [],
+    action: {
+      title: 'Action',
+      list:
+        actions?.filter(
+          (action: Action) =>
+            action.actionType === 'action' &&
+            action.name.toLowerCase().includes(query.toLowerCase()),
+        ) ?? [],
+    },
+    extendedAction: {
+      title: 'Extended Action',
+      list:
+        actions?.filter(
+          (action: Action) =>
+            action.actionType === 'extendedAction' &&
+            action.name.toLowerCase().includes(query.toLowerCase()),
+        ) ?? [],
+    },
+    reaction: {
+      title: 'Reaction',
+      list:
+        actions?.filter(
+          (action: Action) =>
+            action.actionType === 'reaction' &&
+            action.name.toLowerCase().includes(query.toLowerCase()),
+        ) ?? [],
+    },
   };
 
   const filterByQuery = (query: string) => {

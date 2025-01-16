@@ -116,7 +116,7 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           setSidebarVisibility={setSidebarVisibility}
         />
         <LinkSidebar
-          title="Launcers & explosives"
+          title="Launchers & explosives"
           path="codex/weapons/explosives"
           setSidebarVisibility={setSidebarVisibility}
         />

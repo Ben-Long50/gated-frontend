@@ -65,7 +65,7 @@
     @apply text-gray-500 dark:text-gray-400;
   }
   .text-accent {
-    @apply text-yellow-300 dark:text-yellow-300;
+    @apply fill-yellow-300 stroke-yellow-300 text-yellow-300 dark:text-yellow-300;
   }
   .text-error {
     @apply text-red-500 dark:text-red-500;

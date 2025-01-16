@@ -53,15 +53,15 @@ const Actions = () => {
           </form>
           {Object.entries(actions.filteredActions).map(([type, actionList]) => {
             return (
-              actionList.length > 0 && (
+              actionList.list.length > 0 && (
                 <div
                   className="flex flex-col gap-4 md:grid md:grid-cols-2"
                   key={type}
                 >
                   <h1 className="col-span-2 pl-6 sm:mb-4">
-                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                    {actionList.title}
                   </h1>
-                  {actionList.map((action) => {
+                  {actionList.list.map((action) => {
                     return <ActionCard key={action.name} action={action} />;
                   })}
                 </div>
