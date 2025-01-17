@@ -281,6 +281,27 @@ const CodexLinks = ({ setSidebarVisibility }) => {
           />
         )}
       </LinkListSidebar>
+      <LinkListSidebar
+        title={
+          <>
+            {/* <ActionIcon className="size-8" /> */}
+            <p className="text-inherit">Conditions</p>
+          </>
+        }
+      >
+        <LinkSidebar
+          title="All conditions"
+          path="codex/conditions"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+          <LinkSidebar
+            title="Create a new condition"
+            path="codex/conditions/create"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
+      </LinkListSidebar>
     </>
   );
 };

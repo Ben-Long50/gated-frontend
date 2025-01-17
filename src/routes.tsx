@@ -37,6 +37,7 @@ import VehicleMods from './components/VehicleMods';
 import PatchNotes from './components/PatchNotes';
 import PatchNoteForm from './components/PatchNotesForm';
 import ErrorReports from './components/ErrorReports';
+import ConditionForm from './components/ConditionForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -195,9 +196,16 @@ const router = createBrowserRouter(
             <Route path="create" element={<KeywordForm />} />
             <Route path=":keywordId/update" element={<KeywordForm />} />
           </Route>
+
           <Route path="actions">
             <Route index element={<Actions />} />
             <Route path="create" element={<ActionForm />} />
+            <Route path=":actionId/update" element={<ActionForm />} />
+          </Route>
+
+          <Route path="conditions">
+            <Route index element={<Actions />} />
+            <Route path="create" element={<ConditionForm />} />
             <Route path=":actionId/update" element={<ActionForm />} />
           </Route>
         </Route>
