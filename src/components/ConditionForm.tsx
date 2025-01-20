@@ -6,20 +6,13 @@ import BtnRect from './buttons/BtnRect';
 import Loading from './Loading';
 import TextAreaField from './TextAreaField';
 import InputField from './InputField';
-import SelectField from './SelectField';
-import Icon from '@mdi/react';
-import { mdiClose } from '@mdi/js';
-import {
-  Modifier,
-  ModifierOperator,
-  ModifierType,
-  Stat,
-} from 'src/types/modifier';
+import { Modifier } from 'src/types/modifier';
 import useConditionQuery from '../hooks/useConditionQuery/useConditionQuery';
 import useCreateConditionMutation from '../hooks/useCreateConditionMutation/useCreateConditionMutation';
 import useDeleteConditionMutation from '../hooks/useDeleteConditionMutation/useDeleteConditionMutation';
 import FormLayout from '../layouts/FormLayout';
 import useActions from '../hooks/useActions';
+import ModifierField from './ModifierField';
 
 const ConditionForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -53,27 +46,6 @@ const ConditionForm = () => {
   const handleReset = async () => {
     conditionForm.reset();
   };
-
-  const types: ModifierType[] = ['Roll', 'Stat'];
-
-  const operators: ModifierOperator[] = [
-    'add',
-    'subtract',
-    'multiply',
-    'divide',
-  ];
-  const stats: Stat[] = [
-    'Health',
-    'Max health',
-    'Sanity',
-    'Max sanity',
-    'Cyber',
-    'Equip',
-    'Speed',
-    'Evasion',
-    'Armor',
-    'Ward',
-  ];
 
   const conditionForm = useForm({
     defaultValues: {
@@ -128,201 +100,11 @@ const ConditionForm = () => {
         <conditionForm.Field name="modifiers" mode="array">
           {(field) => {
             return (
-              <div className="flex w-full flex-col gap-4 lg:gap-8">
-                {field.state.value.map((_, i: number) => {
-                  return (
-                    <div
-                      key={i}
-                      className="flex flex-col gap-4 sm:flex-row lg:gap-6"
-                    >
-                      <conditionForm.Field name={`modifiers[${i}].type`}>
-                        {(subField) => {
-                          return (
-                            <SelectField
-                              className="grow"
-                              label="Modifier Type"
-                              field={subField}
-                            >
-                              {types.map((type) => {
-                                return (
-                                  <option key={type} value={type}>
-                                    {type}
-                                  </option>
-                                );
-                              })}
-                            </SelectField>
-                          );
-                        }}
-                      </conditionForm.Field>
-                      <conditionForm.Subscribe
-                        selector={(state) => state.values.modifiers[i].type}
-                      >
-                        {(modifierType) => (
-                          <>
-                            {modifierType === 'Roll' && (
-                              <>
-                                <conditionForm.Field
-                                  name={`modifiers[${i}].action`}
-                                >
-                                  {(subField) => {
-                                    return (
-                                      <SelectField
-                                        className="grow"
-                                        label="Action"
-                                        field={subField}
-                                      >
-                                        <option defaultValue=""></option>
-                                        {Object.values(
-                                          actions.filteredActions,
-                                        ).flatMap((item) => {
-                                          return item.list.map((action) => (
-                                            <option
-                                              key={action.id}
-                                              value={action.name}
-                                            >
-                                              {action.name}
-                                            </option>
-                                          ));
-                                        })}
-                                      </SelectField>
-                                    );
-                                  }}
-                                </conditionForm.Field>
-                                <conditionForm.Field
-                                  name={`modifiers[${i}].operator`}
-                                >
-                                  {(subField) => {
-                                    return (
-                                      <SelectField
-                                        className="grow"
-                                        label="Operator"
-                                        field={subField}
-                                      >
-                                        <option defaultValue=""></option>
-                                        {Object.values(operators).map(
-                                          (item) => {
-                                            return (
-                                              <option key={item} value={item}>
-                                                {item}
-                                              </option>
-                                            );
-                                          },
-                                        )}
-                                      </SelectField>
-                                    );
-                                  }}
-                                </conditionForm.Field>
-                                <conditionForm.Field
-                                  name={`modifiers[${i}].dice`}
-                                >
-                                  {(subField) => {
-                                    return (
-                                      <InputField
-                                        className="max-w-28"
-                                        type="number"
-                                        label="Dice"
-                                        field={subField}
-                                      />
-                                    );
-                                  }}
-                                </conditionForm.Field>
-                              </>
-                            )}
-                            {modifierType === 'Stat' && (
-                              <>
-                                <conditionForm.Field
-                                  name={`modifiers[${i}].stat`}
-                                >
-                                  {(subField) => {
-                                    return (
-                                      <SelectField
-                                        className="grow"
-                                        label="Stat"
-                                        field={subField}
-                                      >
-                                        <option defaultValue=""></option>
-                                        {stats.map((item) => {
-                                          return (
-                                            <option key={item} value={item}>
-                                              {item}
-                                            </option>
-                                          );
-                                        })}
-                                      </SelectField>
-                                    );
-                                  }}
-                                </conditionForm.Field>
-                                <conditionForm.Field
-                                  name={`modifiers[${i}].operator`}
-                                >
-                                  {(subField) => {
-                                    return (
-                                      <SelectField
-                                        className="grow"
-                                        label="Operator"
-                                        field={subField}
-                                      >
-                                        <option defaultValue=""></option>
-                                        {Object.values(operators).map(
-                                          (item) => {
-                                            return (
-                                              <option key={item} value={item}>
-                                                {item}
-                                              </option>
-                                            );
-                                          },
-                                        )}
-                                      </SelectField>
-                                    );
-                                  }}
-                                </conditionForm.Field>
-                                <conditionForm.Field
-                                  name={`modifiers[${i}].value`}
-                                >
-                                  {(subField) => {
-                                    return (
-                                      <InputField
-                                        className="max-w-28"
-                                        type="number"
-                                        label="Value"
-                                        field={subField}
-                                      />
-                                    );
-                                  }}
-                                </conditionForm.Field>
-                              </>
-                            )}
-                          </>
-                        )}
-                      </conditionForm.Subscribe>
-                      <button
-                        className="sm:-ml-2 lg:-ml-4"
-                        onClick={() => field.removeValue(i)}
-                        type="button"
-                      >
-                        <Icon
-                          className="text-tertiary"
-                          path={mdiClose}
-                          size={1}
-                        />
-                      </button>
-                    </div>
-                  );
-                })}
-                <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
-                  <button
-                    className="text-accent self-end hover:underline"
-                    onClick={() =>
-                      field.pushValue({
-                        type: 'Roll',
-                      })
-                    }
-                    type="button"
-                  >
-                    Add modifier
-                  </button>
-                </div>
-              </div>
+              <ModifierField
+                form={conditionForm}
+                field={field}
+                actions={actions.filteredActions}
+              />
             );
           }}
         </conditionForm.Field>
