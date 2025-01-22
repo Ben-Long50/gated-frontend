@@ -9,24 +9,22 @@ import { useForm } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
 import FormLayout from '../layouts/FormLayout';
 import { useParams } from 'react-router-dom';
-import usePerkQuery from '../hooks/usePerkQuery/usePerkQuery';
 import Loading from './Loading';
 import useDeletePerkMutation from '../hooks/useDeletePerkMutation/useDeletePerkMutation';
+import usePerks from '../hooks/usePerks';
+import { Perk } from 'src/types/perk';
 
 const PerkForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
-
   const { perkId } = useParams();
 
-  const {
-    data: perk,
-    isLoading,
-    isPending,
-    refetch,
-    isRefetching,
-  } = usePerkQuery(apiUrl, perkId);
+  const perks = usePerks();
+
+  const perk = perks.perks.filter(
+    (perk: Perk) => perk.id === Number(perkId),
+  )[0];
 
   const createPerk = useCreatePerkMutation(apiUrl, perkId, setFormMessage);
   const deletePerk = useDeletePerkMutation(apiUrl, perkId, setFormMessage);
@@ -71,10 +69,6 @@ const PerkForm = () => {
       await createPerk.mutate(value);
     },
   });
-
-  if (isLoading || isPending || isRefetching) {
-    return <Loading />;
-  }
 
   return (
     <FormLayout

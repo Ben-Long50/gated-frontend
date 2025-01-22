@@ -1,8 +1,11 @@
-import { Modifier } from './modifier';
-
 export interface Condition {
+  id: number;
   name: string;
+  conditionType: ConditionType;
   description: string;
-  stacks?: number;
-  modifiers: Modifier[];
+}
+
+enum ConditionType {
+  character = 'character',
+  item = 'item',
 }

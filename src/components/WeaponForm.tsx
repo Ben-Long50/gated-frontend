@@ -6,7 +6,7 @@ import ThemeContainer from './ThemeContainer';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
-import useKeywords, { Keyword } from '../hooks/useKeywords';
+import useKeywords from '../hooks/useKeywords';
 import KeywordCard from './KeywordCard';
 import Icon from '@mdi/react';
 import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
@@ -16,8 +16,10 @@ import InputFieldBasic from './InputFieldBasic';
 import FormLayout from '../layouts/FormLayout';
 import WeaponIcon from './icons/WeaponIcon';
 import { useParams } from 'react-router-dom';
-import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
 import useDeleteWeaponMutation from '../hooks/useDeleteWeaponMutation/useDeleteWeaponMutation';
+import useWeapons from '../hooks/useWeapons';
+import { WeaponWithKeywords } from 'src/types/weapon';
+import { Keyword } from 'src/types/keyword';
 
 const WeaponForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -26,7 +28,11 @@ const WeaponForm = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { weaponId } = useParams();
 
-  const { data: weapon } = useWeaponQuery(apiUrl, weaponId);
+  const weapons = useWeapons();
+
+  const weapon = weapons.filteredWeapons.filter(
+    (weapon: WeaponWithKeywords) => weapon.id === Number(weaponId),
+  )[0];
 
   const keywords = useKeywords();
 
@@ -64,6 +70,19 @@ const WeaponForm = () => {
       setImagePreview(weapon.picture?.imageUrl);
     }
   }, [weapon]);
+
+  const searchForm = useForm({
+    defaultValues: {
+      query: '',
+    },
+    onSubmit: ({ value }) => {
+      if (value.query === '') {
+        keywords.resetList();
+      } else {
+        keywords.filterByQuery(value.query);
+      }
+    },
+  });
 
   const weaponForm = useForm({
     defaultValues: {
@@ -311,9 +330,21 @@ const WeaponForm = () => {
         </div>
         <hr className="border-yellow-300 border-opacity-50" />
         <h2>Weapon keywords</h2>
+        <searchForm.Field name="query">
+          {(field) => (
+            <InputField
+              className="col-span-2"
+              label="Search keywords"
+              field={field}
+              onChange={() => {
+                searchForm.handleSubmit();
+              }}
+            />
+          )}
+        </searchForm.Field>
         <weaponForm.Field name="keywords">
           {(field) => (
-            <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+            <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto pr-2 md:grid md:grid-cols-2">
               {keywords.filteredKeywords.weapon.map((keyword) => {
                 const activeKeyword = field.state.value.find(
                   (item: { keywordId: number; value?: number }) =>

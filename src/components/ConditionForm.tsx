@@ -6,13 +6,12 @@ import BtnRect from './buttons/BtnRect';
 import Loading from './Loading';
 import TextAreaField from './TextAreaField';
 import InputField from './InputField';
-import { Modifier } from 'src/types/modifier';
-import useConditionQuery from '../hooks/useConditionQuery/useConditionQuery';
 import useCreateConditionMutation from '../hooks/useCreateConditionMutation/useCreateConditionMutation';
 import useDeleteConditionMutation from '../hooks/useDeleteConditionMutation/useDeleteConditionMutation';
 import FormLayout from '../layouts/FormLayout';
-import useActions from '../hooks/useActions';
-import ModifierField from './ModifierField';
+import SelectField from './SelectField';
+import useConditions from '../hooks/useConditions';
+import { Condition } from 'src/types/condition';
 
 const ConditionForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -20,9 +19,11 @@ const ConditionForm = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { conditionId } = useParams();
 
-  const actions = useActions();
+  const conditions = useConditions();
 
-  const { data: condition } = useConditionQuery(apiUrl, conditionId);
+  const condition = conditions.filteredConditions.filter(
+    (condition: Condition) => condition.id === Number(conditionId),
+  )[0];
 
   const createCondition = useCreateConditionMutation(
     apiUrl,
@@ -50,17 +51,15 @@ const ConditionForm = () => {
   const conditionForm = useForm({
     defaultValues: {
       name: condition?.name || '',
+      type: condition?.conditionType || '',
       description: condition?.description || '',
-      modifiers: condition?.modifiers || ([] as Modifier[]),
     },
     onSubmit: async ({ value }) => {
       console.log(value);
 
-      //   await createCondition.mutate(value);
+      await createCondition.mutate(value);
     },
   });
-
-  if (actions.isLoading || actions.isPending) return <Loading />;
 
   return (
     <FormLayout
@@ -97,16 +96,22 @@ const ConditionForm = () => {
             <InputField className="grow" label="Condition name" field={field} />
           )}
         </conditionForm.Field>
-        <conditionForm.Field name="modifiers" mode="array">
-          {(field) => {
-            return (
-              <ModifierField
-                form={conditionForm}
-                field={field}
-                actions={actions.filteredActions}
-              />
-            );
+        <conditionForm.Field
+          name="type"
+          validators={{
+            onChange: ({ value }) =>
+              value.length < 1
+                ? 'A condition type must be selected'
+                : undefined,
           }}
+        >
+          {(field) => (
+            <SelectField className="grow" label="Condition type" field={field}>
+              <option defaultValue=""></option>
+              <option value="character">Character</option>
+              <option value="item">Item</option>
+            </SelectField>
+          )}
         </conditionForm.Field>
         <conditionForm.Field
           name="description"

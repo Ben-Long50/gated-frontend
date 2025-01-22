@@ -13,6 +13,7 @@ import Loading from '../../components/Loading';
 import useBookSectionsQuery from '../../hooks/useBookSectionsQuery/useBookSectionsQuery';
 import LinkSublistSidebar from './LinkSublistSidebar';
 import VehicleIcon from '../../components/icons/VehicleIcon';
+import ConditionIcon from '../../components/icons/ConditionIcon';
 
 const CodexLinks = ({ setSidebarVisibility }) => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -284,7 +285,7 @@ const CodexLinks = ({ setSidebarVisibility }) => {
       <LinkListSidebar
         title={
           <>
-            {/* <ActionIcon className="size-8" /> */}
+            <ConditionIcon className="size-8" />
             <p className="text-inherit">Conditions</p>
           </>
         }

@@ -7,9 +7,10 @@ import { useForm } from '@tanstack/react-form';
 import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';
 import { useParams } from 'react-router-dom';
-import useVehicleModQuery from '../hooks/useVehicleModQuery/useVehicleModQuery';
 import useCreateVehicleModMutation from '../hooks/useCreateVehicleModMutation/useCreateVehicleModMutation';
 import useDeleteVehicleModMutation from '../hooks/useDeleteVehicleModMutation/useDeleteKeywordMutation';
+import useModifications from '../hooks/useModifications';
+import { Modification } from 'src/types/vehicle';
 
 const VehicleModForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -17,7 +18,11 @@ const VehicleModForm = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { modId } = useParams();
 
-  const { data: modification } = useVehicleModQuery(apiUrl, modId);
+  const modifications = useModifications();
+
+  const modification = modifications.filteredMods.filter(
+    (modification: Modification) => modification.id === Number(modId),
+  )[0];
 
   const createModification = useCreateVehicleModMutation(
     apiUrl,

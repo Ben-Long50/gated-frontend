@@ -12,16 +12,16 @@ import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 import VehicleIcon from './icons/VehicleIcon';
 import { useParams } from 'react-router-dom';
-import { Modification, VehicleStats } from '../types/vehicle';
+import { Modification, Vehicle, VehicleStats } from '../types/vehicle';
 import { WeaponWithKeywords } from '../types/weapon';
 import InputFieldBasic from './InputFieldBasic';
 import useCreateVehicleMutation from '../hooks/useCreateVehicleMutation/useCreateVehicleMutation';
 import useDeleteVehicleMutation from '../hooks/useDeleteVehicleMutation/useDeleteVehicleMutation';
-import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
 import useModifications from '../hooks/useModifications';
 import ModCard from './ModCard';
 import SubweaponCard from './SubweaponCard';
 import useWeapons from '../hooks/useWeapons';
+import useVehicles from '../hooks/useVehicles';
 
 const VehicleForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -33,7 +33,11 @@ const VehicleForm = () => {
   const [toolTip, setToolTip] = useState('');
   const { vehicleId } = useParams();
 
-  const { data: vehicle } = useVehicleQuery(apiUrl, vehicleId);
+  const vehicles = useVehicles();
+
+  const vehicle = vehicles.filteredVehicles.filter(
+    (vehicle: Vehicle) => vehicle.id === Number(vehicleId),
+  )[0];
 
   const vehicleWeapons = useWeapons(['Vehicle']);
 

@@ -1,6 +1,7 @@
 import { AttributeTree } from './attributeTree';
 
 interface Perk {
+  id: number;
   name: string;
   description: string;
   requirements: Partial<AttributeTree>;

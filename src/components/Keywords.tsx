@@ -32,11 +32,11 @@ const Keywords = () => {
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-3">
-      <h1 className="text-center lg:mb-5">Keywords</h1>
+    <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
+      <h1 className="text-center">Keywords</h1>
       <ThemeContainer
         chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
-        className="w-full rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
+        className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
         borderColor={accentPrimary}
       >
         <div

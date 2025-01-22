@@ -9,8 +9,9 @@ import useCreateKeywordMutation from '../hooks/useCreateKeywordMutation/useCreat
 import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';
 import { useParams } from 'react-router-dom';
-import useKeywordQuery from '../hooks/useKeywordQuery/useKeywordQuery';
 import useDeleteKeywordMutation from '../hooks/useDeleteKeywordMutation/useDeleteKeywordMutation';
+import useKeywords from '../hooks/useKeywords';
+import { Keyword } from 'src/types/keyword';
 
 const KeywordForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -18,7 +19,11 @@ const KeywordForm = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { keywordId } = useParams();
 
-  const { data: keyword } = useKeywordQuery(apiUrl, keywordId);
+  const keywords = useKeywords();
+
+  const keyword = Object.values(keywords.filteredKeywords)
+    .flatMap((keywords) => keywords)
+    .filter((keyword: Keyword) => keyword.id === Number(keywordId))[0];
 
   const createKeyword = useCreateKeywordMutation(
     apiUrl,

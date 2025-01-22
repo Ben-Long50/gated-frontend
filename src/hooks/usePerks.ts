@@ -145,6 +145,7 @@ const usePerks = (attributeTree?: AttributeTree) => {
   };
 
   return {
+    perks,
     emptyTree,
     filteredPerkTree,
     filterPerks,

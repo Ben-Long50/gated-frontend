@@ -17,9 +17,12 @@ import SelectField from './SelectField';
 import FormLayout from '../layouts/FormLayout';
 import useAttributeTree from '../hooks/useAttributeTree';
 import CyberIcon from './icons/CyberIcon';
-import useCyberneticQuery from '../hooks/useCyberneticQuery/useCyberneticQuery';
 import { useParams } from 'react-router-dom';
 import useDeleteCyberneticMutation from '../hooks/useDeleteCyberneticMutation/useDeleteCyberneticMutation';
+import ModifierField from './ModifierField';
+import { Modifier } from 'src/types/modifier';
+import useCybernetics from '../hooks/useCybernetics';
+import { CyberneticWithKeywords } from 'src/types/cybernetic';
 
 const CyberneticForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -28,7 +31,14 @@ const CyberneticForm = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { cyberneticId } = useParams();
 
-  const { data: cybernetic } = useCyberneticQuery(apiUrl, cyberneticId);
+  const cybernetics = useCybernetics();
+
+  const cybernetic = cybernetics.filteredCybernetics.filter(
+    (cybernetic: CyberneticWithKeywords) =>
+      cybernetic.id === Number(cyberneticId),
+  )[0];
+
+  console.log(cybernetic);
 
   const keywords = useKeywords();
   const attributeTree = useAttributeTree();
@@ -56,13 +66,13 @@ const CyberneticForm = () => {
     cyberneticForm.reset();
   };
 
-  const cyberneticKeywordData = cybernetic?.keywords.map(
+  const cyberneticKeywordData = cybernetic?.keywords?.map(
     (item: { keyword: Keyword; value?: number }) => {
       return { keywordId: item.keyword.id, value: item.value };
     },
   );
 
-  const weaponData = cybernetic?.weapons.map((weapon) => {
+  const weaponData = cybernetic?.weapons?.map((weapon) => {
     const parsedKeywords = weapon.keywords.map(
       (item: { keyword: Keyword; value?: number }) => ({
         keywordId: item.keyword.id,
@@ -72,7 +82,7 @@ const CyberneticForm = () => {
     return { ...weapon, keywords: parsedKeywords };
   });
 
-  const armorData = cybernetic?.armor.map((armor) => {
+  const armorData = cybernetic?.armor?.map((armor) => {
     const parsedKeywords = armor.keywords.map(
       (item: { keyword: Keyword; value?: number }) => ({
         keywordId: item.keyword.id,
@@ -136,6 +146,7 @@ const CyberneticForm = () => {
           actionSubtypes: string[];
           description: string;
         }[]),
+      modifiers: cybernetic?.modifiers || ([] as Modifier[]),
       keywords:
         cyberneticKeywordData ||
         ([] as { keywordId: number; value?: number }[]),
@@ -450,6 +461,15 @@ const CyberneticForm = () => {
         >
           {([cyberneticType]) => (
             <>
+              {(cyberneticType === 'stat' || cyberneticType === 'roll') && (
+                <cyberneticForm.Field name="modifiers" mode="array">
+                  {(field) => {
+                    return (
+                      <ModifierField form={cyberneticForm} field={field} />
+                    );
+                  }}
+                </cyberneticForm.Field>
+              )}
               {cyberneticType === 'offensive' && (
                 <>
                   <hr className="border-yellow-300 border-opacity-50" />

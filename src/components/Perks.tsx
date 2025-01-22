@@ -39,8 +39,8 @@ const Perks = () => {
         borderColor={accentPrimary}
       >
         <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
-          <div className="grid w-full grid-cols-3 items-center justify-between gap-4 pl-4 sm:gap-8">
-            <h3 className="">Filter options</h3>
+          <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
+            <h3 className="col-span-2 pl-4 sm:col-span-1">Filter options</h3>
             <searchForm.Field name="attribute">
               {(field) => (
                 <SelectField
@@ -106,7 +106,7 @@ const Perks = () => {
       </ThemeContainer>
       <ThemeContainer
         chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
-        className="w-full rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
+        className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
         borderColor={accentPrimary}
       >
         <div

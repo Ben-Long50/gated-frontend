@@ -6,7 +6,7 @@ import ThemeContainer from './ThemeContainer';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
-import useKeywords, { Keyword } from '../hooks/useKeywords';
+import useKeywords from '../hooks/useKeywords';
 import KeywordCard from './KeywordCard';
 import Icon from '@mdi/react';
 import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
@@ -15,9 +15,11 @@ import useCreateArmorMutation from '../hooks/useCreateArmorMutation/useCreateArm
 import FormLayout from '../layouts/FormLayout';
 import ArmorIcon from './icons/ArmorIcon';
 import { useParams } from 'react-router-dom';
-import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
 import InputFieldBasic from './InputFieldBasic';
 import useDeleteArmorMutation from '../hooks/useDeleteArmorMutation/useDeleteArmorMutation';
+import useArmor from '../hooks/useArmor';
+import { ArmorWithKeywords } from 'src/types/armor';
+import { Keyword } from 'src/types/keyword';
 
 const ArmorForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -26,7 +28,11 @@ const ArmorForm = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { armorId } = useParams();
 
-  const { data: armor } = useArmorPieceQuery(apiUrl, armorId);
+  const allArmor = useArmor();
+
+  const armor = allArmor.filteredArmor.filter(
+    (armor: ArmorWithKeywords) => armor.id === Number(armorId),
+  )[0];
 
   const keywords = useKeywords();
 
@@ -60,6 +66,19 @@ const ArmorForm = () => {
       setImagePreview(armor.picture?.imageUrl);
     } else setImagePreview('');
   }, [armor, armorId]);
+
+  const searchForm = useForm({
+    defaultValues: {
+      query: '',
+    },
+    onSubmit: ({ value }) => {
+      if (value.query === '') {
+        keywords.resetList();
+      } else {
+        keywords.filterByQuery(value.query);
+      }
+    },
+  });
 
   const armorForm = useForm({
     defaultValues: {
@@ -285,9 +304,20 @@ const ArmorForm = () => {
         </div>
         <hr className="border-yellow-300 border-opacity-50" />
         <h2>Armor keywords</h2>
+        <searchForm.Field name="query">
+          {(field) => (
+            <InputField
+              label="Search keywords"
+              field={field}
+              onChange={() => {
+                searchForm.handleSubmit();
+              }}
+            />
+          )}
+        </searchForm.Field>
         <armorForm.Field name="keywords">
           {(field) => (
-            <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+            <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto pr-2 md:grid md:grid-cols-2">
               {keywords.filteredKeywords.armor.map((keyword) => {
                 const activeKeyword = field.state.value.find(
                   (item: { keywordId: number; value?: number }) =>

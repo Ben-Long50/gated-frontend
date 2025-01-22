@@ -22,6 +22,7 @@ const ThemeProvider = ({ children }) => {
 
   const accentPrimary = 'rgb(253 224 71)';
   const accentSecondary = 'rgb(14 165 233)';
+  const accentModifier = 'rgb(74 222 128)';
   const errorPrimary = 'rgb(239 68 68)';
 
   const changeTheme = () => {
@@ -42,6 +43,7 @@ const ThemeProvider = ({ children }) => {
         changeTheme,
         accentPrimary,
         accentSecondary,
+        accentModifier,
         errorPrimary,
       }}
     >

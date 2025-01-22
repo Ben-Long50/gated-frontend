@@ -7,6 +7,7 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import useActions from '../hooks/useActions';
 import ActionCard from './ActionCard';
 import Loading from './Loading';
+import SelectField from './SelectField';
 
 const Actions = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -17,6 +18,8 @@ const Actions = () => {
   const searchForm = useForm({
     defaultValues: {
       query: '',
+      category: '',
+      subCategory: '',
     },
     onSubmit: ({ value }) => {
       actions.filterByQuery(value.query);
@@ -28,46 +31,96 @@ const Actions = () => {
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-3">
-      <h1 className="text-center lg:mb-5">Actions</h1>
+    <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
+      <h1 className="text-center">Actions</h1>
+      <ThemeContainer
+        className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
+        chamfer="24"
+        borderColor={accentPrimary}
+      >
+        <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
+          <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
+            <h3 className="col-span-2 pl-4 sm:col-span-1">Filter options</h3>
+            <searchForm.Field name="category">
+              {(field) => (
+                <SelectField
+                  className="w-full"
+                  field={field}
+                  onChange={() => {
+                    actions.filterByCategory(field.state.value);
+                  }}
+                >
+                  <option value="">All actions</option>
+                  <option value="action">Actions</option>
+                  <option value="extendedAction">Extended Actions</option>
+                  <option value="reaction">Reactions</option>
+                </SelectField>
+              )}
+            </searchForm.Field>
+            <searchForm.Field name="subCategory">
+              {(field) => (
+                <SelectField
+                  className="w-full"
+                  field={field}
+                  onChange={() => {
+                    actions.filterBySubCategory(field.state.value);
+                  }}
+                >
+                  <option value="">All action types</option>
+                  <option value="attack">Attack</option>
+                  <option value="movement">Movement</option>
+                  <option value="upkeep">Upkeep</option>
+                  <option value="unique">Unique</option>
+                </SelectField>
+              )}
+            </searchForm.Field>
+          </div>
+          <searchForm.Field name="query">
+            {(field) => (
+              <InputField
+                label="Search actions"
+                field={field}
+                onChange={() => {
+                  searchForm.handleSubmit();
+                }}
+              />
+            )}
+          </searchForm.Field>
+        </form>
+      </ThemeContainer>
       <ThemeContainer
         chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
-        className="w-full rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
+        className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
         borderColor={accentPrimary}
       >
         <div
           className={`bg-primary flex w-full flex-col gap-4 px-3 py-4 ${layoutSize === 'small' || layoutSize === 'xsmall' ? 'clip-6' : 'clip-8'} sm:gap-6 sm:p-6 lg:gap-8 lg:p-8`}
         >
-          <form>
-            <searchForm.Field name="query">
-              {(field) => (
-                <InputField
-                  label="Search actions"
-                  field={field}
-                  onChange={() => {
-                    searchForm.handleSubmit();
-                  }}
-                />
-              )}
-            </searchForm.Field>
-          </form>
-          {Object.entries(actions.filteredActions).map(([type, actionList]) => {
-            return (
-              actionList.list.length > 0 && (
-                <div
-                  className="flex flex-col gap-4 md:grid md:grid-cols-2"
-                  key={type}
-                >
-                  <h1 className="col-span-2 pl-6 sm:mb-4">
-                    {actionList.title}
-                  </h1>
-                  {actionList.list.map((action) => {
-                    return <ActionCard key={action.name} action={action} />;
-                  })}
-                </div>
-              )
-            );
-          })}
+          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+            <searchForm.Subscribe selector={(state) => state.values.category}>
+              {(category) => {
+                let title = 'All actions';
+                switch (category) {
+                  case 'action':
+                    title = 'Actions';
+                    break;
+                  case 'extendedAction':
+                    title = 'Extended Actions';
+                    break;
+                  case 'reaction':
+                    title = 'Reactions';
+                    break;
+                  default:
+                    title = 'All actions';
+                    break;
+                }
+                return <h2 className="col-span-2 pl-6 sm:mb-4">{title}</h2>;
+              }}
+            </searchForm.Subscribe>
+            {actions.filteredActions.map((action) => {
+              return <ActionCard key={action.name} action={action} />;
+            })}
+          </div>
         </div>
       </ThemeContainer>
     </div>

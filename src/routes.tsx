@@ -38,6 +38,7 @@ import PatchNotes from './components/PatchNotes';
 import PatchNoteForm from './components/PatchNotesForm';
 import ErrorReports from './components/ErrorReports';
 import ConditionForm from './components/ConditionForm';
+import Conditions from './components/Conditions';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -204,9 +205,9 @@ const router = createBrowserRouter(
           </Route>
 
           <Route path="conditions">
-            <Route index element={<Actions />} />
+            <Route index element={<Conditions />} />
             <Route path="create" element={<ConditionForm />} />
-            <Route path=":actionId/update" element={<ActionForm />} />
+            <Route path=":conditionId/update" element={<ConditionForm />} />
           </Route>
         </Route>
       </Route>

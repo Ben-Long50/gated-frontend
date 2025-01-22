@@ -10,10 +10,11 @@ import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import FormLayout from '../layouts/FormLayout';
 import useCreateActionMutation from '../hooks/useCreateActionMutation/useCreateActionMutation';
-import useActionQuery from '../hooks/useActionQuery/useActionQuery';
 import { useParams } from 'react-router-dom';
 import Loading from './Loading';
 import useDeleteActionMutation from '../hooks/useDeleteActionMutation/useDeleteActionMutation';
+import useActions from '../hooks/useActions';
+import { Action } from 'src/types/action';
 
 const ActionForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -21,7 +22,11 @@ const ActionForm = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { actionId } = useParams();
 
-  const { data: action } = useActionQuery(apiUrl, actionId);
+  const actions = useActions();
+
+  const action = actions.filteredActions.filter(
+    (action: Action) => action.id === Number(actionId),
+  )[0];
 
   const createAction = useCreateActionMutation(
     apiUrl,

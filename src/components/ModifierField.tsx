@@ -3,9 +3,12 @@ import SelectField from './SelectField';
 import InputField from './InputField';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
+import useActions from '../hooks/useActions';
 
-const ModifierField = ({ form, field, actions }) => {
+const ModifierField = ({ form, field }) => {
   const types: ModifierType[] = ['Roll', 'Stat'];
+
+  const { filteredActions } = useActions();
 
   const operators: ModifierOperator[] = [
     'add',
@@ -67,13 +70,11 @@ const ModifierField = ({ form, field, actions }) => {
                               field={subField}
                             >
                               <option defaultValue=""></option>
-                              {Object.values(actions).flatMap((item) => {
-                                return item.list.map((action) => (
-                                  <option key={action.id} value={action.id}>
-                                    {action.name}
-                                  </option>
-                                ));
-                              })}
+                              {filteredActions.map((action) => (
+                                <option key={action.id} value={action.id}>
+                                  {action.name}
+                                </option>
+                              ))}
                             </SelectField>
                           );
                         }}

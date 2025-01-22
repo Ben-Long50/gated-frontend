@@ -1,6 +1,7 @@
 import { Action } from './action';
 import { Armor, ArmorWithKeywords } from './armor';
 import { Keyword } from './keyword';
+import { Modifier } from './modifier';
 import { Picture } from './picture';
 import { Weapon, WeaponWithKeywords } from './weapon';
 
@@ -16,6 +17,7 @@ export interface Cybernetic {
   weapons: Weapon[];
   armor: Armor[];
   actions: Action[];
+  modifiers: Modifier[];
   keywords: { keywordId: number; value?: number }[];
 }
 
@@ -31,6 +33,7 @@ export interface CyberneticWithKeywords {
   weapons: WeaponWithKeywords[];
   armor: ArmorWithKeywords[];
   actions: Action[];
+  modifiers: Modifier[];
   keywords: { keyword: Keyword; value?: number }[];
 }
 

@@ -9,43 +9,43 @@ const useActions = () => {
   const { data: actions, isLoading, isPending } = useActionsQuery(apiUrl);
 
   const [query, setQuery] = useState('');
+  const [category, setCategory] = useState('');
+  const [subCategory, setSubCategory] = useState('');
 
-  const filteredActions: {
-    action: { title: string; list: Action[] };
-    extendedAction: { title: string; list: Action[] };
-    reaction: { title: string; list: Action[] };
-  } = {
-    action: {
-      title: 'Action',
-      list:
-        actions?.filter(
-          (action: Action) =>
-            action.actionType === 'action' &&
+  const filteredActions: Action[] =
+    category.length > 0
+      ? subCategory.length > 0
+        ? actions?.filter(
+            (action: Action) =>
+              action.actionType === category &&
+              action.actionSubtypes.includes(subCategory) &&
+              action.name.toLowerCase().includes(query.toLowerCase()),
+          )
+        : actions?.filter(
+            (action: Action) =>
+              action.actionType === category &&
+              action.name.toLowerCase().includes(query.toLowerCase()),
+          )
+      : subCategory.length > 0
+        ? actions?.filter(
+            (action: Action) =>
+              action.actionSubtypes.includes(subCategory) &&
+              action.name.toLowerCase().includes(query.toLowerCase()),
+          )
+        : (actions?.filter((action: Action) =>
             action.name.toLowerCase().includes(query.toLowerCase()),
-        ) ?? [],
-    },
-    extendedAction: {
-      title: 'Extended Action',
-      list:
-        actions?.filter(
-          (action: Action) =>
-            action.actionType === 'extendedAction' &&
-            action.name.toLowerCase().includes(query.toLowerCase()),
-        ) ?? [],
-    },
-    reaction: {
-      title: 'Reaction',
-      list:
-        actions?.filter(
-          (action: Action) =>
-            action.actionType === 'reaction' &&
-            action.name.toLowerCase().includes(query.toLowerCase()),
-        ) ?? [],
-    },
-  };
+          ) ?? []);
 
   const filterByQuery = (query: string) => {
     setQuery(query);
+  };
+
+  const filterByCategory = (category: string) => {
+    setCategory(category);
+  };
+
+  const filterBySubCategory = (subCategory: string) => {
+    setSubCategory(subCategory);
   };
 
   const resetList = () => {
@@ -55,6 +55,8 @@ const useActions = () => {
   return {
     filteredActions,
     filterByQuery,
+    filterByCategory,
+    filterBySubCategory,
     resetList,
     isLoading,
     isPending,

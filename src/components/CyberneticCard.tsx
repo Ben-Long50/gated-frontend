@@ -1,4 +1,4 @@
-import { mdiChevronDown, mdiClose } from '@mdi/js';
+import { mdiChevronDown, mdiCircle, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import { Children, useContext, useEffect, useRef, useState } from 'react';
 import { LayoutContext } from '../contexts/LayoutContext';
@@ -19,9 +19,12 @@ import SubactionCard from './SubactionCard';
 import { Action } from 'src/types/action';
 import { ArmorWithKeywords } from 'src/types/armor';
 import { WeaponWithKeywords } from 'src/types/weapon';
+import { Modifier } from 'src/types/modifier';
+import DieIcon from './icons/DieIcon';
 
 const CyberneticCard = ({ cybernetic }, props) => {
-  const { accentPrimary } = useContext(ThemeContext);
+  const { accentPrimary, accentModifier, accentSecondary } =
+    useContext(ThemeContext);
   const { user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -231,67 +234,131 @@ const CyberneticCard = ({ cybernetic }, props) => {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                {cybernetic.body && (
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="flex items-center gap-2">
-                      <BodyIcon className="size-8" />
-                      {cybernetic.body.map((body, index) => {
-                        return (
-                          <p key={body}>
-                            {body}
-                            <span>
-                              {index < cybernetic.body.length - 1 && ','}
-                            </span>
-                          </p>
-                        );
-                      })}
+              <div className="grid w-full grid-cols-2 gap-6 pr-10">
+                <div className="col-start-1 flex items-center gap-4">
+                  {cybernetic.body && (
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="flex items-center gap-2">
+                        <BodyIcon className="size-8" />
+                        {cybernetic.body.map((body, index) => {
+                          return (
+                            <p key={body}>
+                              {body}
+                              <span>
+                                {index < cybernetic.body.length - 1 && ','}
+                              </span>
+                            </p>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )}
-                {cybernetic.keywords.length > 0 && (
-                  <div className="flex w-full flex-wrap items-center gap-2 justify-self-start">
-                    {cybernetic.keywords?.map(
-                      (item: { keyword: Keyword; value?: number }) => {
-                        return (
-                          <Tag
-                            key={item.keyword.id}
-                            label={
-                              item.value
-                                ? item.keyword.name + ' ' + item.value
-                                : item.keyword.name
-                            }
-                            description={item.keyword.description}
-                            toolTip={toolTip}
-                            setToolTip={setToolTip}
-                          />
-                        );
-                      },
-                    )}
+                  )}
+                  {cybernetic.keywords.length > 0 && (
+                    <div className="flex w-full flex-wrap items-center gap-2 justify-self-start">
+                      {cybernetic.keywords?.map(
+                        (item: { keyword: Keyword; value?: number }) => {
+                          return (
+                            <Tag
+                              key={item.keyword.id}
+                              label={
+                                item.value
+                                  ? item.keyword.name + ' ' + item.value
+                                  : item.keyword.name
+                              }
+                              description={item.keyword.description}
+                              toolTip={toolTip}
+                              setToolTip={setToolTip}
+                            />
+                          );
+                        },
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div className="col-start-1 flex flex-wrap items-center justify-start gap-8">
+                  {cybernetic.stats.cyber && (
+                    <div className="flex flex-col items-center gap-1">
+                      <p>CBR</p>
+                      <div className="flex items-center gap-2">
+                        <CyberIcon className="size-8" />
+                        <p className="sm:pt-1">{cybernetic.stats.cyber}</p>
+                      </div>
+                    </div>
+                  )}
+                  {cybernetic.stats.power && (
+                    <div className="flex flex-col items-center gap-1">
+                      <p>PWR</p>
+                      <div className="flex items-center gap-2">
+                        <PowerIcon className="size-8" />
+                        <p className="sm:pt-1">{cybernetic.stats.power}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {cybernetic.modifiers?.length > 0 && (
+                  <div className="col-start-2 col-end-3 row-start-1 row-end-3 my-auto">
+                    <div className="flex h-full flex-col justify-evenly gap-4">
+                      <p className="text-tertiary text-base">Modifiers</p>
+                      {cybernetic.modifiers?.map(
+                        (modifier: Modifier, index: number) => {
+                          let symbol = '';
+                          switch (modifier.operator) {
+                            case 'add':
+                              symbol = '+';
+                              break;
+                            case 'subtract':
+                              symbol = '-';
+                              break;
+                            case 'divide':
+                              symbol = '/';
+                              break;
+                            case 'multiply':
+                              symbol = 'x';
+                              break;
+                            default:
+                              break;
+                          }
+                          return modifier.type === 'Stat' ? (
+                            <div
+                              className="flex items-center gap-2"
+                              key={index}
+                            >
+                              <p>
+                                {symbol +
+                                  ' ' +
+                                  modifier.value +
+                                  ' ' +
+                                  modifier.stat}
+                              </p>
+                              <Icon
+                                className={`${symbol === '+' || symbol === 'x' ? 'dark:text-green-400' : 'text-error'}`}
+                                path={mdiCircle}
+                                size={0.35}
+                              />
+                            </div>
+                          ) : (
+                            <div
+                              className="flex items-center gap-2"
+                              key={index}
+                            >
+                              <p>{symbol}</p>
+                              <DieIcon className="size-7" />
+                              <p>{modifier.action.name}</p>
+                              <Icon
+                                className={`${symbol === '+' || symbol === 'x' ? 'dark:text-green-400' : 'text-error'}`}
+                                path={mdiCircle}
+                                size={0.35}
+                              />
+                            </div>
+                          );
+                        },
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
 
-              <div className="flex flex-wrap items-center justify-start gap-8">
-                {cybernetic.stats.cyber && (
-                  <div className="flex flex-col items-center gap-1">
-                    <p>CBR</p>
-                    <div className="flex items-center gap-2">
-                      <CyberIcon className="size-8" />
-                      <p className="sm:pt-1">{cybernetic.stats.cyber}</p>
-                    </div>
-                  </div>
-                )}
-                {cybernetic.stats.power && (
-                  <div className="flex flex-col items-center gap-1">
-                    <p>PWR</p>
-                    <div className="flex items-center gap-2">
-                      <PowerIcon className="size-8" />
-                      <p className="sm:pt-1">{cybernetic.stats.power}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
               <div className={`timing overflow-hidden`}>
                 <p
                   ref={descriptionRef}
