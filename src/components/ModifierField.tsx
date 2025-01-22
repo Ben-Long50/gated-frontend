@@ -27,6 +27,8 @@ const ModifierField = ({ form, field }) => {
     'Evasion',
     'Armor',
     'Ward',
+    'Permanent injury',
+    'Permanent insanity',
   ];
 
   return (

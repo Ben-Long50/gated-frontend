@@ -7,6 +7,7 @@ import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Loading from './Loading';
+import SelectField from './SelectField';
 
 const Keywords = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -17,6 +18,7 @@ const Keywords = () => {
   const searchForm = useForm({
     defaultValues: {
       query: '',
+      category: '',
     },
     onSubmit: ({ value }) => {
       if (value.query === '') {
@@ -35,6 +37,44 @@ const Keywords = () => {
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
       <h1 className="text-center">Keywords</h1>
       <ThemeContainer
+        className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
+        chamfer="24"
+        borderColor={accentPrimary}
+      >
+        <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
+          <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
+            <h3 className="pl-4">Filter options</h3>
+            <searchForm.Field name="category">
+              {(field) => (
+                <SelectField
+                  className="col-span-2 sm:col-start-3"
+                  field={field}
+                  onChange={() => {
+                    keywords.filterByCategory(field.state.value);
+                  }}
+                >
+                  <option value="">All keywords</option>
+                  <option value="weapon">Weapon keywords</option>
+                  <option value="armor">Armor keywords</option>
+                  <option value="cybernetic">Cybernetic keywords</option>
+                </SelectField>
+              )}
+            </searchForm.Field>
+          </div>
+          <searchForm.Field name="query">
+            {(field) => (
+              <InputField
+                label="Search keywords"
+                field={field}
+                onChange={() => {
+                  searchForm.handleSubmit();
+                }}
+              />
+            )}
+          </searchForm.Field>
+        </form>
+      </ThemeContainer>
+      <ThemeContainer
         chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
         className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
         borderColor={accentPrimary}
@@ -42,40 +82,20 @@ const Keywords = () => {
         <div
           className={`bg-primary flex w-full flex-col gap-4 px-3 py-4 ${layoutSize === 'small' || layoutSize === 'xsmall' ? 'clip-6' : 'clip-8'} sm:gap-6 sm:p-6 lg:gap-8 lg:p-8`}
         >
-          <form>
-            <searchForm.Field name="query">
-              {(field) => (
-                <InputField
-                  label="Search keywords"
-                  field={field}
-                  onChange={() => {
-                    searchForm.handleSubmit();
-                  }}
-                />
-              )}
-            </searchForm.Field>
-          </form>
-          {Object.entries(keywords.filteredKeywords).map(
-            ([type, keywordList]) => {
-              return (
-                keywordList.length > 0 && (
-                  <div
-                    className="flex flex-col gap-4 md:grid md:grid-cols-2"
-                    key={type}
-                  >
-                    <h1 className="col-span-2 pl-6 sm:mb-4">
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </h1>
-                    {keywordList.map((keyword) => {
-                      return (
-                        <KeywordCard key={keyword.name} keyword={keyword} />
-                      );
-                    })}
-                  </div>
-                )
-              );
-            },
-          )}
+          <searchForm.Subscribe selector={(state) => state.values.category}>
+            {(category) => (
+              <h2 className="pl-4">
+                {category.length > 0
+                  ? category[0].toUpperCase() + category.slice(1) + ' keywords'
+                  : 'All keywords'}
+              </h2>
+            )}
+          </searchForm.Subscribe>
+          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+            {keywords.filteredKeywords.map((keyword) => {
+              return <KeywordCard key={keyword.name} keyword={keyword} />;
+            })}
+          </div>
         </div>
       </ThemeContainer>
     </div>

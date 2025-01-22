@@ -39,7 +39,9 @@ export type Stat =
   | 'Speed'
   | 'Evasion'
   | 'Armor'
-  | 'Ward';
+  | 'Ward'
+  | 'Permanent injury'
+  | 'Permanent insanity';
 
 export type ModifierOperator = 'add' | 'subtract' | 'multiply' | 'divide';
 

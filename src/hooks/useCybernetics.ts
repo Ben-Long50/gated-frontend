@@ -27,7 +27,7 @@ const useCybernetics = () => {
     if (weapons.length === 0) return;
     return weapons?.map((weapon: Weapon) => {
       const keywordDetails = weapon.keywords.map((keyword) => {
-        const details = keywords.filteredKeywords.weapon.find(
+        const details = keywords.filteredKeywords.find(
           (item: Keyword) => item.id === keyword.keywordId,
         );
         return { keyword: details, value: keyword.value };
@@ -40,7 +40,7 @@ const useCybernetics = () => {
     if (armor.length === 0) return;
     return armor?.map((armorSet: Weapon) => {
       const keywordDetails = armorSet.keywords.map((keyword) => {
-        const details = keywords.filteredKeywords.armor.find(
+        const details = keywords.filteredKeywords.find(
           (item: Keyword) => item.id === keyword.keywordId,
         );
         return { keyword: details, value: keyword.value };
@@ -65,7 +65,7 @@ const useCybernetics = () => {
 
     return cybernetics?.map((cybernetic: Cybernetic) => {
       const keywordDetails = cybernetic.keywords.map((keyword) => {
-        const details = keywords.filteredKeywords.cybernetic.find(
+        const details = keywords.filteredKeywords.find(
           (item: Keyword) => item.id === keyword.keywordId,
         );
         return { keyword: details, value: keyword.value };

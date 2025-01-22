@@ -34,7 +34,7 @@ const ArmorForm = () => {
     (armor: ArmorWithKeywords) => armor.id === Number(armorId),
   )[0];
 
-  const keywords = useKeywords();
+  const keywords = useKeywords('armor');
 
   const [imagePreview, setImagePreview] = useState(
     armor?.picture?.imageUrl || '',
@@ -318,7 +318,7 @@ const ArmorForm = () => {
         <armorForm.Field name="keywords">
           {(field) => (
             <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto pr-2 md:grid md:grid-cols-2">
-              {keywords.filteredKeywords.armor.map((keyword) => {
+              {keywords.filteredKeywords.map((keyword) => {
                 const activeKeyword = field.state.value.find(
                   (item: { keywordId: number; value?: number }) =>
                     item.keywordId === keyword.id,

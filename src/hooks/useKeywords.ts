@@ -3,40 +3,31 @@ import useKeywordsQuery from './useKeywordsQuery/useKeywordsQuery';
 import { AuthContext } from '../contexts/AuthContext';
 import { Keyword } from '../types/keyword';
 
-const useKeywords = () => {
+const useKeywords = (initialCategory?: string) => {
   const { apiUrl } = useContext(AuthContext);
 
   const { data: keywords, isLoading, isPending } = useKeywordsQuery(apiUrl);
 
   const [query, setQuery] = useState('');
+  const [category, setCategory] = useState(initialCategory || '');
 
-  const filteredKeywords: {
-    weapon: Keyword[];
-    armor: Keyword[];
-    cybernetic: Keyword[];
-  } = {
-    weapon:
-      keywords?.filter(
-        (keyword: Keyword) =>
-          keyword.keywordType === 'weapon' &&
+  const filteredKeywords: Keyword[] =
+    category.length > 0
+      ? keywords?.filter(
+          (keyword: Keyword) =>
+            keyword.keywordType === category &&
+            keyword.name.toLowerCase().includes(query.toLowerCase()),
+        )
+      : (keywords?.filter((keyword: Keyword) =>
           keyword.name.toLowerCase().includes(query.toLowerCase()),
-      ) ?? [],
-    armor:
-      keywords?.filter(
-        (keyword: Keyword) =>
-          keyword.keywordType === 'armor' &&
-          keyword.name.toLowerCase().includes(query.toLowerCase()),
-      ) ?? [],
-    cybernetic:
-      keywords?.filter(
-        (keyword: Keyword) =>
-          keyword.keywordType === 'cybernetic' &&
-          keyword.name.toLowerCase().includes(query.toLowerCase()),
-      ) ?? [],
-  };
+        ) ?? []);
 
   const filterByQuery = (query: string) => {
     setQuery(query);
+  };
+
+  const filterByCategory = (category: string) => {
+    setCategory(category);
   };
 
   const resetList = () => {
@@ -46,6 +37,7 @@ const useKeywords = () => {
   return {
     filteredKeywords,
     filterByQuery,
+    filterByCategory,
     resetList,
     isLoading,
     isPending,

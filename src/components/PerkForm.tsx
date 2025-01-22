@@ -13,6 +13,8 @@ import Loading from './Loading';
 import useDeletePerkMutation from '../hooks/useDeletePerkMutation/useDeletePerkMutation';
 import usePerks from '../hooks/usePerks';
 import { Perk } from 'src/types/perk';
+import { Modifier } from 'src/types/modifier';
+import ModifierField from './ModifierField';
 
 const PerkForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -22,7 +24,7 @@ const PerkForm = () => {
 
   const perks = usePerks();
 
-  const perk = perks.perks.filter(
+  const perk = perks.perks?.filter(
     (perk: Perk) => perk.id === Number(perkId),
   )[0];
 
@@ -46,6 +48,7 @@ const PerkForm = () => {
       perkForm.reset({
         name: refetchedPerk.name,
         description: refetchedPerk.description,
+        modifiers: refetchedPerk.modifiers,
         requirements: attributeTree.structureTree(refetchedPerk.requirements),
       });
     } else {
@@ -60,6 +63,7 @@ const PerkForm = () => {
     defaultValues: {
       name: perk?.name ?? '',
       description: perk?.description || '',
+      modifiers: perk?.modifiers || ([] as Modifier[]),
       requirements: attributeTree?.tree || null,
     },
     onSubmit: async ({ value }) => {
@@ -117,6 +121,9 @@ const PerkForm = () => {
               field={field}
             />
           )}
+        </perkForm.Field>
+        <perkForm.Field name="modifiers">
+          {(field) => <ModifierField form={perkForm} field={field} />}
         </perkForm.Field>
         <h2>Requirements</h2>
         <div className="flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">

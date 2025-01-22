@@ -12,7 +12,7 @@ const useArmor = (keywordList?: string[]) => {
     setCategory('');
   }, [keywordList]);
 
-  const keywords = useKeywords();
+  const keywords = useKeywords('armor');
 
   const { data: armor, isLoading, isPending } = useArmorQuery(apiUrl);
 
@@ -22,7 +22,7 @@ const useArmor = (keywordList?: string[]) => {
     return armor
       ?.map((armorSet: Armor) => {
         const keywordDetails = armorSet.keywords.map((keyword) => {
-          const details = keywords.filteredKeywords.armor.find(
+          const details = keywords.filteredKeywords.find(
             (item: Keyword) => item.id === keyword.keywordId,
           );
           return { keyword: details, value: keyword.value };

@@ -34,7 +34,7 @@ const WeaponForm = () => {
     (weapon: WeaponWithKeywords) => weapon.id === Number(weaponId),
   )[0];
 
-  const keywords = useKeywords();
+  const keywords = useKeywords('weapon');
 
   const [imagePreview, setImagePreview] = useState(
     weapon?.picture?.imageUrl || '',
@@ -345,7 +345,7 @@ const WeaponForm = () => {
         <weaponForm.Field name="keywords">
           {(field) => (
             <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto pr-2 md:grid md:grid-cols-2">
-              {keywords.filteredKeywords.weapon.map((keyword) => {
+              {keywords.filteredKeywords.map((keyword) => {
                 const activeKeyword = field.state.value.find(
                   (item: { keywordId: number; value?: number }) =>
                     item.keywordId === keyword.id,

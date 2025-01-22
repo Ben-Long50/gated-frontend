@@ -581,9 +581,14 @@ const CyberneticForm = () => {
                               name={`weapons[${i}].keywords`}
                             >
                               {(field) => (
-                                <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-                                  {keywords.filteredKeywords.weapon.map(
-                                    (keyword) => {
+                                <div className="scrollbar-primary-2 flex max-h-[368px] flex-col gap-4 overflow-y-auto pr-4 md:grid md:grid-cols-2">
+                                  {' '}
+                                  {keywords.filteredKeywords
+                                    .filter(
+                                      (keyword) =>
+                                        keyword.keywordType === 'weapon',
+                                    )
+                                    .map((keyword) => {
                                       const activeKeyword =
                                         field.state.value.find(
                                           (item: {
@@ -668,8 +673,7 @@ const CyberneticForm = () => {
                                           </div>
                                         </div>
                                       );
-                                    },
-                                  )}
+                                    })}
                                 </div>
                               )}
                             </cyberneticForm.Field>
@@ -789,9 +793,13 @@ const CyberneticForm = () => {
                             <h3>Integrated armor keywords</h3>
                             <cyberneticForm.Field name={`armor[${i}].keywords`}>
                               {(field) => (
-                                <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-                                  {keywords.filteredKeywords.armor.map(
-                                    (keyword) => {
+                                <div className="scrollbar-primary-2 flex max-h-[368px] flex-col gap-4 overflow-y-auto pr-4 md:grid md:grid-cols-2">
+                                  {keywords.filteredKeywords
+                                    .filter(
+                                      (keyword) =>
+                                        keyword.keywordType === 'armor',
+                                    )
+                                    .map((keyword) => {
                                       const activeKeyword =
                                         field.state.value.find(
                                           (item: {
@@ -876,8 +884,7 @@ const CyberneticForm = () => {
                                           </div>
                                         </div>
                                       );
-                                    },
-                                  )}
+                                    })}
                                 </div>
                               )}
                             </cyberneticForm.Field>
@@ -1269,65 +1276,69 @@ const CyberneticForm = () => {
         <cyberneticForm.Field name="keywords">
           {(field) => (
             <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-              {keywords.filteredKeywords.cybernetic.map((keyword) => {
-                const activeKeyword = field.state.value.find(
-                  (item: { keywordId: number; value?: number }) =>
-                    item.keywordId === keyword.id,
-                );
-                return (
-                  <div key={keyword.id} className="flex items-center gap-4">
-                    <KeywordCard className="w-full" keyword={keyword}>
-                      {activeKeyword && (
-                        <InputFieldBasic
-                          className="max-w-20"
-                          type="number"
-                          label="Value"
-                          value={activeKeyword.value}
-                          onChange={(value: number) => {
-                            const updatedValue = field.state.value.some(
-                              (item: { keywordId: number; value?: number }) =>
-                                item.keywordId === keyword.id,
-                            )
-                              ? field.state.value.map(
+              {keywords.filteredKeywords
+                .filter((keyword) => keyword.keywordType === 'cybernetic')
+                .map((keyword) => {
+                  const activeKeyword = field.state.value.find(
+                    (item: { keywordId: number; value?: number }) =>
+                      item.keywordId === keyword.id,
+                  );
+                  return (
+                    <div key={keyword.id} className="flex items-center gap-4">
+                      <KeywordCard className="w-full" keyword={keyword}>
+                        {activeKeyword && (
+                          <InputFieldBasic
+                            className="max-w-20"
+                            type="number"
+                            label="Value"
+                            value={activeKeyword.value}
+                            onChange={(value: number) => {
+                              const updatedValue = field.state.value.some(
+                                (item: { keywordId: number; value?: number }) =>
+                                  item.keywordId === keyword.id,
+                              )
+                                ? field.state.value.map(
+                                    (item: {
+                                      keywordId: number;
+                                      value?: number;
+                                    }) =>
+                                      item.keywordId === keyword.id
+                                        ? { ...item, value }
+                                        : item,
+                                  )
+                                : [...field.state.value, { ...keyword, value }];
+                              field.handleChange(updatedValue);
+                            }}
+                          />
+                        )}
+                      </KeywordCard>
+                      <div className="flex flex-col items-center gap-4">
+                        <input
+                          className="size-6 shrink-0"
+                          type="checkbox"
+                          checked={activeKeyword}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              field.handleChange([
+                                ...field.state.value,
+                                { keywordId: keyword.id },
+                              ]);
+                            } else {
+                              field.handleChange(
+                                field.state.value.filter(
                                   (item: {
                                     keywordId: number;
                                     value?: number;
-                                  }) =>
-                                    item.keywordId === keyword.id
-                                      ? { ...item, value }
-                                      : item,
-                                )
-                              : [...field.state.value, { ...keyword, value }];
-                            field.handleChange(updatedValue);
+                                  }) => item.keywordId !== keyword.id,
+                                ),
+                              );
+                            }
                           }}
                         />
-                      )}
-                    </KeywordCard>
-                    <div className="flex flex-col items-center gap-4">
-                      <input
-                        className="size-6 shrink-0"
-                        type="checkbox"
-                        checked={activeKeyword}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            field.handleChange([
-                              ...field.state.value,
-                              { keywordId: keyword.id },
-                            ]);
-                          } else {
-                            field.handleChange(
-                              field.state.value.filter(
-                                (item: { keywordId: number; value?: number }) =>
-                                  item.keywordId !== keyword.id,
-                              ),
-                            );
-                          }
-                        }}
-                      />
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           )}
         </cyberneticForm.Field>

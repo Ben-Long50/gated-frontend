@@ -1,9 +1,16 @@
-import { mdiChevronDown, mdiSquare, mdiTriangleSmallUp } from '@mdi/js';
+import {
+  mdiChevronDown,
+  mdiCircle,
+  mdiSquare,
+  mdiTriangleSmallUp,
+} from '@mdi/js';
 import Icon from '@mdi/react';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import { Modifier } from 'src/types/modifier';
+import DieIcon from './icons/DieIcon';
 
 const PerkCard = ({ perk }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -47,7 +54,7 @@ const PerkCard = ({ perk }, props) => {
       <div className="overflow-hidden">
         <div
           ref={detailRef}
-          className="timing"
+          className="timing flex flex-col gap-4"
           style={
             detailsOpen
               ? {
@@ -58,7 +65,7 @@ const PerkCard = ({ perk }, props) => {
                 }
           }
         >
-          <div className="list-disc py-4">
+          <div className="list-disc pt-4">
             {Object.entries(perk.requirements).length === 0 ? (
               <div className="flex items-center gap-2">
                 <Icon
@@ -118,6 +125,50 @@ const PerkCard = ({ perk }, props) => {
               )
             )}
           </div>
+          {perk.modifiers?.length > 0 && (
+            <div className="flex flex-col gap-4">
+              {perk.modifiers?.map((modifier: Modifier, index: number) => {
+                let symbol = '';
+                switch (modifier.operator) {
+                  case 'add':
+                    symbol = '+';
+                    break;
+                  case 'subtract':
+                    symbol = '-';
+                    break;
+                  case 'divide':
+                    symbol = '/';
+                    break;
+                  case 'multiply':
+                    symbol = 'x';
+                    break;
+                  default:
+                    break;
+                }
+                return modifier.type === 'Stat' ? (
+                  <div className="flex items-center gap-2 pl-2" key={index}>
+                    <Icon
+                      className={`${symbol === '+' || symbol === 'x' ? 'dark:text-green-400' : 'text-error'}`}
+                      path={mdiCircle}
+                      size={0.35}
+                    />
+                    <p>{symbol + ' ' + modifier.value + ' ' + modifier.stat}</p>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2" key={index}>
+                    <Icon
+                      className={`${symbol === '+' || symbol === 'x' ? 'dark:text-green-400' : 'text-error'}`}
+                      path={mdiCircle}
+                      size={0.35}
+                    />
+                    <p>{symbol}</p>
+                    <DieIcon className="size-7" />
+                    <p>{modifier.action.name}</p>
+                  </div>
+                );
+              })}
+            </div>
+          )}
           <p className="text-secondary">{perk.description}</p>
         </div>
       </div>

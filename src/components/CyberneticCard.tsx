@@ -324,6 +324,11 @@ const CyberneticCard = ({ cybernetic }, props) => {
                               className="flex items-center gap-2"
                               key={index}
                             >
+                              <Icon
+                                className={`${symbol === '+' || symbol === 'x' ? 'dark:text-green-400' : 'text-error'}`}
+                                path={mdiCircle}
+                                size={0.35}
+                              />
                               <p>
                                 {symbol +
                                   ' ' +
@@ -331,25 +336,20 @@ const CyberneticCard = ({ cybernetic }, props) => {
                                   ' ' +
                                   modifier.stat}
                               </p>
-                              <Icon
-                                className={`${symbol === '+' || symbol === 'x' ? 'dark:text-green-400' : 'text-error'}`}
-                                path={mdiCircle}
-                                size={0.35}
-                              />
                             </div>
                           ) : (
                             <div
                               className="flex items-center gap-2"
                               key={index}
                             >
-                              <p>{symbol}</p>
-                              <DieIcon className="size-7" />
-                              <p>{modifier.action.name}</p>
                               <Icon
                                 className={`${symbol === '+' || symbol === 'x' ? 'dark:text-green-400' : 'text-error'}`}
                                 path={mdiCircle}
                                 size={0.35}
                               />
+                              <p>{symbol}</p>
+                              <DieIcon className="size-7" />
+                              <p>{modifier.action.name}</p>
                             </div>
                           );
                         },
