@@ -582,7 +582,6 @@ const CyberneticForm = () => {
                             >
                               {(field) => (
                                 <div className="scrollbar-primary-2 flex max-h-[368px] flex-col gap-4 overflow-y-auto pr-4 md:grid md:grid-cols-2">
-                                  {' '}
                                   {keywords.filteredKeywords
                                     .filter(
                                       (keyword) =>

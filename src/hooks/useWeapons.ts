@@ -5,7 +5,7 @@ import { Weapon, WeaponWithKeywords } from '../types/weapon';
 import useKeywords from './useKeywords';
 import { Keyword } from 'src/types/keyword';
 
-const useWeapons = (keywordList?: string[]) => {
+const useWeapons = (keywordList?: string[], weaponList?: Weapon[]) => {
   const { apiUrl } = useContext(AuthContext);
 
   useEffect(() => {
@@ -19,7 +19,9 @@ const useWeapons = (keywordList?: string[]) => {
   const weaponsWithKeywords = useMemo(() => {
     if (!weapons || !keywords.filteredKeywords) return null;
 
-    return weapons
+    const list = weaponList || weapons;
+
+    return list
       ?.map((weapon: Weapon) => {
         const keywordDetails = weapon.keywords.map((keyword) => {
           const details = keywords.filteredKeywords.find(

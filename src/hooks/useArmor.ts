@@ -5,7 +5,7 @@ import { Armor, ArmorWithKeywords } from '../types/armor';
 import useKeywords from './useKeywords';
 import { Keyword } from 'src/types/keyword';
 
-const useArmor = (keywordList?: string[]) => {
+const useArmor = (keywordList?: string[], armorList?: Armor[]) => {
   const { apiUrl } = useContext(AuthContext);
 
   useEffect(() => {
@@ -19,7 +19,9 @@ const useArmor = (keywordList?: string[]) => {
   const armorWithKeywords = useMemo(() => {
     if (!armor || !keywords.filteredKeywords) return null;
 
-    return armor
+    const list = armorList || armor;
+
+    return list
       ?.map((armorSet: Armor) => {
         const keywordDetails = armorSet.keywords.map((keyword) => {
           const details = keywords.filteredKeywords.find(
@@ -38,7 +40,7 @@ const useArmor = (keywordList?: string[]) => {
           return true;
         }
       });
-  }, [armor, keywordList, keywords.filteredKeywords]);
+  }, [armor, armorList, keywordList, keywords.filteredKeywords]);
 
   const filteredKeywords = useMemo(() => {
     if (!armorWithKeywords) return null;

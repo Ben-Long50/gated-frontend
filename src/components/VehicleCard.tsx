@@ -24,6 +24,7 @@ import HangarIcon from './icons/HangarIcon';
 import SubweaponCard from './SubweaponCard';
 import { Modification } from 'src/types/vehicle';
 import SubmodificationCard from './SubmodificationCard';
+import CardPrice from './CardPrice';
 
 const VehicleCard = ({ vehicle }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -90,16 +91,11 @@ const VehicleCard = ({ vehicle }, props) => {
                   )}
                 </div>
                 <div className="flex items-center justify-end gap-4">
-                  <ProfitsIcon className="size-6 shrink-0" />
-                  {vehicle.price ? (
-                    <p>{vehicle.price + 'p'}</p>
-                  ) : (
-                    <Icon
-                      className="text-secondary"
-                      path={mdiClose}
-                      size={1.5}
-                    />
-                  )}
+                  <CardPrice
+                    price={vehicle?.price}
+                    category="vehicle"
+                    itemId={vehicle?.id}
+                  />
                 </div>
               </div>
               <div
@@ -276,16 +272,11 @@ const VehicleCard = ({ vehicle }, props) => {
                     )}
                   </div>
                   <div className="flex items-center justify-end gap-4">
-                    <ProfitsIcon className="size-6 shrink-0" />
-                    {vehicle.price ? (
-                      <p>{vehicle.price + 'p'}</p>
-                    ) : (
-                      <Icon
-                        className="text-secondary"
-                        path={mdiClose}
-                        size={1.5}
-                      />
-                    )}
+                    <CardPrice
+                      price={vehicle?.price}
+                      category="vehicle"
+                      itemId={vehicle?.id}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center justify-start gap-8 gap-y-4">
@@ -441,7 +432,7 @@ const VehicleCard = ({ vehicle }, props) => {
                     </div>
                   </ThemeContainer>
                 )}
-                {vehicle.modifications.length > 0 && (
+                {vehicle.modifications?.length > 0 && (
                   <ThemeContainer chamfer="16" borderColor={accentPrimary}>
                     <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                       Modifications

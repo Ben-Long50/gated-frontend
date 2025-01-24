@@ -19,10 +19,11 @@ import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import { Link, useParams } from 'react-router-dom';
 import BtnRect from './buttons/BtnRect';
-import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 import Loading from './Loading';
+import { Character } from 'src/types/character';
+import useCharactersQuery from '../hooks/useCharactersQuery/useCharactersQuery';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -35,11 +36,11 @@ const CharacterSheet = () => {
 
   const { characterId } = useParams();
 
-  const {
-    data: character,
-    isPending,
-    isLoading,
-  } = useCharacterQuery(apiUrl, characterId);
+  const { data: characters, isPending, isLoading } = useCharactersQuery(apiUrl);
+
+  const character = characters?.filter(
+    (character: Character) => character.id === Number(characterId),
+  )[0];
 
   const attributeTree = useAttributeTree(character?.attributes);
 

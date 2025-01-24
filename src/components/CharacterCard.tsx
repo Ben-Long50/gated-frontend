@@ -118,7 +118,7 @@ const CharacterCard = ({ character }) => {
               key={'ward'}
             >
               {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
-                <h3 className="text-primary text-xl font-semibold tracking-widest sm:text-2xl">
+                <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Ward
                 </h3>
               )}

@@ -18,11 +18,12 @@ import HealthIcon from './icons/HealthIcon';
 import { LayoutContext } from '../contexts/LayoutContext';
 import SanityIcon from './icons/SanityIcon';
 import { useParams } from 'react-router-dom';
-import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import useUpdateCharacterMutation from '../hooks/useCharacterUpdateMutation/useCharacterUpdateMutation';
 import useDeleteCharacterMutation from '../hooks/useDeleteCharacterMutation/useDeleteCharacterMutation';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
+import { Character } from 'src/types/character';
+import useCharactersQuery from '../hooks/useCharactersQuery/useCharactersQuery';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -32,7 +33,11 @@ const CharacterUpdateForm = () => {
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const { data: character } = useCharacterQuery(apiUrl, characterId);
+  const { data: characters, isPending, isLoading } = useCharactersQuery(apiUrl);
+
+  const character = characters?.filter(
+    (character: Character) => character.id === Number(characterId),
+  )[0];
 
   const [checkedPerks, setCheckedPerks] = useState(() => {
     return character?.perks.map((perk) => perk.id);
@@ -60,6 +65,17 @@ const CharacterUpdateForm = () => {
   const handleReset = async () => {
     characterUpdateForm.reset();
   };
+
+  const searchForm = useForm({
+    defaultValues: {
+      attribute: '',
+      skill: '',
+      query: '',
+    },
+    onSubmit: ({ value }) => {
+      perks.filterPerks(value.query);
+    },
+  });
 
   const characterUpdateForm = useForm({
     defaultValues: {
@@ -133,12 +149,7 @@ const CharacterUpdateForm = () => {
     }
   };
 
-  if (
-    perks.isLoading ||
-    perks.isPending ||
-    character.isLoading ||
-    character.isPending
-  ) {
+  if (perks.isLoading || perks.isPending || isLoading || isPending) {
     return <Loading />;
   }
 
@@ -381,7 +392,73 @@ const CharacterUpdateForm = () => {
           (Available perks are only shown if you meet the attribute and skill
           point requirements)
         </p>
+        <div className="flex w-full flex-col gap-4">
+          <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
+            <h3 className="col-span-2 pl-4 sm:col-span-1">Filter options</h3>
+            <searchForm.Field name="attribute">
+              {(field) => (
+                <SelectField
+                  field={field}
+                  onChange={() => {
+                    perks.filterByAttribute(field.state.value);
+                    perks.filterBySkill('');
+                  }}
+                >
+                  <option value="">All attributes</option>
+                  <option value="general">General</option>
+                  <option value="cybernetica">Cybernetica</option>
+                  <option value="esoterica">Esoterica</option>
+                  <option value="peace">Peace</option>
+                  <option value="violence">Violence</option>
+                </SelectField>
+              )}
+            </searchForm.Field>
+            <searchForm.Subscribe
+              selector={(state) => [state.values.attribute]}
+            >
+              {([selectedAttribute]) => (
+                <searchForm.Field name="skill">
+                  {(field) => (
+                    <SelectField
+                      field={field}
+                      onChange={() => {
+                        perks.filterBySkill(field.state.value);
+                      }}
+                    >
+                      <option value=""></option>
+                      {Object.entries(perks.emptyTree).map(
+                        ([attribute, skills]) => {
+                          if (attribute === selectedAttribute) {
+                            return Object.entries(skills).map(([skill]) => {
+                              return (
+                                <option key={skill} value={skill}>
+                                  {skill[0].toUpperCase() + skill.slice(1)}
+                                </option>
+                              );
+                            });
+                          }
+                        },
+                      )}
+                    </SelectField>
+                  )}
+                </searchForm.Field>
+              )}
+            </searchForm.Subscribe>
+          </div>
+          <searchForm.Field name="query">
+            {(field) => (
+              <InputField
+                label="Search perks"
+                field={field}
+                onChange={() => {
+                  searchForm.handleSubmit();
+                }}
+              />
+            )}
+          </searchForm.Field>
+        </div>
         <PerkList
+          className="scrollbar-primary-2 max-h-[400px] overflow-y-auto pr-4"
           perkTree={perks.filteredPerkTree}
           mode="edit"
           checkedPerks={checkedPerks}

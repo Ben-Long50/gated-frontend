@@ -1,15 +1,17 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnNavbar from './buttons/BtnNavbar';
 import { Link } from 'react-router-dom';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
-import { mdiMenu } from '@mdi/js';
+import { mdiCartOutline, mdiMenu } from '@mdi/js';
 import PyramidIcon from './icons/PyramidIcon';
 import NavMenuMobile from './NavMenuMobile';
 import CharacterIcon from './icons/CharacterIcon';
 import NavMenuDesktop from './NavMenuDesktop';
 import useSignoutMutation from '../hooks/useSignoutMutation/useSignoutMutation';
+import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
+import Loading from './Loading';
 
 const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -17,6 +19,17 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
 
   const [navMenuVisibility, setNavMenuVisibility] = useState(false);
   const [accountMenuVisibility, setAccountMenuVisibility] = useState(false);
+  const [characterImage, setCharacterImage] = useState('');
+
+  const {
+    data: character,
+    isPending,
+    isLoading,
+  } = useActiveCharacterQuery(apiUrl);
+
+  const cartLength = Object.values(character?.characterCart || {})
+    .filter((value) => Array.isArray(value))
+    .flat().length;
 
   const signout = useSignoutMutation(apiUrl);
 
@@ -41,7 +54,29 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
     if (navbarRef.current) {
       setNavbarHeight(navbarRef.current.offsetHeight);
     }
-  }, []);
+  }, [navbarRef]);
+
+  useMemo(() => {
+    if (character?.picture.imageUrl) {
+      const splitUrl = character?.picture.imageUrl.split('upload/');
+
+      setCharacterImage(
+        splitUrl[0].concat('upload/w_40,c_scale/').concat(splitUrl[1]),
+      );
+    }
+  }, [character]);
+
+  useEffect(() => {
+    if (window.cloudinary) {
+      const cl = window.cloudinary.Cloudinary.new({
+        cloud_name: import.meta.env.VITE_CLOUD_NAME,
+      });
+
+      cl.responsive();
+    }
+  }, [character]);
+
+  if (isLoading || isPending) return <Loading />;
 
   return layoutSize === 'xsmall' || layoutSize === 'small' ? (
     <nav
@@ -49,9 +84,49 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
       className={`bg-primary fixed top-0 z-30 col-span-2 flex w-full flex-col items-center justify-start shadow-md shadow-black`}
     >
       <div className="my-2 flex w-full items-center justify-between px-2">
-        <Link to="/glam/codex">
-          <PyramidIcon className="size-10" />
-        </Link>
+        <div className="flex items-center gap-4">
+          {character ? (
+            <div className="flex items-center gap-4">
+              <Link
+                className="group flex items-center gap-4 pt-1.5"
+                to={`/glam/characters/${character.id}`}
+              >
+                <img
+                  className="size-10 rounded-full"
+                  src={characterImage}
+                  alt={
+                    character.firstName +
+                    ' ' +
+                    character.lastName +
+                    "'s profile picture"
+                  }
+                />
+                <h3 className="timing group-hover:text-accent">
+                  {character.firstName + ' ' + character.lastName}
+                </h3>
+              </Link>
+              {cartLength > 0 && (
+                <Link
+                  to={`/glam/characters/${character.id}/cart`}
+                  className="group my-auto flex items-center"
+                >
+                  <Icon
+                    className="text-secondary group-hover:text-accent timing"
+                    path={mdiCartOutline}
+                    size={1.35}
+                  />
+                  <p className="flex h-5 min-w-5 items-center justify-center rounded-full bg-yellow-300 text-center text-base font-semibold dark:text-gray-950">
+                    {cartLength}
+                  </p>
+                </Link>
+              )}
+            </div>
+          ) : (
+            <Link to="/glam/codex">
+              <PyramidIcon className="size-10" />
+            </Link>
+          )}
+        </div>
         <div className="flex items-center justify-end gap-4">
           <button
             className={`${navMenuVisibility && 'scale-y-150'} timing z-10`}
@@ -152,9 +227,50 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
       ref={navbarRef}
       className="bg-primary sticky top-0 z-30 col-span-2 flex items-center justify-between gap-4 py-2 pl-4 pr-6 shadow-md shadow-black"
     >
-      <Link to="/glam/codex">
-        <PyramidIcon className="size-10" />
-      </Link>
+      <div className="items-cente flex gap-8">
+        {character ? (
+          <div className="flex items-center gap-4">
+            <Link
+              className="group flex items-center gap-4 pt-1.5"
+              to={`/glam/characters/${character.id}`}
+            >
+              <img
+                className="size-10 rounded-full"
+                src={characterImage}
+                alt={
+                  character.firstName +
+                  ' ' +
+                  character.lastName +
+                  "'s profile picture"
+                }
+              />
+              <h3 className="timing group-hover:text-accent">
+                {character.firstName + ' ' + character.lastName}
+              </h3>
+            </Link>
+            {cartLength > 0 && (
+              <Link
+                to={`/glam/characters/${character.id}/cart`}
+                className="group my-auto flex items-center"
+              >
+                <Icon
+                  className="text-secondary group-hover:text-accent timing"
+                  path={mdiCartOutline}
+                  size={1.35}
+                />
+                <p className="flex h-5 min-w-5 items-center justify-center rounded-full bg-yellow-300 text-center text-base font-semibold dark:text-gray-950">
+                  {cartLength}
+                </p>
+              </Link>
+            )}
+          </div>
+        ) : (
+          <Link to="/glam/codex">
+            <PyramidIcon className="size-10" />
+          </Link>
+        )}
+      </div>
+
       <div className="relative flex items-center justify-items-end gap-10">
         <Link to="codex">
           <BtnNavbar className="bg-primary">Codex</BtnNavbar>

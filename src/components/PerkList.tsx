@@ -1,20 +1,24 @@
 import PerkCard from './PerkCard';
 import Icon from '@mdi/react';
 import { mdiTriangleSmallUp } from '@mdi/js';
-import { PerkTree } from 'src/hooks/usePerks';
+import { PerkTree } from 'src/types/perk';
 
 const PerkList = ({
   perkTree,
   mode,
   checkedPerks,
   setCheckedPerks,
+  className,
 }: {
   perkTree: Partial<PerkTree>;
   mode: string;
   checkedPerks: number[];
+  className: string;
 }) => {
   return (
-    <div className="flex w-full flex-col gap-6 sm:gap-8 lg:gap-10">
+    <div
+      className={`${className} flex w-full flex-col gap-6 sm:gap-8 lg:gap-10`}
+    >
       {Object.entries(perkTree).map(([perkType, skills]) => {
         return (
           Object.entries(skills).reduce(

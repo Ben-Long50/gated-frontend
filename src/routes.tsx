@@ -39,6 +39,7 @@ import PatchNoteForm from './components/PatchNotesForm';
 import ErrorReports from './components/ErrorReports';
 import ConditionForm from './components/ConditionForm';
 import Conditions from './components/Conditions';
+import Cart from './components/Cart';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -63,6 +64,7 @@ const router = createBrowserRouter(
           <Route path="create" element={<CharacterForm />} />
           <Route path=":characterId" element={<CharacterSheet />} />
           <Route path=":characterId/update" element={<CharacterUpdateForm />} />
+          <Route path=":characterId/cart" element={<Cart />} />
         </Route>
 
         <Route path="codex">

@@ -5,7 +5,7 @@ import { Vehicle, VehicleWithWeapons } from 'src/types/vehicle';
 import useWeapons from './useWeapons';
 import { WeaponWithKeywords } from 'src/types/weapon';
 
-const useVehicles = () => {
+const useVehicles = (vehicleList?: Vehicle[]) => {
   const { apiUrl } = useContext(AuthContext);
 
   const vehicleWeapons = useWeapons(['Vehicle']);
@@ -15,7 +15,11 @@ const useVehicles = () => {
   const vehiclesWithWeapons = useMemo(() => {
     if (!vehicles || !vehicleWeapons.filteredWeapons) return null;
 
-    return vehicles?.map((vehicle: Vehicle) => {
+    const list = vehicleList || vehicles;
+
+    if (list.length === 0) return [];
+
+    return list?.map((vehicle: Vehicle) => {
       const weaponDetails = vehicle.weapons.map((weapon) => {
         const details = vehicleWeapons.filteredWeapons.find(
           (item: WeaponWithKeywords) => item.id === weapon.weaponId,

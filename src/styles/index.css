@@ -59,13 +59,13 @@
     @apply text-gray-900 dark:text-gray-50;
   }
   .text-secondary {
-    @apply stroke-gray-700 text-gray-700 dark:stroke-gray-200 dark:text-gray-200;
+    @apply text-gray-700 dark:text-gray-200;
   }
   .text-tertiary {
     @apply text-gray-500 dark:text-gray-400;
   }
   .text-accent {
-    @apply fill-yellow-300 stroke-yellow-300 text-yellow-300 dark:text-yellow-300;
+    @apply fill-yellow-300 text-yellow-300 dark:text-yellow-300;
   }
   .text-error {
     @apply text-red-500 dark:text-red-500;

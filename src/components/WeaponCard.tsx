@@ -1,4 +1,4 @@
-import { mdiChevronDown, mdiClose } from '@mdi/js';
+import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
 import DamageIcon from './icons/DamageIcon';
 import SalvoIcon from './icons/SalvoIcon';
@@ -9,13 +9,13 @@ import ThemeContainer from './ThemeContainer';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import Tag from './Tag';
-import ProfitsIcon from './icons/ProfitsIcon';
 import { LayoutContext } from '../contexts/LayoutContext';
 import MagCapacityIcon from './icons/MagCapacityIcon';
 import { Link } from 'react-router-dom';
 import CloudinaryImage from './CloudinaryImage';
 import { AuthContext } from '../contexts/AuthContext';
 import { Keyword } from '../types/keyword';
+import CardPrice from './CardPrice';
 
 const WeaponCard = ({ weapon }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -78,16 +78,11 @@ const WeaponCard = ({ weapon }, props) => {
                   )}
                 </div>
                 <div className="flex items-center justify-end gap-4">
-                  <ProfitsIcon className="size-6 shrink-0" />
-                  {weapon.price ? (
-                    <p>{weapon.price + 'p'}</p>
-                  ) : (
-                    <Icon
-                      className="text-secondary"
-                      path={mdiClose}
-                      size={1.5}
-                    />
-                  )}
+                  <CardPrice
+                    price={weapon?.price}
+                    category="weapon"
+                    itemId={weapon?.id}
+                  />
                 </div>
               </div>
               <div className="flex w-full flex-wrap items-center gap-1 justify-self-start">
@@ -230,16 +225,11 @@ const WeaponCard = ({ weapon }, props) => {
                   )}
                 </div>
                 <div className="flex items-center justify-end gap-4">
-                  <ProfitsIcon className="size-6 shrink-0" />
-                  {weapon.price ? (
-                    <p>{weapon.price + 'p'}</p>
-                  ) : (
-                    <Icon
-                      className="text-secondary"
-                      path={mdiClose}
-                      size={1.5}
-                    />
-                  )}
+                  <CardPrice
+                    price={weapon?.price}
+                    category="weapon"
+                    itemId={weapon?.id}
+                  />
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-1">

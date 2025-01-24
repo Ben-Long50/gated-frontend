@@ -21,6 +21,7 @@ import { ArmorWithKeywords } from 'src/types/armor';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { Modifier } from 'src/types/modifier';
 import DieIcon from './icons/DieIcon';
+import CardPrice from './CardPrice';
 
 const CyberneticCard = ({ cybernetic }, props) => {
   const { accentPrimary, accentModifier, accentSecondary } =
@@ -100,12 +101,11 @@ const CyberneticCard = ({ cybernetic }, props) => {
                 </p>
               </div>
               <div className="flex items-center justify-end gap-4">
-                <ProfitsIcon className="size-6 shrink-0" />
-                {cybernetic.price ? (
-                  <p>{cybernetic.price + 'p'}</p>
-                ) : (
-                  <Icon className="text-secondary" path={mdiClose} size={1.5} />
-                )}
+                <CardPrice
+                  price={cybernetic?.price}
+                  category="cybernetic"
+                  itemId={cybernetic?.id}
+                />
               </div>
             </div>
             {cybernetic.keywords.length > 0 && (
@@ -222,16 +222,11 @@ const CyberneticCard = ({ cybernetic }, props) => {
                   </p>
                 </div>
                 <div className="flex items-center justify-end gap-4">
-                  <ProfitsIcon className="size-6 shrink-0" />
-                  {cybernetic.price ? (
-                    <p>{cybernetic.price + 'p'}</p>
-                  ) : (
-                    <Icon
-                      className="text-secondary"
-                      path={mdiClose}
-                      size={1.5}
-                    />
-                  )}
+                  <CardPrice
+                    price={cybernetic?.price}
+                    category="cybernetic"
+                    itemId={cybernetic?.id}
+                  />
                 </div>
               </div>
               <div className="grid w-full grid-cols-2 gap-6 pr-10">
@@ -349,7 +344,7 @@ const CyberneticCard = ({ cybernetic }, props) => {
                               />
                               <p>{symbol}</p>
                               <DieIcon className="size-7" />
-                              <p>{modifier.action.name}</p>
+                              <p>{modifier.action?.name}</p>
                             </div>
                           );
                         },

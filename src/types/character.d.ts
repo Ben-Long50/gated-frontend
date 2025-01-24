@@ -3,6 +3,7 @@ import { AttributeTree } from './attributeTree';
 import { CyberneticWithKeywords } from './cybernetic';
 import { Perk } from './perk';
 import { Picture } from './picture';
+import { VehicleWithWeapons } from './vehicle';
 import { WeaponWithKeywords } from './weapon';
 
 interface Character {
@@ -19,6 +20,7 @@ interface Character {
   attributes: Partial<AttributeTree>;
   firstName: string;
   lastName: string;
+  active: boolean;
   perks: Perk[];
   weapons: WeaponWithKeywords[];
   armor: ArmorWithKeywords[];
@@ -30,4 +32,13 @@ interface CharacterStats {
   currentSanity: number;
   injuries: number;
   insanities: number;
+}
+
+interface CharacterCart {
+  id: number;
+  characterId: number;
+  weapons: WeaponWithKeywords[];
+  armor: ArmorWithKeywords[];
+  cybernetics: CyberneticWithKeywords[];
+  vehicles: VehicleWithWeapons[];
 }

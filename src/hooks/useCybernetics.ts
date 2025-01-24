@@ -10,7 +10,7 @@ import useActions from './useActions';
 import { Modifier } from 'src/types/modifier';
 import { Action } from 'src/types/action';
 
-const useCybernetics = () => {
+const useCybernetics = (cyberneticsList?: Cybernetic[]) => {
   const { apiUrl } = useContext(AuthContext);
 
   const keywords = useKeywords();
@@ -24,7 +24,7 @@ const useCybernetics = () => {
   } = useCyberneticsQuery(apiUrl);
 
   const getWeaponsKeywords = (weapons: Weapon[]) => {
-    if (weapons.length === 0) return;
+    if (!weapons || weapons.length === 0) return;
     return weapons?.map((weapon: Weapon) => {
       const keywordDetails = weapon.keywords.map((keyword) => {
         const details = keywords.filteredKeywords.find(
@@ -37,7 +37,7 @@ const useCybernetics = () => {
   };
 
   const getArmorKeywords = (armor: Armor[]) => {
-    if (armor.length === 0) return;
+    if (!armor || armor.length === 0) return;
     return armor?.map((armorSet: Weapon) => {
       const keywordDetails = armorSet.keywords.map((keyword) => {
         const details = keywords.filteredKeywords.find(
@@ -63,7 +63,11 @@ const useCybernetics = () => {
   const cyberneticsWithKeywords = useMemo(() => {
     if (!cybernetics || !keywords) return null;
 
-    return cybernetics?.map((cybernetic: Cybernetic) => {
+    const list = cyberneticsList || cybernetics;
+
+    if (list.length === 0) return [];
+
+    return list?.map((cybernetic: Cybernetic) => {
       const keywordDetails = cybernetic.keywords.map((keyword) => {
         const details = keywords.filteredKeywords.find(
           (item: Keyword) => item.id === keyword.keywordId,

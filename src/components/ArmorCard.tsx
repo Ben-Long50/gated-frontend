@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { Keyword } from 'src/hooks/useKeywords';
 import CloudinaryImage from './CloudinaryImage';
 import { AuthContext } from '../contexts/AuthContext';
+import CardPrice from './CardPrice';
 
 const ArmorCard = ({ armor }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -77,16 +78,11 @@ const ArmorCard = ({ armor }, props) => {
                   )}
                 </div>
                 <div className="flex items-center justify-end gap-4">
-                  <ProfitsIcon className="size-6 shrink-0" />
-                  {armor.price ? (
-                    <p>{armor.price + 'p'}</p>
-                  ) : (
-                    <Icon
-                      className="text-secondary"
-                      path={mdiClose}
-                      size={1.5}
-                    />
-                  )}
+                  <CardPrice
+                    price={armor?.price}
+                    category="armor"
+                    itemId={armor?.id}
+                  />
                 </div>
               </div>
               <div className="flex w-full flex-wrap items-center gap-1 justify-self-start">
@@ -216,16 +212,11 @@ const ArmorCard = ({ armor }, props) => {
                   )}
                 </div>
                 <div className="flex items-center justify-end gap-4">
-                  <ProfitsIcon className="size-6 shrink-0" />
-                  {armor.price ? (
-                    <p>{armor.price + 'p'}</p>
-                  ) : (
-                    <Icon
-                      className="text-secondary"
-                      path={mdiClose}
-                      size={1.5}
-                    />
-                  )}
+                  <CardPrice
+                    price={armor?.price}
+                    category="armor"
+                    itemId={armor?.id}
+                  />
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-1">
