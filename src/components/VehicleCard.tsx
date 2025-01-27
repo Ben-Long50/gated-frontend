@@ -25,6 +25,7 @@ import SubweaponCard from './SubweaponCard';
 import { Modification } from 'src/types/vehicle';
 import SubmodificationCard from './SubmodificationCard';
 import CardPrice from './CardPrice';
+import ItemRarity from './ItemRarity';
 
 const VehicleCard = ({ vehicle }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -79,21 +80,22 @@ const VehicleCard = ({ vehicle }, props) => {
         {layoutSize === 'small' || layoutSize === 'xsmall' ? (
           <>
             <div className="relative flex h-full flex-col gap-4 sm:gap-8">
+              <div className="flex items-start justify-start gap-4">
+                <h2 className="pl-4">{vehicle.name}</h2>
+                {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+                  <Link to={`/glam/codex/vehicles/${vehicle.id}/update`}>
+                    <button className="text-accent hover:underline">
+                      Edit
+                    </button>
+                  </Link>
+                )}
+              </div>
               <div className="flex w-full items-start justify-between gap-8">
-                <div className="flex items-center justify-start gap-4">
-                  <h2 className="pl-4">{vehicle.name}</h2>
-                  {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-                    <Link to={`/glam/codex/vehicles/${vehicle.id}/update`}>
-                      <button className="text-accent hover:underline">
-                        Edit
-                      </button>
-                    </Link>
-                  )}
-                </div>
+                <ItemRarity rarity={vehicle?.rarity} grade={vehicle?.grade} />
                 <div className="flex items-center justify-end gap-4">
                   <CardPrice
                     price={vehicle?.price}
-                    category="vehicle"
+                    category="vehicles"
                     itemId={vehicle?.id}
                   />
                 </div>
@@ -258,10 +260,21 @@ const VehicleCard = ({ vehicle }, props) => {
               )}
               <div className="flex h-full grow flex-col items-start justify-between gap-6">
                 <div className="flex w-full items-start justify-between gap-8">
-                  <div className="flex items-center justify-start gap-4">
-                    <h2 className={`${!vehicle.picture && 'pl-4'}`}>
-                      {vehicle.name}
-                    </h2>
+                  <h2 className={`${!vehicle.picture && 'pl-4'} mr-auto`}>
+                    {vehicle.name}
+                  </h2>
+                  <div className="timing flex flex-wrap-reverse justify-end gap-x-8 gap-y-4">
+                    <ItemRarity
+                      rarity={vehicle?.rarity}
+                      grade={vehicle?.grade}
+                    />
+                    <div className="flex items-center justify-end gap-4">
+                      <CardPrice
+                        price={vehicle?.price}
+                        category="vehicles"
+                        itemId={vehicle?.id}
+                      />
+                    </div>
                     {(user?.role === 'ADMIN' ||
                       user?.role === 'SUPERADMIN') && (
                       <Link to={`${vehicle.id}/update`}>
@@ -270,13 +283,6 @@ const VehicleCard = ({ vehicle }, props) => {
                         </button>
                       </Link>
                     )}
-                  </div>
-                  <div className="flex items-center justify-end gap-4">
-                    <CardPrice
-                      price={vehicle?.price}
-                      category="vehicle"
-                      itemId={vehicle?.id}
-                    />
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center justify-start gap-8 gap-y-4">

@@ -22,6 +22,7 @@ import ModCard from './ModCard';
 import SubweaponCard from './SubweaponCard';
 import useWeapons from '../hooks/useWeapons';
 import useVehicles from '../hooks/useVehicles';
+import SelectField from './SelectField';
 
 const VehicleForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -86,6 +87,8 @@ const VehicleForm = () => {
   const vehicleForm = useForm({
     defaultValues: {
       name: vehicle?.name || '',
+      rarity: vehicle?.rarity || '',
+      grade: vehicle?.grade || 1,
       picture: vehicle?.picture || '',
       description: vehicle?.description || '',
       stats: {
@@ -99,7 +102,7 @@ const VehicleForm = () => {
         pass: vehicle?.stats?.pass || '',
         weapon: vehicle?.stats?.weapon || '',
       },
-      price: vehicle?.price || '',
+      price: vehicle?.price || null,
       weapons: vehicleWeaponDetails || [],
       modifications: modIds || [],
     },
@@ -196,12 +199,53 @@ const VehicleForm = () => {
               <InputField className="grow" label="Vehicle name" field={field} />
             )}
           </vehicleForm.Field>
-          <vehicleForm.Field name="price">
+          <vehicleForm.Field
+            name="price"
+            validators={{
+              onChange: ({ value }) =>
+                value < 0 ? 'Price cannot be negative' : undefined,
+            }}
+          >
             {(field) => (
               <InputField
                 className="max-w-28"
                 type="number"
                 label="Price"
+                field={field}
+              />
+            )}
+          </vehicleForm.Field>
+        </div>
+        <div className="flex w-full items-center gap-4 lg:gap-8">
+          <vehicleForm.Field
+            name="rarity"
+            validators={{
+              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
+            }}
+          >
+            {(field) => (
+              <SelectField className="w-full" label="Item rarity" field={field}>
+                <option value=""></option>
+                <option value="common">Common</option>
+                <option value="uncommon">Uncommon</option>
+                <option value="rare">Rare</option>
+                <option value="blackMarket">Black Market</option>
+                <option value="artifact">Artifact</option>
+              </SelectField>
+            )}
+          </vehicleForm.Field>
+          <vehicleForm.Field
+            name="grade"
+            validators={{
+              onChange: ({ value }) =>
+                value <= 0 ? 'Minimum grade is 1' : undefined,
+            }}
+          >
+            {(field) => (
+              <InputField
+                className="w-full max-w-28"
+                type="number"
+                label="Item grade"
                 field={field}
               />
             )}

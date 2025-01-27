@@ -101,6 +101,8 @@ const CyberneticForm = () => {
   const cyberneticForm = useForm({
     defaultValues: {
       name: cybernetic?.name || '',
+      rarity: cybernetic?.rarity || '',
+      grade: cybernetic?.grade || 1,
       cyberneticType: cybernetic?.cyberneticType || '',
       picture: cybernetic?.picture || '',
       description: cybernetic?.description || '',
@@ -109,7 +111,7 @@ const CyberneticForm = () => {
         power: cybernetic?.stats.power || '',
       } as { cyber: number; power?: number },
       body: cybernetic?.body || ([''] as string[]),
-      price: cybernetic?.price || '',
+      price: cybernetic?.price || null,
       weapons:
         weaponData ||
         ([] as {
@@ -271,6 +273,41 @@ const CyberneticForm = () => {
                 className="max-w-28"
                 type="number"
                 label="Price"
+                field={field}
+              />
+            )}
+          </cyberneticForm.Field>
+        </div>
+        <div className="flex w-full items-center gap-4 lg:gap-8">
+          <cyberneticForm.Field
+            name="rarity"
+            validators={{
+              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
+            }}
+          >
+            {(field) => (
+              <SelectField className="w-full" label="Item rarity" field={field}>
+                <option value=""></option>
+                <option value="common">Common</option>
+                <option value="uncommon">Uncommon</option>
+                <option value="rare">Rare</option>
+                <option value="blackMarket">Black Market</option>
+                <option value="artifact">Artifact</option>
+              </SelectField>
+            )}
+          </cyberneticForm.Field>
+          <cyberneticForm.Field
+            name="grade"
+            validators={{
+              onChange: ({ value }) =>
+                value <= 0 ? 'Minimum grade is 1' : undefined,
+            }}
+          >
+            {(field) => (
+              <InputField
+                className="w-full max-w-28"
+                type="number"
+                label="Item grade"
                 field={field}
               />
             )}

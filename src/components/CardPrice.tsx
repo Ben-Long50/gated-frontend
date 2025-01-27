@@ -4,14 +4,24 @@ import ProfitsIcon from './icons/ProfitsIcon';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import useAddToCartMutation from '../hooks/useAddToCartMutation/useAddToCartMutation';
+import useeditCartMutation from '../hooks/useEditCartMutation/useEditCartMutation';
 import Loading from './Loading';
 
-const CardPrice = ({ price, category, itemId }) => {
+const CardPrice = ({
+  price,
+  category,
+  itemId,
+  handleRemove,
+}: {
+  price: number;
+  category: string;
+  itemId: number;
+  handleRemove?: () => void;
+}) => {
   const { apiUrl } = useContext(AuthContext);
 
   const { data: character } = useActiveCharacterQuery(apiUrl);
-  const addToCart = useAddToCartMutation(apiUrl);
+  const editCart = useeditCartMutation(apiUrl);
 
   const cartIds = Object.values(character.characterCart)
     .filter((item) => Array.isArray(item))
@@ -20,35 +30,38 @@ const CardPrice = ({ price, category, itemId }) => {
 
   return price ? (
     <>
-      {addToCart.isPending ? (
+      {editCart.isPending ? (
         <Loading className="text-secondary" size={1} />
-      ) : cartIds.includes(itemId) ? (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            console.log('remove from cart');
-          }}
-        >
-          <Icon
-            className="text-tertiary timing hover:text-yellow-300"
-            path={mdiCartMinus}
-            size={1}
-          />
-        </button>
       ) : (
         <button
           onClick={(e) => {
             e.stopPropagation();
             e.preventDefault();
-            addToCart.mutate({ characterId: character?.id, category, itemId });
+            editCart.mutate(
+              { characterId: character?.id, category, itemId },
+              {
+                onSuccess: () => {
+                  if (handleRemove) {
+                    handleRemove();
+                  }
+                },
+              },
+            );
           }}
         >
-          <Icon
-            className="text-tertiary timing hover:text-yellow-300"
-            path={mdiCartPlus}
-            size={1}
-          />
+          {cartIds.includes(itemId) ? (
+            <Icon
+              className="text-tertiary timing hover:text-yellow-300"
+              path={mdiCartMinus}
+              size={1}
+            />
+          ) : (
+            <Icon
+              className="text-tertiary timing hover:text-yellow-300"
+              path={mdiCartPlus}
+              size={1}
+            />
+          )}
         </button>
       )}
 

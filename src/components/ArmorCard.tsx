@@ -16,6 +16,7 @@ import { Keyword } from 'src/hooks/useKeywords';
 import CloudinaryImage from './CloudinaryImage';
 import { AuthContext } from '../contexts/AuthContext';
 import CardPrice from './CardPrice';
+import ItemRarity from './ItemRarity';
 
 const ArmorCard = ({ armor }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -66,17 +67,18 @@ const ArmorCard = ({ armor }, props) => {
         {layoutSize === 'small' || layoutSize === 'xsmall' ? (
           <>
             <div className="relative flex h-full flex-col gap-4 sm:gap-8">
+              <div className="flex items-start justify-between gap-4">
+                <h2 className="pl-4">{armor.name}</h2>
+                {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+                  <Link to={`/glam/codex/armor/${armor.id}/update`}>
+                    <button className="text-accent hover:underline">
+                      Edit
+                    </button>
+                  </Link>
+                )}
+              </div>
               <div className="flex w-full items-start justify-between gap-8">
-                <div className="flex items-center justify-start gap-4">
-                  <h2 className="pl-4">{armor.name}</h2>
-                  {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-                    <Link to={`/glam/codex/armor/${armor.id}/update`}>
-                      <button className="text-accent hover:underline">
-                        Edit
-                      </button>
-                    </Link>
-                  )}
-                </div>
+                <ItemRarity rarity={armor?.rarity} grade={armor?.grade} />
                 <div className="flex items-center justify-end gap-4">
                   <CardPrice
                     price={armor?.price}
@@ -199,10 +201,18 @@ const ArmorCard = ({ armor }, props) => {
             )}
             <div className="flex h-full grow flex-col items-start justify-between gap-6">
               <div className="flex w-full items-start justify-between gap-8">
-                <div className="flex items-center justify-start gap-4">
-                  <h2 className={`${!armor.picture && 'pl-4'}`}>
-                    {armor.name}
-                  </h2>
+                <h2 className={`${!armor.picture && 'pl-4'} mr-auto`}>
+                  {armor.name}
+                </h2>
+                <div className="timing flex flex-wrap-reverse justify-end gap-x-8 gap-y-4">
+                  <ItemRarity rarity={armor?.rarity} grade={armor?.grade} />
+                  <div className="flex items-center justify-end gap-4">
+                    <CardPrice
+                      price={armor?.price}
+                      category="armor"
+                      itemId={armor?.id}
+                    />
+                  </div>
                   {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
                     <Link to={`${armor.id}/update`}>
                       <button className="text-accent hover:underline">
@@ -210,13 +220,6 @@ const ArmorCard = ({ armor }, props) => {
                       </button>
                     </Link>
                   )}
-                </div>
-                <div className="flex items-center justify-end gap-4">
-                  <CardPrice
-                    price={armor?.price}
-                    category="armor"
-                    itemId={armor?.id}
-                  />
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-1">

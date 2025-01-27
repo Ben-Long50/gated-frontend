@@ -20,6 +20,7 @@ import useDeleteArmorMutation from '../hooks/useDeleteArmorMutation/useDeleteArm
 import useArmor from '../hooks/useArmor';
 import { ArmorWithKeywords } from 'src/types/armor';
 import { Keyword } from 'src/types/keyword';
+import SelectField from './SelectField';
 
 const ArmorForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -83,6 +84,8 @@ const ArmorForm = () => {
   const armorForm = useForm({
     defaultValues: {
       name: armor?.name || '',
+      rarity: armor?.rarity || '',
+      grade: armor?.grade || 1,
       picture: armor?.picture || '',
       description: armor?.description || '',
       stats: {
@@ -92,7 +95,7 @@ const ArmorForm = () => {
         power: armor?.stats.power || '',
         weight: armor?.stats.weight || '',
       },
-      price: armor?.price || '',
+      price: armor?.price || null,
       keywords:
         armorKeywordData || ([] as { keywordId: number; value?: number }[]),
     },
@@ -178,6 +181,41 @@ const ArmorForm = () => {
                 className="max-w-28"
                 type="number"
                 label="Price"
+                field={field}
+              />
+            )}
+          </armorForm.Field>
+        </div>
+        <div className="flex w-full items-center gap-4 lg:gap-8">
+          <armorForm.Field
+            name="rarity"
+            validators={{
+              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
+            }}
+          >
+            {(field) => (
+              <SelectField className="w-full" label="Item rarity" field={field}>
+                <option value=""></option>
+                <option value="common">Common</option>
+                <option value="uncommon">Uncommon</option>
+                <option value="rare">Rare</option>
+                <option value="blackMarket">Black Market</option>
+                <option value="artifact">Artifact</option>
+              </SelectField>
+            )}
+          </armorForm.Field>
+          <armorForm.Field
+            name="grade"
+            validators={{
+              onChange: ({ value }) =>
+                value <= 0 ? 'Minimum grade is 1' : undefined,
+            }}
+          >
+            {(field) => (
+              <InputField
+                className="w-full max-w-28"
+                type="number"
+                label="Item grade"
                 field={field}
               />
             )}

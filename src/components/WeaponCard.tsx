@@ -16,6 +16,8 @@ import CloudinaryImage from './CloudinaryImage';
 import { AuthContext } from '../contexts/AuthContext';
 import { Keyword } from '../types/keyword';
 import CardPrice from './CardPrice';
+import BtnRect from './buttons/BtnRect';
+import ItemRarity from './ItemRarity';
 
 const WeaponCard = ({ weapon }, props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -66,25 +68,27 @@ const WeaponCard = ({ weapon }, props) => {
         {layoutSize === 'small' || layoutSize === 'xsmall' ? (
           <>
             <div className="relative flex h-full flex-col gap-4 sm:gap-8">
+              <div className="flex items-start justify-between gap-4">
+                <h2 className="pl-4">{weapon.name}</h2>
+                {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+                  <Link to={`/glam/codex/weapons/${weapon.id}/update`}>
+                    <button className="text-accent hover:underline">
+                      Edit
+                    </button>
+                  </Link>
+                )}
+              </div>
               <div className="flex w-full items-start justify-between gap-8">
-                <div className="flex items-center justify-start gap-4">
-                  <h2 className="pl-4">{weapon.name}</h2>
-                  {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-                    <Link to={`/glam/codex/weapons/${weapon.id}/update`}>
-                      <button className="text-accent hover:underline">
-                        Edit
-                      </button>
-                    </Link>
-                  )}
-                </div>
+                <ItemRarity rarity={weapon?.rarity} grade={weapon?.grade} />
                 <div className="flex items-center justify-end gap-4">
                   <CardPrice
                     price={weapon?.price}
-                    category="weapon"
+                    category="weapons"
                     itemId={weapon?.id}
                   />
                 </div>
               </div>
+
               <div className="flex w-full flex-wrap items-center gap-1 justify-self-start">
                 {weapon.keywords.map(
                   (item: { keyword: Keyword; value?: number }) => {
@@ -212,10 +216,18 @@ const WeaponCard = ({ weapon }, props) => {
             )}
             <div className="flex h-full grow flex-col items-start justify-between gap-6">
               <div className="flex w-full items-start justify-between gap-8">
-                <div className="flex items-center justify-start gap-4">
-                  <h2 className={`${!weapon.picture && 'pl-4'}`}>
-                    {weapon.name}
-                  </h2>
+                <h2 className={`${!weapon.picture && 'pl-4'} mr-auto`}>
+                  {weapon.name}
+                </h2>
+                <div className="timing flex flex-wrap-reverse justify-end gap-x-8 gap-y-4">
+                  <ItemRarity rarity={weapon?.rarity} grade={weapon?.grade} />
+                  <div className="flex items-center justify-end gap-4">
+                    <CardPrice
+                      price={weapon?.price}
+                      category="weapons"
+                      itemId={weapon?.id}
+                    />
+                  </div>
                   {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
                     <Link to={`/glam/codex/weapons/${weapon.id}/update`}>
                       <button className="text-accent hover:underline">
@@ -223,13 +235,6 @@ const WeaponCard = ({ weapon }, props) => {
                       </button>
                     </Link>
                   )}
-                </div>
-                <div className="flex items-center justify-end gap-4">
-                  <CardPrice
-                    price={weapon?.price}
-                    category="weapon"
-                    itemId={weapon?.id}
-                  />
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-1">
@@ -314,9 +319,9 @@ const WeaponCard = ({ weapon }, props) => {
                 )}
               </div>
               <div className={`overflow-hidden`}>
-                <p
+                <div
                   ref={detailRef}
-                  className={`timing text-secondary pr-8`}
+                  className={`timing text-secondary flex flex-col gap-8 p-1 pr-8`}
                   style={
                     detailsOpen
                       ? {
@@ -327,8 +332,15 @@ const WeaponCard = ({ weapon }, props) => {
                         }
                   }
                 >
-                  {weapon.description}
-                </p>
+                  <p className={`text-secondary`}>{weapon.description}</p>
+                  {!weapon.characterInventory && (
+                    <div className="self-end">
+                      <Link to={`${weapon.id}/modify`}>
+                        <BtnRect>Modify weapon</BtnRect>
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             <span

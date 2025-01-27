@@ -50,7 +50,7 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
     };
   }, []);
 
-  useEffect(() => {
+  useMemo(() => {
     if (navbarRef.current) {
       setNavbarHeight(navbarRef.current.offsetHeight);
     }

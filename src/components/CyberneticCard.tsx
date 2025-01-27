@@ -22,6 +22,7 @@ import { WeaponWithKeywords } from 'src/types/weapon';
 import { Modifier } from 'src/types/modifier';
 import DieIcon from './icons/DieIcon';
 import CardPrice from './CardPrice';
+import ItemRarity from './ItemRarity';
 
 const CyberneticCard = ({ cybernetic }, props) => {
   const { accentPrimary, accentModifier, accentSecondary } =
@@ -79,31 +80,33 @@ const CyberneticCard = ({ cybernetic }, props) => {
       >
         {layoutSize === 'small' || layoutSize === 'xsmall' ? (
           <div className="relative flex h-full flex-col gap-4 sm:gap-8">
-            <div className="flex w-full items-start justify-between gap-8">
-              <div>
-                <div className="flex items-center justify-start gap-4">
-                  <h2 className="pl-4">{cybernetic.name}</h2>
-                  {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-                    <Link
-                      to={`/glam/codex/cybernetics/${cybernetic.id}/update`}
-                    >
-                      <button className="text-accent hover:underline">
-                        Edit
-                      </button>
-                    </Link>
-                  )}
-                </div>
-                <p className="text-tertiary flex-1 whitespace-nowrap pl-4 text-left">
-                  (
-                  {cybernetic.cyberneticType[0].toUpperCase() +
-                    cybernetic.cyberneticType.slice(1)}{' '}
-                  augment)
-                </p>
+            <div>
+              <div className="flex items-start justify-between gap-4">
+                <h2 className="pl-4">{cybernetic.name}</h2>
+                {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+                  <Link to={`/glam/codex/cybernetics/${cybernetic.id}/update`}>
+                    <button className="text-accent hover:underline">
+                      Edit
+                    </button>
+                  </Link>
+                )}
               </div>
+              <p className="text-tertiary flex-1 whitespace-nowrap pl-4 text-left">
+                (
+                {cybernetic.cyberneticType[0].toUpperCase() +
+                  cybernetic.cyberneticType.slice(1)}{' '}
+                augment)
+              </p>
+            </div>
+            <div className="flex w-full items-start justify-between gap-8">
+              <ItemRarity
+                rarity={cybernetic?.rarity}
+                grade={cybernetic?.grade}
+              />
               <div className="flex items-center justify-end gap-4">
                 <CardPrice
                   price={cybernetic?.price}
-                  category="cybernetic"
+                  category="cybernetics"
                   itemId={cybernetic?.id}
                 />
               </div>
@@ -199,19 +202,9 @@ const CyberneticCard = ({ cybernetic }, props) => {
             <div className="flex h-full grow flex-col items-start justify-between gap-6">
               <div className="flex w-full items-start justify-between gap-4">
                 <div>
-                  <div className="flex items-center justify-start gap-4">
-                    <h2 className={`${!cybernetic.picture && 'pl-4'}`}>
-                      {cybernetic.name}
-                    </h2>
-                    {(user?.role === 'ADMIN' ||
-                      user?.role === 'SUPERADMIN') && (
-                      <Link to={`${cybernetic.id}/update`}>
-                        <button className="text-accent hover:underline">
-                          Edit
-                        </button>
-                      </Link>
-                    )}
-                  </div>
+                  <h2 className={`${!cybernetic.picture && 'pl-4'}`}>
+                    {cybernetic.name}
+                  </h2>
                   <p
                     className={`${!cybernetic.picture && 'pl-4'} text-tertiary flex-1 whitespace-nowrap text-left`}
                   >
@@ -221,12 +214,25 @@ const CyberneticCard = ({ cybernetic }, props) => {
                     augment)
                   </p>
                 </div>
-                <div className="flex items-center justify-end gap-4">
-                  <CardPrice
-                    price={cybernetic?.price}
-                    category="cybernetic"
-                    itemId={cybernetic?.id}
+                <div className="timing flex flex-wrap-reverse justify-end gap-x-8 gap-y-4">
+                  <ItemRarity
+                    rarity={cybernetic?.rarity}
+                    grade={cybernetic?.grade}
                   />
+                  <div className="flex items-center justify-end gap-4">
+                    <CardPrice
+                      price={cybernetic?.price}
+                      category="cybernetics"
+                      itemId={cybernetic?.id}
+                    />
+                  </div>
+                  {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+                    <Link to={`${cybernetic.id}/update`}>
+                      <button className="text-accent hover:underline">
+                        Edit
+                      </button>
+                    </Link>
+                  )}
                 </div>
               </div>
               <div className="grid w-full grid-cols-2 gap-6 pr-10">

@@ -5,6 +5,9 @@ import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import Loading from '../Loading';
 import useActiveCharacterQuery from '../../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
+import InventoryIcon from '../../components/icons/InventoryIcon';
+import EquipmentIcon from '../../components/icons/EquipmentIcon';
+import VehicleIcon from '../../components/icons/VehicleIcon';
 
 const CharacterLinks = ({ setSidebarVisibility }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -35,6 +38,58 @@ const CharacterLinks = ({ setSidebarVisibility }) => {
         <LinkSidebar
           title="Create new character"
           path="characters/create"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+      </LinkListSidebar>
+      <LinkListSidebar
+        title={
+          <>
+            <EquipmentIcon className="size-8" />
+            <p className="text-inherit">Equipment</p>
+          </>
+        }
+      >
+        <LinkSidebar
+          title="Equipment"
+          path={`characters/${character?.id}/inventory/weapons`}
+          setSidebarVisibility={setSidebarVisibility}
+        />
+      </LinkListSidebar>
+      <LinkListSidebar
+        title={
+          <>
+            <InventoryIcon className="size-8" />
+            <p className="text-inherit">Inventory</p>
+          </>
+        }
+      >
+        <LinkSidebar
+          title="Weapons"
+          path={`characters/${character?.id}/inventory/weapons`}
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Armor"
+          path={`characters/${character?.id}/inventory/armor`}
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Cybernetics"
+          path={`characters/${character?.id}/inventory/cybernetics`}
+          setSidebarVisibility={setSidebarVisibility}
+        />
+      </LinkListSidebar>
+      <LinkListSidebar
+        title={
+          <>
+            <VehicleIcon className="size-8" />
+            <p className="text-inherit">Garage</p>
+          </>
+        }
+      >
+        <LinkSidebar
+          title="Vehicles"
+          path={`characters/${character?.id}/inventory/vehicles`}
           setSidebarVisibility={setSidebarVisibility}
         />
       </LinkListSidebar>

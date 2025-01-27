@@ -18,17 +18,18 @@ import WeaponIcon from './icons/WeaponIcon';
 import { useParams } from 'react-router-dom';
 import useDeleteWeaponMutation from '../hooks/useDeleteWeaponMutation/useDeleteWeaponMutation';
 import useWeapons from '../hooks/useWeapons';
-import { WeaponWithKeywords } from 'src/types/weapon';
+import { Weapon, WeaponWithKeywords } from 'src/types/weapon';
 import { Keyword } from 'src/types/keyword';
+import SelectField from './SelectField';
 
-const WeaponForm = () => {
+const WeaponForm = ({ weaponList }: { weaponList?: Weapon[] }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { weaponId } = useParams();
 
-  const weapons = useWeapons();
+  const weapons = useWeapons(undefined, weaponList || undefined);
 
   const weapon = weapons.filteredWeapons.filter(
     (weapon: WeaponWithKeywords) => weapon.id === Number(weaponId),
@@ -87,6 +88,8 @@ const WeaponForm = () => {
   const weaponForm = useForm({
     defaultValues: {
       name: weapon?.name || '',
+      rarity: weapon?.rarity || '',
+      grade: weapon?.grade || 1,
       picture: weapon?.picture || '',
       description: weapon?.description || '',
       stats: {
@@ -98,7 +101,7 @@ const WeaponForm = () => {
         magCount: weapon?.stats.magCount || '',
         weight: weapon?.stats.weight || '',
       },
-      price: weapon?.price || '',
+      price: weapon?.price || null,
       keywords:
         weaponKeywordData || ([] as { keywordId: number; value?: number }[]),
     },
@@ -178,12 +181,57 @@ const WeaponForm = () => {
               <InputField className="grow" label="Weapon name" field={field} />
             )}
           </weaponForm.Field>
-          <weaponForm.Field name="price">
+          <weaponForm.Field
+            name="price"
+            validators={{
+              onChange: ({ value }) => {
+                if (value < 0) {
+                  return 'Price cannot be negative';
+                }
+                return undefined;
+              },
+            }}
+          >
             {(field) => (
               <InputField
                 className="max-w-28"
                 type="number"
                 label="Price"
+                field={field}
+              />
+            )}
+          </weaponForm.Field>
+        </div>
+        <div className="flex w-full items-center gap-4 lg:gap-8">
+          <weaponForm.Field
+            name="rarity"
+            validators={{
+              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
+            }}
+          >
+            {(field) => (
+              <SelectField className="w-full" label="Item rarity" field={field}>
+                <option value=""></option>
+                <option value="common">Common</option>
+                <option value="uncommon">Uncommon</option>
+                <option value="rare">Rare</option>
+                <option value="blackMarket">Black Market</option>
+                <option value="artifact">Artifact</option>
+              </SelectField>
+            )}
+          </weaponForm.Field>
+          <weaponForm.Field
+            name="grade"
+            validators={{
+              onChange: ({ value }) =>
+                value <= 0 ? 'Minimum grade is 1' : undefined,
+            }}
+          >
+            {(field) => (
+              <InputField
+                className="w-full max-w-28"
+                type="number"
+                label="Item grade"
                 field={field}
               />
             )}
