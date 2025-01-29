@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const getWeaponById = async (apiUrl: string, weaponId: string) => {
+const getWeaponById = async (apiUrl: string, weaponId?: string) => {
   try {
     const response = await fetch(`${apiUrl}/weapons/${weaponId}`, {
       method: 'GET',

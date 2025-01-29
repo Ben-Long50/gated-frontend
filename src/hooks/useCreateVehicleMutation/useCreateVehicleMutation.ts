@@ -13,7 +13,7 @@ const useCreateVehicleMutation = (
     onSuccess: () => {
       setFormMessage('Vehicle successfully created');
       queryClient.invalidateQueries({
-        queryKey: ['vehicle'],
+        queryKey: ['activeCharacter'],
         exact: false,
       });
       return queryClient.invalidateQueries({

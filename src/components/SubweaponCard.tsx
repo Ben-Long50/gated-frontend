@@ -50,7 +50,7 @@ const SubweaponCard = ({
         })}
       </div>
       <div className="flex flex-wrap items-center justify-start gap-8 gap-y-4">
-        {weapon.stats.damage && (
+        {weapon.stats?.damage && (
           <div className="flex flex-col items-center gap-1">
             {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>DMG</p>}
             <div className="flex items-center gap-2">
@@ -59,7 +59,7 @@ const SubweaponCard = ({
             </div>
           </div>
         )}
-        {weapon.stats.salvo && (
+        {weapon.stats?.salvo && (
           <div className="flex flex-col items-center gap-1">
             {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>SLV</p>}
             <div className="flex items-center gap-2">
@@ -68,7 +68,7 @@ const SubweaponCard = ({
             </div>
           </div>
         )}
-        {weapon.stats.flurry && (
+        {weapon.stats?.flurry && (
           <div className="flex flex-col items-center gap-1">
             {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>FLR</p>}
             <div className="flex items-center gap-2">
@@ -77,7 +77,7 @@ const SubweaponCard = ({
             </div>
           </div>
         )}
-        {weapon.stats.range && (
+        {weapon.stats?.range && (
           <div className="flex flex-col items-center gap-1">
             {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>RNG</p>}
             <div className="flex items-center gap-2">
@@ -86,7 +86,7 @@ const SubweaponCard = ({
             </div>
           </div>
         )}
-        {weapon.stats.magCapacity && (
+        {weapon.stats?.magCapacity && (
           <div className="flex flex-col items-center gap-1">
             {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>MAG</p>}
             <div className="flex items-center gap-2">

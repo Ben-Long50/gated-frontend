@@ -12,7 +12,7 @@ import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 import VehicleIcon from './icons/VehicleIcon';
 import { useParams } from 'react-router-dom';
-import { Modification, Vehicle, VehicleStats } from '../types/vehicle';
+import { Modification, VehicleStats } from '../types/vehicle';
 import { WeaponWithKeywords } from '../types/weapon';
 import InputFieldBasic from './InputFieldBasic';
 import useCreateVehicleMutation from '../hooks/useCreateVehicleMutation/useCreateVehicleMutation';
@@ -21,10 +21,10 @@ import useModifications from '../hooks/useModifications';
 import ModCard from './ModCard';
 import SubweaponCard from './SubweaponCard';
 import useWeapons from '../hooks/useWeapons';
-import useVehicles from '../hooks/useVehicles';
 import SelectField from './SelectField';
+import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
 
-const VehicleForm = () => {
+const VehicleForm = ({ title }: { title: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
@@ -34,11 +34,7 @@ const VehicleForm = () => {
   const [toolTip, setToolTip] = useState('');
   const { vehicleId } = useParams();
 
-  const vehicles = useVehicles();
-
-  const vehicle = vehicles.filteredVehicles.filter(
-    (vehicle: Vehicle) => vehicle.id === Number(vehicleId),
-  )[0];
+  const { data: vehicle } = useVehicleQuery(apiUrl, vehicleId);
 
   const vehicleWeapons = useWeapons(['Vehicle']);
 
@@ -183,7 +179,7 @@ const VehicleForm = () => {
       >
         <div className="flex items-center justify-center gap-4">
           <VehicleIcon className="size-12" />
-          <h1>{vehicle ? 'Update Vehicle' : 'Create Vehicle'}</h1>
+          <h1>{title} Vehicle</h1>
         </div>
         <div className="flex w-full gap-4 lg:gap-8">
           <vehicleForm.Field
@@ -585,10 +581,8 @@ const VehicleForm = () => {
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : vehicle ? (
-            'Update'
           ) : (
-            'Create'
+            title
           )}
         </BtnRect>
       </form>

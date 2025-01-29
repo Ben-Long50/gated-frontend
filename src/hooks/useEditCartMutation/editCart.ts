@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const addToCart = async (
+const editCart = async (
   apiUrl: string,
   formData: {
     characterId: string;
@@ -33,4 +33,4 @@ const addToCart = async (
   }
 };
 
-export default addToCart;
+export default editCart;

@@ -87,11 +87,15 @@ const Cart = () => {
     },
     onSubmit: async ({ value }) => {
       console.log(value);
-      await completePurchase.mutate(value);
-      if (completePurchase.isSuccess) {
-        console.log('success');
+      try {
+        await completePurchase.mutateAsync(value);
 
-        cartForm.reset();
+        if (completePurchase.isSuccess) {
+          console.log('Purchase successful');
+          cartForm.reset();
+        }
+      } catch (error) {
+        console.error('Purchase failed:', error);
       }
     },
     validators: {

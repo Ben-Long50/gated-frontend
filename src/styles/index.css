@@ -12,6 +12,16 @@
   src: url('/exo-regular.otf') format('opentype');
 }
 
+@font-face {
+  font-family: 'kings';
+  src: url('/kings.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'zen-dots';
+  src: url('/zen-dots.ttf') format('truetype');
+}
+
 @layer base {
   body::before {
     content: '';

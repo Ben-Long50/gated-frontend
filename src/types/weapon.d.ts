@@ -4,6 +4,8 @@ import { Picture } from './picture';
 export interface Weapon {
   id: number;
   name: string;
+  rarity: string;
+  grade: number;
   picture: Picture;
   description: string;
   stats: WeaponStats;
@@ -14,6 +16,8 @@ export interface Weapon {
 export interface WeaponWithKeywords {
   id: number;
   name: string;
+  rarity: string;
+  grade: number;
   picture: Picture;
   description: string;
   stats: WeaponStats;

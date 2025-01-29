@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const getVehicleModById = async (apiUrl: string, modId: string) => {
+const getVehicleModById = async (apiUrl: string, modId?: string) => {
   try {
     const response = await fetch(`${apiUrl}/vehicles/modifications/${modId}`, {
       method: 'GET',

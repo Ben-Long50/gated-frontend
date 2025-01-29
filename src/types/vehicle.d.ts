@@ -4,6 +4,8 @@ import { WeaponWithKeywords } from './weapon';
 export interface Vehicle {
   id: number;
   name: string;
+  rarity: string;
+  grade: number;
   picture: Picture;
   description: string;
   stats: VehicleStats;
@@ -15,6 +17,8 @@ export interface Vehicle {
 export interface VehicleWithWeapons {
   id: number;
   name: string;
+  rarity: string;
+  grade: number;
   picture: Picture;
   description: string;
   stats: VehicleStats;

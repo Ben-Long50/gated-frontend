@@ -9,20 +9,15 @@ import Loading from './Loading';
 import { useParams } from 'react-router-dom';
 import useCreateVehicleModMutation from '../hooks/useCreateVehicleModMutation/useCreateVehicleModMutation';
 import useDeleteVehicleModMutation from '../hooks/useDeleteVehicleModMutation/useDeleteKeywordMutation';
-import useModifications from '../hooks/useModifications';
-import { Modification } from 'src/types/vehicle';
+import useVehicleModQuery from '../hooks/useVehicleModQuery/useVehicleModQuery';
 
-const VehicleModForm = () => {
+const VehicleModForm = ({ title }: { title: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { modId } = useParams();
 
-  const modifications = useModifications();
-
-  const modification = modifications.filteredMods.filter(
-    (modification: Modification) => modification.id === Number(modId),
-  )[0];
+  const { data: modification } = useVehicleModQuery(apiUrl, modId);
 
   const createModification = useCreateVehicleModMutation(
     apiUrl,
@@ -80,9 +75,7 @@ const VehicleModForm = () => {
           modForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">
-          {modification ? 'Update Modificiation' : 'Create Modification'}
-        </h1>
+        <h1 className="text-center">{title} Modification</h1>
         <div className="flex w-full gap-4 lg:gap-8">
           <modForm.Field
             name="name"
@@ -153,10 +146,8 @@ const VehicleModForm = () => {
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : modification ? (
-            'Update'
           ) : (
-            'Create'
+            title
           )}
         </BtnRect>
       </form>

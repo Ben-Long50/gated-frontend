@@ -40,6 +40,7 @@ import ErrorReports from './components/ErrorReports';
 import ConditionForm from './components/ConditionForm';
 import Conditions from './components/Conditions';
 import Cart from './components/Cart';
+import Inventory from './components/Inventory';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,6 +66,38 @@ const router = createBrowserRouter(
           <Route path=":characterId" element={<CharacterSheet />} />
           <Route path=":characterId/update" element={<CharacterUpdateForm />} />
           <Route path=":characterId/cart" element={<Cart />} />
+          <Route
+            path=":characterId/inventory/weapons"
+            element={<Inventory category="weapons" />}
+          />
+          <Route
+            path=":characterId/inventory/weapons/:weaponId/modify"
+            element={<WeaponForm title="Modify" />}
+          />
+          <Route
+            path=":characterId/inventory/armor"
+            element={<Inventory category="armor" />}
+          />
+          <Route
+            path=":characterId/inventory/armor/:armorId/modify"
+            element={<ArmorForm title="Modify" />}
+          />
+          <Route
+            path=":characterId/inventory/cybernetics"
+            element={<Inventory category="cybernetics" />}
+          />
+          <Route
+            path=":characterId/inventory/cybernetics/:cyberneticId/modify"
+            element={<CyberneticForm title="Modify" />}
+          />
+          <Route
+            path=":characterId/inventory/vehicles"
+            element={<Inventory category="vehicles" />}
+          />
+          <Route
+            path=":characterId/inventory/vehicles/:vehicleId/modify"
+            element={<VehicleForm title="Modify" />}
+          />
         </Route>
 
         <Route path="codex">
@@ -145,8 +178,11 @@ const router = createBrowserRouter(
                 />
               }
             />
-            <Route path="create" element={<WeaponForm />} />
-            <Route path=":weaponId/update" element={<WeaponForm />} />
+            <Route path="create" element={<WeaponForm title="Create" />} />
+            <Route
+              path=":weaponId/update"
+              element={<WeaponForm title="Update" />}
+            />
           </Route>
 
           <Route path="armor">
@@ -159,14 +195,20 @@ const router = createBrowserRouter(
               path="power"
               element={<Armor title="Power Armor" keywordList={['Power']} />}
             />
-            <Route path="create" element={<ArmorForm />} />
-            <Route path=":armorId/update" element={<ArmorForm />} />
+            <Route path="create" element={<ArmorForm title="Create" />} />
+            <Route
+              path=":armorId/update"
+              element={<ArmorForm title="Update" />}
+            />
           </Route>
 
           <Route path="cybernetics">
             <Route index element={<Cybernetics />} />
-            <Route path="create" element={<CyberneticForm />} />
-            <Route path=":cyberneticId/update" element={<CyberneticForm />} />
+            <Route path="create" element={<CyberneticForm title="Create" />} />
+            <Route
+              path=":cyberneticId/update"
+              element={<CyberneticForm title="Update" />}
+            />
           </Route>
 
           <Route path="vehicles">
@@ -177,14 +219,23 @@ const router = createBrowserRouter(
                 <Weapons title="Vehicle Weapons" keywordList={['Vehicle']} />
               }
             />
-            <Route path="weapons/:weaponId/update" element={<WeaponForm />} />
+            <Route
+              path="weapons/:weaponId/update"
+              element={<WeaponForm title="Update" />}
+            />
             <Route path="modifications" element={<VehicleMods />} />
-            <Route path="create" element={<VehicleForm />} />
-            <Route path="modifications/create" element={<VehicleModForm />} />
-            <Route path=":vehicleId/update" element={<VehicleForm />} />
+            <Route path="create" element={<VehicleForm title="Create" />} />
+            <Route
+              path="modifications/create"
+              element={<VehicleModForm title="Create" />}
+            />
+            <Route
+              path=":vehicleId/update"
+              element={<VehicleForm title="Update" />}
+            />
             <Route
               path="modifications/:modId/update"
-              element={<VehicleModForm />}
+              element={<VehicleModForm title="Update" />}
             />
           </Route>
 

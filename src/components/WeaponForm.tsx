@@ -17,23 +17,18 @@ import FormLayout from '../layouts/FormLayout';
 import WeaponIcon from './icons/WeaponIcon';
 import { useParams } from 'react-router-dom';
 import useDeleteWeaponMutation from '../hooks/useDeleteWeaponMutation/useDeleteWeaponMutation';
-import useWeapons from '../hooks/useWeapons';
-import { Weapon, WeaponWithKeywords } from 'src/types/weapon';
 import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
+import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
 
-const WeaponForm = ({ weaponList }: { weaponList?: Weapon[] }) => {
+const WeaponForm = ({ title }: { title: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { weaponId } = useParams();
 
-  const weapons = useWeapons(undefined, weaponList || undefined);
-
-  const weapon = weapons.filteredWeapons.filter(
-    (weapon: WeaponWithKeywords) => weapon.id === Number(weaponId),
-  )[0];
+  const { data: weapon } = useWeaponQuery(apiUrl, weaponId);
 
   const keywords = useKeywords('weapon');
 
@@ -165,7 +160,7 @@ const WeaponForm = ({ weaponList }: { weaponList?: Weapon[] }) => {
       >
         <div className="flex items-center justify-center gap-4">
           <WeaponIcon className="size-12" />
-          <h1>{weapon ? 'Update Weapon' : 'Create Weapon'}</h1>
+          <h1>{title} Weapon</h1>
         </div>
         <div className="flex w-full gap-4 lg:gap-8">
           <weaponForm.Field
@@ -461,10 +456,8 @@ const WeaponForm = ({ weaponList }: { weaponList?: Weapon[] }) => {
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : weapon ? (
-            'Update'
           ) : (
-            'Create'
+            title
           )}
         </BtnRect>
       </form>

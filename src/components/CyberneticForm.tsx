@@ -6,7 +6,7 @@ import ThemeContainer from './ThemeContainer';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
-import useKeywords, { Keyword } from '../hooks/useKeywords';
+import useKeywords from '../hooks/useKeywords';
 import KeywordCard from './KeywordCard';
 import Icon from '@mdi/react';
 import { mdiClose, mdiCloseBox, mdiImagePlus } from '@mdi/js';
@@ -21,24 +21,17 @@ import { useParams } from 'react-router-dom';
 import useDeleteCyberneticMutation from '../hooks/useDeleteCyberneticMutation/useDeleteCyberneticMutation';
 import ModifierField from './ModifierField';
 import { Modifier } from 'src/types/modifier';
-import useCybernetics from '../hooks/useCybernetics';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
+import useCyberneticQuery from '../hooks/useCyberneticQuery/useCyberneticQuery';
+import { Keyword } from 'src/types/keyword';
 
-const CyberneticForm = () => {
+const CyberneticForm = ({ title }: { title: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { cyberneticId } = useParams();
 
-  const cybernetics = useCybernetics();
-
-  const cybernetic = cybernetics.filteredCybernetics.filter(
-    (cybernetic: CyberneticWithKeywords) =>
-      cybernetic.id === Number(cyberneticId),
-  )[0];
-
-  console.log(cybernetic);
+  const { data: cybernetic } = useCyberneticQuery(apiUrl, cyberneticId);
 
   const keywords = useKeywords();
   const attributeTree = useAttributeTree();
@@ -247,7 +240,7 @@ const CyberneticForm = () => {
       >
         <div className="flex items-center justify-center gap-4">
           <CyberIcon className="size-12" />
-          <h1>{cybernetic ? 'Update Cybernetic' : 'Create Cybernetic'}</h1>
+          <h1>{title} Cybernetic</h1>
         </div>
         <div className="flex w-full gap-4 sm:gap-6 lg:gap-8">
           <cyberneticForm.Field
@@ -1384,10 +1377,8 @@ const CyberneticForm = () => {
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : cybernetic ? (
-            'Update'
           ) : (
-            'Create'
+            title
           )}
         </BtnRect>
       </form>

@@ -17,23 +17,18 @@ import ArmorIcon from './icons/ArmorIcon';
 import { useParams } from 'react-router-dom';
 import InputFieldBasic from './InputFieldBasic';
 import useDeleteArmorMutation from '../hooks/useDeleteArmorMutation/useDeleteArmorMutation';
-import useArmor from '../hooks/useArmor';
-import { ArmorWithKeywords } from 'src/types/armor';
 import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
+import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
 
-const ArmorForm = () => {
+const ArmorForm = ({ title }: { title: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { armorId } = useParams();
 
-  const allArmor = useArmor();
-
-  const armor = allArmor.filteredArmor.filter(
-    (armor: ArmorWithKeywords) => armor.id === Number(armorId),
-  )[0];
+  const { data: armor } = useArmorPieceQuery(apiUrl, armorId);
 
   const keywords = useKeywords('armor');
 
@@ -135,7 +130,7 @@ const ArmorForm = () => {
   };
 
   if (keywords.isLoading || keywords.isPending) {
-    return <span></span>;
+    return <Loading />;
   }
 
   return (
@@ -159,7 +154,7 @@ const ArmorForm = () => {
       >
         <div className="flex items-center justify-center gap-4">
           <ArmorIcon className="size-12" />
-          <h1>{armor ? 'Update Armor' : 'Create Armor'}</h1>
+          <h1>{title} Armor</h1>
         </div>
         <div className="flex w-full gap-4 lg:gap-8">
           <armorForm.Field
@@ -424,10 +419,8 @@ const ArmorForm = () => {
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : armor ? (
-            'Update'
           ) : (
-            'Create'
+            title
           )}
         </BtnRect>
       </form>

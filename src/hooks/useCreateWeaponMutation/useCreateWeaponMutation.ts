@@ -17,7 +17,7 @@ const useCreateWeaponMutation = (
         exact: false,
       });
       queryClient.invalidateQueries({
-        queryKey: ['weaponsByKeyword'],
+        queryKey: ['activeCharacter'],
         exact: false,
       });
       return queryClient.invalidateQueries({

@@ -20,6 +20,8 @@ export default {
       fontFamily: {
         sans: ['Exo-regular'],
         logo: ['Omnitrinx', 'Exo-regular', 'Inter'],
+        kings: ['kings'],
+        zen: ['zen-dots'],
       },
       height: {
         '70dvh': '70dvh',

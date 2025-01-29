@@ -13,7 +13,7 @@ const useCreateArmorMutation = (
     onSuccess: () => {
       setFormMessage('Armor successfully created');
       queryClient.invalidateQueries({
-        queryKey: ['armorPiece'],
+        queryKey: ['activeCharacter'],
         exact: false,
       });
       return queryClient.invalidateQueries({

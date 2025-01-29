@@ -6,6 +6,7 @@ const useVehicleQuery = (apiUrl: string, vehicleId?: string) => {
     queryKey: ['vehicle', vehicleId],
     queryFn: async () => await getVehicleById(apiUrl, vehicleId),
     throwOnError: false,
+    enabled: !!vehicleId,
   });
 };
 

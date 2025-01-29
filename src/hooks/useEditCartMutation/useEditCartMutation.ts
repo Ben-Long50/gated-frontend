@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import addToCart from './addToCart';
+import editCart from './editCart';
 
-const useAddToCartMutation = (apiUrl: string) => {
+const useEditCartMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: {
@@ -9,7 +9,7 @@ const useAddToCartMutation = (apiUrl: string) => {
       category: string;
       itemId: string;
     }) => {
-      return addToCart(apiUrl, formData);
+      return editCart(apiUrl, formData);
     },
     onSuccess: () => {
       return queryClient.invalidateQueries({
@@ -21,4 +21,4 @@ const useAddToCartMutation = (apiUrl: string) => {
   });
 };
 
-export default useAddToCartMutation;
+export default useEditCartMutation;

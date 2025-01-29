@@ -6,6 +6,7 @@ const useCyberneticQuery = (apiUrl: string, cyberneticId?: string) => {
     queryKey: ['cybernetic', cyberneticId],
     queryFn: async () => await getCyberneticById(apiUrl, cyberneticId),
     throwOnError: false,
+    enabled: !!cyberneticId,
   });
 };
 

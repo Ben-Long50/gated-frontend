@@ -25,7 +25,7 @@ const useCreateCyberneticMutation = (
         exact: false,
       });
       queryClient.invalidateQueries({
-        queryKey: ['cybernetic'],
+        queryKey: ['activeCharacter'],
         exact: false,
       });
       return queryClient.invalidateQueries({

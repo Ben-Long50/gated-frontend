@@ -8,12 +8,15 @@ import { Weapon, WeaponWithKeywords } from './weapon';
 export interface Cybernetic {
   id: number;
   name: string;
+  rarity: string;
+  grade: number;
   picture: Picture;
   description: string;
   cyberneticType: string;
   cyber: number;
   stats: Partial<CyberneticStats>;
   price: number;
+  body: string[];
   weapons: Weapon[];
   armor: Armor[];
   actions: Action[];
@@ -24,12 +27,15 @@ export interface Cybernetic {
 export interface CyberneticWithKeywords {
   id: number;
   name: string;
+  rarity: string;
+  grade: number;
   picture: Picture;
   description: string;
   cyberneticType: string;
   cyber: number;
   stats: Partial<CyberneticStats>;
   price: number;
+  body: string[];
   weapons: WeaponWithKeywords[];
   armor: ArmorWithKeywords[];
   actions: Action[];

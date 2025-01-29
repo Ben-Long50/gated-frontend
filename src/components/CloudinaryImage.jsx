@@ -1,7 +1,33 @@
 import { forwardRef, useEffect, useState } from 'react';
+import ThemeContainer from './ThemeContainer';
 
 const CloudinaryImage = forwardRef((props, ref) => {
   const [aspectRatio, setAspectRatio] = useState({ width: 1, height: 1 });
+
+  let color;
+
+  if (props.rarity) {
+    switch (props.rarity) {
+      case 'common':
+        color = 'rgb(156 163 175)';
+        break;
+      case 'uncommon':
+        color = 'rgb(34 197 94)';
+        break;
+      case 'rare':
+        color = 'rgb(220 38 38)';
+        break;
+      case 'blackMarket':
+        color = 'rgb(126 34 206)';
+        break;
+      case 'artifact':
+        color = 'rgb(251 191 36)';
+        break;
+      default:
+        color = 'transparent';
+        break;
+    }
+  }
 
   let responsiveUrl;
   let infoUrl;
@@ -72,14 +98,14 @@ const CloudinaryImage = forwardRef((props, ref) => {
 
   return (
     <div
-      className={`${props.className} ${props.detailsOpen ? 'max-w-full sm:w-1/2 sm:max-w-[400px]' : 'max-w-48 sm:max-w-60'} image-container timing mb-auto flex aspect-square w-full shrink-0 justify-center overflow-hidden clip-6 sm:min-w-60`}
+      className={`${props.className} ${props.detailsOpen ? 'max-w-full sm:max-w-[300px] lg:max-w-[400px]' : 'max-w-48 sm:max-w-60'} image-container timing mb-auto aspect-square w-full shrink-0 overflow-hidden sm:min-w-60`}
       style={{
         aspectRatio: aspectRatio.width / aspectRatio.height,
       }}
     >
       <img
         ref={ref}
-        className="cld-responsive text-secondary object-cover text-xl"
+        className="cld-responsive text-secondary object-cover text-xl clip-6"
         width={props.width}
         height={props.height}
         data-src={responsiveUrl}

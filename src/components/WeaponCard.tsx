@@ -1,361 +1,62 @@
-import { mdiChevronDown } from '@mdi/js';
-import Icon from '@mdi/react';
 import DamageIcon from './icons/DamageIcon';
 import SalvoIcon from './icons/SalvoIcon';
 import FlurryIcon from './icons/FlurryIcon';
 import RangeIcon from './icons/RangeIcon';
 import EquipIcon from './icons/EquipIcon';
-import ThemeContainer from './ThemeContainer';
-import { useContext, useEffect, useRef, useState } from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
-import Tag from './Tag';
-import { LayoutContext } from '../contexts/LayoutContext';
 import MagCapacityIcon from './icons/MagCapacityIcon';
-import { Link } from 'react-router-dom';
-import CloudinaryImage from './CloudinaryImage';
-import { AuthContext } from '../contexts/AuthContext';
-import { Keyword } from '../types/keyword';
-import CardPrice from './CardPrice';
-import BtnRect from './buttons/BtnRect';
-import ItemRarity from './ItemRarity';
+import ItemCard from './ItemCard';
+import { WeaponWithKeywords } from 'src/types/weapon';
+import StatCard from './StatCard';
 
-const WeaponCard = ({ weapon }, props) => {
-  const { accentPrimary } = useContext(ThemeContext);
-  const { user } = useContext(AuthContext);
-  const { layoutSize } = useContext(LayoutContext);
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [detailHeight, setDetailHeight] = useState(1000);
-  const [toolTip, setToolTip] = useState('');
-
-  useEffect(() => {
-    if (toolTip) {
-      document.addEventListener('click', () => setToolTip(''));
-    } else {
-      document.removeEventListener('click', () => setToolTip(''));
-    }
-
-    return () => {
-      document.removeEventListener('click', () => setToolTip(''));
-    };
-  }, [toolTip]);
-
-  const detailRef = useRef(null);
-
-  useEffect(() => {
-    if (detailRef.current) {
-      setDetailHeight(detailRef.current.offsetHeight);
-    }
-  }, [detailRef.current]);
-
+const WeaponCard = ({
+  weapon,
+  type,
+}: {
+  weapon: WeaponWithKeywords;
+  type: string;
+}) => {
   return (
-    <ThemeContainer
-      chamfer="24"
-      className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
-      borderColor={accentPrimary}
-    >
-      <div
-        className={`${props.className} bg-primary timing flex cursor-pointer flex-col p-4 clip-6`}
-        onClick={async (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (!toolTip) {
-            setDetailsOpen(!detailsOpen);
-          } else {
-            setToolTip('');
+    <ItemCard item={weapon} category="weapons" type={type}>
+      {weapon.stats.damage && (
+        <StatCard label="DMG" stat={weapon.stats.damage}>
+          <DamageIcon className="size-8" />
+        </StatCard>
+      )}
+      {weapon.stats.salvo && (
+        <StatCard label="SLV" stat={weapon.stats.salvo}>
+          <SalvoIcon className="size-8" />
+        </StatCard>
+      )}
+      {weapon.stats.flurry && (
+        <StatCard label="FLR" stat={weapon.stats.flurry}>
+          <FlurryIcon className="size-8" />
+        </StatCard>
+      )}
+      {weapon.stats.range && (
+        <StatCard label="RNG" stat={weapon.stats.range}>
+          <RangeIcon className="size-8" />
+        </StatCard>
+      )}
+      {weapon.stats.weight && (
+        <StatCard label="WGT" stat={weapon.stats.weight}>
+          <EquipIcon className="size-8" />
+        </StatCard>
+      )}
+      {weapon.stats.magCapacity && (
+        <StatCard
+          label="MAG"
+          stat={
+            weapon.stats.magCapacity +
+            ' / ' +
+            (weapon.stats.magCount
+              ? weapon.stats.magCapacity * (weapon.stats.magCount - 1)
+              : 'X')
           }
-        }}
-      >
-        {layoutSize === 'small' || layoutSize === 'xsmall' ? (
-          <>
-            <div className="relative flex h-full flex-col gap-4 sm:gap-8">
-              <div className="flex items-start justify-between gap-4">
-                <h2 className="pl-4">{weapon.name}</h2>
-                {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-                  <Link to={`/glam/codex/weapons/${weapon.id}/update`}>
-                    <button className="text-accent hover:underline">
-                      Edit
-                    </button>
-                  </Link>
-                )}
-              </div>
-              <div className="flex w-full items-start justify-between gap-8">
-                <ItemRarity rarity={weapon?.rarity} grade={weapon?.grade} />
-                <div className="flex items-center justify-end gap-4">
-                  <CardPrice
-                    price={weapon?.price}
-                    category="weapons"
-                    itemId={weapon?.id}
-                  />
-                </div>
-              </div>
-
-              <div className="flex w-full flex-wrap items-center gap-1 justify-self-start">
-                {weapon.keywords.map(
-                  (item: { keyword: Keyword; value?: number }) => {
-                    return (
-                      <Tag
-                        key={item.keyword.id}
-                        label={
-                          item.value
-                            ? item.keyword.name + ' ' + item.value
-                            : item.keyword.name
-                        }
-                        description={item.keyword.description}
-                        toolTip={toolTip}
-                        setToolTip={setToolTip}
-                      />
-                    );
-                  },
-                )}
-              </div>
-              <div
-                className={`flex ${detailsOpen ? 'flex-col' : 'flex-row'} items-start justify-start gap-6`}
-              >
-                {weapon.picture && (
-                  <CloudinaryImage
-                    url={weapon.picture?.imageUrl}
-                    alt={weapon.name + ' ' + 'image'}
-                    detailsOpen={detailsOpen}
-                  />
-                )}
-                <div
-                  className={`timing flex h-full ${weapon.picture && !detailsOpen ? 'flex-col' : 'flex-row pb-4'} flex-wrap items-start justify-between gap-4 sm:gap-8`}
-                >
-                  {weapon.stats.damage && (
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="flex items-center gap-2">
-                        <DamageIcon className="size-8" />
-                        <p>{weapon.stats.damage}</p>
-                      </div>
-                    </div>
-                  )}
-                  {weapon.stats.salvo && (
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="flex items-center gap-2">
-                        <SalvoIcon className="size-8" />
-                        <p>{weapon.stats.salvo}</p>
-                      </div>
-                    </div>
-                  )}
-                  {weapon.stats.flurry && (
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="flex items-center gap-2">
-                        <FlurryIcon className="size-8" />
-                        <p>{weapon.stats.flurry}</p>
-                      </div>
-                    </div>
-                  )}
-                  {weapon.stats.range && (
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="flex items-center gap-2">
-                        <RangeIcon className="size-8" />
-                        <p>{weapon.stats.range}</p>
-                      </div>
-                    </div>
-                  )}
-                  {weapon.stats.magCapacity && (
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="flex items-center gap-2">
-                        <MagCapacityIcon className="size-8" />
-                        <p>
-                          {weapon.stats.magCapacity}/
-                          {weapon.stats.magCount
-                            ? weapon.stats.magCapacity *
-                              (weapon.stats.magCount - 1)
-                            : 'X'}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  {weapon.stats.weight && (
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="flex items-center gap-2">
-                        <EquipIcon className="size-8" />
-                        <p>{weapon.stats.weight}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <span
-                className={`absolute bottom-0 right-0 transition duration-300 ${detailsOpen && '-rotate-180'}`}
-              >
-                <Icon
-                  path={mdiChevronDown}
-                  size={1.1}
-                  className={`text-secondary`}
-                ></Icon>
-              </span>
-            </div>
-            <div className="overflow-hidden">
-              <p
-                ref={detailRef}
-                className={`timing text-secondary pr-8`}
-                style={
-                  detailsOpen
-                    ? {
-                        marginTop: 0,
-                      }
-                    : {
-                        marginTop: -detailHeight - 4,
-                      }
-                }
-              >
-                {weapon.description}
-              </p>
-            </div>
-          </>
-        ) : (
-          <div className="relative flex h-full gap-8">
-            {weapon.picture && (
-              <CloudinaryImage
-                url={weapon.picture?.imageUrl}
-                alt={weapon.name + ' ' + 'image'}
-                detailsOpen={detailsOpen}
-              />
-            )}
-            <div className="flex h-full grow flex-col items-start justify-between gap-6">
-              <div className="flex w-full items-start justify-between gap-8">
-                <h2 className={`${!weapon.picture && 'pl-4'} mr-auto`}>
-                  {weapon.name}
-                </h2>
-                <div className="timing flex flex-wrap-reverse justify-end gap-x-8 gap-y-4">
-                  <ItemRarity rarity={weapon?.rarity} grade={weapon?.grade} />
-                  <div className="flex items-center justify-end gap-4">
-                    <CardPrice
-                      price={weapon?.price}
-                      category="weapons"
-                      itemId={weapon?.id}
-                    />
-                  </div>
-                  {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-                    <Link to={`/glam/codex/weapons/${weapon.id}/update`}>
-                      <button className="text-accent hover:underline">
-                        Edit
-                      </button>
-                    </Link>
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-wrap items-center gap-1">
-                {weapon.keywords?.map(
-                  (item: { keyword: Keyword; value?: number }) => {
-                    return (
-                      <Tag
-                        key={item.keyword.id}
-                        label={
-                          item.value
-                            ? item.keyword.name + ' ' + item.value
-                            : item.keyword.name
-                        }
-                        description={item.keyword.description}
-                        toolTip={toolTip}
-                        setToolTip={setToolTip}
-                      />
-                    );
-                  },
-                )}
-              </div>
-              <div className="flex flex-wrap items-center justify-start gap-8">
-                {weapon.stats.damage && (
-                  <div className="flex flex-col items-center gap-1">
-                    <p>DMG</p>
-                    <div className="flex items-center gap-2">
-                      <DamageIcon className="size-8" />
-                      <p className="sm:pt-1">{weapon.stats.damage}</p>
-                    </div>
-                  </div>
-                )}
-                {weapon.stats.salvo && (
-                  <div className="flex flex-col items-center gap-1">
-                    <p>SLV</p>
-                    <div className="flex items-center gap-2">
-                      <SalvoIcon className="size-8" />
-                      <p className="sm:pt-1">{weapon.stats.salvo}</p>
-                    </div>
-                  </div>
-                )}
-                {weapon.stats.flurry && (
-                  <div className="flex flex-col items-center gap-1">
-                    <p>FLR</p>
-                    <div className="flex items-center gap-2">
-                      <FlurryIcon className="size-8" />
-                      <p className="sm:pt-1">{weapon.stats.flurry}</p>
-                    </div>
-                  </div>
-                )}
-                {weapon.stats.range && (
-                  <div className="flex flex-col items-center gap-1">
-                    <p>RNG</p>
-                    <div className="flex items-center gap-2">
-                      <RangeIcon className="size-8" />
-                      <p className="sm:pt-1">{weapon.stats.range}</p>
-                    </div>
-                  </div>
-                )}
-                {weapon.stats.magCapacity && (
-                  <div className="flex flex-col items-center gap-1">
-                    <p>MAG</p>
-                    <div className="flex items-center gap-2">
-                      <MagCapacityIcon className="size-8" />
-                      <p>
-                        {weapon.stats.magCapacity}/
-                        {weapon.stats.magCount
-                          ? weapon.stats.magCapacity *
-                            (weapon.stats.magCount - 1)
-                          : 'X'}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {weapon.stats.weight && (
-                  <div className="flex flex-col items-center gap-1">
-                    <p>WGT</p>
-                    <div className="flex items-center gap-2">
-                      <EquipIcon className="size-8" />
-                      <p className="sm:pt-1">{weapon.stats.weight}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className={`overflow-hidden`}>
-                <div
-                  ref={detailRef}
-                  className={`timing text-secondary flex flex-col gap-8 p-1 pr-8`}
-                  style={
-                    detailsOpen
-                      ? {
-                          marginTop: 0,
-                        }
-                      : {
-                          marginTop: -detailHeight - 4,
-                        }
-                  }
-                >
-                  <p className={`text-secondary`}>{weapon.description}</p>
-                  {!weapon.characterInventory && (
-                    <div className="self-end">
-                      <Link to={`${weapon.id}/modify`}>
-                        <BtnRect>Modify weapon</BtnRect>
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <span
-              className={`absolute bottom-0 right-0 transition duration-300 ${detailsOpen && '-rotate-180'}`}
-            >
-              <Icon
-                path={mdiChevronDown}
-                size={1.1}
-                className={`text-secondary`}
-              ></Icon>
-            </span>
-          </div>
-        )}
-      </div>
-    </ThemeContainer>
+        >
+          <MagCapacityIcon className="size-8" />
+        </StatCard>
+      )}
+    </ItemCard>
   );
 };
 

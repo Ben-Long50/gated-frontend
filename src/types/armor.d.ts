@@ -4,6 +4,8 @@ import { Picture } from './picture';
 interface Armor {
   id: number;
   name: string;
+  rarity: string;
+  grade: number;
   picture: Picture;
   description: string;
   stats: ArmorStats;
@@ -14,6 +16,8 @@ interface Armor {
 interface ArmorWithKeywords {
   id: number;
   name: string;
+  rarity: string;
+  grade: number;
   picture: Picture;
   description: string;
   stats: ArmorStats;
