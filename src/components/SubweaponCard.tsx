@@ -10,6 +10,7 @@ import { useContext } from 'react';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
+import StatCard from './StatCard';
 
 const SubweaponCard = ({
   weapon,
@@ -25,7 +26,7 @@ const SubweaponCard = ({
   const { layoutSize } = useContext(LayoutContext);
 
   return (
-    <div className="flex h-full grow flex-col items-start justify-between gap-4">
+    <div className="flex h-full w-full grow flex-col items-start justify-between gap-4">
       {quantity ? (
         <h3>{weapon.name + ' x ' + quantity}</h3>
       ) : (
@@ -49,56 +50,40 @@ const SubweaponCard = ({
           );
         })}
       </div>
-      <div className="flex flex-wrap items-center justify-start gap-8 gap-y-4">
-        {weapon.stats?.damage && (
-          <div className="flex flex-col items-center gap-1">
-            {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>DMG</p>}
-            <div className="flex items-center gap-2">
-              <DamageIcon className="size-8" />
-              <p className="sm:pt-1">{weapon.stats.damage}</p>
-            </div>
-          </div>
+      <div className="timing col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-4">
+        {weapon.stats.damage && (
+          <StatCard label="DMG" stat={weapon.stats.damage}>
+            <DamageIcon className="size-8" />
+          </StatCard>
         )}
-        {weapon.stats?.salvo && (
-          <div className="flex flex-col items-center gap-1">
-            {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>SLV</p>}
-            <div className="flex items-center gap-2">
-              <SalvoIcon className="size-8" />
-              <p className="sm:pt-1">{weapon.stats.salvo}</p>
-            </div>
-          </div>
+        {weapon.stats.salvo && (
+          <StatCard label="SLV" stat={weapon.stats.salvo}>
+            <SalvoIcon className="size-8" />
+          </StatCard>
         )}
-        {weapon.stats?.flurry && (
-          <div className="flex flex-col items-center gap-1">
-            {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>FLR</p>}
-            <div className="flex items-center gap-2">
-              <FlurryIcon className="size-8" />
-              <p className="sm:pt-1">{weapon.stats.flurry}</p>
-            </div>
-          </div>
+        {weapon.stats.flurry && (
+          <StatCard label="FLR" stat={weapon.stats.flurry}>
+            <FlurryIcon className="size-8" />
+          </StatCard>
         )}
-        {weapon.stats?.range && (
-          <div className="flex flex-col items-center gap-1">
-            {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>RNG</p>}
-            <div className="flex items-center gap-2">
-              <RangeIcon className="size-8" />
-              <p className="sm:pt-1">{weapon.stats.range}</p>
-            </div>
-          </div>
+        {weapon.stats.range && (
+          <StatCard label="RNG" stat={weapon.stats.range}>
+            <RangeIcon className="size-8" />
+          </StatCard>
         )}
-        {weapon.stats?.magCapacity && (
-          <div className="flex flex-col items-center gap-1">
-            {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>MAG</p>}
-            <div className="flex items-center gap-2">
-              <MagCapacityIcon className="size-8" />
-              <p>
-                {weapon.stats.magCapacity}/
-                {weapon.stats.magCount
-                  ? weapon.stats.magCapacity * (weapon.stats.magCount - 1)
-                  : 'X'}
-              </p>
-            </div>
-          </div>
+        {weapon.stats.magCapacity && (
+          <StatCard
+            label="MAG"
+            stat={
+              weapon.stats.magCapacity +
+              ' / ' +
+              (weapon.stats.magCount
+                ? weapon.stats.magCapacity * (weapon.stats.magCount - 1)
+                : 'X')
+            }
+          >
+            <MagCapacityIcon className="size-8" />
+          </StatCard>
         )}
       </div>
     </div>

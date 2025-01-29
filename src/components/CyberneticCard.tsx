@@ -8,6 +8,7 @@ import DieIcon from './icons/DieIcon';
 import ItemCard from './ItemCard';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import StatCard from './StatCard';
+import LightningIcon from './icons/LightningIcon';
 
 const CyberneticCard = ({
   cybernetic,
@@ -25,7 +26,7 @@ const CyberneticCard = ({
       )}
       {cybernetic.stats.power && (
         <StatCard label="PWR" stat={cybernetic.stats.power}>
-          <PowerIcon className="size-8" />
+          <LightningIcon className="size-8" />
         </StatCard>
       )}
       {cybernetic.modifiers?.length > 0 && (

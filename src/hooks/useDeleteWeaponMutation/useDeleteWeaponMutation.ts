@@ -14,13 +14,13 @@ const useDeleteWeaponMutation = (
       return deleteWeapon(apiUrl, weaponId);
     },
     onSuccess: () => {
-      navigate('/glam/codex/weapons');
+      navigate(-1);
       queryClient.invalidateQueries({
         queryKey: ['weapon'],
         exact: false,
       });
       queryClient.invalidateQueries({
-        queryKey: ['weaponsByKeyword'],
+        queryKey: ['activeCharacter'],
         exact: false,
       });
       return queryClient.invalidateQueries({

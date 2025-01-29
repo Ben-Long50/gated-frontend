@@ -32,7 +32,10 @@ const Inventory = ({ category }: { category: string }) => {
     character?.characterInventory?.cybernetics,
   );
 
-  const vehicles = useVehicles(character?.characterInventory?.vehicles);
+  const vehicles = useVehicles(
+    character?.characterInventory?.vehicles,
+    character?.characterInventory?.weapons,
+  );
 
   if (isLoading || isPending) return <Loading />;
 

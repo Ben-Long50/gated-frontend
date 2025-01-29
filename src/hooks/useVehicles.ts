@@ -5,10 +5,10 @@ import { Vehicle, VehicleWithWeapons } from 'src/types/vehicle';
 import useWeapons from './useWeapons';
 import { WeaponWithKeywords } from 'src/types/weapon';
 
-const useVehicles = (vehicleList?: Vehicle[]) => {
+const useVehicles = (vehicleList?: Vehicle[], weaponList?: Weapon[]) => {
   const { apiUrl } = useContext(AuthContext);
 
-  const vehicleWeapons = useWeapons(['Vehicle']);
+  const vehicleWeapons = useWeapons(['Vehicle'], weaponList);
 
   const { data: vehicles, isLoading, isPending } = useVehiclesQuery(apiUrl);
 

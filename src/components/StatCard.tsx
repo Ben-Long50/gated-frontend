@@ -17,7 +17,7 @@ const StatCard = ({
       {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>{label}</p>}
       <div className="flex items-center gap-2">
         <div className="shrink-0">{children}</div>
-        <p className="whitespace-nowrap">{stat}</p>
+        <p className="whitespace-nowrap text-2xl font-semibold">{stat}</p>
       </div>
     </div>
   );

@@ -14,9 +14,13 @@ const useDeleteVehicleMutation = (
       return deleteVehicle(apiUrl, vehicleId);
     },
     onSuccess: () => {
-      navigate('/glam/codex/vehicles');
+      navigate(-1);
       queryClient.invalidateQueries({
         queryKey: ['vehicle'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['activeCharacter'],
         exact: false,
       });
       return queryClient.invalidateQueries({

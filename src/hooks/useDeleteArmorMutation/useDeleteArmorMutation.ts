@@ -14,9 +14,13 @@ const useDeleteArmorMutation = (
       return deleteArmor(apiUrl, armorId);
     },
     onSuccess: () => {
-      navigate('/glam/codex/armor');
+      navigate(-1);
       queryClient.invalidateQueries({
         queryKey: ['armorPiece'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['activeCharacter'],
         exact: false,
       });
       return queryClient.invalidateQueries({

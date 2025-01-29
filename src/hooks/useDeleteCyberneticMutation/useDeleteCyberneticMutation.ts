@@ -14,9 +14,13 @@ const useDeleteCyberneticMutation = (
       return deleteCybernetic(apiUrl, cyberneticId);
     },
     onSuccess: () => {
-      navigate('/glam/codex/cybernetics');
+      navigate(-1);
       queryClient.invalidateQueries({
         queryKey: ['cybernetic'],
+        exact: false,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['activeCharacter'],
         exact: false,
       });
       return queryClient.invalidateQueries({

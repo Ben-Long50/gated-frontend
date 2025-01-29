@@ -220,7 +220,9 @@ const ItemCard = ({
                     </p>
                   )}
                 </div>
-                <div className="timing row-span-2 flex flex-col items-end justify-end gap-x-8 gap-y-4">
+                <div
+                  className={`${type !== 'inventory' && 'row-span-2'} timing flex flex-col items-end justify-end gap-x-8 gap-y-4`}
+                >
                   {type !== 'inventory' && (
                     <div className="flex items-center justify-end gap-4">
                       <CardPrice
@@ -244,42 +246,46 @@ const ItemCard = ({
                     grade={item?.grade}
                   />
                 </div>
-                <div className="row-start-2 flex flex-wrap items-center gap-1">
-                  {item.body && (
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="mr-4 flex flex-wrap items-center gap-2">
-                        <BodyIcon className="size-8" />
-                        {item.body.map((body, index) => {
-                          return (
-                            <p key={body}>
-                              {body}
-                              <span>{index < item.body.length - 1 && ','}</span>
-                            </p>
-                          );
-                        })}
+                {(item.body || item.keywords) && (
+                  <div className="row-start-2 flex flex-wrap items-center gap-1">
+                    {item.body && (
+                      <div className="flex flex-col items-center gap-1">
+                        <div className="mr-4 flex flex-wrap items-center gap-2">
+                          <BodyIcon className="size-8" />
+                          {item.body.map((body, index) => {
+                            return (
+                              <p key={body}>
+                                {body}
+                                <span>
+                                  {index < item.body.length - 1 && ','}
+                                </span>
+                              </p>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {item?.keywords &&
-                    item.keywords.length > 0 &&
-                    item.keywords?.map(
-                      (item: { keyword: Keyword; value?: number }) => {
-                        return (
-                          <Tag
-                            key={item.keyword.id}
-                            label={
-                              item.value
-                                ? item.keyword.name + ' ' + item.value
-                                : item.keyword.name
-                            }
-                            description={item.keyword.description}
-                            toolTip={toolTip}
-                            setToolTip={setToolTip}
-                          />
-                        );
-                      },
                     )}
-                </div>
+                    {item?.keywords &&
+                      item.keywords.length > 0 &&
+                      item.keywords?.map(
+                        (item: { keyword: Keyword; value?: number }) => {
+                          return (
+                            <Tag
+                              key={item.keyword.id}
+                              label={
+                                item.value
+                                  ? item.keyword.name + ' ' + item.value
+                                  : item.keyword.name
+                              }
+                              description={item.keyword.description}
+                              toolTip={toolTip}
+                              setToolTip={setToolTip}
+                            />
+                          );
+                        },
+                      )}
+                  </div>
+                )}
                 <div className="timing col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,auto))] place-items-center gap-4">
                   {children}
                 </div>
