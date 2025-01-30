@@ -335,11 +335,11 @@ const ItemCard = ({
                     (weapon: WeaponWithKeywords, index: number) => {
                       return (
                         <div
-                          key={weapon.name}
+                          key={weapon?.name}
                           className="flex h-full grow flex-col items-start justify-between gap-4"
                         >
                           <SubweaponCard
-                            weapon={weapon.weapon ? weapon.weapon : weapon}
+                            weapon={weapon}
                             toolTip={toolTip}
                             setToolTip={setToolTip}
                           />

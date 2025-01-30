@@ -1,5 +1,5 @@
 import { Picture } from './picture';
-import { WeaponWithKeywords } from './weapon';
+import { Weapon, WeaponWithKeywords } from './weapon';
 
 export interface Vehicle {
   id: number;
@@ -10,7 +10,7 @@ export interface Vehicle {
   description: string;
   stats: VehicleStats;
   price: number;
-  weapons: { weaponId: number; quantity: number }[];
+  weapons: Weapon[];
   modifications: number[];
 }
 

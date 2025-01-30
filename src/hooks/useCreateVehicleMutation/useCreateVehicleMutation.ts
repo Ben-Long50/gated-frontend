@@ -16,6 +16,10 @@ const useCreateVehicleMutation = (
         queryKey: ['activeCharacter'],
         exact: false,
       });
+      queryClient.invalidateQueries({
+        queryKey: ['vehicle'],
+        exact: false,
+      });
       return queryClient.invalidateQueries({
         queryKey: ['vehicles'],
         exact: false,

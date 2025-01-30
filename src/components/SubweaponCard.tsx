@@ -5,16 +5,11 @@ import SalvoIcon from './icons/SalvoIcon';
 import FlurryIcon from './icons/FlurryIcon';
 import RangeIcon from './icons/RangeIcon';
 import MagCapacityIcon from './icons/MagCapacityIcon';
-import { LayoutContext } from '../contexts/LayoutContext';
-import { useContext } from 'react';
 import { WeaponWithKeywords } from 'src/types/weapon';
-import Icon from '@mdi/react';
-import { mdiClose } from '@mdi/js';
 import StatCard from './StatCard';
 
 const SubweaponCard = ({
   weapon,
-  quantity,
   toolTip,
   setToolTip,
 }: {
@@ -23,16 +18,9 @@ const SubweaponCard = ({
   toolTip: string;
   setToolTip: void;
 }) => {
-  const { layoutSize } = useContext(LayoutContext);
-
   return (
     <div className="flex h-full w-full grow flex-col items-start justify-between gap-4">
-      {quantity ? (
-        <h3>{weapon.name + ' x ' + quantity}</h3>
-      ) : (
-        <h3>{weapon.name}</h3>
-      )}
-
+      <h3>{weapon?.name}</h3>
       <div className="flex flex-wrap items-center gap-2">
         {weapon.keywords?.map((item: { keyword: Keyword; value?: number }) => {
           return (

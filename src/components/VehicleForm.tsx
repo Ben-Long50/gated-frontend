@@ -14,7 +14,6 @@ import VehicleIcon from './icons/VehicleIcon';
 import { useParams } from 'react-router-dom';
 import { Modification, VehicleStats } from '../types/vehicle';
 import { WeaponWithKeywords } from '../types/weapon';
-import InputFieldBasic from './InputFieldBasic';
 import useCreateVehicleMutation from '../hooks/useCreateVehicleMutation/useCreateVehicleMutation';
 import useDeleteVehicleMutation from '../hooks/useDeleteVehicleMutation/useDeleteVehicleMutation';
 import useModifications from '../hooks/useModifications';
@@ -23,6 +22,7 @@ import SubweaponCard from './SubweaponCard';
 import useWeapons from '../hooks/useWeapons';
 import SelectField from './SelectField';
 import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
+import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 
 const VehicleForm = ({ title }: { title: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -34,9 +34,21 @@ const VehicleForm = ({ title }: { title: string }) => {
   const [toolTip, setToolTip] = useState('');
   const { vehicleId } = useParams();
 
+  const { data: character } = useActiveCharacterQuery(apiUrl);
+
   const { data: vehicle } = useVehicleQuery(apiUrl, vehicleId);
 
-  const vehicleWeapons = useWeapons(['Vehicle']);
+  const vehicleWeapons = useWeapons(
+    ['Vehicle'],
+    title === 'Modify' && character?.characterInventory.weapons,
+  );
+
+  const equippedWeapons = useWeapons(undefined, vehicle?.weapons);
+
+  const weaponList =
+    title === 'Modify'
+      ? vehicleWeapons.filteredWeapons
+      : [...vehicleWeapons.filteredWeapons, ...equippedWeapons.filteredWeapons];
 
   const modifications = useModifications();
 
@@ -65,9 +77,7 @@ const VehicleForm = ({ title }: { title: string }) => {
   };
 
   const vehicleWeaponDetails = vehicle?.weapons?.map(
-    (weapon: { weapon: WeaponWithKeywords; quantity: number }) => {
-      return { weaponId: weapon.weapon.id, quantity: weapon.quantity };
-    },
+    (weapon: WeaponWithKeywords) => weapon.id,
   );
 
   const modIds = vehicle?.modifications?.map(
@@ -154,7 +164,12 @@ const VehicleForm = ({ title }: { title: string }) => {
     }
   };
 
-  if (vehicleWeapons.isLoading || vehicleWeapons.isPending) {
+  if (
+    vehicleWeapons.isLoading ||
+    vehicleWeapons.isPending ||
+    equippedWeapons.isLoading ||
+    equippedWeapons.isPending
+  ) {
     return <Loading />;
   }
 
@@ -415,11 +430,7 @@ const VehicleForm = ({ title }: { title: string }) => {
             <h3>Mount weapons</h3>
             <div className="flex items-center gap-8">
               <vehicleForm.Subscribe selector={(state) => state.values.weapons}>
-                {(weapons) => (
-                  <h3 className="text-accent">
-                    {weapons.reduce((sum, weapon) => sum + weapon.quantity, 0)}
-                  </h3>
-                )}
+                {(weapons) => <h3 className="text-accent">{weapons.length}</h3>}
               </vehicleForm.Subscribe>
               <span
                 className={`timing shrink-0 ${weaponDetailsOpen && '-rotate-180'}`}
@@ -437,66 +448,39 @@ const VehicleForm = ({ title }: { title: string }) => {
           >
             <vehicleForm.Field name="weapons">
               {(field) =>
-                vehicleWeapons.filteredWeapons?.map(
-                  (weapon: WeaponWithKeywords) => {
-                    const activeWeapon = field.state.value.find(
-                      (item: { weaponId: number; quantity?: number }) =>
-                        item.weaponId === weapon.id,
-                    );
-                    return (
-                      <div className="flex items-center gap-8" key={weapon.id}>
-                        <SubweaponCard
-                          weapon={weapon}
-                          toolTip={toolTip}
-                          setToolTip={setToolTip}
-                        />
-                        {activeWeapon && (
-                          <InputFieldBasic
-                            className="max-w-20"
-                            type="number"
-                            label="Qty."
-                            value={activeWeapon.quantity}
-                            onChange={(quantity: number) => {
-                              field.handleChange(
-                                field.state.value.map(
-                                  (item: {
-                                    weaponId: number;
-                                    quantity: number;
-                                  }) =>
-                                    item.weaponId === weapon.id
-                                      ? { ...item, quantity }
-                                      : item,
-                                ),
-                              );
-                            }}
-                          />
-                        )}
-                        <input
-                          type="checkbox"
-                          className="size-6"
-                          checked={!!activeWeapon}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              field.handleChange([
-                                ...field.state.value,
-                                { weaponId: weapon.id, quantity: 1 },
-                              ]);
-                            } else {
-                              field.handleChange(
-                                field.state.value.filter(
-                                  (item: {
-                                    weaponId: number;
-                                    quantity: number;
-                                  }) => item.weaponId !== weapon.id,
-                                ),
-                              );
-                            }
-                          }}
-                        />
-                      </div>
-                    );
-                  },
-                )
+                weaponList.map((weapon: WeaponWithKeywords) => {
+                  const activeWeapon = field.state.value.includes(weapon.id);
+
+                  return (
+                    <div className="flex items-center gap-8" key={weapon.id}>
+                      <SubweaponCard
+                        weapon={weapon}
+                        toolTip={toolTip}
+                        setToolTip={setToolTip}
+                      />
+
+                      <input
+                        type="checkbox"
+                        className="size-6"
+                        checked={!!activeWeapon}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            field.handleChange([
+                              ...field.state.value,
+                              weapon.id,
+                            ]);
+                          } else {
+                            field.handleChange(
+                              field.state.value.filter(
+                                (item: number) => item !== weapon.id,
+                              ),
+                            );
+                          }
+                        }}
+                      />
+                    </div>
+                  );
+                })
               }
             </vehicleForm.Field>
           </div>
@@ -533,8 +517,8 @@ const VehicleForm = ({ title }: { title: string }) => {
             <vehicleForm.Field name="modifications">
               {(field) =>
                 modifications.filteredMods.map((modification: Modification) => {
-                  const activeModification = field.state.value.find(
-                    (item: number) => item === modification.id,
+                  const activeModification = field.state.value.includes(
+                    modification.id,
                   );
                   return (
                     <div
