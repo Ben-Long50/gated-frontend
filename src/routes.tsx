@@ -95,6 +95,14 @@ const router = createBrowserRouter(
             element={<Inventory category="vehicles" />}
           />
           <Route
+            path=":characterId/inventory/vehicles/weapons"
+            element={<Inventory category="vehicle weapons" />}
+          />
+          <Route
+            path=":characterId/inventory/vehicles/modifications"
+            element={<Inventory category="vehicle modifications" />}
+          />
+          <Route
             path=":characterId/inventory/vehicles/:vehicleId/modify"
             element={<VehicleForm title="Modify" />}
           />
@@ -114,13 +122,26 @@ const router = createBrowserRouter(
             <Route path="create" element={<BookEntryForm />} />
           </Route>
           <Route path="weapons">
-            <Route index element={<Weapons title="All Weapons" />} />
+            <Route
+              index
+              element={
+                <Weapons
+                  title="All Weapons"
+                  fetchOptions={{
+                    excludedKeywords: ['Vehicle', 'Cybernetic'],
+                  }}
+                />
+              }
+            />
             <Route
               path="pistols"
               element={
                 <Weapons
                   title="Pistols"
-                  keywordList={['Pistol', 'Heavy Pistol']}
+                  fetchOptions={{
+                    includedKeywords: ['Pistol', 'Heavy Pistol'],
+                    excludedKeywords: ['Vehicle', 'Cybernetic'],
+                  }}
                 />
               }
             />
@@ -129,14 +150,23 @@ const router = createBrowserRouter(
               element={
                 <Weapons
                   title="Shotguns"
-                  keywordList={['Shotgun', 'Heavy Shotgun']}
+                  fetchOptions={{
+                    includedKeywords: ['Shotgun', 'Heavy Shotgun'],
+                    excludedKeywords: ['Vehicle', 'Cybernetic'],
+                  }}
                 />
               }
             />
             <Route
               path="smgs"
               element={
-                <Weapons title="SMGs" keywordList={['SMG', 'Heavy SMG']} />
+                <Weapons
+                  title="SMGs"
+                  fetchOptions={{
+                    includedKeywords: ['SMG', 'Heavy SMG'],
+                    excludedKeywords: ['Vehicle', 'Cybernetic'],
+                  }}
+                />
               }
             />
             <Route
@@ -144,7 +174,10 @@ const router = createBrowserRouter(
               element={
                 <Weapons
                   title="Rifles"
-                  keywordList={['Rifle', 'Heavy Rifle']}
+                  fetchOptions={{
+                    includedKeywords: ['Rifle', 'Heavy Rifle'],
+                    excludedKeywords: ['Vehicle', 'Cybernetic'],
+                  }}
                 />
               }
             />
@@ -153,20 +186,29 @@ const router = createBrowserRouter(
               element={
                 <Weapons
                   title="Heavy Weapons"
-                  keywordList={[
-                    'HW',
-                    'Heavy Pistol',
-                    'Heavy Rifle',
-                    'Heavy Shotgun',
-                    'Heavy SMG',
-                  ]}
+                  fetchOptions={{
+                    includedKeywords: [
+                      'HW',
+                      'Heavy Pistol',
+                      'Heavy Rifle',
+                      'Heavy Shotgun',
+                      'Heavy SMG',
+                    ],
+                    excludedKeywords: ['Vehicle', 'Cybernetic'],
+                  }}
                 />
               }
             />
             <Route
               path="melee"
               element={
-                <Weapons title="Melee Weapons" keywordList={['Melee']} />
+                <Weapons
+                  title="Melee Weapons"
+                  fetchOptions={{
+                    includedKeywords: ['Melee'],
+                    excludedKeywords: ['Vehicle', 'Cybernetic'],
+                  }}
+                />
               }
             />
             <Route
@@ -174,7 +216,10 @@ const router = createBrowserRouter(
               element={
                 <Weapons
                   title="Launchers and Explosives"
-                  keywordList={['Grenade', 'Mine', 'Launcher']}
+                  fetchOptions={{
+                    includedKeywords: ['Grenade', 'Mine', 'Launcher'],
+                    excludedKeywords: ['Vehicle', 'Cybernetic'],
+                  }}
                 />
               }
             />
@@ -189,11 +234,21 @@ const router = createBrowserRouter(
             <Route index element={<Armor title="All Armor" />} />
             <Route
               path="basic"
-              element={<Armor title="Basic Armor" keywordList={['Armor']} />}
+              element={
+                <Armor
+                  title="Basic Armor"
+                  fetchOptions={{ includedKeywords: ['Armor'] }}
+                />
+              }
             />
             <Route
               path="power"
-              element={<Armor title="Power Armor" keywordList={['Power']} />}
+              element={
+                <Armor
+                  title="Power Armor"
+                  fetchOptions={{ includedKeywords: ['Power'] }}
+                />
+              }
             />
             <Route path="create" element={<ArmorForm title="Create" />} />
             <Route
@@ -203,7 +258,7 @@ const router = createBrowserRouter(
           </Route>
 
           <Route path="cybernetics">
-            <Route index element={<Cybernetics />} />
+            <Route index element={<Cybernetics title="Cybernetics" />} />
             <Route path="create" element={<CyberneticForm title="Create" />} />
             <Route
               path=":cyberneticId/update"
@@ -212,18 +267,24 @@ const router = createBrowserRouter(
           </Route>
 
           <Route path="vehicles">
-            <Route index element={<Vehicles />} />
+            <Route index element={<Vehicles title="Vehicles" />} />
             <Route
               path="weapons"
               element={
-                <Weapons title="Vehicle Weapons" keywordList={['Vehicle']} />
+                <Weapons
+                  title="Vehicle Weapons"
+                  fetchOptions={{ includedKeywords: ['Vehicle'] }}
+                />
               }
             />
             <Route
               path="weapons/:weaponId/update"
               element={<WeaponForm title="Update" />}
             />
-            <Route path="modifications" element={<VehicleMods />} />
+            <Route
+              path="modifications"
+              element={<VehicleMods title="Vehicle Mods" />}
+            />
             <Route path="create" element={<VehicleForm title="Create" />} />
             <Route
               path="modifications/create"

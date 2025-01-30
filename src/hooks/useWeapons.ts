@@ -4,13 +4,14 @@ import useWeaponsQuery from './useWeaponsQuery/useWeaponsQuery';
 import { Weapon, WeaponWithKeywords } from '../types/weapon';
 import useKeywords from './useKeywords';
 import { Keyword } from 'src/types/keyword';
+import { FetchOptions } from 'src/types/fetchOptions';
 
-const useWeapons = (keywordList?: string[], weaponList?: Weapon[]) => {
+const useWeapons = (fetchOptions: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
   useEffect(() => {
     setCategory('');
-  }, [keywordList]);
+  }, [fetchOptions]);
 
   const keywords = useKeywords('weapon');
 
@@ -19,7 +20,7 @@ const useWeapons = (keywordList?: string[], weaponList?: Weapon[]) => {
   const weaponsWithKeywords = useMemo(() => {
     if (!weapons || !keywords.filteredKeywords) return null;
 
-    const list = weaponList || weapons;
+    const list = fetchOptions?.itemList || weapons;
 
     return list
       ?.map((weapon: Weapon) => {
@@ -32,15 +33,21 @@ const useWeapons = (keywordList?: string[], weaponList?: Weapon[]) => {
         return { ...weapon, keywords: keywordDetails };
       })
       .filter((weapon: WeaponWithKeywords) => {
-        if (keywordList) {
-          return weapon.keywords.some((keyword) =>
-            keywordList?.includes(keyword.keyword?.name),
-          );
-        } else {
-          return true;
-        }
+        const matchesKeywordList = fetchOptions?.includedKeywords
+          ? weapon.keywords.some((keyword) =>
+              fetchOptions.includedKeywords?.includes(keyword.keyword?.name),
+            )
+          : true;
+        const matchesExcludeList = fetchOptions?.excludedKeywords
+          ? weapon.keywords.every(
+              (keyword) =>
+                !fetchOptions.excludedKeywords?.includes(keyword.keyword?.name),
+            )
+          : true;
+
+        return matchesKeywordList && matchesExcludeList;
       });
-  }, [weapons, keywordList, keywords.filteredKeywords]);
+  }, [weapons, fetchOptions, keywords.filteredKeywords]);
 
   const filteredKeywords = useMemo(() => {
     if (!weaponsWithKeywords) return null;

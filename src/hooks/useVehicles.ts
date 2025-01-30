@@ -5,8 +5,9 @@ import { Vehicle, VehicleWithWeapons } from 'src/types/vehicle';
 import { Weapon } from 'src/types/weapon';
 import useKeywords from './useKeywords';
 import { Keyword } from 'src/types/keyword';
+import { FetchOptions } from 'src/types/fetchOptions';
 
-const useVehicles = (vehicleList?: Vehicle[]) => {
+const useVehicles = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
   const keywords = useKeywords();
@@ -29,7 +30,7 @@ const useVehicles = (vehicleList?: Vehicle[]) => {
   const vehiclesWithWeapons = useMemo(() => {
     if (!vehicles) return null;
 
-    const list = vehicleList || vehicles;
+    const list = fetchOptions?.itemList || vehicles;
 
     if (list.length === 0) return [];
 
@@ -38,7 +39,7 @@ const useVehicles = (vehicleList?: Vehicle[]) => {
 
       return { ...vehicle, weapons: integratedWeaopns };
     });
-  }, [vehicleList, vehicles]);
+  }, [fetchOptions, vehicles]);
 
   const [query, setQuery] = useState('');
 

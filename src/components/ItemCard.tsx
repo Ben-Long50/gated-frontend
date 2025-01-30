@@ -93,7 +93,14 @@ const ItemCard = ({
             <div className="flex h-full flex-col gap-4 sm:gap-8">
               <div className="flex items-start justify-between gap-4">
                 <div className={`flex flex-col gap-1`}>
-                  <h2 className="pl-2">{item.name}</h2>
+                  <div className="flex items-center gap-4">
+                    <h2 className="pl-2">{item.name}</h2>
+                    {category === 'weapons' && item.vehicleId && (
+                      <h4 className="text-error italic">
+                        (Currently equipped)
+                      </h4>
+                    )}
+                  </div>
                   {item.cyberneticType && (
                     <p className="text-tertiary italic">
                       (
@@ -208,9 +215,17 @@ const ItemCard = ({
             <div className="w-full">
               <div className="grid w-full grow grid-cols-[1fr_auto] items-start gap-6">
                 <div>
-                  <h2 className={`${!item.picture && 'pl-4'} mr-auto`}>
-                    {item.name}
-                  </h2>
+                  <div className="flex items-center gap-4">
+                    <h2 className={`${!item.picture && 'pl-4'}`}>
+                      {item.name}
+                    </h2>
+                    {category === 'weapons' && item.vehicleId && (
+                      <h4 className="text-error italic">
+                        (Currently equipped)
+                      </h4>
+                    )}
+                  </div>
+
                   {item.cyberneticType && (
                     <p className="text-tertiary italic">
                       (
@@ -339,6 +354,7 @@ const ItemCard = ({
                           className="flex h-full grow flex-col items-start justify-between gap-4"
                         >
                           <SubweaponCard
+                            vehicleId={item.id}
                             weapon={weapon}
                             toolTip={toolTip}
                             setToolTip={setToolTip}

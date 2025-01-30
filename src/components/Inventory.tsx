@@ -1,19 +1,15 @@
 import { useContext } from 'react';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import Loading from './Loading';
-import WeaponCard from './WeaponCard';
 import { AuthContext } from '../contexts/AuthContext';
-import useWeapons from '../hooks/useWeapons';
-import useArmor from '../hooks/useArmor';
-import ArmorCard from './ArmorCard';
-import { WeaponWithKeywords } from 'src/types/weapon';
-import { ArmorWithKeywords } from 'src/types/armor';
-import useCybernetics from '../hooks/useCybernetics';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import CyberneticCard from './CyberneticCard';
 import useVehicles from '../hooks/useVehicles';
 import VehicleCard from './VehicleCard';
 import { VehicleWithWeapons } from 'src/types/vehicle';
+import VehicleMods from './VehicleMods';
+import Weapons from './Weapons';
+import Armor from './Armor';
+import Cybernetics from './Cybernetics';
+import Vehicles from './Vehicles';
 
 const Inventory = ({ category }: { category: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -24,55 +20,57 @@ const Inventory = ({ category }: { category: string }) => {
     isLoading,
   } = useActiveCharacterQuery(apiUrl);
 
-  const weapons = useWeapons(undefined, character?.characterInventory?.weapons);
+  const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
 
-  const armor = useArmor(undefined, character?.characterInventory?.armor);
-
-  const cybernetics = useCybernetics(
-    character?.characterInventory?.cybernetics,
-  );
-
-  const vehicles = useVehicles(
-    character?.characterInventory?.vehicles,
-    character?.characterInventory?.weapons,
-  );
+  const vehicles = useVehicles(character?.characterInventory?.vehicles);
 
   if (isLoading || isPending) return <Loading />;
 
   return (
     <div className="flex w-full max-w-5xl flex-col gap-8">
-      <h1 className="text-center">
-        {character.firstName + ' ' + character.lastName + "'s "}
-        <span>{category[0].toUpperCase() + category.slice(1)}</span>
-      </h1>
       {category === 'weapons' ? (
-        weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
-          return (
-            <WeaponCard key={weapon.id} weapon={weapon} type="inventory" />
-          );
-        })
+        <Weapons
+          title={namePrefix + ' ' + 'Weapons'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.weapons,
+            excludedKeywords: ['Vehicle', 'Cybernetic'],
+          }}
+        />
       ) : category === 'armor' ? (
-        armor.filteredArmor.map((armor: ArmorWithKeywords) => {
-          return <ArmorCard key={armor.id} armor={armor} type="inventory" />;
-        })
+        <Armor
+          title={namePrefix + ' ' + 'Armor'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.armor,
+            excludedKeywords: ['Cybernetic'],
+          }}
+        />
       ) : category === 'cybernetics' ? (
-        cybernetics.filteredCybernetics.map(
-          (cybernetic: CyberneticWithKeywords) => {
-            return (
-              <CyberneticCard
-                key={cybernetic.id}
-                cybernetic={cybernetic}
-                type="inventory"
-              />
-            );
-          },
-        )
+        <Cybernetics
+          title={namePrefix + ' ' + 'Cybernetics'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.cybernetics,
+          }}
+        />
+      ) : category === 'vehicle weapons' ? (
+        <Weapons
+          title={namePrefix + ' ' + 'Vehicle Weapons'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.weapon,
+            includedKeywords: ['Vehicle'],
+          }}
+        />
+      ) : category === 'vehicle modifications' ? (
+        <VehicleMods
+          title={namePrefix + ' ' + 'Vehicle Mods'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.modifications,
+          }}
+        />
       ) : category === 'vehicles' ? (
-        vehicles.filteredVehicles.map((vehicle: VehicleWithWeapons) => {
-          return (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} type="inventory" />
-          );
-        })
+        <Vehicles
+          title={namePrefix + ' ' + 'Vehicles'}
+          fetchOptions={{ itemList: character?.characterInventory?.vehicles }}
+        />
       ) : (
         <h1>Invalid category</h1>
       )}

@@ -10,6 +10,8 @@ export interface Weapon {
   description: string;
   stats: WeaponStats;
   price: number;
+  cyberneticId: number | null;
+  vehicleId: number | null;
   keywords: { keywordId: number; value?: number }[];
 }
 
@@ -22,6 +24,8 @@ export interface WeaponWithKeywords {
   description: string;
   stats: WeaponStats;
   price: number;
+  cyberneticId: number | null;
+  vehicleId: number | null;
   keywords: { keyword: Keyword; value?: number }[];
 }
 

@@ -9,10 +9,12 @@ import { WeaponWithKeywords } from 'src/types/weapon';
 import StatCard from './StatCard';
 
 const SubweaponCard = ({
+  vehicleId,
   weapon,
   toolTip,
   setToolTip,
 }: {
+  vehicleId?: number;
   weapon: WeaponWithKeywords;
   quantity: number;
   toolTip: string;
@@ -20,7 +22,14 @@ const SubweaponCard = ({
 }) => {
   return (
     <div className="flex h-full w-full grow flex-col items-start justify-between gap-4">
-      <h3>{weapon?.name}</h3>
+      <div className="flex items-center gap-4">
+        <h3>{weapon?.name}</h3>
+        <p className="text-error italic">
+          {weapon?.vehicleId &&
+            weapon.vehicleId !== vehicleId &&
+            '(Currently equpped on another vehicle)'}
+        </p>
+      </div>
       <div className="flex flex-wrap items-center gap-2">
         {weapon.keywords?.map((item: { keyword: Keyword; value?: number }) => {
           return (

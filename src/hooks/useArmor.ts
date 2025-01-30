@@ -4,13 +4,14 @@ import useArmorQuery from './useArmorQuery/useArmorQuery';
 import { Armor, ArmorWithKeywords } from '../types/armor';
 import useKeywords from './useKeywords';
 import { Keyword } from 'src/types/keyword';
+import { FetchOptions } from 'src/types/fetchOptions';
 
-const useArmor = (keywordList?: string[], armorList?: Armor[]) => {
+const useArmor = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
   useEffect(() => {
     setCategory('');
-  }, [keywordList]);
+  }, [fetchOptions]);
 
   const keywords = useKeywords('armor');
 
@@ -19,7 +20,7 @@ const useArmor = (keywordList?: string[], armorList?: Armor[]) => {
   const armorWithKeywords = useMemo(() => {
     if (!armor || !keywords.filteredKeywords) return null;
 
-    const list = armorList || armor;
+    const list = fetchOptions?.itemList || armor;
 
     return list
       ?.map((armorSet: Armor) => {
@@ -32,15 +33,20 @@ const useArmor = (keywordList?: string[], armorList?: Armor[]) => {
         return { ...armorSet, keywords: keywordDetails };
       })
       .filter((armorSet: ArmorWithKeywords) => {
-        if (keywordList) {
-          return armorSet.keywords.some((keyword) =>
-            keywordList?.includes(keyword.keyword?.name),
-          );
-        } else {
-          return true;
-        }
+        const matchesKeywordList = fetchOptions?.includedKeywords
+          ? armorSet.keywords.some((keyword) =>
+              fetchOptions.includedKeywords?.includes(keyword.keyword?.name),
+            )
+          : true;
+        const matchesExcludeList = fetchOptions?.excludedKeywords
+          ? armorSet.keywords.some(
+              (keyword) =>
+                !fetchOptions.excludedKeywords?.includes(keyword.keyword?.name),
+            )
+          : true;
+        return matchesKeywordList && matchesExcludeList;
       });
-  }, [armor, armorList, keywordList, keywords.filteredKeywords]);
+  }, [armor, fetchOptions, keywords.filteredKeywords]);
 
   const filteredKeywords = useMemo(() => {
     if (!armorWithKeywords) return null;

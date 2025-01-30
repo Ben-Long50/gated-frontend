@@ -45,4 +45,5 @@ export interface Modification {
   type: string;
   description: string;
   price: number;
+  vehicleId: number | null;
 }

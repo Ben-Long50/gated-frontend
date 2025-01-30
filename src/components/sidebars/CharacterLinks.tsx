@@ -92,6 +92,16 @@ const CharacterLinks = ({ setSidebarVisibility }) => {
           path={`characters/${character?.id}/inventory/vehicles`}
           setSidebarVisibility={setSidebarVisibility}
         />
+        <LinkSidebar
+          title="Vehicle weapons"
+          path={`characters/${character?.id}/inventory/vehicles/weapons`}
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Vehicle mods"
+          path={`characters/${character?.id}/inventory/vehicles/modifications`}
+          setSidebarVisibility={setSidebarVisibility}
+        />
       </LinkListSidebar>
     </>
   );

@@ -7,17 +7,18 @@ import useArmor from '../hooks/useArmor';
 import ArmorCard from './ArmorCard';
 import SelectField from './SelectField';
 import Loading from './Loading';
+import { FetchOptions } from 'src/types/fetchOptions';
 
 const Armor = ({
   title,
-  keywordList,
+  fetchOptions,
 }: {
   title: string;
-  keywordList?: string[];
+  fetchOptions?: FetchOptions;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
-  const armor = useArmor(keywordList);
+  const armor = useArmor(fetchOptions);
 
   const searchForm = useForm({
     defaultValues: {

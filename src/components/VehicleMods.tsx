@@ -8,12 +8,20 @@ import Loading from './Loading';
 import { Modification } from 'src/types/vehicle';
 import ModCard from './ModCard';
 import useModifications from '../hooks/useModifications';
+import { FetchOptions } from 'src/types/fetchOptions';
 
-const VehicleMods = () => {
+const VehicleMods = ({
+  title,
+  fetchOptions,
+}: {
+  title: string;
+  fetchOptions?: FetchOptions;
+}) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const modifications = useModifications();
+  const modifications = useModifications(fetchOptions);
+
   const searchForm = useForm({
     defaultValues: {
       query: '',
@@ -27,13 +35,13 @@ const VehicleMods = () => {
     },
   });
 
-  if (modifications.isLoading || modifications.isPending) {
-    return <Loading />;
-  }
+  // if (modifications.isLoading || modifications.isPending) {
+  //   return <Loading />;
+  // }
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-3">
-      <h1 className="text-center lg:mb-5">Vehicle Modifications</h1>
+      <h1 className="text-center lg:mb-5">{title}</h1>
       <ThemeContainer
         chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
         className="w-full rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"

@@ -10,7 +10,6 @@ import Icon from '@mdi/react';
 import { mdiChevronDown, mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
-import VehicleIcon from './icons/VehicleIcon';
 import { useParams } from 'react-router-dom';
 import { Modification, VehicleStats } from '../types/vehicle';
 import { WeaponWithKeywords } from '../types/weapon';
@@ -38,19 +37,28 @@ const VehicleForm = ({ title }: { title: string }) => {
 
   const { data: vehicle } = useVehicleQuery(apiUrl, vehicleId);
 
-  const vehicleWeapons = useWeapons(
-    ['Vehicle'],
-    title === 'Modify' && character?.characterInventory.weapons,
-  );
+  const vehicleWeapons = useWeapons({
+    itemList: title === 'Modify' && character?.characterInventory.weapons,
+    includedKeywords: ['Vehicle'],
+  });
 
-  const equippedWeapons = useWeapons(undefined, vehicle?.weapons);
+  const equippedWeapons = useWeapons({ itemList: vehicle?.weapons });
 
   const weaponList =
     title === 'Modify'
       ? vehicleWeapons.filteredWeapons
       : [...vehicleWeapons.filteredWeapons, ...equippedWeapons.filteredWeapons];
 
-  const modifications = useModifications();
+  const modifications = useModifications({
+    itemList: title === 'Modify' && character?.characterInventory.modifications,
+  });
+
+  const equippedMods = useModifications({ itemList: vehicle?.modifications });
+
+  const modList =
+    title === 'Modify'
+      ? modifications.filteredMods
+      : [...modifications.filteredMods, ...equippedMods.filteredMods];
 
   const [imagePreview, setImagePreview] = useState(
     vehicle?.picture?.imageUrl || '',
@@ -193,7 +201,6 @@ const VehicleForm = ({ title }: { title: string }) => {
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          <VehicleIcon className="size-12" />
           <h1>{title} Vehicle</h1>
         </div>
         <div className="flex w-full gap-4 lg:gap-8">
@@ -454,6 +461,7 @@ const VehicleForm = ({ title }: { title: string }) => {
                   return (
                     <div className="flex items-center gap-8" key={weapon.id}>
                       <SubweaponCard
+                        vehicleId={vehicle?.id}
                         weapon={weapon}
                         toolTip={toolTip}
                         setToolTip={setToolTip}
@@ -516,7 +524,7 @@ const VehicleForm = ({ title }: { title: string }) => {
           >
             <vehicleForm.Field name="modifications">
               {(field) =>
-                modifications.filteredMods.map((modification: Modification) => {
+                modList.map((modification: Modification) => {
                   const activeModification = field.state.value.includes(
                     modification.id,
                   );
@@ -525,7 +533,10 @@ const VehicleForm = ({ title }: { title: string }) => {
                       className="flex items-center gap-4"
                       key={modification.id}
                     >
-                      <ModCard modification={modification} />
+                      <ModCard
+                        vehicleId={vehicle?.id}
+                        modification={modification}
+                      />
                       <input
                         type="checkbox"
                         className="size-6"

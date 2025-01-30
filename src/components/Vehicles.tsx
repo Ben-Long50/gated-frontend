@@ -7,11 +7,18 @@ import Loading from './Loading';
 import useVehicles from '../hooks/useVehicles';
 import VehicleCard from './VehicleCard';
 import { VehicleWithWeapons } from '../types/vehicle';
+import { FetchOptions } from 'src/types/fetchOptions';
 
-const Vehicles = () => {
+const Vehicles = ({
+  title,
+  fetchOptions,
+}: {
+  title: string;
+  fetchOptions?: FetchOptions;
+}) => {
   const { accentPrimary } = useContext(ThemeContext);
 
-  const vehicles = useVehicles();
+  const vehicles = useVehicles(fetchOptions);
 
   const searchForm = useForm({
     defaultValues: {
@@ -22,18 +29,13 @@ const Vehicles = () => {
     },
   });
 
-  if (
-    vehicles.isLoading ||
-    vehicles.isPending ||
-    vehicles.weaponsLoading ||
-    vehicles.weaponsPending
-  ) {
+  if (vehicles.isLoading || vehicles.isPending) {
     return <Loading />;
   }
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">Vehicles</h1>
+      <h1 className="text-center">{title}</h1>
       <ThemeContainer
         className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
         chamfer="24"

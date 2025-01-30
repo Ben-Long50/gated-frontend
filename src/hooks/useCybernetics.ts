@@ -9,8 +9,9 @@ import { Armor } from 'src/types/armor';
 import useActions from './useActions';
 import { Modifier } from 'src/types/modifier';
 import { Action } from 'src/types/action';
+import { FetchOptions } from 'src/types/fetchOptions';
 
-const useCybernetics = (cyberneticsList?: Cybernetic[]) => {
+const useCybernetics = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
   const keywords = useKeywords();
@@ -38,7 +39,7 @@ const useCybernetics = (cyberneticsList?: Cybernetic[]) => {
 
   const getArmorKeywords = (armor: Armor[]) => {
     if (!armor || armor.length === 0) return;
-    return armor?.map((armorSet: Weapon) => {
+    return armor?.map((armorSet: Armor) => {
       const keywordDetails = armorSet.keywords.map((keyword) => {
         const details = keywords.filteredKeywords.find(
           (item: Keyword) => item.id === keyword.keywordId,
@@ -63,7 +64,7 @@ const useCybernetics = (cyberneticsList?: Cybernetic[]) => {
   const cyberneticsWithKeywords = useMemo(() => {
     if (!cybernetics || !keywords) return null;
 
-    const list = cyberneticsList || cybernetics;
+    const list = fetchOptions?.itemList || cybernetics;
 
     if (list.length === 0) return [];
 
@@ -86,7 +87,7 @@ const useCybernetics = (cyberneticsList?: Cybernetic[]) => {
         modifiers,
       };
     });
-  }, [cybernetics, keywords]);
+  }, [fetchOptions, cybernetics, keywords]);
 
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('');

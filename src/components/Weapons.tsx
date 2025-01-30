@@ -8,17 +8,18 @@ import useWeapons from '../hooks/useWeapons';
 import SelectField from './SelectField';
 import Loading from './Loading';
 import { WeaponWithKeywords } from 'src/types/weapon';
+import { FetchOptions } from 'src/types/fetchOptions';
 
 const Weapons = ({
   title,
-  keywordList,
+  fetchOptions,
 }: {
   title: string;
-  keywordList?: string[];
+  fetchOptions?: FetchOptions;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
-  const weapons = useWeapons(keywordList);
+  const weapons = useWeapons(fetchOptions);
 
   const searchForm = useForm({
     defaultValues: {

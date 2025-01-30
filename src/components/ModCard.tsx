@@ -1,11 +1,17 @@
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useContext, useEffect, useRef, useState } from 'react';
-import Tag from './Tag';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import { Modification } from 'src/types/vehicle';
 
-const ModCard = ({ modification }, props) => {
+const ModCard = ({
+  vehicleId,
+  modification,
+}: {
+  vehicleId?: number;
+  modification: Modification;
+}) => {
   const { user } = useContext(AuthContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
@@ -20,7 +26,7 @@ const ModCard = ({ modification }, props) => {
 
   return (
     <div
-      className={`${props.className} bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
+      className={`bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
       onClick={async (e) => {
         e.preventDefault();
         setDetailsOpen(!detailsOpen);
@@ -30,7 +36,14 @@ const ModCard = ({ modification }, props) => {
         className={`text-primary flex w-full items-center justify-between`}
       >
         <div className="flex w-full items-center justify-between gap-4 pr-2">
-          <h3> {modification.name}</h3>
+          <div className="flex items-center gap-4">
+            <h3>{modification?.name}</h3>
+            <p className="text-error italic">
+              {modification?.vehicleId &&
+                modification.vehicleId !== vehicleId &&
+                '(Currently equipped on another vehicle)'}
+            </p>
+          </div>
           <div
             className="pointer-events-auto -my-2 flex items-center gap-4"
             onClick={(e) => e.stopPropagation()}
