@@ -6,15 +6,12 @@ import { FetchOptions } from 'src/types/fetchOptions';
 
 const useModifications = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
-  console.log(fetchOptions);
 
   const {
     data: modifications,
     isLoading,
     isPending,
-  } = useVehicleModsQuery(apiUrl, {
-    enabled: !fetchOptions?.itemList,
-  });
+  } = useVehicleModsQuery(apiUrl);
 
   const [query, setQuery] = useState('');
 

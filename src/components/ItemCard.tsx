@@ -238,7 +238,7 @@ const ItemCard = ({
                 <div
                   className={`${type !== 'inventory' && 'row-span-2'} timing flex flex-col items-end justify-end gap-x-8 gap-y-4`}
                 >
-                  {type !== 'inventory' && (
+                  {type === 'codex' && (
                     <div className="flex items-center justify-end gap-4">
                       <CardPrice
                         price={item?.price}
@@ -333,7 +333,7 @@ const ItemCard = ({
               detailsOpen
                 ? {
                     marginTop:
-                      integrationRef.current?.children.length > 0 ? 32 : 0,
+                      integrationRef.current?.children.length > 0 ? 24 : 0,
                   }
                 : {
                     marginTop: -integrationHeight - 4,

@@ -8,13 +8,16 @@ import useCybernetics from '../hooks/useCybernetics';
 import SelectField from './SelectField';
 import Loading from './Loading';
 import { FetchOptions } from 'src/types/fetchOptions';
+import { CyberneticWithKeywords } from 'src/types/cybernetic';
 
 const Cybernetics = ({
   title,
   fetchOptions,
+  type,
 }: {
   title: string;
   fetchOptions?: FetchOptions;
+  type: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -81,9 +84,17 @@ const Cybernetics = ({
           </searchForm.Field>
         </form>
       </ThemeContainer>
-      {cybernetics.filteredCybernetics.map((cybernetic) => {
-        return <CyberneticCard key={cybernetic.name} cybernetic={cybernetic} />;
-      })}
+      {cybernetics.filteredCybernetics.map(
+        (cybernetic: CyberneticWithKeywords) => {
+          return (
+            <CyberneticCard
+              key={cybernetic.name}
+              cybernetic={cybernetic}
+              type={type}
+            />
+          );
+        },
+      )}
     </div>
   );
 };

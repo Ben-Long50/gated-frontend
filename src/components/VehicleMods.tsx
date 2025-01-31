@@ -3,7 +3,6 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
-import { LayoutContext } from '../contexts/LayoutContext';
 import Loading from './Loading';
 import { Modification } from 'src/types/vehicle';
 import ModCard from './ModCard';
@@ -13,12 +12,13 @@ import { FetchOptions } from 'src/types/fetchOptions';
 const VehicleMods = ({
   title,
   fetchOptions,
+  type,
 }: {
   title: string;
   fetchOptions?: FetchOptions;
+  type: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
 
   const modifications = useModifications(fetchOptions);
 
@@ -35,22 +35,23 @@ const VehicleMods = ({
     },
   });
 
-  // if (modifications.isLoading || modifications.isPending) {
-  //   return <Loading />;
-  // }
+  if (modifications.isLoading || modifications.isPending) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-3">
       <h1 className="text-center lg:mb-5">{title}</h1>
       <ThemeContainer
-        chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
+        chamfer="24"
         className="w-full rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
         borderColor={accentPrimary}
       >
-        <div
-          className={`bg-primary flex w-full flex-col gap-4 px-3 py-4 ${layoutSize === 'small' || layoutSize === 'xsmall' ? 'clip-6' : 'clip-8'} sm:gap-6 sm:p-6 lg:gap-8 lg:p-8`}
-        >
-          <form>
+        <div className="bg-primary flex w-full flex-col gap-4 p-4 clip-6 sm:gap-6 lg:gap-8">
+          <form className="flex w-full flex-col gap-4">
+            <div className="flex w-full items-center justify-between pl-4">
+              <h3 className="">Filter options</h3>
+            </div>
             <searchForm.Field name="query">
               {(field) => (
                 <InputField
@@ -63,13 +64,19 @@ const VehicleMods = ({
               )}
             </searchForm.Field>
           </form>
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {modifications.filteredMods.map((modification: Modification) => {
-              return (
-                <ModCard key={modification.id} modification={modification} />
-              );
-            })}
-          </div>
+          {modifications.filteredMods?.length > 0 && (
+            <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+              {modifications.filteredMods.map((modification: Modification) => {
+                return (
+                  <ModCard
+                    key={modification.id}
+                    modification={modification}
+                    type={type}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
       </ThemeContainer>
     </div>

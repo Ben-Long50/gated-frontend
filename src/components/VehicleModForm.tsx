@@ -11,7 +11,7 @@ import useCreateVehicleModMutation from '../hooks/useCreateVehicleModMutation/us
 import useDeleteVehicleModMutation from '../hooks/useDeleteVehicleModMutation/useDeleteKeywordMutation';
 import useVehicleModQuery from '../hooks/useVehicleModQuery/useVehicleModQuery';
 
-const VehicleModForm = ({ title }: { title: string }) => {
+const VehicleModForm = ({ title, type }: { title: string; type: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);

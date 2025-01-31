@@ -6,7 +6,7 @@ import useKeywords from './useKeywords';
 import { Keyword } from 'src/types/keyword';
 import { FetchOptions } from 'src/types/fetchOptions';
 
-const useWeapons = (fetchOptions: FetchOptions) => {
+const useWeapons = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
   useEffect(() => {

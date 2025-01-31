@@ -9,11 +9,13 @@ const PerkList = ({
   checkedPerks,
   setCheckedPerks,
   className,
+  type,
 }: {
   perkTree: Partial<PerkTree>;
   mode: string;
   checkedPerks: number[];
   className: string;
+  type?: string;
 }) => {
   return (
     <div
@@ -56,7 +58,11 @@ const PerkList = ({
                                 key={perk.id}
                                 className="flex w-full items-center justify-between gap-4"
                               >
-                                <PerkCard className="w-full" perk={perk} />
+                                <PerkCard
+                                  className="w-full"
+                                  perk={perk}
+                                  type={type}
+                                />
                                 {mode === 'edit' && (
                                   <input
                                     className="size-6"

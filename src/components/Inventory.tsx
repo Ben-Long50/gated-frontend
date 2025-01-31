@@ -2,9 +2,6 @@ import { useContext } from 'react';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import Loading from './Loading';
 import { AuthContext } from '../contexts/AuthContext';
-import useVehicles from '../hooks/useVehicles';
-import VehicleCard from './VehicleCard';
-import { VehicleWithWeapons } from 'src/types/vehicle';
 import VehicleMods from './VehicleMods';
 import Weapons from './Weapons';
 import Armor from './Armor';
@@ -22,8 +19,6 @@ const Inventory = ({ category }: { category: string }) => {
 
   const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
 
-  const vehicles = useVehicles(character?.characterInventory?.vehicles);
-
   if (isLoading || isPending) return <Loading />;
 
   return (
@@ -35,6 +30,8 @@ const Inventory = ({ category }: { category: string }) => {
             itemList: character?.characterInventory?.weapons,
             excludedKeywords: ['Vehicle', 'Cybernetic'],
           }}
+          type="inventory"
+          key={character?.id + ' ' + 'weapons'}
         />
       ) : category === 'armor' ? (
         <Armor
@@ -43,6 +40,8 @@ const Inventory = ({ category }: { category: string }) => {
             itemList: character?.characterInventory?.armor,
             excludedKeywords: ['Cybernetic'],
           }}
+          type="inventory"
+          key={character?.id + ' ' + 'armor'}
         />
       ) : category === 'cybernetics' ? (
         <Cybernetics
@@ -50,14 +49,18 @@ const Inventory = ({ category }: { category: string }) => {
           fetchOptions={{
             itemList: character?.characterInventory?.cybernetics,
           }}
+          type="inventory"
+          key={character?.id + ' ' + 'cybernetics'}
         />
       ) : category === 'vehicle weapons' ? (
         <Weapons
           title={namePrefix + ' ' + 'Vehicle Weapons'}
           fetchOptions={{
-            itemList: character?.characterInventory?.weapon,
+            itemList: character?.characterInventory?.weapons,
             includedKeywords: ['Vehicle'],
           }}
+          type="inventory"
+          key={character?.id + ' ' + 'vehicle weapons'}
         />
       ) : category === 'vehicle modifications' ? (
         <VehicleMods
@@ -65,11 +68,15 @@ const Inventory = ({ category }: { category: string }) => {
           fetchOptions={{
             itemList: character?.characterInventory?.modifications,
           }}
+          type="inventory"
+          key={character?.id + ' ' + 'vehicle modifications'}
         />
       ) : category === 'vehicles' ? (
         <Vehicles
           title={namePrefix + ' ' + 'Vehicles'}
           fetchOptions={{ itemList: character?.characterInventory?.vehicles }}
+          type="inventory"
+          key={character?.id + ' ' + 'vehicles'}
         />
       ) : (
         <h1>Invalid category</h1>

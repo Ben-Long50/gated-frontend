@@ -1,11 +1,11 @@
-import { createContext, useEffect } from 'react';
+import { createContext, ReactNode, useEffect } from 'react';
 import useAccountQuery from '../hooks/useAccountQuery/useAccountQuery';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loading from '../components/Loading';
 
-export const AuthContext = createContext();
+export const AuthContext = createContext({ apiUrl: '', user: null });
 
-const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isMobile = window.location.href.includes('192.168.4.94');

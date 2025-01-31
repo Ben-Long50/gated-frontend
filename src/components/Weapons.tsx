@@ -13,9 +13,11 @@ import { FetchOptions } from 'src/types/fetchOptions';
 const Weapons = ({
   title,
   fetchOptions,
+  type,
 }: {
   title: string;
   fetchOptions?: FetchOptions;
+  type: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -85,7 +87,7 @@ const Weapons = ({
         </form>
       </ThemeContainer>
       {weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
-        return <WeaponCard key={weapon.name} weapon={weapon} />;
+        return <WeaponCard key={weapon.name} weapon={weapon} type={type} />;
       })}
     </div>
   );

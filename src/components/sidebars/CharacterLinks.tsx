@@ -51,7 +51,7 @@ const CharacterLinks = ({ setSidebarVisibility }) => {
       >
         <LinkSidebar
           title="Equipment"
-          path={`characters/${character?.id}/inventory/weapons`}
+          path={`characters/${character?.id}/equipment`}
           setSidebarVisibility={setSidebarVisibility}
         />
       </LinkListSidebar>

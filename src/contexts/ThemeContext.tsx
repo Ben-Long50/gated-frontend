@@ -1,22 +1,32 @@
-import { createContext, useState } from 'react';
+import { createContext, ReactNode, useState } from 'react';
 
-export const ThemeContext = createContext();
+interface ThemeContextType {
+  theme: 'light' | 'dark';
+  changeTheme: () => void;
+  accentPrimary: string;
+  accentSecondary: string;
+  accentModifier: string;
+  errorPrimary: string;
+}
 
-const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(() => {
-    if (localStorage.getItem('theme')) {
-      return localStorage.getItem('theme');
+export const ThemeContext = createContext<ThemeContextType | undefined>(
+  undefined,
+);
+
+const ThemeProvider = ({ children }: { children: ReactNode }) => {
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'light' || storedTheme === 'dark') {
+      return storedTheme;
+    } else if (
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
+      localStorage.setItem('theme', 'dark');
+      return 'dark';
     } else {
-      if (
-        window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches
-      ) {
-        localStorage.setItem('theme', 'dark');
-        return 'dark';
-      } else {
-        localStorage.setItem('theme', 'light');
-        return 'light';
-      }
+      localStorage.setItem('theme', 'light');
+      return 'light';
     }
   });
 
@@ -26,14 +36,9 @@ const ThemeProvider = ({ children }) => {
   const errorPrimary = 'rgb(239 68 68)';
 
   const changeTheme = () => {
-    const theme = localStorage.getItem('theme');
-    if (theme === 'dark') {
-      localStorage.setItem('theme', 'light');
-      setTheme('light');
-    } else {
-      localStorage.setItem('theme', 'dark');
-      setTheme('dark');
-    }
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', newTheme);
+    setTheme(newTheme);
   };
 
   return (

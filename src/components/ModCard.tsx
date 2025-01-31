@@ -4,13 +4,17 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { Modification } from 'src/types/vehicle';
+import CardPrice from './CardPrice';
+import ItemRarity from './ItemRarity';
 
 const ModCard = ({
   vehicleId,
   modification,
+  type,
 }: {
   vehicleId?: number;
   modification: Modification;
+  type: string;
 }) => {
   const { user } = useContext(AuthContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -44,17 +48,28 @@ const ModCard = ({
                 '(Currently equipped on another vehicle)'}
             </p>
           </div>
+
           <div
             className="pointer-events-auto -my-2 flex items-center gap-4"
             onClick={(e) => e.stopPropagation()}
           >
-            {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-              <Link
-                to={`/glam/codex/vehicles/modifications/${modification.id}/update`}
-              >
-                <button className="text-accent hover:underline">Edit</button>
-              </Link>
-            )}
+            <div className="flex items-center gap-4">
+              {type === 'codex' && (
+                <CardPrice
+                  price={modification?.price}
+                  category="modifications"
+                  itemId={modification?.id}
+                />
+              )}
+            </div>
+            {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') &&
+              type === 'codex' && (
+                <Link
+                  to={`/glam/codex/vehicles/modifications/${modification.id}/update`}
+                >
+                  <button className="text-accent hover:underline">Edit</button>
+                </Link>
+              )}
           </div>
         </div>
         <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>
@@ -65,7 +80,7 @@ const ModCard = ({
           ></Icon>
         </span>
       </summary>
-      <div className={`${detailsOpen && 'pt-4'} timing overflow-hidden`}>
+      <div className={`${detailsOpen && 'pr-1 pt-4'} timing overflow-hidden`}>
         <div
           ref={detailRef}
           className="timing flex flex-col gap-4"
@@ -79,9 +94,16 @@ const ModCard = ({
                 }
           }
         >
-          <p className="text-tertiary mr-auto">
-            ({modification.modificationType})
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-8">
+            <p className="text-tertiary mr-auto italic">
+              ({modification.modificationType})
+            </p>
+            <ItemRarity
+              rarity={modification.rarity}
+              grade={modification.grade}
+            />
+          </div>
+
           <p className="text-secondary">{modification.description}</p>
         </div>
       </div>

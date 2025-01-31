@@ -9,7 +9,7 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import Loading from './Loading';
 import SelectField from './SelectField';
 
-const Keywords = () => {
+const Keywords = ({ type }: { type?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
@@ -93,7 +93,9 @@ const Keywords = () => {
           </searchForm.Subscribe>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             {keywords.filteredKeywords.map((keyword) => {
-              return <KeywordCard key={keyword.name} keyword={keyword} />;
+              return (
+                <KeywordCard key={keyword.name} keyword={keyword} type={type} />
+              );
             })}
           </div>
         </div>

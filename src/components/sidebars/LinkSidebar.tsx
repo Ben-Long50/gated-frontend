@@ -15,6 +15,7 @@ const LinkSidebar = ({ title, path, setSidebarVisibility }) => {
           : 'text-secondary group flex gap-4'
       }
       to={path}
+      end
     >
       <Icon
         className="timing group-hover:text-accent text-inherit"

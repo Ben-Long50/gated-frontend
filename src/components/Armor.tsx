@@ -8,13 +8,16 @@ import ArmorCard from './ArmorCard';
 import SelectField from './SelectField';
 import Loading from './Loading';
 import { FetchOptions } from 'src/types/fetchOptions';
+import { ArmorWithKeywords } from 'src/types/armor';
 
 const Armor = ({
   title,
   fetchOptions,
+  type,
 }: {
   title: string;
   fetchOptions?: FetchOptions;
+  type: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -83,8 +86,8 @@ const Armor = ({
           </searchForm.Field>
         </form>
       </ThemeContainer>
-      {armor.filteredArmor.map((armor) => {
-        return <ArmorCard key={armor.name} armor={armor} />;
+      {armor.filteredArmor.map((armor: ArmorWithKeywords) => {
+        return <ArmorCard key={armor.name} armor={armor} type={type} />;
       })}
     </div>
   );

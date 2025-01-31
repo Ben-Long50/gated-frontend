@@ -11,13 +11,14 @@ import useCybernetics from '../hooks/useCybernetics';
 import useVehicles from '../hooks/useVehicles';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { VehicleWithWeapons } from 'src/types/vehicle';
+import { Modification, VehicleWithWeapons } from 'src/types/vehicle';
 import BtnRect from './buttons/BtnRect';
 import CartCard from './CartCard';
 import useClearCartMutation from '../hooks/useClearCartMutation/useClearCartMutation';
 import { useForm } from '@tanstack/react-form';
 import InputField from './InputField';
 import useCompletePurchaseMutation from '../hooks/useCompletePurchaseMutation/useCompletePurchaseMutation';
+import useModifications from '../hooks/useModifications';
 
 const Cart = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -35,32 +36,17 @@ const Cart = () => {
 
   const completePurchase = useCompletePurchaseMutation(apiUrl, character?.id);
 
-  const weapons = useWeapons(undefined, character?.characterCart?.weapons);
-  const armor = useArmor(undefined, character?.characterCart?.armor);
-  const cybernetics = useCybernetics(character?.characterCart?.cybernetics);
-  const vehicles = useVehicles(character?.characterCart?.vehicles);
-
-  const loading =
-    isLoading ||
-    weapons.isLoading ||
-    weapons.keywordsLoading ||
-    armor.isLoading ||
-    armor.keywordsLoading ||
-    cybernetics.isLoading ||
-    cybernetics.keywordsLoading ||
-    vehicles.isLoading ||
-    vehicles.weaponsLoading;
-
-  const pending =
-    isPending ||
-    weapons.isPending ||
-    weapons.keywordsPending ||
-    armor.isPending ||
-    armor.keywordsPending ||
-    cybernetics.isPending ||
-    cybernetics.keywordsPending ||
-    vehicles.isPending ||
-    vehicles.weaponsPending;
+  const weapons = useWeapons({ itemList: character?.characterCart?.weapons });
+  const armor = useArmor({ itemList: character?.characterCart?.armor });
+  const cybernetics = useCybernetics({
+    itemList: character?.characterCart?.cybernetics,
+  });
+  const vehicles = useVehicles({
+    itemList: character?.characterCart?.vehicles,
+  });
+  const modifications = useModifications({
+    itemList: character?.characterCart?.modifications,
+  });
 
   const cartForm = useForm({
     defaultValues: {
@@ -84,19 +70,15 @@ const Cart = () => {
           return { vehicleId: vehicle.id, price: vehicle.price, quantity: 1 };
         },
       ),
+      modifications: modifications?.filteredMods?.map((mod: Modification) => {
+        return { modId: mod.id, price: mod.price, quantity: 1 };
+      }),
     },
     onSubmit: async ({ value }) => {
       console.log(value);
-      try {
-        await completePurchase.mutateAsync(value);
-
-        if (completePurchase.isSuccess) {
-          console.log('Purchase successful');
-          cartForm.reset();
-        }
-      } catch (error) {
-        console.error('Purchase failed:', error);
-      }
+      await completePurchase.mutate(value, {
+        onSuccess: () => cartForm.reset(),
+      });
     },
     validators: {
       onSubmit: ({ value }) => {
@@ -112,7 +94,7 @@ const Cart = () => {
     },
   });
 
-  if (loading || pending) return <Loading />;
+  if (isLoading || isPending) return <Loading />;
 
   return (
     <form className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
@@ -211,6 +193,9 @@ const Cart = () => {
           </cartForm.Subscribe>
         </div>
       </ThemeContainer>
+      {Object.values(character?.characterCart)
+        .filter((item) => Array.isArray(item))
+        .flat().length === 0 && <h2>Cart is empty</h2>}
       {Object.entries(cartForm.state.values).map(([key, value]) => {
         return (
           <cartForm.Field key={key} name={`${key}`} mode="array">
@@ -235,6 +220,9 @@ const Cart = () => {
                       break;
                     case 'vehicles':
                       item = vehicles?.filteredVehicles[i];
+                      break;
+                    case 'modifications':
+                      item = modifications?.filteredMods[i];
                       break;
                     default:
                       item = '';

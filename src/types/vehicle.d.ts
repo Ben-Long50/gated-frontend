@@ -42,7 +42,9 @@ interface VehicleStats {
 export interface Modification {
   id: number;
   name: string;
-  type: string;
+  rarity: string;
+  grade: number;
+  modificationType: string;
   description: string;
   price: number;
   vehicleId: number | null;

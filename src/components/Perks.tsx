@@ -9,7 +9,7 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import SelectField from './SelectField';
 import Loading from './Loading';
 
-const Perks = () => {
+const Perks = ({ type }: { type?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
@@ -112,7 +112,7 @@ const Perks = () => {
         <div
           className={`bg-primary flex w-full flex-col gap-4 px-3 py-4 ${layoutSize === 'small' || layoutSize === 'xsmall' ? 'clip-6' : 'clip-8'} sm:gap-6 sm:p-6 lg:gap-8 lg:p-8`}
         >
-          <PerkList perkTree={perks.filteredPerkTree} />
+          <PerkList perkTree={perks.filteredPerkTree} type={type} />
         </div>
       </ThemeContainer>
     </div>

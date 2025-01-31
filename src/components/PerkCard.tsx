@@ -11,8 +11,9 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { Modifier } from 'src/types/modifier';
 import DieIcon from './icons/DieIcon';
+import { Perk } from 'src/types/perk';
 
-const PerkCard = ({ perk }, props) => {
+const PerkCard = ({ perk, type }: { perk: Perk; type?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -28,7 +29,7 @@ const PerkCard = ({ perk }, props) => {
 
   return (
     <div
-      className={`${props.className} bg-secondary flex w-full cursor-pointer flex-col p-4 clip-4`}
+      className={`bg-secondary flex w-full cursor-pointer flex-col p-4 clip-4`}
       onClick={async (e) => {
         e.preventDefault();
         setDetailsOpen(!detailsOpen);
@@ -37,11 +38,12 @@ const PerkCard = ({ perk }, props) => {
       <div className={`text-primary flex w-full items-center justify-between`}>
         <div className="flex w-full items-center justify-between gap-4 pr-2">
           <h3> {perk.name}</h3>
-          {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-            <Link to={`/glam/codex/perks/${perk.id}/update`}>
-              <button className="text-accent hover:underline">Edit</button>
-            </Link>
-          )}
+          {type === 'codex' &&
+            (user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+              <Link to={`/glam/codex/perks/${perk.id}/update`}>
+                <button className="text-accent hover:underline">Edit</button>
+              </Link>
+            )}
         </div>
         <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>
           <Icon

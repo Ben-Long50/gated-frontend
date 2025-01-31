@@ -1,11 +1,20 @@
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import Tag from './Tag';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import { Keyword } from 'src/types/keyword';
 
-const KeywordCard = ({ keyword, children }, props) => {
+const KeywordCard = ({
+  keyword,
+  type,
+  children,
+}: {
+  keyword: Keyword;
+  type?: string;
+  children: ReactNode;
+}) => {
   const { user } = useContext(AuthContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
@@ -20,7 +29,7 @@ const KeywordCard = ({ keyword, children }, props) => {
 
   return (
     <div
-      className={`${props.className} bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
+      className={`bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
       onClick={async (e) => {
         e.preventDefault();
         setDetailsOpen(!detailsOpen);
@@ -36,11 +45,12 @@ const KeywordCard = ({ keyword, children }, props) => {
             onClick={(e) => e.stopPropagation()}
           >
             {children}
-            {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-              <Link to={`/glam/codex/keywords/${keyword.id}/update`}>
-                <button className="text-accent hover:underline">Edit</button>
-              </Link>
-            )}
+            {type === 'codex' &&
+              (user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+                <Link to={`/glam/codex/keywords/${keyword.id}/update`}>
+                  <button className="text-accent hover:underline">Edit</button>
+                </Link>
+              )}
           </div>
         </div>
         <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>

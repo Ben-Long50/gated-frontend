@@ -1,9 +1,15 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 
-export const LayoutContext = createContext();
+interface LayoutSize {
+  layoutSize: 'large' | 'medium' | 'small' | 'xsmall';
+}
 
-const LayoutProvider = ({ children }) => {
-  const [layoutSize, setLayoutSize] = useState(() => {
+const defaultLayoutSize: LayoutSize = { layoutSize: 'large' };
+
+export const LayoutContext = createContext<LayoutSize>(defaultLayoutSize);
+
+const LayoutProvider = ({ children }: { children: ReactNode }) => {
+  const getLayoutSize = (): 'large' | 'medium' | 'small' | 'xsmall' => {
     if (window.innerWidth >= 1280) {
       return 'large';
     } else if (window.innerWidth > 500 && window.innerWidth < 640) {
@@ -13,19 +19,14 @@ const LayoutProvider = ({ children }) => {
     } else {
       return 'medium';
     }
-  });
+  };
+
+  const [layoutSize, setLayoutSize] =
+    useState<LayoutSize['layoutSize']>(getLayoutSize);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 1280) {
-        setLayoutSize('large');
-      } else if (window.innerWidth > 500 && window.innerWidth < 640) {
-        setLayoutSize('small');
-      } else if (window.innerWidth <= 500) {
-        setLayoutSize('xsmall');
-      } else {
-        setLayoutSize('medium');
-      }
+      setLayoutSize(getLayoutSize());
     };
 
     window.addEventListener('resize', handleResize);
@@ -33,7 +34,7 @@ const LayoutProvider = ({ children }) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [layoutSize]);
+  }, []);
 
   return (
     <LayoutContext.Provider value={{ layoutSize }}>

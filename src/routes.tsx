@@ -41,6 +41,7 @@ import ConditionForm from './components/ConditionForm';
 import Conditions from './components/Conditions';
 import Cart from './components/Cart';
 import Inventory from './components/Inventory';
+import Equipment from './components/Equipment';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -71,8 +72,12 @@ const router = createBrowserRouter(
             element={<Inventory category="weapons" />}
           />
           <Route
+            path=":characterId/equipment"
+            element={<Equipment type="equipment" />}
+          />
+          <Route
             path=":characterId/inventory/weapons/:weaponId/modify"
-            element={<WeaponForm title="Modify" />}
+            element={<WeaponForm title="Modify" type="inventory" />}
           />
           <Route
             path=":characterId/inventory/armor"
@@ -80,7 +85,7 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/armor/:armorId/modify"
-            element={<ArmorForm title="Modify" />}
+            element={<ArmorForm title="Modify" type="inventory" />}
           />
           <Route
             path=":characterId/inventory/cybernetics"
@@ -88,7 +93,7 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/cybernetics/:cyberneticId/modify"
-            element={<CyberneticForm title="Modify" />}
+            element={<CyberneticForm title="Modify" type="inventory" />}
           />
           <Route
             path=":characterId/inventory/vehicles"
@@ -104,7 +109,7 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/vehicles/:vehicleId/modify"
-            element={<VehicleForm title="Modify" />}
+            element={<VehicleForm title="Modify" type="inventory" />}
           />
         </Route>
 
@@ -130,6 +135,8 @@ const router = createBrowserRouter(
                   fetchOptions={{
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
+                  type="codex"
+                  key="weapons"
                 />
               }
             />
@@ -142,6 +149,8 @@ const router = createBrowserRouter(
                     includedKeywords: ['Pistol', 'Heavy Pistol'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
+                  type="codex"
+                  key="pistols"
                 />
               }
             />
@@ -154,6 +163,8 @@ const router = createBrowserRouter(
                     includedKeywords: ['Shotgun', 'Heavy Shotgun'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
+                  type="codex"
+                  key="shotguns"
                 />
               }
             />
@@ -166,6 +177,8 @@ const router = createBrowserRouter(
                     includedKeywords: ['SMG', 'Heavy SMG'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
+                  type="codex"
+                  key="smgs"
                 />
               }
             />
@@ -178,6 +191,8 @@ const router = createBrowserRouter(
                     includedKeywords: ['Rifle', 'Heavy Rifle'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
+                  type="codex"
+                  key="rifles"
                 />
               }
             />
@@ -196,6 +211,8 @@ const router = createBrowserRouter(
                     ],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
+                  type="codex"
+                  key="heavy weapons"
                 />
               }
             />
@@ -208,6 +225,8 @@ const router = createBrowserRouter(
                     includedKeywords: ['Melee'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
+                  type="codex"
+                  key="melee"
                 />
               }
             />
@@ -220,24 +239,38 @@ const router = createBrowserRouter(
                     includedKeywords: ['Grenade', 'Mine', 'Launcher'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
+                  type="codex"
+                  key="explosives"
                 />
               }
             />
-            <Route path="create" element={<WeaponForm title="Create" />} />
+            <Route
+              path="create"
+              element={
+                <WeaponForm title="Create" type="codex" key="create weapon" />
+              }
+            />
             <Route
               path=":weaponId/update"
-              element={<WeaponForm title="Update" />}
+              element={
+                <WeaponForm title="Update" type="codex" key="update weapon" />
+              }
             />
           </Route>
 
           <Route path="armor">
-            <Route index element={<Armor title="All Armor" />} />
+            <Route
+              index
+              element={<Armor title="All Armor" type="codex" key="armor" />}
+            />
             <Route
               path="basic"
               element={
                 <Armor
                   title="Basic Armor"
                   fetchOptions={{ includedKeywords: ['Armor'] }}
+                  type="codex"
+                  key="basic armor"
                 />
               }
             />
@@ -247,81 +280,179 @@ const router = createBrowserRouter(
                 <Armor
                   title="Power Armor"
                   fetchOptions={{ includedKeywords: ['Power'] }}
+                  type="codex"
+                  key="power armor"
                 />
               }
             />
-            <Route path="create" element={<ArmorForm title="Create" />} />
+            <Route
+              path="create"
+              element={
+                <ArmorForm title="Create" type="codex" key="create armor" />
+              }
+            />
             <Route
               path=":armorId/update"
-              element={<ArmorForm title="Update" />}
+              element={
+                <ArmorForm title="Update" type="codex" key="update armor" />
+              }
             />
           </Route>
 
           <Route path="cybernetics">
-            <Route index element={<Cybernetics title="Cybernetics" />} />
-            <Route path="create" element={<CyberneticForm title="Create" />} />
+            <Route
+              index
+              element={
+                <Cybernetics
+                  title="Cybernetics"
+                  type="codex"
+                  key="cybernetics"
+                />
+              }
+            />
+            <Route
+              path="create"
+              element={
+                <CyberneticForm
+                  title="Create"
+                  type="codex"
+                  key="create cybernetics"
+                />
+              }
+            />
             <Route
               path=":cyberneticId/update"
-              element={<CyberneticForm title="Update" />}
+              element={
+                <CyberneticForm
+                  title="Update"
+                  type="codex"
+                  key="update cybernetics"
+                />
+              }
             />
           </Route>
 
           <Route path="vehicles">
-            <Route index element={<Vehicles title="Vehicles" />} />
+            <Route
+              index
+              element={
+                <Vehicles title="Vehicles" type="codex" key="vehicles" />
+              }
+            />
             <Route
               path="weapons"
               element={
                 <Weapons
                   title="Vehicle Weapons"
                   fetchOptions={{ includedKeywords: ['Vehicle'] }}
+                  type="codex"
+                  key="vehicle weapons"
                 />
               }
             />
             <Route
               path="weapons/:weaponId/update"
-              element={<WeaponForm title="Update" />}
+              element={
+                <WeaponForm
+                  title="Update"
+                  type="codex"
+                  key="update vehicle weapon"
+                />
+              }
             />
             <Route
               path="modifications"
-              element={<VehicleMods title="Vehicle Mods" />}
+              element={
+                <VehicleMods
+                  title="Vehicle Mods"
+                  type="codex"
+                  key="modifications"
+                />
+              }
             />
-            <Route path="create" element={<VehicleForm title="Create" />} />
+            <Route
+              path="create"
+              element={
+                <VehicleForm title="Create" type="codex" key="create vehicle" />
+              }
+            />
             <Route
               path="modifications/create"
-              element={<VehicleModForm title="Create" />}
+              element={
+                <VehicleModForm
+                  title="Create"
+                  type="codex"
+                  key="create modification"
+                />
+              }
             />
             <Route
               path=":vehicleId/update"
-              element={<VehicleForm title="Update" />}
+              element={
+                <VehicleForm title="Update" type="codex" key="update vehicle" />
+              }
             />
             <Route
               path="modifications/:modId/update"
-              element={<VehicleModForm title="Update" />}
+              element={
+                <VehicleModForm
+                  title="Update"
+                  type="codex"
+                  key="update modification"
+                />
+              }
             />
           </Route>
 
           <Route path="perks">
-            <Route index element={<Perks />} />
-            <Route path="create" element={<PerkForm />} />
-            <Route path=":perkId/update" element={<PerkForm />} />
+            <Route index element={<Perks type="codex" key="perks" />} />
+            <Route
+              path="create"
+              element={<PerkForm type="codex" key="create perk" />}
+            />
+            <Route
+              path=":perkId/update"
+              element={<PerkForm type="codex" key="update perk" />}
+            />
           </Route>
 
           <Route path="keywords">
-            <Route index element={<Keywords />} />
-            <Route path="create" element={<KeywordForm />} />
-            <Route path=":keywordId/update" element={<KeywordForm />} />
+            <Route index element={<Keywords type="codex" key="keywords" />} />
+            <Route
+              path="create"
+              element={<KeywordForm type="codex" key="create keyword" />}
+            />
+            <Route
+              path=":keywordId/update"
+              element={<KeywordForm type="codex" key="update keyword" />}
+            />
           </Route>
 
           <Route path="actions">
-            <Route index element={<Actions />} />
-            <Route path="create" element={<ActionForm />} />
-            <Route path=":actionId/update" element={<ActionForm />} />
+            <Route index element={<Actions type="codex" key="actions" />} />
+            <Route
+              path="create"
+              element={<ActionForm type="codex" key="create action" />}
+            />
+            <Route
+              path=":actionId/update"
+              element={<ActionForm type="codex" key="update action" />}
+            />
           </Route>
 
           <Route path="conditions">
-            <Route index element={<Conditions />} />
-            <Route path="create" element={<ConditionForm />} />
-            <Route path=":conditionId/update" element={<ConditionForm />} />
+            <Route
+              index
+              element={<Conditions type="codex" key="conditions" />}
+            />
+            <Route
+              path="create"
+              element={<ConditionForm type="codex" key="create condition" />}
+            />
+            <Route
+              path=":conditionId/update"
+              element={<ConditionForm type="codex" key="update condition" />}
+            />
           </Route>
         </Route>
       </Route>

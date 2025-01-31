@@ -12,9 +12,11 @@ import { FetchOptions } from 'src/types/fetchOptions';
 const Vehicles = ({
   title,
   fetchOptions,
+  type,
 }: {
   title: string;
   fetchOptions?: FetchOptions;
+  type: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -59,7 +61,7 @@ const Vehicles = ({
         </form>
       </ThemeContainer>
       {vehicles.filteredVehicles.map((vehicle: VehicleWithWeapons) => {
-        return <VehicleCard key={vehicle.name} vehicle={vehicle} />;
+        return <VehicleCard key={vehicle.name} vehicle={vehicle} type={type} />;
       })}
     </div>
   );

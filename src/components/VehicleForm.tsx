@@ -23,7 +23,7 @@ import SelectField from './SelectField';
 import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 
-const VehicleForm = ({ title }: { title: string }) => {
+const VehicleForm = ({ title, type }: { title: string; type: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
@@ -38,7 +38,7 @@ const VehicleForm = ({ title }: { title: string }) => {
   const { data: vehicle } = useVehicleQuery(apiUrl, vehicleId);
 
   const vehicleWeapons = useWeapons({
-    itemList: title === 'Modify' && character?.characterInventory.weapons,
+    itemList: title === 'Modify' && character?.characterInventory?.weapons,
     includedKeywords: ['Vehicle'],
   });
 
@@ -520,7 +520,7 @@ const VehicleForm = ({ title }: { title: string }) => {
             </div>
           </div>
           <div
-            className={`${modDetailsOpen ? 'max-h-[500px] py-1' : 'max-h-0'} timing scrollbar-primary grid grid-cols-1 gap-8 overflow-y-auto pl-1 pr-4 sm:grid-cols-2`}
+            className={`${modDetailsOpen ? 'max-h-[500px] py-1' : 'max-h-0'} timing scrollbar-primary grid grid-cols-1 gap-x-6 gap-y-4 overflow-y-auto pl-1 pr-4 sm:grid-cols-2`}
           >
             <vehicleForm.Field name="modifications">
               {(field) =>
