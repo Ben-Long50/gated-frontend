@@ -10,11 +10,11 @@ import ItemRarity from './ItemRarity';
 const ModCard = ({
   vehicleId,
   modification,
-  type,
+  mode,
 }: {
   vehicleId?: number;
   modification: Modification;
-  type: string;
+  mode: string;
 }) => {
   const { user } = useContext(AuthContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -29,82 +29,87 @@ const ModCard = ({
   }, [detailRef.current]);
 
   return (
-    <div
-      className={`bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
-      onClick={async (e) => {
-        e.preventDefault();
-        setDetailsOpen(!detailsOpen);
-      }}
-    >
-      <summary
-        className={`text-primary flex w-full items-center justify-between`}
+    <div className="w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-zinc-950">
+      <div
+        className={`bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
+        onClick={async (e) => {
+          e.preventDefault();
+          setDetailsOpen(!detailsOpen);
+        }}
       >
-        <div className="flex w-full items-center justify-between gap-4 pr-2">
-          <div className="flex items-center gap-4">
-            <h3>{modification?.name}</h3>
-            <p className="text-error italic">
-              {modification?.vehicleId &&
-                modification.vehicleId !== vehicleId &&
-                '(Currently equipped on another vehicle)'}
-            </p>
-          </div>
-
-          <div
-            className="pointer-events-auto -my-2 flex items-center gap-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center gap-4">
-              {type === 'codex' && (
-                <CardPrice
-                  price={modification?.price}
-                  category="modifications"
-                  itemId={modification?.id}
-                />
-              )}
-            </div>
-            {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') &&
-              type === 'codex' && (
-                <Link
-                  to={`/glam/codex/vehicles/modifications/${modification.id}/update`}
-                >
-                  <button className="text-accent hover:underline">Edit</button>
-                </Link>
-              )}
-          </div>
-        </div>
-        <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>
-          <Icon
-            path={mdiChevronDown}
-            size={1.1}
-            className={`text-secondary`}
-          ></Icon>
-        </span>
-      </summary>
-      <div className={`${detailsOpen && 'pr-1 pt-4'} timing overflow-hidden`}>
-        <div
-          ref={detailRef}
-          className="timing flex flex-col gap-4"
-          style={
-            detailsOpen
-              ? {
-                  marginTop: 0,
-                }
-              : {
-                  marginTop: -detailHeight - 4,
-                }
-          }
+        <summary
+          className={`text-primary flex w-full items-center justify-between`}
         >
-          <div className="flex flex-wrap items-center justify-between gap-8">
-            <p className="text-tertiary mr-auto italic">
-              ({modification.modificationType})
-            </p>
-            <ItemRarity
-              rarity={modification.rarity}
-              grade={modification.grade}
-            />
-          </div>
+          <div className="flex w-full items-center justify-between gap-4 pr-2">
+            <div className="flex items-center gap-4">
+              <h3>{modification?.name}</h3>
+              <p className="text-error italic">
+                {modification?.vehicleId &&
+                  modification.vehicleId !== vehicleId &&
+                  '(Currently equipped on another vehicle)'}
+              </p>
+            </div>
 
-          <p className="text-secondary">{modification.description}</p>
+            <div
+              className="pointer-events-auto -my-2 flex items-center gap-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-4">
+                {mode === 'codex' && (
+                  <CardPrice
+                    price={modification?.price}
+                    category="modifications"
+                    itemId={modification?.id}
+                  />
+                )}
+              </div>
+              {((mode === 'codex' && user?.role === 'ADMIN') ||
+                (mode === 'codex' && user?.role === 'SUPERADMIN')) &&
+                mode === 'codex' && (
+                  <Link
+                    to={`/glam/codex/vehicles/modifications/${modification.id}/update`}
+                  >
+                    <button className="text-accent hover:underline">
+                      Edit
+                    </button>
+                  </Link>
+                )}
+            </div>
+          </div>
+          <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>
+            <Icon
+              path={mdiChevronDown}
+              size={1.1}
+              className={`text-secondary`}
+            ></Icon>
+          </span>
+        </summary>
+        <div className={`${detailsOpen && 'pr-1 pt-4'} timing overflow-hidden`}>
+          <div
+            ref={detailRef}
+            className="timing flex flex-col gap-4"
+            style={
+              detailsOpen
+                ? {
+                    marginTop: 0,
+                  }
+                : {
+                    marginTop: -detailHeight - 4,
+                  }
+            }
+          >
+            <div className="flex flex-wrap items-center justify-between gap-8">
+              <p className="text-tertiary mr-auto italic">
+                ({modification.modificationType})
+              </p>
+              <ItemRarity
+                rarity={modification.rarity}
+                grade={modification.grade}
+              />
+            </div>
+
+            <p className="text-secondary">{modification.description}</p>
+          </div>
         </div>
       </div>
     </div>

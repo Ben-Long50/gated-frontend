@@ -9,7 +9,7 @@ import ActionCard from './ActionCard';
 import Loading from './Loading';
 import SelectField from './SelectField';
 
-const Actions = () => {
+const Actions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
@@ -118,7 +118,9 @@ const Actions = () => {
               }}
             </searchForm.Subscribe>
             {actions.filteredActions.map((action) => {
-              return <ActionCard key={action.name} action={action} />;
+              return (
+                <ActionCard key={action.name} action={action} mode={mode} />
+              );
             })}
           </div>
         </div>

@@ -57,7 +57,7 @@ const EquipmentList = ({
   return (
     <div className="flex flex-col gap-8">
       <h2>Equipped Items</h2>
-      <div className="scrollbar-secondary-2 relative grid grid-cols-1 gap-4 sm:max-h-none sm:grid-cols-2 sm:overflow-y-visible">
+      <div className="scrollbar-secondary-2 grid grid-cols-1 gap-4 sm:max-h-none sm:grid-cols-2 sm:overflow-y-visible">
         {itemList.map((item, index) => {
           const rarityColors = {
             common: 'bg-gray-400',
@@ -69,21 +69,21 @@ const EquipmentList = ({
           return (
             item.item.equipped === true && (
               <>
-                <EquipmentModal
-                  index={index}
-                  item={item.item}
-                  category={item.category}
-                  modalOpen={modalOpen}
-                  toggleModal={toggleModal}
-                />
                 <div
                   key={index}
-                  className="bg-secondary relative flex items-start gap-4 rounded-br-md rounded-tr-md pr-4 shadow-md shadow-zinc-950 sm:gap-6"
+                  className="bg-secondary relative flex items-start gap-3 rounded-br-md rounded-tr-md pr-4 shadow-md shadow-zinc-950 sm:gap-6"
                 >
+                  <EquipmentModal
+                    index={index}
+                    item={item.item}
+                    category={item.category}
+                    modalOpen={modalOpen}
+                    toggleModal={toggleModal}
+                  />
                   <button
                     className={clsx(
                       rarityColors[item.item.rarity] || 'bg-tertiary',
-                      'group relative h-28 w-32 shrink-0 overflow-hidden rounded-bl-md rounded-tl-md pl-1',
+                      'group relative h-24 w-28 shrink-0 overflow-hidden rounded-bl-md rounded-tl-md pl-1 lg:h-28 lg:w-32',
                     )}
                     onClick={() => {
                       setModalOpen(item.item.id);
@@ -109,7 +109,7 @@ const EquipmentList = ({
                     </h3>
                     <div className="flex flex-col gap-2">
                       {item.item?.keywords && item.item.keywords.length > 0 && (
-                        <div className="flex w-full flex-wrap items-center gap-1 justify-self-start">
+                        <div className="scrollbar-secondary flex w-full items-center gap-1 justify-self-start overflow-x-auto pb-1">
                           {item.item.keywords.map(
                             (keywordInfo: {
                               keyword: Keyword;

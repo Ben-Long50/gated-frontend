@@ -13,11 +13,11 @@ import { ArmorWithKeywords } from 'src/types/armor';
 const Armor = ({
   title,
   fetchOptions,
-  type,
+  mode,
 }: {
   title: string;
   fetchOptions?: FetchOptions;
-  type: string;
+  mode: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -87,7 +87,7 @@ const Armor = ({
         </form>
       </ThemeContainer>
       {armor.filteredArmor.map((armor: ArmorWithKeywords) => {
-        return <ArmorCard key={armor.id} armor={armor} type={type} />;
+        return <ArmorCard key={armor.id} armor={armor} mode={mode} />;
       })}
     </div>
   );

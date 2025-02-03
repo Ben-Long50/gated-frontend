@@ -32,7 +32,7 @@ const CharacterForm = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const [checkedPerks, setCheckedPerks] = useState([]);
+  const [checkedPerks, setCheckedPerks] = useState<number[]>([]);
   const [imagePreview, setImagePreview] = useState('');
 
   const attributeTree = useAttributeTree();
@@ -426,7 +426,7 @@ const CharacterForm = () => {
         <PerkList
           className="scrollbar-primary-2 max-h-[400px] overflow-y-auto pr-4"
           perkTree={perks.filteredPerkTree}
-          mode="edit"
+          mode="form"
           checkedPerks={checkedPerks}
           setCheckedPerks={setCheckedPerks}
         />

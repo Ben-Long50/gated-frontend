@@ -1,7 +1,6 @@
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import BlockIcon from './icons/BlockIcon';
-import PowerIcon from './icons/PowerIcon';
 import EquipIcon from './icons/EquipIcon';
 import ItemCard from './ItemCard';
 import { ArmorWithKeywords } from 'src/types/armor';
@@ -10,13 +9,13 @@ import LightningIcon from './icons/LightningIcon';
 
 const ArmorCard = ({
   armor,
-  type,
+  mode,
 }: {
   armor: ArmorWithKeywords;
-  type: string;
+  mode: string;
 }) => {
   return (
-    <ItemCard item={armor} category="armor" type={type}>
+    <ItemCard item={armor} category="armor" mode={mode}>
       {armor.stats.armor && (
         <StatCard label="AV" stat={armor.stats.armor}>
           <ArmorIcon className="size-8" />

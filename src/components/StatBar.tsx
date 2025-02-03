@@ -98,7 +98,7 @@ const StatBar = ({
       </div>
       {mode !== 'edit' && (
         <div
-          className={`text-tertiary flex items-center gap-4 justify-self-end whitespace-nowrap text-xl`}
+          className={`text-tertiary flex items-center gap-2 justify-self-end whitespace-nowrap text-xl`}
         >
           {mode === 'adjustable' && (
             <div className="flex flex-col">

@@ -13,11 +13,11 @@ import { CyberneticWithKeywords } from 'src/types/cybernetic';
 const Cybernetics = ({
   title,
   fetchOptions,
-  type,
+  mode,
 }: {
   title: string;
   fetchOptions?: FetchOptions;
-  type: string;
+  mode: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -90,7 +90,7 @@ const Cybernetics = ({
             <CyberneticCard
               key={cybernetic.id}
               cybernetic={cybernetic}
-              type={type}
+              mode={mode}
             />
           );
         },

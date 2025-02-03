@@ -16,7 +16,7 @@ import useDeleteActionMutation from '../hooks/useDeleteActionMutation/useDeleteA
 import useActions from '../hooks/useActions';
 import { Action } from 'src/types/action';
 
-const ActionForm = () => {
+const ActionForm = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);

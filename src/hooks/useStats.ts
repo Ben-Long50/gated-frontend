@@ -1,7 +1,7 @@
 import { Cybernetic } from 'src/types/cybernetic';
 import { Weapon } from 'src/types/weapon';
 import { Armor } from 'src/types/armor';
-import { Modifier, RollModifier, StatModifier } from 'src/types/modifier';
+import { Modifier, StatModifier } from 'src/types/modifier';
 import useAttributeTree from './useAttributeTree';
 import { AttributeTree } from 'src/types/attributeTree';
 import { Perk } from 'src/types/perk';
@@ -19,6 +19,8 @@ const useStats = (
   const tree = useAttributeTree(attributTree);
 
   const actions = useActions();
+
+  if (actions.isLoading || actions.isPending) return;
 
   const weaponWeight =
     equipment?.weapons?.reduce((sum: number, weapon) => {

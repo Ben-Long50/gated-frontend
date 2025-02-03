@@ -36,7 +36,7 @@ import DieIcon from './icons/DieIcon';
 import useCurrentHealthMutation from '../hooks/useCurrentHealthMutation/useCurrentHealthMutation';
 import useCurrentSanityMutation from '../hooks/useCurrentSanityMutation/useCurrentSanityMutation';
 
-const Equipment = ({ type }: { type?: string }) => {
+const Equipment = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
@@ -129,7 +129,7 @@ const Equipment = ({ type }: { type?: string }) => {
   if (isLoading || isPending) return <Loading />;
 
   return (
-    <div className="max-w-9xl relative flex w-full flex-col items-center gap-8">
+    <div className="relative flex w-full max-w-9xl flex-col items-center gap-8">
       <h1 className="text-center">{namePrefix + ' ' + 'Equipment'}</h1>
       <div className="flex w-full flex-col justify-between gap-8 sm:flex-row">
         {character.picture.imageUrl && (
@@ -366,7 +366,7 @@ const Equipment = ({ type }: { type?: string }) => {
                   {key[0].toUpperCase() + key.slice(1)}
                 </p>
                 <div className="bg-primary flex w-full flex-col gap-2 p-4 pt-6 clip-4">
-                  <div className="grid w-full grid-cols-[repeat(auto-fill,120px)] gap-2">
+                  <div className="grid w-full grid-cols-[repeat(auto-fill,100px)] gap-2">
                     {value.list.map(
                       (
                         item:

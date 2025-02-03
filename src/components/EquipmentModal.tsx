@@ -26,17 +26,17 @@ const EquipmentModal = ({
       <div
         className={clsx(
           index % 2 === 0 ? 'left-0' : 'right-0',
-          'absolute left-1/2 top-1/2 z-30 w-full -translate-x-1/2 -translate-y-1/2 sm:w-[900px]',
+          'absolute top-1/2 z-30 w-full -translate-y-1/2 sm:w-[900px]',
         )}
         onClick={(e) => e.stopPropagation()}
       >
         {category === 'weapon' ? (
-          <WeaponCard type="inventory" weapon={item} />
+          <WeaponCard mode="equipment" weapon={item} />
         ) : category === 'armor' ? (
-          <ArmorCard type="inventory" armor={item} />
+          <ArmorCard mode="equipment" armor={item} />
         ) : (
           category === 'cybernetic' && (
-            <CyberneticCard type="inventory" cybernetic={item} />
+            <CyberneticCard mode="equipment" cybernetic={item} />
           )
         )}
       </div>

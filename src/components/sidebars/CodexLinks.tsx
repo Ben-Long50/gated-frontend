@@ -14,9 +14,14 @@ import useBookSectionsQuery from '../../hooks/useBookSectionsQuery/useBookSectio
 import LinkSublistSidebar from './LinkSublistSidebar';
 import VehicleIcon from '../../components/icons/VehicleIcon';
 import ConditionIcon from '../../components/icons/ConditionIcon';
+import Icon from '@mdi/react';
+import { mdiMagnify } from '@mdi/js';
+import { NavLink } from 'react-router-dom';
+import { LayoutContext } from '../../contexts/LayoutContext';
 
 const CodexLinks = ({ setSidebarVisibility }) => {
   const { apiUrl, user } = useContext(AuthContext);
+  const { layoutSize } = useContext(LayoutContext);
 
   const {
     data: bookSections,
@@ -30,6 +35,33 @@ const CodexLinks = ({ setSidebarVisibility }) => {
 
   return (
     <>
+      <NavLink
+        className={({ isActive }) =>
+          isActive
+            ? 'text-accent group flex gap-6 p-2 pl-4'
+            : 'text-secondary group flex gap-6 p-2 pl-4'
+        }
+        to="/glam/codex/search"
+        end
+      >
+        <Icon
+          className="timing group-hover:text-accent size-8 shrink-0 text-inherit"
+          path={mdiMagnify}
+          rotate={90}
+        />
+        <button
+          className="w-full text-left text-inherit"
+          onClick={() => {
+            if (layoutSize !== 'large') {
+              setSidebarVisibility(false);
+            }
+          }}
+        >
+          <div className="timing group-hover:text-accent text-xl tracking-wide text-inherit">
+            Search codex
+          </div>
+        </button>
+      </NavLink>
       <LinkListSidebar
         title={
           <>

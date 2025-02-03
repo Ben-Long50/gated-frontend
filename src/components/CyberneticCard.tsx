@@ -1,7 +1,6 @@
 import { mdiCircle } from '@mdi/js';
 import Icon from '@mdi/react';
 import CyberIcon from './icons/CyberIcon';
-import PowerIcon from './icons/PowerIcon';
 import BodyIcon from './icons/BodyIcon';
 import { Modifier } from 'src/types/modifier';
 import DieIcon from './icons/DieIcon';
@@ -12,13 +11,13 @@ import LightningIcon from './icons/LightningIcon';
 
 const CyberneticCard = ({
   cybernetic,
-  type,
+  mode,
 }: {
   cybernetic: CyberneticWithKeywords;
-  type: string;
+  mode: string;
 }) => {
   return (
-    <ItemCard item={cybernetic} category="cybernetics" type={type}>
+    <ItemCard item={cybernetic} category="cybernetics" mode={mode}>
       {cybernetic.stats.cyber && (
         <StatCard label="CBR" stat={cybernetic.stats.cyber}>
           <CyberIcon className="size-8" />
@@ -30,9 +29,9 @@ const CyberneticCard = ({
         </StatCard>
       )}
       {cybernetic.modifiers?.length > 0 && (
-        <div className="my-auto">
-          <div className="flex h-full flex-col justify-evenly gap-4">
-            <p className="text-tertiary text-base">Modifiers</p>
+        <div className="col-span-2 my-auto place-self-start">
+          <p className="text-tertiary mb-2 text-base">Modifiers</p>
+          <div className="flex h-full gap-4">
             {cybernetic.modifiers?.map((modifier: Modifier, index: number) => {
               let symbol = '';
               switch (modifier.operator) {
@@ -52,24 +51,24 @@ const CyberneticCard = ({
                   break;
               }
               return modifier.type === 'Stat' ? (
-                <div className="flex items-center gap-2" key={index}>
-                  <Icon
-                    className={`${symbol === '+' || symbol === 'x' ? 'dark:text-green-400' : 'text-error'}`}
-                    path={mdiCircle}
-                    size={0.35}
-                  />
-                  <p>{symbol + ' ' + modifier.value + ' ' + modifier.stat}</p>
+                <div
+                  className={`${modifier.operator === 'add' || modifier.operator === 'multiply' ? 'border-green-400' : 'border-red-600'} bg-tertiary flex items-center gap-2 rounded-md border p-2 shadow-md shadow-zinc-950`}
+                  key={index}
+                >
+                  <p className="whitespace-nowrap">
+                    {symbol + ' ' + modifier.value + ' ' + modifier.stat}
+                  </p>
                 </div>
               ) : (
-                <div className="flex items-center gap-2" key={index}>
-                  <Icon
-                    className={`${symbol === '+' || symbol === 'x' ? 'dark:text-green-400' : 'text-error'}`}
-                    path={mdiCircle}
-                    size={0.35}
-                  />
+                <div
+                  className={`${modifier.operator === 'add' || modifier.operator === 'multiply' ? 'border-green-400' : 'border-red-600'} bg-tertiary flex items-center gap-2 rounded-md border p-2 shadow-md shadow-zinc-950`}
+                  key={index}
+                >
                   <p>{symbol}</p>
-                  <DieIcon className="size-7" />
-                  <p>{modifier.action?.name}</p>
+                  {Array.from({ length: modifier.dice }).map((_, index) => (
+                    <DieIcon key={index} className="size-7" />
+                  ))}
+                  <p className="whitespace-nowrap">{modifier.action?.name}</p>
                 </div>
               );
             })}

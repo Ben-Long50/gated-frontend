@@ -10,7 +10,7 @@ const RootPortal = ({
 }: {
   modalOpen: number;
   toggleModal: () => void;
-  children: ReactNode;
+  children?: ReactNode;
 }) => {
   const portalRoot = document.getElementById('portal-root');
 

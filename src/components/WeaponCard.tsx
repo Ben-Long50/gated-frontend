@@ -10,13 +10,13 @@ import StatCard from './StatCard';
 
 const WeaponCard = ({
   weapon,
-  type,
+  mode,
 }: {
   weapon: WeaponWithKeywords;
-  type: string;
+  mode: string;
 }) => {
   return (
-    <ItemCard item={weapon} category="weapons" type={type}>
+    <ItemCard item={weapon} category="weapons" mode={mode}>
       {weapon.stats.damage && (
         <StatCard label="DMG" stat={weapon.stats.damage}>
           <DamageIcon className="size-8" />

@@ -4,7 +4,14 @@ import { LayoutContext } from '../../contexts/LayoutContext';
 import { mdiTriangleSmallUp } from '@mdi/js';
 import Icon from '@mdi/react';
 
-const LinkSidebar = ({ title, path, setSidebarVisibility }) => {
+const LinkSidebar = ({
+  title,
+  path,
+  setSidebarVisibility,
+}: {
+  title: string;
+  path: string;
+}) => {
   const { layoutSize } = useContext(LayoutContext);
 
   return (

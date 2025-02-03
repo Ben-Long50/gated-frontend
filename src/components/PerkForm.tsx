@@ -16,7 +16,7 @@ import { Perk } from 'src/types/perk';
 import { Modifier } from 'src/types/modifier';
 import ModifierField from './ModifierField';
 
-const PerkForm = () => {
+const PerkForm = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);

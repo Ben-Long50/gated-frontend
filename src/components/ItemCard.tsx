@@ -26,7 +26,7 @@ import BtnRect from './buttons/BtnRect';
 const ItemCard = ({
   item,
   category,
-  type,
+  mode,
   children,
 }: {
   item:
@@ -35,7 +35,7 @@ const ItemCard = ({
     | CyberneticWithKeywords
     | VehicleWithWeapons;
   category: string;
-  type: string;
+  mode: string;
   children: ReactNode;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -92,7 +92,7 @@ const ItemCard = ({
           <>
             <div className="flex h-full flex-col gap-4 sm:gap-8">
               <div className="flex items-start justify-between gap-4">
-                <div className={`flex flex-col gap-1`}>
+                <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-4">
                     <h2 className="pl-2">{item.name}</h2>
                     {category === 'weapons' && item.vehicleId && (
@@ -111,14 +111,17 @@ const ItemCard = ({
                   )}
                 </div>
                 <div className="flex flex-wrap items-start justify-end gap-x-4 gap-y-1">
-                  <div className="flex items-center justify-end gap-4">
-                    <CardPrice
-                      price={item?.price}
-                      category={category}
-                      itemId={item?.id}
-                    />
-                  </div>
-                  {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+                  {mode === 'codex' && (
+                    <div className="flex items-center justify-end gap-4">
+                      <CardPrice
+                        price={item?.price}
+                        category={category}
+                        itemId={item?.id}
+                      />
+                    </div>
+                  )}
+                  {((mode === 'codex' && user?.role === 'ADMIN') ||
+                    (mode === 'codex' && user?.role === 'SUPERADMIN')) && (
                     <Link to={`/glam/codex/item/${item.id}/update`}>
                       <button className="text-accent hover:underline">
                         Edit
@@ -129,7 +132,7 @@ const ItemCard = ({
               </div>
               <ItemRarity rarity={item?.rarity} grade={item?.grade} />
               {item?.keywords && item.keywords.length > 0 && (
-                <div className="flex w-full flex-wrap items-center gap-1 justify-self-start">
+                <div className="col-span-2 flex w-full flex-wrap items-center gap-1 justify-self-start">
                   {item.keywords.map(
                     (item: { keyword: Keyword; value?: number }) => {
                       return (
@@ -184,23 +187,25 @@ const ItemCard = ({
                 </div>
               </div>
             </div>
-            <div className="overflow-hidden">
-              <div
-                ref={detailRef}
-                className="timing pt-6"
-                style={
-                  detailsOpen
-                    ? {
-                        marginTop: 0,
-                      }
-                    : {
-                        marginTop: -detailHeight - 4,
-                      }
-                }
-              >
-                <p className="text-secondary pr-6">{item.description}</p>
+            {mode !== 'equipment' && (
+              <div className="overflow-hidden">
+                <div
+                  ref={detailRef}
+                  className="timing pt-6"
+                  style={
+                    detailsOpen
+                      ? {
+                          marginTop: 0,
+                        }
+                      : {
+                          marginTop: -detailHeight - 4,
+                        }
+                  }
+                >
+                  <p className="text-secondary pr-6">{item.description}</p>
+                </div>
               </div>
-            </div>
+            )}
           </>
         ) : (
           <div className="relative flex h-full gap-8">
@@ -236,9 +241,9 @@ const ItemCard = ({
                   )}
                 </div>
                 <div
-                  className={`${type !== 'inventory' && 'row-span-2'} timing flex flex-col items-end justify-end gap-x-8 gap-y-4`}
+                  className={`${mode === 'codex' && 'row-span-2'} timing col-start-2 row-start-1 flex flex-col items-end justify-end gap-x-8 gap-y-4`}
                 >
-                  {type === 'codex' && (
+                  {mode === 'codex' && (
                     <div className="flex items-center justify-end gap-4">
                       <CardPrice
                         price={item?.price}
@@ -256,13 +261,13 @@ const ItemCard = ({
                     </div>
                   )}
                   <ItemRarity
-                    className="col-start-2 place-self-end"
+                    className="place-self-end"
                     rarity={item?.rarity}
                     grade={item?.grade}
                   />
                 </div>
                 {(item.body || item.keywords) && (
-                  <div className="row-start-2 flex flex-wrap items-center gap-1">
+                  <div className="col-span-2 col-start-1 row-start-2 flex flex-wrap items-center gap-1">
                     {item.body && (
                       <div className="flex flex-col items-center gap-1">
                         <div className="mr-4 flex flex-wrap items-center gap-2">
@@ -305,35 +310,37 @@ const ItemCard = ({
                   {children}
                 </div>
               </div>
-              <div className="overflow-hidden">
-                <p
-                  ref={detailRef}
-                  className={`timing text-secondary pr-8`}
-                  style={
-                    detailsOpen
-                      ? {
-                          marginTop: 24,
-                        }
-                      : {
-                          marginTop: -detailHeight - 36,
-                        }
-                  }
-                >
-                  {item.description}
-                </p>
-              </div>
+              {mode !== 'equipment' && (
+                <div className="overflow-hidden">
+                  <p
+                    ref={detailRef}
+                    className={`timing text-secondary pr-8`}
+                    style={
+                      detailsOpen
+                        ? {
+                            marginTop: 24,
+                          }
+                        : {
+                            marginTop: -detailHeight - 36,
+                          }
+                    }
+                  >
+                    {item.description}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}
         <div className={`overflow-hidden`}>
           <div
             ref={integrationRef}
-            className={`timing flex flex-col gap-8 p-0.5 pr-8`}
+            className="timing flex flex-col gap-5 p-0.5 pr-8"
             style={
               detailsOpen
                 ? {
                     marginTop:
-                      integrationRef.current?.children.length > 0 ? 24 : 0,
+                      integrationRef.current?.children.length > 0 ? 16 : 0,
                   }
                 : {
                     marginTop: -integrationHeight - 4,
@@ -341,7 +348,11 @@ const ItemCard = ({
             }
           >
             {item.weapons && item.weapons?.length > 0 && (
-              <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+              <ThemeContainer
+                className="mt-2"
+                chamfer="16"
+                borderColor={accentPrimary}
+              >
                 <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                   Integrated weapons
                 </p>
@@ -350,7 +361,7 @@ const ItemCard = ({
                     (weapon: WeaponWithKeywords, index: number) => {
                       return (
                         <div
-                          key={weapon?.name}
+                          key={weapon?.id}
                           className="flex h-full grow flex-col items-start justify-between gap-4"
                         >
                           <SubweaponCard
@@ -370,7 +381,11 @@ const ItemCard = ({
               </ThemeContainer>
             )}
             {item.armor && item.armor?.length > 0 && (
-              <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+              <ThemeContainer
+                className="mt-2"
+                chamfer="16"
+                borderColor={accentPrimary}
+              >
                 <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                   Integrated armor
                 </p>
@@ -394,7 +409,11 @@ const ItemCard = ({
               </ThemeContainer>
             )}
             {item.actions && item.actions?.length > 0 && (
-              <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+              <ThemeContainer
+                className="mt-2"
+                chamfer="16"
+                borderColor={accentPrimary}
+              >
                 <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                   Unique actions
                 </p>
@@ -436,7 +455,7 @@ const ItemCard = ({
                 </div>
               </ThemeContainer>
             )}
-            {type === 'inventory' && (
+            {mode === 'inventory' && (
               <Link className="w-1/3 self-start" to={`${item.id}/modify`}>
                 <BtnRect>Modify</BtnRect>
               </Link>

@@ -21,7 +21,7 @@ import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
 import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
 
-const ArmorForm = ({ title }: { title: string }) => {
+const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');

@@ -1,4 +1,11 @@
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnNavbar from './buttons/BtnNavbar';
 import { Link } from 'react-router-dom';
@@ -50,9 +57,10 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
     };
   }, []);
 
-  useMemo(() => {
+  useLayoutEffect(() => {
     if (navbarRef.current) {
-      setNavbarHeight(navbarRef.current.offsetHeight);
+      const rect = navbarRef.current.getBoundingClientRect();
+      setNavbarHeight(rect.height);
     }
   }, [navbarRef]);
 

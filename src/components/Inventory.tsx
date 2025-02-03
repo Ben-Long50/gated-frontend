@@ -30,7 +30,7 @@ const Inventory = ({ category }: { category: string }) => {
             itemList: character?.characterInventory?.weapons,
             excludedKeywords: ['Vehicle', 'Cybernetic'],
           }}
-          type="inventory"
+          mode="inventory"
           key={character?.id + ' ' + 'weapons'}
         />
       ) : category === 'armor' ? (
@@ -40,7 +40,7 @@ const Inventory = ({ category }: { category: string }) => {
             itemList: character?.characterInventory?.armor,
             excludedKeywords: ['Cybernetic'],
           }}
-          type="inventory"
+          mode="inventory"
           key={character?.id + ' ' + 'armor'}
         />
       ) : category === 'cybernetics' ? (
@@ -49,7 +49,7 @@ const Inventory = ({ category }: { category: string }) => {
           fetchOptions={{
             itemList: character?.characterInventory?.cybernetics,
           }}
-          type="inventory"
+          mode="inventory"
           key={character?.id + ' ' + 'cybernetics'}
         />
       ) : category === 'vehicle weapons' ? (
@@ -59,7 +59,7 @@ const Inventory = ({ category }: { category: string }) => {
             itemList: character?.characterInventory?.weapons,
             includedKeywords: ['Vehicle'],
           }}
-          type="inventory"
+          mode="inventory"
           key={character?.id + ' ' + 'vehicle weapons'}
         />
       ) : category === 'vehicle modifications' ? (
@@ -68,14 +68,14 @@ const Inventory = ({ category }: { category: string }) => {
           fetchOptions={{
             itemList: character?.characterInventory?.modifications,
           }}
-          type="inventory"
+          mode="inventory"
           key={character?.id + ' ' + 'vehicle modifications'}
         />
       ) : category === 'vehicles' ? (
         <Vehicles
           title={namePrefix + ' ' + 'Vehicles'}
           fetchOptions={{ itemList: character?.characterInventory?.vehicles }}
-          type="inventory"
+          mode="inventory"
           key={character?.id + ' ' + 'vehicles'}
         />
       ) : (

@@ -21,7 +21,7 @@ import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
 import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
 
-const WeaponForm = ({ title }: { title: string }) => {
+const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');

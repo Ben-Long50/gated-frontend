@@ -24,7 +24,7 @@ import { Modifier } from 'src/types/modifier';
 import useCyberneticQuery from '../hooks/useCyberneticQuery/useCyberneticQuery';
 import { Keyword } from 'src/types/keyword';
 
-const CyberneticForm = ({ title }: { title: string }) => {
+const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');

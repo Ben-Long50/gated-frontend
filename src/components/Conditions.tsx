@@ -9,7 +9,7 @@ import useConditions from '../hooks/useConditions';
 import ConditionCard from './ConditionCard';
 import SelectField from './SelectField';
 
-const Conditions = () => {
+const Conditions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 

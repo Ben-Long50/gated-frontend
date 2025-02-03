@@ -483,7 +483,7 @@ const CharacterUpdateForm = () => {
         <PerkList
           className="scrollbar-primary-2 max-h-[400px] overflow-y-auto pr-4"
           perkTree={perks.filteredPerkTree}
-          mode="edit"
+          mode="form"
           checkedPerks={checkedPerks}
           setCheckedPerks={setCheckedPerks}
         />

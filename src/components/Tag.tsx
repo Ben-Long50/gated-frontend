@@ -8,7 +8,7 @@ const Tag = (props) => {
           props.setToolTip(props.label);
         }}
       >
-        <p className="text-base">{props.label}</p>
+        <p className="whitespace-nowrap text-base">{props.label}</p>
       </div>
 
       <div

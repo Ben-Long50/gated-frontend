@@ -23,7 +23,7 @@ import SelectField from './SelectField';
 import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 
-const VehicleForm = ({ title, type }: { title: string; type: string }) => {
+const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');

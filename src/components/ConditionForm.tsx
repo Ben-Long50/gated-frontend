@@ -13,7 +13,7 @@ import SelectField from './SelectField';
 import useConditions from '../hooks/useConditions';
 import { Condition } from 'src/types/condition';
 
-const ConditionForm = () => {
+const ConditionForm = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);

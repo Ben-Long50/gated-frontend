@@ -1,21 +1,22 @@
 import PerkCard from './PerkCard';
 import Icon from '@mdi/react';
 import { mdiTriangleSmallUp } from '@mdi/js';
-import { PerkTree } from 'src/types/perk';
+import { Perk, PerkTree } from 'src/types/perk';
+
+type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 
 const PerkList = ({
   perkTree,
-  mode,
   checkedPerks,
   setCheckedPerks,
   className,
-  type,
+  mode,
 }: {
   perkTree: Partial<PerkTree>;
-  mode: string;
-  checkedPerks: number[];
-  className: string;
-  type?: string;
+  checkedPerks?: number[];
+  setCheckedPerks?: SetState<number[]>;
+  className?: string;
+  mode?: string;
 }) => {
   return (
     <div
@@ -52,18 +53,14 @@ const PerkList = ({
                           <h4>({perkList.length})</h4>
                         </div>
                         <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
-                          {perkList.map((perk) => {
+                          {perkList.map((perk: Perk) => {
                             return (
                               <div
                                 key={perk.id}
                                 className="flex w-full items-center justify-between gap-4"
                               >
-                                <PerkCard
-                                  className="w-full"
-                                  perk={perk}
-                                  type={type}
-                                />
-                                {mode === 'edit' && (
+                                <PerkCard perk={perk} mode={mode} />
+                                {mode === 'form' && (
                                   <input
                                     className="size-6"
                                     type="checkbox"
@@ -75,7 +72,7 @@ const PerkList = ({
                                           perk.id,
                                         ]);
                                       } else {
-                                        setCheckedPerks((prevPerks) =>
+                                        setCheckedPerks((prevPerks: number[]) =>
                                           prevPerks.filter(
                                             (id) => id !== perk.id,
                                           ),

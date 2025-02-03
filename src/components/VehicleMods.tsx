@@ -12,11 +12,11 @@ import { FetchOptions } from 'src/types/fetchOptions';
 const VehicleMods = ({
   title,
   fetchOptions,
-  type,
+  mode,
 }: {
   title: string;
   fetchOptions?: FetchOptions;
-  type: string;
+  mode: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -71,7 +71,7 @@ const VehicleMods = ({
                   <ModCard
                     key={modification.id}
                     modification={modification}
-                    type={type}
+                    mode={mode}
                   />
                 );
               })}

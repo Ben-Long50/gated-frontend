@@ -13,7 +13,7 @@ import useDeleteKeywordMutation from '../hooks/useDeleteKeywordMutation/useDelet
 import useKeywords from '../hooks/useKeywords';
 import { Keyword } from 'src/types/keyword';
 
-const KeywordForm = () => {
+const KeywordForm = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);

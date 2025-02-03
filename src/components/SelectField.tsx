@@ -45,7 +45,7 @@ const SelectField = ({ field, ...props }) => {
             field.handleChange(e.target.value);
             handleBorder();
             if (props.onChange) {
-              props.onChange();
+              props.onChange(e);
             }
           }}
         >

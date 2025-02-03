@@ -42,6 +42,7 @@ import Conditions from './components/Conditions';
 import Cart from './components/Cart';
 import Inventory from './components/Inventory';
 import Equipment from './components/Equipment';
+import CodexSearch from './components/CodexSearch';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -73,11 +74,11 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/equipment"
-            element={<Equipment type="equipment" />}
+            element={<Equipment mode="equipment" />}
           />
           <Route
             path=":characterId/inventory/weapons/:weaponId/modify"
-            element={<WeaponForm title="Modify" type="inventory" />}
+            element={<WeaponForm title="Modify" mode="inventory" />}
           />
           <Route
             path=":characterId/inventory/armor"
@@ -85,7 +86,7 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/armor/:armorId/modify"
-            element={<ArmorForm title="Modify" type="inventory" />}
+            element={<ArmorForm title="Modify" mode="inventory" />}
           />
           <Route
             path=":characterId/inventory/cybernetics"
@@ -93,7 +94,7 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/cybernetics/:cyberneticId/modify"
-            element={<CyberneticForm title="Modify" type="inventory" />}
+            element={<CyberneticForm title="Modify" mode="inventory" />}
           />
           <Route
             path=":characterId/inventory/vehicles"
@@ -109,11 +110,12 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/vehicles/:vehicleId/modify"
-            element={<VehicleForm title="Modify" type="inventory" />}
+            element={<VehicleForm title="Modify" mode="inventory" />}
           />
         </Route>
 
         <Route path="codex">
+          <Route path="search" element={<CodexSearch />} />
           <Route index element={<PatchNotes />} />
           <Route path="patchNotes">
             <Route path="create" element={<PatchNoteForm />} />
@@ -135,7 +137,7 @@ const router = createBrowserRouter(
                   fetchOptions={{
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
-                  type="codex"
+                  mode="codex"
                   key="weapons"
                 />
               }
@@ -149,7 +151,7 @@ const router = createBrowserRouter(
                     includedKeywords: ['Pistol', 'Heavy Pistol'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
-                  type="codex"
+                  mode="codex"
                   key="pistols"
                 />
               }
@@ -163,7 +165,7 @@ const router = createBrowserRouter(
                     includedKeywords: ['Shotgun', 'Heavy Shotgun'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
-                  type="codex"
+                  mode="codex"
                   key="shotguns"
                 />
               }
@@ -177,7 +179,7 @@ const router = createBrowserRouter(
                     includedKeywords: ['SMG', 'Heavy SMG'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
-                  type="codex"
+                  mode="codex"
                   key="smgs"
                 />
               }
@@ -191,7 +193,7 @@ const router = createBrowserRouter(
                     includedKeywords: ['Rifle', 'Heavy Rifle'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
-                  type="codex"
+                  mode="codex"
                   key="rifles"
                 />
               }
@@ -211,7 +213,7 @@ const router = createBrowserRouter(
                     ],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
-                  type="codex"
+                  mode="codex"
                   key="heavy weapons"
                 />
               }
@@ -225,7 +227,7 @@ const router = createBrowserRouter(
                     includedKeywords: ['Melee'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
-                  type="codex"
+                  mode="codex"
                   key="melee"
                 />
               }
@@ -239,7 +241,7 @@ const router = createBrowserRouter(
                     includedKeywords: ['Grenade', 'Mine', 'Launcher'],
                     excludedKeywords: ['Vehicle', 'Cybernetic'],
                   }}
-                  type="codex"
+                  mode="codex"
                   key="explosives"
                 />
               }
@@ -247,13 +249,13 @@ const router = createBrowserRouter(
             <Route
               path="create"
               element={
-                <WeaponForm title="Create" type="codex" key="create weapon" />
+                <WeaponForm title="Create" mode="codex" key="create weapon" />
               }
             />
             <Route
               path=":weaponId/update"
               element={
-                <WeaponForm title="Update" type="codex" key="update weapon" />
+                <WeaponForm title="Update" mode="codex" key="update weapon" />
               }
             />
           </Route>
@@ -261,7 +263,7 @@ const router = createBrowserRouter(
           <Route path="armor">
             <Route
               index
-              element={<Armor title="All Armor" type="codex" key="armor" />}
+              element={<Armor title="All Armor" mode="codex" key="armor" />}
             />
             <Route
               path="basic"
@@ -269,7 +271,7 @@ const router = createBrowserRouter(
                 <Armor
                   title="Basic Armor"
                   fetchOptions={{ includedKeywords: ['Armor'] }}
-                  type="codex"
+                  mode="codex"
                   key="basic armor"
                 />
               }
@@ -280,7 +282,7 @@ const router = createBrowserRouter(
                 <Armor
                   title="Power Armor"
                   fetchOptions={{ includedKeywords: ['Power'] }}
-                  type="codex"
+                  mode="codex"
                   key="power armor"
                 />
               }
@@ -288,13 +290,13 @@ const router = createBrowserRouter(
             <Route
               path="create"
               element={
-                <ArmorForm title="Create" type="codex" key="create armor" />
+                <ArmorForm title="Create" mode="codex" key="create armor" />
               }
             />
             <Route
               path=":armorId/update"
               element={
-                <ArmorForm title="Update" type="codex" key="update armor" />
+                <ArmorForm title="Update" mode="codex" key="update armor" />
               }
             />
           </Route>
@@ -305,7 +307,7 @@ const router = createBrowserRouter(
               element={
                 <Cybernetics
                   title="Cybernetics"
-                  type="codex"
+                  mode="codex"
                   key="cybernetics"
                 />
               }
@@ -315,7 +317,7 @@ const router = createBrowserRouter(
               element={
                 <CyberneticForm
                   title="Create"
-                  type="codex"
+                  mode="codex"
                   key="create cybernetics"
                 />
               }
@@ -325,7 +327,7 @@ const router = createBrowserRouter(
               element={
                 <CyberneticForm
                   title="Update"
-                  type="codex"
+                  mode="codex"
                   key="update cybernetics"
                 />
               }
@@ -336,7 +338,7 @@ const router = createBrowserRouter(
             <Route
               index
               element={
-                <Vehicles title="Vehicles" type="codex" key="vehicles" />
+                <Vehicles title="Vehicles" mode="codex" key="vehicles" />
               }
             />
             <Route
@@ -345,7 +347,7 @@ const router = createBrowserRouter(
                 <Weapons
                   title="Vehicle Weapons"
                   fetchOptions={{ includedKeywords: ['Vehicle'] }}
-                  type="codex"
+                  mode="codex"
                   key="vehicle weapons"
                 />
               }
@@ -355,7 +357,7 @@ const router = createBrowserRouter(
               element={
                 <WeaponForm
                   title="Update"
-                  type="codex"
+                  mode="codex"
                   key="update vehicle weapon"
                 />
               }
@@ -365,7 +367,7 @@ const router = createBrowserRouter(
               element={
                 <VehicleMods
                   title="Vehicle Mods"
-                  type="codex"
+                  mode="codex"
                   key="modifications"
                 />
               }
@@ -373,7 +375,7 @@ const router = createBrowserRouter(
             <Route
               path="create"
               element={
-                <VehicleForm title="Create" type="codex" key="create vehicle" />
+                <VehicleForm title="Create" mode="codex" key="create vehicle" />
               }
             />
             <Route
@@ -381,7 +383,7 @@ const router = createBrowserRouter(
               element={
                 <VehicleModForm
                   title="Create"
-                  type="codex"
+                  mode="codex"
                   key="create modification"
                 />
               }
@@ -389,7 +391,7 @@ const router = createBrowserRouter(
             <Route
               path=":vehicleId/update"
               element={
-                <VehicleForm title="Update" type="codex" key="update vehicle" />
+                <VehicleForm title="Update" mode="codex" key="update vehicle" />
               }
             />
             <Route
@@ -397,7 +399,7 @@ const router = createBrowserRouter(
               element={
                 <VehicleModForm
                   title="Update"
-                  type="codex"
+                  mode="codex"
                   key="update modification"
                 />
               }
@@ -405,53 +407,53 @@ const router = createBrowserRouter(
           </Route>
 
           <Route path="perks">
-            <Route index element={<Perks type="codex" key="perks" />} />
+            <Route index element={<Perks mode="codex" key="perks" />} />
             <Route
               path="create"
-              element={<PerkForm type="codex" key="create perk" />}
+              element={<PerkForm mode="codex" key="create perk" />}
             />
             <Route
               path=":perkId/update"
-              element={<PerkForm type="codex" key="update perk" />}
+              element={<PerkForm mode="codex" key="update perk" />}
             />
           </Route>
 
           <Route path="keywords">
-            <Route index element={<Keywords type="codex" key="keywords" />} />
+            <Route index element={<Keywords mode="codex" key="keywords" />} />
             <Route
               path="create"
-              element={<KeywordForm type="codex" key="create keyword" />}
+              element={<KeywordForm mode="codex" key="create keyword" />}
             />
             <Route
               path=":keywordId/update"
-              element={<KeywordForm type="codex" key="update keyword" />}
+              element={<KeywordForm mode="codex" key="update keyword" />}
             />
           </Route>
 
           <Route path="actions">
-            <Route index element={<Actions type="codex" key="actions" />} />
+            <Route index element={<Actions mode="codex" key="actions" />} />
             <Route
               path="create"
-              element={<ActionForm type="codex" key="create action" />}
+              element={<ActionForm mode="codex" key="create action" />}
             />
             <Route
               path=":actionId/update"
-              element={<ActionForm type="codex" key="update action" />}
+              element={<ActionForm mode="codex" key="update action" />}
             />
           </Route>
 
           <Route path="conditions">
             <Route
               index
-              element={<Conditions type="codex" key="conditions" />}
+              element={<Conditions mode="codex" key="conditions" />}
             />
             <Route
               path="create"
-              element={<ConditionForm type="codex" key="create condition" />}
+              element={<ConditionForm mode="codex" key="create condition" />}
             />
             <Route
               path=":conditionId/update"
-              element={<ConditionForm type="codex" key="update condition" />}
+              element={<ConditionForm mode="codex" key="update condition" />}
             />
           </Route>
         </Route>

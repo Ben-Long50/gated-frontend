@@ -13,15 +13,15 @@ import StatCard from './StatCard';
 
 const VehicleCard = ({
   vehicle,
-  type,
+  mode,
 }: {
   vehicle: VehicleWithWeapons;
-  type: string;
+  mode: string;
 }) => {
   console.log(vehicle);
 
   return (
-    <ItemCard item={vehicle} category="vehicles" type={type}>
+    <ItemCard item={vehicle} category="vehicles" mode={mode}>
       {vehicle.stats.size && (
         <StatCard label="SZE" stat={vehicle.stats.size}>
           <SizeIcon className="size-8" />
