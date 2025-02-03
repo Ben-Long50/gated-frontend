@@ -24,6 +24,9 @@ import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 import { Character } from 'src/types/character';
 import useCharactersQuery from '../hooks/useCharactersQuery/useCharactersQuery';
+import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
+import useEquipmentQuery from '../hooks/useEquipmentQuery/useEquipmentQuery';
+import useStats from '../hooks/useStats';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -33,11 +36,26 @@ const CharacterUpdateForm = () => {
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const { data: characters, isPending, isLoading } = useCharactersQuery(apiUrl);
+  const {
+    data: character,
+    isLoading: characterLoading,
+    isPending: characterPending,
+  } = useCharacterQuery(apiUrl, characterId);
 
-  const character = characters?.filter(
-    (character: Character) => character.id === Number(characterId),
-  )[0];
+  console.log(character);
+
+  const {
+    data: equipment,
+    isLoading: equipmentLoading,
+    isPending: equipmentPending,
+  } = useEquipmentQuery(
+    apiUrl,
+    character?.id,
+    character?.characterInventory?.id,
+  );
+
+  const isLoading = characterLoading || equipmentLoading;
+  const isPending = characterPending || equipmentPending;
 
   const [checkedPerks, setCheckedPerks] = useState(() => {
     return character?.perks.map((perk) => perk.id);
@@ -46,6 +64,8 @@ const CharacterUpdateForm = () => {
 
   const attributeTree = useAttributeTree(character?.attributes);
   const perks = usePerks(attributeTree?.tree);
+
+  const { stats } = useStats(equipment, attributeTree.tree, character?.perks);
 
   const updateCharacter = useUpdateCharacterMutation(
     apiUrl,
@@ -89,7 +109,7 @@ const CharacterUpdateForm = () => {
         injuries: character?.stats.injuries ?? '',
         insanities: character?.stats.insanities ?? '',
       },
-      picture: '',
+      picture: character?.picture ?? '',
       height: character?.height ?? '',
       weight: character?.weight ?? '',
       age: character?.age ?? '',
@@ -116,12 +136,15 @@ const CharacterUpdateForm = () => {
         if (key === 'picture') {
           if (val instanceof File) {
             formData.append(key, val);
+          } else {
+            formData.append(key, JSON.stringify(val));
           }
         } else {
           formData.append(key, JSON.stringify(val));
         }
       });
-
+      const formDataObj = Object.fromEntries(formData.entries());
+      console.log(formDataObj);
       updateCharacter.mutate(formData);
     },
   });
@@ -324,7 +347,7 @@ const CharacterUpdateForm = () => {
                   title="Health"
                   mode="edit"
                   current={field.state.value}
-                  total={attributeTree.stats.health || 0}
+                  total={stats.maxHealth}
                   color="rgb(248 113 113)"
                 >
                   <HealthIcon className="size-8" />
@@ -357,7 +380,7 @@ const CharacterUpdateForm = () => {
                   title="Sanity"
                   mode="edit"
                   current={field.state.value}
-                  total={attributeTree.stats.sanity || 0}
+                  total={stats.maxSanity}
                   color="rgb(96 165 250)"
                 >
                   <SanityIcon className="size-8" />

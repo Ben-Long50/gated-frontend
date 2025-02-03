@@ -1,9 +1,11 @@
 import { AttributeTree } from './attributeTree';
+import { Modifier } from './modifier';
 
 interface Perk {
   id: number;
   name: string;
   description: string;
+  modifiers: Modifier[];
   requirements: Partial<AttributeTree>;
 }
 

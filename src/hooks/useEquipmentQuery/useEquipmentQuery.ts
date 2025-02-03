@@ -1,10 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import getEquippedItems from './getEquippedItems';
 
-const useEquipmentQuery = (apiUrl: string, characterId?: string) => {
+const useEquipmentQuery = (
+  apiUrl: string,
+  characterId: number,
+  inventoryId: number,
+) => {
   return useQuery({
-    queryKey: ['activeCharacter', 'equipment', characterId],
-    queryFn: async () => await getEquippedItems(apiUrl, characterId),
+    queryKey: ['activeCharacter', 'equipment', inventoryId],
+    queryFn: async () =>
+      await getEquippedItems(apiUrl, characterId, inventoryId),
     // enabled: !!characterId,
   });
 };

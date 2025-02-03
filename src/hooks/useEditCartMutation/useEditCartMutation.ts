@@ -5,9 +5,10 @@ const useEditCartMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: {
-      characterId: string;
+      characterId: number;
+      cartId: number;
       category: string;
-      itemId: string;
+      itemId: number;
     }) => {
       return editCart(apiUrl, formData);
     },

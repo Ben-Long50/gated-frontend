@@ -87,7 +87,7 @@ const Weapons = ({
         </form>
       </ThemeContainer>
       {weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
-        return <WeaponCard key={weapon.name} weapon={weapon} type={type} />;
+        return <WeaponCard key={weapon.id} weapon={weapon} type={type} />;
       })}
     </div>
   );

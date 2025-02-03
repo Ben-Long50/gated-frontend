@@ -30,6 +30,11 @@ export default {
         '50dvh': '50dvh',
         '75dvh': '75dvh',
       },
+      maxWidth: {
+        '8xl': '88rem',
+        '9xl': '96rem',
+        '10xl': '104rem',
+      },
       backgroundColor: {
         'zinc-850': 'rgb(31, 31, 34)',
         'zinc-150': 'rgb(236, 236, 238)',

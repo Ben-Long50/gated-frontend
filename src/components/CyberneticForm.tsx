@@ -199,6 +199,10 @@ const CyberneticForm = ({ title }: { title: string }) => {
         }
       });
       formData.append('cyberneticId', JSON.stringify(cyberneticId || 0));
+
+      const object = Object.fromEntries(formData.entries());
+      console.log(object);
+
       await createCybernetic.mutate(formData);
     },
   });
@@ -510,7 +514,7 @@ const CyberneticForm = ({ title }: { title: string }) => {
                           <h2 className="text-left">Integrated weapons</h2>
                         )}
                         {field.state.value.map((_, i) => (
-                          <>
+                          <div className="flex flex-col gap-8" key={i}>
                             <div className="flex w-full gap-4 lg:gap-8">
                               <cyberneticForm.Field
                                 name={`weapons[${i}].name`}
@@ -706,7 +710,7 @@ const CyberneticForm = ({ title }: { title: string }) => {
                                 </div>
                               )}
                             </cyberneticForm.Field>
-                          </>
+                          </div>
                         ))}
                         <div className="flex w-full items-center justify-between">
                           <button
@@ -759,7 +763,7 @@ const CyberneticForm = ({ title }: { title: string }) => {
                           <h2 className="text-left">Integrated Armor</h2>
                         )}
                         {field.state.value.map((_, i) => (
-                          <>
+                          <div className="flex flex-col gap-8" key={i}>
                             <div className="flex w-full gap-4 lg:gap-8">
                               <cyberneticForm.Field
                                 name={`armor[${i}].name`}
@@ -917,7 +921,7 @@ const CyberneticForm = ({ title }: { title: string }) => {
                                 </div>
                               )}
                             </cyberneticForm.Field>
-                          </>
+                          </div>
                         ))}
                         <div className="flex w-full items-center justify-between">
                           <button
@@ -969,7 +973,7 @@ const CyberneticForm = ({ title }: { title: string }) => {
                         )}
                         {field.state.value.map((_, i) => {
                           return (
-                            <>
+                            <div className="flex flex-col gap-8" key={i}>
                               <cyberneticForm.Field
                                 name={`actions[${i}].name`}
                                 validators={{
@@ -997,7 +1001,7 @@ const CyberneticForm = ({ title }: { title: string }) => {
                                       {field.state.value.map((_, j) => {
                                         return (
                                           <div
-                                            key={i}
+                                            key={j}
                                             className="flex gap-2 sm:gap-4 lg:gap-6"
                                           >
                                             <cyberneticForm.Field
@@ -1031,7 +1035,7 @@ const CyberneticForm = ({ title }: { title: string }) => {
                                               }}
                                             </cyberneticForm.Field>
                                             <cyberneticForm.Field
-                                              key={i}
+                                              key={j}
                                               name={`actions[${i}].costs[${j}].value`}
                                             >
                                               {(subField) => {
@@ -1176,7 +1180,7 @@ const CyberneticForm = ({ title }: { title: string }) => {
                                       {field.state.value.map((_, j) => {
                                         return (
                                           <div
-                                            key={i}
+                                            key={j}
                                             className="flex gap-2 sm:gap-4 lg:gap-6"
                                           >
                                             <cyberneticForm.Field
@@ -1253,7 +1257,7 @@ const CyberneticForm = ({ title }: { title: string }) => {
                                   />
                                 )}
                               </cyberneticForm.Field>
-                            </>
+                            </div>
                           );
                         })}
                         <div className="flex w-full items-center justify-between">

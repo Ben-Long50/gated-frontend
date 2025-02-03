@@ -28,7 +28,9 @@ interface ArmorWithKeywords {
 interface ArmorStats {
   armor?: number;
   ward?: number;
+  currentBlock: number;
   block?: number;
+  currentPower?: number;
   power?: number;
   weight?: number;
 }

@@ -4,7 +4,7 @@ const InjuryIcon = (props) => {
       className={`${props.className}`}
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
-      viewBox="0 0 110.0 110.0"
+      viewBox="0 0 100.0 100.0"
     >
       <g fill="rgb(229 231 235)">
         <path

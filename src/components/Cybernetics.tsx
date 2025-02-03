@@ -88,7 +88,7 @@ const Cybernetics = ({
         (cybernetic: CyberneticWithKeywords) => {
           return (
             <CyberneticCard
-              key={cybernetic.name}
+              key={cybernetic.id}
               cybernetic={cybernetic}
               type={type}
             />

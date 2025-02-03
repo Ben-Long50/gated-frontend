@@ -22,8 +22,9 @@ import BtnRect from './buttons/BtnRect';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 import Loading from './Loading';
-import { Character } from 'src/types/character';
-import useCharactersQuery from '../hooks/useCharactersQuery/useCharactersQuery';
+import useStats from '../hooks/useStats';
+import useEquipmentQuery from '../hooks/useEquipmentQuery/useEquipmentQuery';
+import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -36,11 +37,30 @@ const CharacterSheet = () => {
 
   const { characterId } = useParams();
 
-  const { data: characters, isPending, isLoading } = useCharactersQuery(apiUrl);
+  const {
+    data: character,
+    isLoading: characterLoading,
+    isPending: characterPending,
+  } = useCharacterQuery(apiUrl, characterId);
 
-  const character = characters?.filter(
-    (character: Character) => character.id === Number(characterId),
-  )[0];
+  const {
+    data: equipment,
+    isLoading: equipmentLoading,
+    isPending: equipmentPending,
+  } = useEquipmentQuery(
+    apiUrl,
+    character?.id,
+    character?.characterInventory?.id,
+  );
+
+  const isLoading = characterLoading || equipmentLoading;
+  const isPending = characterPending || equipmentPending;
+
+  const { stats } = useStats(
+    equipment,
+    character?.attributes,
+    character?.perks,
+  );
 
   const attributeTree = useAttributeTree(character?.attributes);
 
@@ -142,7 +162,7 @@ const CharacterSheet = () => {
         <StatBar
           title="Health"
           current={character.stats.currentHealth}
-          total={attributeTree?.stats.health}
+          total={stats.maxHealth}
           color="rgb(248 113 113)"
         >
           <HealthIcon className="size-8" />
@@ -150,23 +170,23 @@ const CharacterSheet = () => {
         <StatBar
           title="Sanity"
           current={character.stats.currentSanity}
-          total={attributeTree?.stats.sanity}
+          total={stats.maxSanity}
           color="rgb(96 165 250)"
         >
           <SanityIcon className="size-8" />
         </StatBar>
         <StatBar
           title="Cyber"
-          current={attributeTree.stats.cyber}
-          total={attributeTree?.stats.cyber}
+          current={stats.cyber}
+          total={stats.maxCyber}
           color="rgb(52 211 153)"
         >
           <CyberIcon className="size-8" />
         </StatBar>
         <StatBar
           title="Equip"
-          current={attributeTree.stats.equip}
-          total={attributeTree?.stats.equip}
+          current={stats.weight}
+          total={stats.maxWeight}
           color="rgb(251 191 36)"
         >
           <EquipIcon className="size-8" />
@@ -180,74 +200,47 @@ const CharacterSheet = () => {
         >
           <div className="bg-primary flex flex-wrap justify-center gap-8 px-8 py-4 clip-6 lg:justify-between lg:pl-10">
             <div className="flex flex-wrap justify-around gap-6">
-              {Object.entries(attributeTree.stats).map(([stat, points]) => {
-                const stats = ['speed', 'evasion', 'armor', 'ward'];
-                return (
-                  stats.includes(stat) && (
-                    <div
-                      className="flex flex-col items-center justify-between gap-2"
-                      key={stat}
-                    >
-                      {layoutSize !== 'xsmall' && (
-                        <h3 className="text-primary text-xl font-semibold tracking-widest">
-                          {stat.charAt(0).toUpperCase() + stat.slice(1)}{' '}
-                        </h3>
-                      )}
-                      <div className="flex items-center justify-center gap-2">
-                        <SpeedIcon className="text-secondary size-8" />
-                        <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                          {points}
-                        </p>
-                      </div>
-                    </div>
-                  )
-                );
-              })}
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={'evasion'}
-              >
-                {layoutSize !== 'xsmall' && (
-                  <h3 className="text-primary text-xl font-semibold tracking-widest">
-                    Evasion
-                  </h3>
-                )}
-                <div className="flex items-center justify-center gap-2">
+              <div className="flex flex-col items-center justify-between gap-2">
+                <h3 className="text-primary text-xl font-semibold tracking-widest">
+                  Speed
+                </h3>
+                <div className="flex items-center justify-center gap-4">
+                  <SpeedIcon className="size-8" />
+                  <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                    {stats.speed}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-between gap-2">
+                <h3 className="text-primary text-xl font-semibold tracking-widest">
+                  Evasion
+                </h3>
+                <div className="flex items-center justify-center gap-4">
                   <EvasionIcon className="size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    1
+                    {stats.evasion}
                   </p>
                 </div>
               </div>
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={'armor'}
-              >
-                {layoutSize !== 'xsmall' && (
-                  <h3 className="text-primary text-xl font-semibold tracking-widest">
-                    Armor
-                  </h3>
-                )}
-                <div className="flex items-center justify-center gap-2">
+              <div className="flex flex-col items-center justify-between gap-2">
+                <h3 className="text-primary text-xl font-semibold tracking-widest">
+                  Armor
+                </h3>
+                <div className="flex items-center justify-center gap-4">
                   <ArmorIcon className="size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    0
+                    {stats.armor}
                   </p>
                 </div>
               </div>
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={'ward'}
-              >
-                {layoutSize !== 'xsmall' && (
-                  <h3 className="text-primary text-xl font-semibold tracking-widest sm:text-2xl">
-                    Ward
-                  </h3>
-                )}
-                <div className="flex items-center justify-center gap-2">
+              <div className="flex flex-col items-center justify-between gap-2">
+                <h3 className="text-primary text-xl font-semibold tracking-widest">
+                  Ward
+                </h3>
+                <div className="flex items-center justify-center gap-4">
                   <WardIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    0
+                    {stats.ward}
                   </p>
                 </div>
               </div>

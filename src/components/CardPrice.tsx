@@ -23,12 +23,12 @@ const CardPrice = ({
   const { data: character } = useActiveCharacterQuery(apiUrl);
   const editCart = useeditCartMutation(apiUrl);
 
-  const cartIds = Object.values(character.characterCart)
+  const cartIds = Object.values(character?.characterCart)
     .filter((item) => Array.isArray(item))
     .flat()
     .map((item) => item.id);
 
-  return price ? (
+  return (
     <>
       {editCart.isPending ? (
         <Loading className="text-secondary" size={1} />
@@ -38,7 +38,12 @@ const CardPrice = ({
             e.stopPropagation();
             e.preventDefault();
             editCart.mutate(
-              { characterId: character?.id, category, itemId },
+              {
+                characterId: character?.id,
+                cartId: character?.characterCart.id,
+                category,
+                itemId,
+              },
               {
                 onSuccess: () => {
                   if (handleRemove) {
@@ -64,12 +69,15 @@ const CardPrice = ({
           )}
         </button>
       )}
-
-      <ProfitsIcon className="size-6 shrink-0" />
-      <p>{price + 'p'}</p>
+      {price ? (
+        <>
+          <ProfitsIcon className="size-6 shrink-0" />
+          <p>{price + 'p'}</p>{' '}
+        </>
+      ) : (
+        <Icon className="text-secondary" path={mdiClose} size={1.5} />
+      )}
     </>
-  ) : (
-    <Icon className="text-secondary" path={mdiClose} size={1.5} />
   );
 };
 

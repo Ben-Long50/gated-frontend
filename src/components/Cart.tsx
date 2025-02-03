@@ -32,9 +32,18 @@ const Cart = () => {
     isPending,
   } = useActiveCharacterQuery(apiUrl);
 
-  const clearCart = useClearCartMutation(apiUrl, character?.id, setDeleteMode);
+  const clearCart = useClearCartMutation(
+    apiUrl,
+    character?.id,
+    character?.characterCart?.id,
+    setDeleteMode,
+  );
 
-  const completePurchase = useCompletePurchaseMutation(apiUrl, character?.id);
+  const completePurchase = useCompletePurchaseMutation(
+    apiUrl,
+    character?.id,
+    character?.characterInventory?.id,
+  );
 
   const weapons = useWeapons({ itemList: character?.characterCart?.weapons });
   const armor = useArmor({ itemList: character?.characterCart?.armor });

@@ -36,9 +36,10 @@ const MainLayout = () => {
         )}
       </Sidebar>
       <div
-        className={`timing col-end-3 ${sidebarVisibility ? 'col-start-2' : 'col-start-1'} z-10 row-start-2 flex flex-col items-center overflow-y-auto px-2 py-4 max-xl:col-start-1 max-sm:pt-20 sm:p-8 lg:px-16`}
+        id="portal-root"
+        className={`timing relative col-end-3 ${sidebarVisibility ? 'col-start-2' : 'col-start-1'} z-10 row-start-2 flex flex-col items-center overflow-y-auto px-2 py-4 max-xl:col-start-1 max-sm:pt-20 sm:p-8 lg:px-16`}
       >
-        <Outlet name="main" context={{ navbarHeight }} />
+        <Outlet context={{ navbarHeight }} />
       </div>
     </div>
   );

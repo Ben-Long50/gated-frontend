@@ -2,11 +2,16 @@ import handleResponse from '../handleResponse';
 
 const toggleEquipment = async (
   apiUrl: string,
-  formData: { characterId: string; category: string; itemId: number },
+  formData: {
+    characterId: number;
+    inventoryId: number;
+    category: string;
+    itemId: number;
+  },
 ) => {
   try {
     const response = await fetch(
-      `${apiUrl}/characters/${formData.characterId}/equipment/${formData.itemId}`,
+      `${apiUrl}/characters/${formData.characterId}/inventory/${formData.inventoryId}/equipment/${formData.itemId}`,
       {
         method: 'PATCH',
         credentials: 'include',

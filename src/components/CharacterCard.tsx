@@ -13,12 +13,34 @@ import ArmorIcon from './icons/ArmorIcon';
 import EvasionIcon from './icons/EvasionIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import CloudinaryImage from './CloudinaryImage';
+import useEquipmentQuery from '../hooks/useEquipmentQuery/useEquipmentQuery';
+import useStats from '../hooks/useStats';
+import { AuthContext } from '../contexts/AuthContext';
+import Loading from './Loading';
 
 const CharacterCard = ({ character }) => {
+  const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
   const attributeTree = useAttributeTree(character?.attributes);
+
+  const {
+    data: equipment,
+    isLoading: equipmentLoading,
+    isPending: equipmentPending,
+  } = useEquipmentQuery(
+    apiUrl,
+    character?.id,
+    character?.characterInventory?.id,
+  );
+
+  const isLoading = equipmentLoading;
+  const isPending = equipmentPending;
+
+  const { stats } = useStats(equipment, attributeTree.tree, character?.perks);
+
+  if (isLoading || isPending) return <Loading />;
 
   return (
     <ThemeContainer
@@ -47,7 +69,7 @@ const CharacterCard = ({ character }) => {
             <StatBar
               title="Health"
               current={character.stats.currentHealth}
-              total={attributeTree.stats.health}
+              total={stats.maxHealth}
               color="rgb(248 113 113)"
             >
               <HealthIcon className="size-8" />
@@ -55,7 +77,7 @@ const CharacterCard = ({ character }) => {
             <StatBar
               title="Sanity"
               current={character.stats.currentSanity}
-              total={attributeTree.stats.sanity}
+              total={stats.maxSanity}
               color="rgb(96 165 250)"
             >
               <SanityIcon className="size-8" />

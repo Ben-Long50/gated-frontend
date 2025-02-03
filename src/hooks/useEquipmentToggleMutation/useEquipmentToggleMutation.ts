@@ -5,7 +5,8 @@ const useToggleEquipmentMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: {
-      characterId: string;
+      characterId: number;
+      inventoryId: number;
       category: string;
       itemId: number;
     }) => {

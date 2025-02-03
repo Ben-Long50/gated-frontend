@@ -61,7 +61,7 @@ const Vehicles = ({
         </form>
       </ThemeContainer>
       {vehicles.filteredVehicles.map((vehicle: VehicleWithWeapons) => {
-        return <VehicleCard key={vehicle.name} vehicle={vehicle} type={type} />;
+        return <VehicleCard key={vehicle.id} vehicle={vehicle} type={type} />;
       })}
     </div>
   );

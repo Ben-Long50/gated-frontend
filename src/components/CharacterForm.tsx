@@ -41,6 +41,17 @@ const CharacterForm = () => {
 
   const createCharacter = useCreateCharacterMutation(apiUrl);
 
+  const searchForm = useForm({
+    defaultValues: {
+      attribute: '',
+      skill: '',
+      query: '',
+    },
+    onSubmit: ({ value }) => {
+      perks.filterPerks(value.query);
+    },
+  });
+
   const characterForm = useForm({
     defaultValues: {
       firstName: '',
@@ -347,7 +358,73 @@ const CharacterForm = () => {
           (Available perks are only shown if you meet the attribute and skill
           point requirements)
         </p>
+        <div className="flex w-full flex-col gap-4">
+          <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
+            <h3 className="col-span-2 pl-4 sm:col-span-1">Filter options</h3>
+            <searchForm.Field name="attribute">
+              {(field) => (
+                <SelectField
+                  field={field}
+                  onChange={() => {
+                    perks.filterByAttribute(field.state.value);
+                    perks.filterBySkill('');
+                  }}
+                >
+                  <option value="">All attributes</option>
+                  <option value="general">General</option>
+                  <option value="cybernetica">Cybernetica</option>
+                  <option value="esoterica">Esoterica</option>
+                  <option value="peace">Peace</option>
+                  <option value="violence">Violence</option>
+                </SelectField>
+              )}
+            </searchForm.Field>
+            <searchForm.Subscribe
+              selector={(state) => [state.values.attribute]}
+            >
+              {([selectedAttribute]) => (
+                <searchForm.Field name="skill">
+                  {(field) => (
+                    <SelectField
+                      field={field}
+                      onChange={() => {
+                        perks.filterBySkill(field.state.value);
+                      }}
+                    >
+                      <option value=""></option>
+                      {Object.entries(perks.emptyTree).map(
+                        ([attribute, skills]) => {
+                          if (attribute === selectedAttribute) {
+                            return Object.entries(skills).map(([skill]) => {
+                              return (
+                                <option key={skill} value={skill}>
+                                  {skill[0].toUpperCase() + skill.slice(1)}
+                                </option>
+                              );
+                            });
+                          }
+                        },
+                      )}
+                    </SelectField>
+                  )}
+                </searchForm.Field>
+              )}
+            </searchForm.Subscribe>
+          </div>
+          <searchForm.Field name="query">
+            {(field) => (
+              <InputField
+                label="Search perks"
+                field={field}
+                onChange={() => {
+                  searchForm.handleSubmit();
+                }}
+              />
+            )}
+          </searchForm.Field>
+        </div>
         <PerkList
+          className="scrollbar-primary-2 max-h-[400px] overflow-y-auto pr-4"
           perkTree={perks.filteredPerkTree}
           mode="edit"
           checkedPerks={checkedPerks}

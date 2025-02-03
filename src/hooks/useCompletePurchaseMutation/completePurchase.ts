@@ -4,10 +4,11 @@ const completePurchase = async (
   formData: object,
   apiUrl: string,
   characterId: number,
+  inventoryId: number,
 ) => {
   try {
     const response = await fetch(
-      `${apiUrl}/characters/${characterId}/inventory`,
+      `${apiUrl}/characters/${characterId}/inventory/${inventoryId}`,
       {
         method: 'POST',
         credentials: 'include',

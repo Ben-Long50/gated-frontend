@@ -1,19 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import clearCart from './clearCart';
+import editCurrentHealth from './editCurrentHealth';
 
-const useClearCartMutation = (
-  apiUrl: string,
-  characterId: number,
-  cartId: number,
-  setDeleteMode: (mode: boolean) => void,
-) => {
+const useCurrentHealthMutation = (apiUrl: string, characterId: number) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => {
-      return clearCart(apiUrl, characterId, cartId);
+    mutationFn: (value: number) => {
+      return editCurrentHealth(apiUrl, characterId, value);
     },
     onSuccess: () => {
-      setDeleteMode(false);
       return queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],
         exact: false,
@@ -23,4 +17,4 @@ const useClearCartMutation = (
   });
 };
 
-export default useClearCartMutation;
+export default useCurrentHealthMutation;

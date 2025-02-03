@@ -6,6 +6,7 @@ import EquipIcon from './icons/EquipIcon';
 import ItemCard from './ItemCard';
 import { ArmorWithKeywords } from 'src/types/armor';
 import StatCard from './StatCard';
+import LightningIcon from './icons/LightningIcon';
 
 const ArmorCard = ({
   armor,
@@ -33,7 +34,7 @@ const ArmorCard = ({
       )}
       {armor.stats.power && (
         <StatCard label="PWR" stat={armor.stats.power}>
-          <PowerIcon className="size-8" />
+          <LightningIcon className="size-8" />
         </StatCard>
       )}
       {armor.stats.weight && (

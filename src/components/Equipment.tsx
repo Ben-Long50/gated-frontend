@@ -9,7 +9,6 @@ import HealthIcon from './icons/HealthIcon';
 import SanityIcon from './icons/SanityIcon';
 import CyberIcon from './icons/CyberIcon';
 import EquipIcon from './icons/EquipIcon';
-import useAttributeTree from '../hooks/useAttributeTree';
 import { LayoutContext } from '../contexts/LayoutContext';
 import useWeapons from '../hooks/useWeapons';
 import { WeaponWithKeywords } from 'src/types/weapon';
@@ -26,7 +25,16 @@ import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import Icon from '@mdi/react';
-import { mdiCheckCircle } from '@mdi/js';
+import { mdiCheckCircle, mdiCircle, mdiCircleOutline, mdiClose } from '@mdi/js';
+import InjuryIcon from './icons/InjuryIcon';
+import InsanityIcon from './icons/InsanityIcon';
+import clsx from 'clsx';
+import EquipmentList from './EquipmentList';
+import ActionCard from './ActionCard';
+import { Action } from 'src/types/action';
+import DieIcon from './icons/DieIcon';
+import useCurrentHealthMutation from '../hooks/useCurrentHealthMutation/useCurrentHealthMutation';
+import useCurrentSanityMutation from '../hooks/useCurrentSanityMutation/useCurrentSanityMutation';
 
 const Equipment = ({ type }: { type?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -44,15 +52,45 @@ const Equipment = ({ type }: { type?: string }) => {
     data: equipment,
     isLoading: equipmentLoading,
     isPending: equipmentPending,
-  } = useEquipmentQuery(apiUrl, characterId);
-
-  const isLoading = characterLoading || equipmentLoading;
-  const isPending = characterPending || equipmentPending;
+  } = useEquipmentQuery(
+    apiUrl,
+    character?.id,
+    character?.characterInventory?.id,
+  );
 
   const toggleEquipment = useToggleEquipmentMutation(apiUrl);
-  const { stats } = useStats(equipment, character?.attributes);
 
-  console.log(equipment);
+  const editCurrentHealth = useCurrentHealthMutation(apiUrl, character?.id);
+
+  const editCurrentSanity = useCurrentSanityMutation(apiUrl, character?.id);
+
+  const {
+    stats,
+    rollBonuses,
+    isLoading: statsLoading,
+    isPending: statsPending,
+  } = useStats(equipment, character?.attributes, character?.perks);
+
+  const handleCurrentHealth = (value) => {
+    if (
+      !editCurrentHealth.isPending &&
+      character?.stats.currentHealth + value <= stats.maxHealth
+    ) {
+      editCurrentHealth.mutate(value);
+    }
+  };
+
+  const handleCurrentSanity = (value) => {
+    if (
+      !editCurrentSanity.isPending &&
+      character?.stats.currentSanity + value <= stats.maxSanity
+    ) {
+      editCurrentSanity.mutate(value);
+    }
+  };
+
+  const isLoading = characterLoading || equipmentLoading || statsLoading;
+  const isPending = characterPending || equipmentPending || statsPending;
 
   const { filteredWeapons: weapons } = useWeapons({
     itemList: character?.characterInventory?.weapons,
@@ -65,6 +103,21 @@ const Equipment = ({ type }: { type?: string }) => {
     itemList: character?.characterInventory?.cybernetics,
   });
 
+  const { filteredWeapons: equippedWeapons } = useWeapons({
+    itemList: equipment?.weapons,
+  });
+  const { filteredArmor: equippedArmor } = useArmor({
+    itemList: equipment?.armor,
+  });
+  const { filteredCybernetics: equippedCybernetics } = useCybernetics({
+    itemList: equipment?.cybernetics,
+  });
+
+  const actionList =
+    equippedCybernetics
+      ?.map((cybernetic: CyberneticWithKeywords) => cybernetic.actions)
+      .flat() || [];
+
   const itemObject = {
     weapons: { list: weapons, category: 'weapon' },
     armor: { list: armor, category: 'armor' },
@@ -76,8 +129,8 @@ const Equipment = ({ type }: { type?: string }) => {
   if (isLoading || isPending) return <Loading />;
 
   return (
-    <div className="flex w-full max-w-6xl flex-col items-center gap-8">
-      <h1>{namePrefix + ' ' + 'Equipment'}</h1>
+    <div className="max-w-9xl relative flex w-full flex-col items-center gap-8">
+      <h1 className="text-center">{namePrefix + ' ' + 'Equipment'}</h1>
       <div className="flex w-full flex-col justify-between gap-8 sm:flex-row">
         {character.picture.imageUrl && (
           <ThemeContainer
@@ -100,6 +153,8 @@ const Equipment = ({ type }: { type?: string }) => {
             current={character.stats.currentHealth}
             total={stats.maxHealth}
             color="rgb(248 113 113)"
+            mode="adjustable"
+            mutation={(value) => handleCurrentHealth(value)}
           >
             <HealthIcon className="size-8" />
           </StatBar>
@@ -108,6 +163,8 @@ const Equipment = ({ type }: { type?: string }) => {
             current={character.stats.currentSanity}
             total={stats.maxSanity}
             color="rgb(96 165 250)"
+            mode="adjustable"
+            mutation={(value) => handleCurrentSanity(value)}
           >
             <SanityIcon className="size-8" />
           </StatBar>
@@ -129,31 +186,21 @@ const Equipment = ({ type }: { type?: string }) => {
           </StatBar>
         </div>
       </div>
-      <div className="flex w-full flex-col gap-8 sm:grid sm:grid-cols-[2fr_1fr]">
+      <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-[3fr_1fr]">
+        <EquipmentList
+          weapons={equippedWeapons}
+          armor={equippedArmor}
+          cybernetics={equippedCybernetics}
+        />
+
         <ThemeContainer
-          className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-          chamfer="24"
-          borderColor={accentPrimary}
-        >
-          <div className="bg-primary flex h-full flex-col gap-4 p-4 clip-6">
-            {Object.values(equipment)
-              .flat()
-              .map((item) => (
-                <h2>{item.name}</h2>
-              ))}
-          </div>
-        </ThemeContainer>
-        <ThemeContainer
-          className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
+          className="mb-auto rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
           chamfer="24"
           borderColor={accentPrimary}
         >
           <div className="bg-primary flex h-full flex-col gap-4 p-4 pr-6 clip-6">
-            <h2 className="pl-4">Stats</h2>
-            <div
-              className="flex items-center justify-between gap-2"
-              key={'speed'}
-            >
+            <h3 className="pl-4">Stats</h3>
+            <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
                 <SpeedIcon className="size-8" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
@@ -164,10 +211,7 @@ const Equipment = ({ type }: { type?: string }) => {
                 {stats.speed}
               </p>
             </div>
-            <div
-              className="flex items-center justify-between gap-2"
-              key={'evasion'}
-            >
+            <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
                 <EvasionIcon className="size-8" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
@@ -178,10 +222,7 @@ const Equipment = ({ type }: { type?: string }) => {
                 {stats.evasion}
               </p>
             </div>
-            <div
-              className="flex items-center justify-between gap-2"
-              key={'armor'}
-            >
+            <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
                 <ArmorIcon className="size-8" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
@@ -192,10 +233,7 @@ const Equipment = ({ type }: { type?: string }) => {
                 {stats.armor}
               </p>
             </div>
-            <div
-              className="flex items-center justify-between gap-2"
-              key={'ward'}
-            >
+            <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
                 <WardIcon className="text-secondary size-8" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
@@ -206,6 +244,103 @@ const Equipment = ({ type }: { type?: string }) => {
                 {stats.ward}
               </p>
             </div>
+            <div className="flex justify-between gap-2 sm:flex-col sm:items-start">
+              <div className="flex items-center justify-center gap-4">
+                <InjuryIcon className="text-secondary size-8" />
+                <h3 className="text-primary text-xl font-semibold tracking-widest">
+                  Injuries
+                </h3>
+              </div>
+              <div className="flex flex-wrap items-center gap-1 sm:pl-12">
+                {Array.from({ length: stats.permanentInjuries }).map(
+                  (_, index) => (
+                    <div className="relative" key={index}>
+                      <Icon
+                        key={index}
+                        className="text-gray-400"
+                        path={
+                          index < character.stats.injuries
+                            ? mdiCircleOutline
+                            : mdiCircle
+                        }
+                        size={0.75}
+                      />
+                      {index < character.stats.injuries && (
+                        <Icon
+                          path={mdiClose}
+                          className="absolute right-1/2 top-1/2 -translate-y-1/2 translate-x-1/2 text-red-600"
+                          size={1}
+                        />
+                      )}
+                    </div>
+                  ),
+                )}
+              </div>
+            </div>
+            <div className="flex justify-between gap-2 sm:flex-col sm:items-start">
+              <div className="flex items-center justify-center gap-4">
+                <InsanityIcon className="text-secondary size-8" />
+                <h3 className="text-primary text-xl font-semibold tracking-widest">
+                  Insanities
+                </h3>
+              </div>
+              <div className="flex flex-wrap items-center gap-1 sm:pl-12">
+                {Array.from({ length: stats.permanentInsanities }).map(
+                  (_, index) => (
+                    <div className="relative" key={index}>
+                      <Icon
+                        key={index}
+                        className="text-gray-400"
+                        path={
+                          index < character.stats.insanities
+                            ? mdiCircleOutline
+                            : mdiCircle
+                        }
+                        size={0.75}
+                      />
+                      {index < character.stats.insanities && (
+                        <Icon
+                          path={mdiClose}
+                          className="absolute right-1/2 top-1/2 -translate-y-1/2 translate-x-1/2 text-red-600"
+                          size={1}
+                        />
+                      )}
+                    </div>
+                  ),
+                )}
+              </div>
+            </div>
+            {Object.keys(rollBonuses).length > 0 && (
+              <>
+                <hr className="border border-yellow-300 border-opacity-50" />
+                <h3 className="pl-4">Roll Bonuses</h3>
+                {Object.entries(rollBonuses).map(
+                  ([action, bonus]: [string, number], index: number) => (
+                    <div
+                      className="flex items-center justify-between gap-4"
+                      key={index}
+                    >
+                      <div className="flex items-center gap-4">
+                        <DieIcon className="text-secondary size-8" />
+                        <h4>{action}</h4>
+                      </div>
+                      <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                        {bonus}
+                      </p>
+                    </div>
+                  ),
+                )}
+              </>
+            )}
+            {actionList.length > 0 && (
+              <>
+                <hr className="border border-yellow-300 border-opacity-50" />
+                <h3 className="pl-4">Unique Actions</h3>
+                {actionList.map((action: Action) => (
+                  <ActionCard key={action.id} action={action} />
+                ))}
+              </>
+            )}
           </div>
         </ThemeContainer>
       </div>
@@ -215,15 +350,23 @@ const Equipment = ({ type }: { type?: string }) => {
         chamfer="24"
         borderColor={accentPrimary}
       >
-        <div className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
+        <div className="bg-primary flex w-full flex-col gap-8 p-4 clip-6">
+          <div className="flex items-center gap-4">
+            <h2 className="pl-4">Inventory</h2>
+            <p className="text-tertiary italic">(Double click to equip)</p>
+          </div>
           {Object.entries(itemObject).map(([key, value], index) => {
             return (
-              <>
-                <div className="flex w-full flex-col gap-2" key={key}>
-                  <h3 className="pl-2">
-                    {key[0].toUpperCase() + key.slice(1)}
-                  </h3>
-                  <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(100px,auto))] gap-2">
+              <ThemeContainer
+                key={key}
+                chamfer="16"
+                borderColor={accentPrimary}
+              >
+                <p className="text-accent absolute -top-3 left-5 z-20 text-base">
+                  {key[0].toUpperCase() + key.slice(1)}
+                </p>
+                <div className="bg-primary flex w-full flex-col gap-2 p-4 pt-6 clip-4">
+                  <div className="grid w-full grid-cols-[repeat(auto-fill,120px)] gap-2">
                     {value.list.map(
                       (
                         item:
@@ -231,35 +374,26 @@ const Equipment = ({ type }: { type?: string }) => {
                           | ArmorWithKeywords
                           | CyberneticWithKeywords,
                       ) => {
-                        let color;
-                        switch (item.rarity) {
-                          case 'common':
-                            color = 'gray-400';
-                            break;
-                          case 'uncommon':
-                            color = 'green-500';
-                            break;
-                          case 'rare':
-                            color = 'red-600';
-                            break;
-                          case 'blackMarket':
-                            color = 'purple-700';
-                            break;
-                          case 'artifact':
-                            color = 'amber-400';
-                            break;
-                          default:
-                            color = 'tertiary';
-                            break;
-                        }
+                        const rarityColors = {
+                          common: 'bg-gray-400',
+                          uncommon: 'bg-green-500',
+                          rare: 'bg-red-600',
+                          blackMarket: 'bg-purple-700',
+                          artifact: 'bg-amber-400',
+                        };
+
                         return (
                           <div
-                            className={`bg-${color} group relative cursor-pointer overflow-hidden rounded-md pl-1`}
+                            className={clsx(
+                              rarityColors[item.rarity] || 'bg-tertiary',
+                              'group relative cursor-pointer select-none overflow-hidden rounded-md pl-1',
+                            )}
                             key={item.id}
                             onDoubleClick={() => {
                               if (characterId) {
                                 toggleEquipment.mutate({
-                                  characterId,
+                                  characterId: character?.id,
+                                  inventoryId: character?.characterInventory.id,
                                   category: value.category,
                                   itemId: item.id,
                                 });
@@ -294,10 +428,7 @@ const Equipment = ({ type }: { type?: string }) => {
                     )}
                   </div>
                 </div>
-                {index < Object.keys(itemObject).length - 1 && (
-                  <hr className="border border-yellow-300 border-opacity-50" />
-                )}
-              </>
+              </ThemeContainer>
             );
           })}
         </div>

@@ -19,6 +19,10 @@ const useUpdateCharacterMutation = (
         queryKey: ['activeCharacter'],
         exact: false,
       });
+      queryClient.invalidateQueries({
+        queryKey: ['character'],
+        exact: false,
+      });
       return queryClient.invalidateQueries({
         queryKey: ['characters'],
         exact: false,

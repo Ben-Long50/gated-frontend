@@ -87,7 +87,7 @@ const Armor = ({
         </form>
       </ThemeContainer>
       {armor.filteredArmor.map((armor: ArmorWithKeywords) => {
-        return <ArmorCard key={armor.name} armor={armor} type={type} />;
+        return <ArmorCard key={armor.id} armor={armor} type={type} />;
       })}
     </div>
   );

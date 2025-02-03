@@ -6,7 +6,7 @@ const StatCard = ({
   stat,
   children,
 }: {
-  label: string;
+  label?: string;
   stat: number | string;
   children: ReactNode;
 }) => {
@@ -14,10 +14,12 @@ const StatCard = ({
 
   return (
     <div className="bg-tertiary flex w-full flex-col items-center gap-1 rounded-lg p-2 shadow-md shadow-zinc-950">
-      {layoutSize !== 'small' && layoutSize !== 'xsmall' && <p>{label}</p>}
+      {layoutSize !== 'small' && layoutSize !== 'xsmall' && label && (
+        <p>{label}</p>
+      )}
       <div className="flex items-center gap-2">
         <div className="shrink-0">{children}</div>
-        <p className="whitespace-nowrap text-2xl font-semibold">{stat}</p>
+        <p className="whitespace-nowrap font-semibold">{stat}</p>
       </div>
     </div>
   );
