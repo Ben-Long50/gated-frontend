@@ -28,6 +28,7 @@ const ItemCard = ({
   item,
   category,
   mode,
+  controls,
   children,
 }: {
   item:
@@ -37,6 +38,7 @@ const ItemCard = ({
     | VehicleWithWeapons;
   category: string;
   mode: string;
+  controls?: ReactNode;
   children: ReactNode;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -198,6 +200,7 @@ const ItemCard = ({
                     >
                       {children}
                     </div>
+                    {mode === 'equipment' && controls}
                   </div>
                 </div>
               </div>
@@ -325,6 +328,7 @@ const ItemCard = ({
                   <div className="timing col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,auto))] place-items-center gap-4">
                     {children}
                   </div>
+                  {mode === 'equipment' && controls}
                 </div>
                 {mode !== 'equipment' && (
                   <div className="overflow-hidden">

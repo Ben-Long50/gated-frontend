@@ -10,7 +10,6 @@ const useEquipmentQuery = (
     queryKey: ['activeCharacter', 'equipment', inventoryId],
     queryFn: async () =>
       await getEquippedItems(apiUrl, characterId, inventoryId),
-    // enabled: !!characterId,
   });
 };
 

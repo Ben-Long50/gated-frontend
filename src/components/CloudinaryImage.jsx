@@ -27,7 +27,7 @@ const CloudinaryImage = forwardRef((props, ref) => {
 
   return (
     <motion.div
-      className={`${props.className} image-container mb-auto aspect-square w-full overflow-hidden sm:min-w-60`}
+      className={`${props.className} image-container mb-auto aspect-square w-full overflow-hidden sm:min-w-60 lg:shrink-0`}
       animate={
         layoutSize === 'small' || layoutSize === 'xsmall'
           ? {

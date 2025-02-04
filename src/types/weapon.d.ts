@@ -34,7 +34,9 @@ interface WeaponStats {
   salvo?: number;
   flurry?: number;
   range?: number;
+  currentAmmoCount?: number;
   magCapacity?: number;
+  currentMagCount?: number;
   magCount?: number;
   weight?: number;
 }
