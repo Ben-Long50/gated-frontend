@@ -178,14 +178,22 @@ const Cart = () => {
               )}
             </div>
             <BtnRect
-              className="self-end"
+              className="group min-w-64 self-end"
               onClick={(e) => {
+                if (completePurchase.isPending) return;
                 e.stopPropagation();
                 e.preventDefault();
                 cartForm.handleSubmit();
               }}
             >
-              Complete purchase
+              {completePurchase.isPending ? (
+                <Loading
+                  className="group-hover:text-yellow-300 dark:text-gray-900"
+                  size={1.15}
+                />
+              ) : (
+                'Complete purchase'
+              )}
             </BtnRect>
           </div>
           {deleteMode && (

@@ -464,15 +464,21 @@ const Equipment = ({ mode }: { mode?: string }) => {
                               }
                             }}
                           >
-                            {item.equipped === true && (
+                            {toggleEquipment?.isPending && (
                               <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
-                                <Icon
-                                  className="text-tertiary group-hover:text-secondary"
-                                  path={mdiCheckCircle}
-                                  size={3}
-                                />
+                                <Loading path={mdiCheckCircle} size={3} />
                               </div>
                             )}
+                            {item.equipped === true &&
+                              !toggleEquipment?.isPending && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
+                                  <Icon
+                                    className="text-tertiary group-hover:text-secondary"
+                                    path={mdiCheckCircle}
+                                    size={3}
+                                  />
+                                </div>
+                              )}
                             {item.picture?.imageUrl ? (
                               <img
                                 className="hover:opacity-80"

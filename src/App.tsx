@@ -16,7 +16,6 @@ const App = () => {
           </LayoutProvider>
         </AuthProvider>
       </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

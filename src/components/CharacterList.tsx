@@ -66,6 +66,7 @@ const CharacterList = () => {
                         activeForm.handleSubmit();
                       }}
                     >
+                      <option value=""></option>
                       {characters.map((character: Character) => (
                         <option key={character.id} value={character.id}>
                           {character.firstName + ' ' + character.lastName}

@@ -23,10 +23,12 @@ const CardPrice = ({
   const { data: character } = useActiveCharacterQuery(apiUrl);
   const editCart = useeditCartMutation(apiUrl);
 
-  const cartIds = Object.values(character?.characterCart)
-    .filter((item) => Array.isArray(item))
-    .flat()
-    .map((item) => item.id);
+  const cartIds = character?.characterCart
+    ? Object.values(character?.characterCart)
+        .filter((item) => Array.isArray(item))
+        .flat()
+        .map((item) => item.id)
+    : [];
 
   return (
     <>
