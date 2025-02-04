@@ -1,7 +1,5 @@
 import CyberIcon from './icons/CyberIcon';
-import BodyIcon from './icons/BodyIcon';
 import { Modifier } from 'src/types/modifier';
-import DieIcon from './icons/DieIcon';
 import ItemCard from './ItemCard';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import StatCard from './StatCard';
@@ -25,20 +23,13 @@ const CyberneticControls = ({ cyberneticId }: { cyberneticId: number }) => {
       <BtnControl
         title="Activate"
         icon={<LightningIcon className="size-8" />}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          editCurrentPower.mutate(-1);
-        }}
+        mutation={editCurrentPower}
+        value={-1}
       />
       <BtnControl
         title="Recharge"
         icon={<PowerIcon className="size-8" />}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          refreshPower.mutate();
-        }}
+        mutation={refreshPower}
       />
     </div>
   );
@@ -56,7 +47,11 @@ const CyberneticCard = ({
       item={cybernetic}
       category="cybernetics"
       mode={mode}
-      controls={<CyberneticControls cyberneticId={cybernetic.id} />}
+      controls={
+        cybernetic.stats.currentPower && (
+          <CyberneticControls cyberneticId={cybernetic.id} />
+        )
+      }
     >
       {cybernetic.stats.cyber && (
         <StatCard label="CBR" stat={cybernetic.stats.cyber}>

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import Loading from './Loading';
@@ -45,7 +45,10 @@ const Equipment = ({ mode }: { mode?: string }) => {
   const { layoutSize } = useContext(LayoutContext);
   const { characterId } = useParams();
 
-  const [activeItem, setActiveItem] = useState({});
+  const [active, setActive] = useState<{
+    id: null | number;
+    category: null | string;
+  }>({ id: null, category: null });
 
   const {
     data: character,
@@ -78,28 +81,21 @@ const Equipment = ({ mode }: { mode?: string }) => {
 
   const handleCurrentHealth = (value: number) => {
     if (
-      !editCurrentHealth.isPending &&
-      character?.stats.currentHealth + value <= stats.maxHealth
-    ) {
-      if (character?.stats.currentHealth + value <= 0) {
-        editCurrentHealth.mutate(stats.maxHealth - 1);
-      } else {
-        editCurrentHealth.mutate(value);
-      }
-    }
+      editCurrentHealth.isPending ||
+      character?.stats.currentHealth + value > stats.maxHealth
+    )
+      return;
+
+    editCurrentHealth.mutate(value);
   };
 
   const handleCurrentSanity = (value: number) => {
     if (
-      !editCurrentSanity.isPending &&
-      character?.stats.currentSanity + value <= stats.maxSanity
-    ) {
-      if (character?.stats.currentSanity + value <= 0) {
-        editCurrentSanity.mutate(stats.maxSanity - 1);
-      } else {
-        editCurrentSanity.mutate(value);
-      }
-    }
+      editCurrentSanity.isPending ||
+      character?.stats.currentSanity + value > stats.maxSanity
+    )
+      return;
+    editCurrentSanity.mutate(value);
   };
 
   const isLoading = characterLoading || equipmentLoading || statsLoading;
@@ -125,6 +121,25 @@ const Equipment = ({ mode }: { mode?: string }) => {
   const { filteredCybernetics: equippedCybernetics } = useCybernetics({
     itemList: equipment?.cybernetics,
   });
+
+  const activeItem = useMemo(() => {
+    switch (active?.category) {
+      case 'weapon':
+        return equippedWeapons.filter(
+          (weapon: WeaponWithKeywords) => weapon.id === active.id,
+        )[0];
+      case 'armor':
+        return equippedArmor.filter(
+          (armor: ArmorWithKeywords) => armor.id === active.id,
+        )[0];
+      case 'cybernetic':
+        return equippedCybernetics.filter(
+          (cybernetic: CyberneticWithKeywords) => cybernetic.id === active.id,
+        )[0];
+      default:
+        break;
+    }
+  }, [active, equippedWeapons, equippedArmor, equippedCybernetics]);
 
   const actionList =
     equippedCybernetics
@@ -200,24 +215,16 @@ const Equipment = ({ mode }: { mode?: string }) => {
         </div>
       </div>
       {layoutSize !== 'large' &&
-        activeItem !== null &&
-        (activeItem.category === 'weapon' ? (
-          <WeaponCard
-            key={activeItem.item.id}
-            weapon={activeItem.item}
-            mode="equipment"
-          />
-        ) : activeItem.category === 'armor' ? (
-          <ArmorCard
-            key={activeItem.item.id}
-            armor={activeItem.item}
-            mode="equipment"
-          />
+        active.id !== null &&
+        (active.category === 'weapon' ? (
+          <WeaponCard key={active.id} weapon={activeItem} mode="equipment" />
+        ) : active.category === 'armor' ? (
+          <ArmorCard key={active.id} armor={activeItem} mode="equipment" />
         ) : (
-          activeItem.category === 'cybernetic' && (
+          active.category === 'cybernetic' && (
             <CyberneticCard
-              key={activeItem.item.id}
-              cybernetic={activeItem.item}
+              key={active.id}
+              cybernetic={activeItem}
               mode="equipment"
             />
           )
@@ -227,9 +234,29 @@ const Equipment = ({ mode }: { mode?: string }) => {
           weapons={equippedWeapons}
           armor={equippedArmor}
           cybernetics={equippedCybernetics}
-          activeItem={activeItem}
-          setActiveItem={setActiveItem}
-        />
+          active={active}
+          setActive={setActive}
+        >
+          {layoutSize === 'large' &&
+            active.id !== null &&
+            (active.category === 'weapon' ? (
+              <WeaponCard
+                key={active.id}
+                weapon={activeItem}
+                mode="equipment"
+              />
+            ) : active.category === 'armor' ? (
+              <ArmorCard key={active.id} armor={activeItem} mode="equipment" />
+            ) : (
+              active.category === 'cybernetic' && (
+                <CyberneticCard
+                  key={active.id}
+                  cybernetic={activeItem}
+                  mode="equipment"
+                />
+              )
+            ))}
+        </EquipmentList>
         <ThemeContainer
           className="mb-auto rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
           chamfer="24"

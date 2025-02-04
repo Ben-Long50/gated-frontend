@@ -2,33 +2,27 @@ import { WeaponWithKeywords } from 'src/types/weapon';
 import { ArmorWithKeywords } from 'src/types/armor';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import clsx from 'clsx';
-import { useContext, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import EquipmentModal from './EquipmentModal';
-import WeaponCard from './WeaponCard';
-import ArmorCard from './ArmorCard';
-import CyberneticCard from './CyberneticCard';
-import { LayoutContext } from '../contexts/LayoutContext';
 
 const EquipmentList = ({
   weapons,
   armor,
   cybernetics,
-  activeItem,
-  setActiveItem,
+  active,
+  setActive,
+  children,
 }: {
   weapons: WeaponWithKeywords[];
   armor: ArmorWithKeywords[];
   cybernetics: CyberneticWithKeywords[];
-  activeItem: {
-    item: WeaponWithKeywords | ArmorWithKeywords | CyberneticWithKeywords;
-    category: 'weapon' | 'armor' | 'cybernetic';
+  active: {
+    id: null | number;
+    category: null | string;
   };
-  setActiveItem: (item: {
-    item: WeaponWithKeywords | ArmorWithKeywords | CyberneticWithKeywords;
-    category: 'weapon' | 'armor' | 'cybernetic';
-  }) => void;
+  setActive: (item: { id: null | number; category: null | string }) => void;
+  children?: ReactNode;
 }) => {
-  const { layoutSize } = useContext(LayoutContext);
   const [modalOpen, setModalOpen] = useState(0);
   const [toolTip, setToolTip] = useState(0);
 
@@ -57,29 +51,7 @@ const EquipmentList = ({
 
   return (
     <div className="flex flex-col gap-8">
-      {layoutSize === 'large' &&
-        activeItem !== null &&
-        (activeItem.category === 'weapon' ? (
-          <WeaponCard
-            key={activeItem.item.id}
-            weapon={activeItem.item}
-            mode="equipment"
-          />
-        ) : activeItem.category === 'armor' ? (
-          <ArmorCard
-            key={activeItem.item.id}
-            armor={activeItem.item}
-            mode="equipment"
-          />
-        ) : (
-          activeItem.category === 'cybernetic' && (
-            <CyberneticCard
-              key={activeItem.item.id}
-              cybernetic={activeItem.item}
-              mode="equipment"
-            />
-          )
-        ))}
+      {children}
       <h2>Equipped Items</h2>
       <div className="scrollbar-secondary-2 grid grid-cols-1 gap-4 sm:max-h-none lg:grid-cols-2 xl:grid-cols-3">
         {itemList.map((item, index) => {
@@ -130,17 +102,19 @@ const EquipmentList = ({
                   <h3 className="text-ellipsis whitespace-nowrap">
                     {item.item.name}
                   </h3>
-                  {activeItem?.item?.id === item.item?.id ? (
+                  {active?.id === item.item?.id ? (
                     <button
                       className="text-error text-lg hover:underline"
-                      onClick={() => setActiveItem(null)}
+                      onClick={() => setActive({ id: null, category: null })}
                     >
                       Disarm
                     </button>
                   ) : (
                     <button
                       className="text-accent text-lg hover:underline"
-                      onClick={() => setActiveItem(item)}
+                      onClick={() =>
+                        setActive({ id: item.item.id, category: item.category })
+                      }
                     >
                       Activate
                     </button>

@@ -20,25 +20,25 @@ const useStats = (
 
   const actions = useActions();
 
-  const weaponWeight =
-    equipment?.weapons?.reduce((sum: number, weapon) => {
-      if (weapon.stats.weight) {
-        return sum + weapon.stats.weight;
-      }
-      return sum;
-    }, 0) || 0;
+  const weaponWeight = equipment?.weapons?.reduce((sum: number, weapon) => {
+    if (weapon.stats.weight) {
+      return sum + weapon.stats.weight;
+    }
+    return sum;
+  }, 0);
 
-  const armorWeight =
-    equipment?.armor?.reduce((sum: number, armor) => {
-      if (
-        armor.stats.weight &&
-        armor.stats.currentPower &&
-        armor.stats.currentPower === 0
-      ) {
-        return sum + armor.stats.weight;
-      }
-      return sum;
-    }, 0) || 0;
+  const armorWeight = equipment?.armor?.reduce((sum: number, armor) => {
+    if (
+      armor.stats.weight &&
+      armor.stats.currentPower !== null &&
+      armor.stats.currentPower === 0
+    ) {
+      return sum + armor.stats.weight;
+    } else if (armor.stats.weight && !armor.stats.power) {
+      return sum + armor.stats.weight;
+    }
+    return sum;
+  }, 0);
 
   const armorValue = equipment?.armor?.reduce((sum: number, armor) => {
     if (armor.stats.armor) {
@@ -54,13 +54,15 @@ const useStats = (
     return sum;
   }, 0);
 
-  const equippedCyber =
-    equipment?.cybernetics?.reduce((sum: number, cybernetic) => {
+  const equippedCyber = equipment?.cybernetics?.reduce(
+    (sum: number, cybernetic) => {
       if (cybernetic.stats.cyber) {
         return sum + cybernetic.stats.cyber;
       }
       return sum;
-    }, 0) || 0;
+    },
+    0,
+  );
 
   const stats = {
     maxHealth: 10 + tree.getPoints('violence', 'threshold') * 2,
@@ -68,11 +70,11 @@ const useStats = (
     maxWeight: 10 + tree.getPoints('violence', 'threshold') * 2,
     maxCyber: 4 + tree.getPoints('cybernetica', 'chromebits') * 2,
     speed: 4 + tree.getPoints('violence', 'assault') * 2,
-    armor: armorValue,
+    armor: 0 + armorValue,
     ward: 0 + wardValue,
     evasion: 1,
-    weight: weaponWeight + armorWeight,
-    cyber: equippedCyber,
+    weight: 0 + weaponWeight + armorWeight,
+    cyber: 0 + equippedCyber,
     permanentInjuries: 5,
     permanentInsanities: 5,
   };

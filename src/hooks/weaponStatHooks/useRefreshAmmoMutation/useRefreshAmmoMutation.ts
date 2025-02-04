@@ -8,8 +8,12 @@ const useRefreshAmmoMutation = (apiUrl: string, weaponId: number) => {
       return refreshAmmo(apiUrl, weaponId);
     },
     onSuccess: () => {
-      return queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ['equipment'],
+        exact: false,
+      });
+      return queryClient.invalidateQueries({
+        queryKey: ['activeCharacter'],
         exact: false,
       });
     },

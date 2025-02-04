@@ -1,27 +1,41 @@
-import { MouseEventHandler, ReactNode } from 'react';
-import { motion } from 'motion/react';
+import { ReactNode } from 'react';
+import Loading from '../../components/Loading';
+import { UseMutationResult } from '@tanstack/react-query';
 
 const BtnControl = ({
   title,
   icon,
-  onClick,
+  mutation,
+  value,
 }: {
   title: string;
   icon: ReactNode;
-  onClick: MouseEventHandler;
+  mutation: UseMutationResult;
+  value?: number;
 }) => {
   return (
-    <motion.button
-      whileHover={{
-        backgroundColor: 'rgb(39 39 42)',
-        color: 'rgb(253 224 71)',
+    <button
+      className="hover:bg-tertiary timing group flex items-center gap-4 rounded-md border border-yellow-300 border-opacity-50 px-2 py-1"
+      onClick={(e) => {
+        if (mutation.isPending) return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (value) {
+          mutation.mutate(value);
+        } else {
+          mutation.mutate(undefined);
+        }
       }}
-      className="flex items-center gap-4 rounded-md border border-yellow-300 border-opacity-50 px-2 py-1"
-      onClick={onClick}
     >
-      {icon}
-      <p className="text-inherit">{title}</p>
-    </motion.button>
+      {mutation?.isPending ? (
+        <div className="size-8">
+          <Loading className="group-hover:text-accent" size={1.15} />
+        </div>
+      ) : (
+        icon
+      )}
+      <p className="timing group-hover:text-accent">{title}</p>
+    </button>
   );
 };
 

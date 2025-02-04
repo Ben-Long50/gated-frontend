@@ -35,41 +35,27 @@ const ArmorControls = ({
       <BtnControl
         title="Block"
         icon={<BlockIcon className="size-8" />}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          editCurrentBlock.mutate(-1);
-        }}
+        mutation={editCurrentBlock}
+        value={-1}
       />
-      {stats.currentPower && (
+      {stats.currentPower !== null && (
         <BtnControl
           title="Activate"
           icon={<LightningIcon className="size-8" />}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            editCurrentPower.mutate(-1);
-          }}
+          mutation={editCurrentPower}
+          value={-1}
         />
       )}
       <BtnControl
         title="Repair"
         icon={<HullIcon className="size-8" />}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          refreshBlock.mutate();
-        }}
+        mutation={refreshBlock}
       />
-      {stats.currentPower && (
+      {stats.currentPower !== null && (
         <BtnControl
           title="Recharge"
           icon={<PowerIcon className="size-8" />}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            refreshPower.mutate();
-          }}
+          mutation={refreshPower}
         />
       )}
     </div>

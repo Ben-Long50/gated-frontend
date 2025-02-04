@@ -12,7 +12,6 @@ const useEditAmmoMutation = (apiUrl: string, weaponId: number) => {
         queryKey: ['equipment'],
         exact: false,
       });
-      console.log('success');
       return queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],
         exact: false,

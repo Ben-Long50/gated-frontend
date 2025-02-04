@@ -27,29 +27,18 @@ const WeaponControls = ({ weaponId }: { weaponId: number }) => {
       <BtnControl
         title="Fire"
         icon={<DamageIcon className="size-8" />}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          editCurrentAmmo.mutate(-1);
-        }}
+        mutation={editCurrentAmmo}
+        value={-1}
       />
       <BtnControl
         title="Reload"
         icon={<MagCapacityIcon className="size-8" />}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          reloadAmmo.mutate();
-        }}
+        mutation={reloadAmmo}
       />
       <BtnControl
         title="Refresh"
         icon={<SpareAmmoIcon className="size-8" />}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          refreshAmmo.mutate();
-        }}
+        mutation={refreshAmmo}
       />
     </div>
   );
@@ -67,7 +56,9 @@ const WeaponCard = ({
       item={weapon}
       category="weapons"
       mode={mode}
-      controls={<WeaponControls weaponId={weapon.id} />}
+      controls={
+        weapon.stats.currentAmmoCount && <WeaponControls weaponId={weapon.id} />
+      }
     >
       {weapon.stats.damage && (
         <StatCard label="DMG" stat={weapon.stats.damage}>

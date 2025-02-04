@@ -11,8 +11,12 @@ const useRefreshCyberneticPowerMutation = (
       return refreshCyberneticPower(apiUrl, cyberneticId);
     },
     onSuccess: () => {
-      return queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ['equipment'],
+        exact: false,
+      });
+      return queryClient.invalidateQueries({
+        queryKey: ['activeCharacter'],
         exact: false,
       });
     },
