@@ -174,14 +174,20 @@ const CodexSearch = () => {
     cyberneticsLoading ||
     keywordsLoading ||
     vehiclesLoading ||
-    perksLoading;
+    modificationsLoading ||
+    perksLoading ||
+    actionsLoading ||
+    conditionsLoading;
   const isPending =
     weaponsPending ||
     armorPending ||
     cyberneticsPending ||
     keywordsPending ||
     vehiclesPending ||
-    perksPending;
+    modificationsPending ||
+    perksPending ||
+    actionsPending ||
+    conditionsPending;
 
   const filterByNameQuery = (query: string) => {
     if (!descriptionQuery && !query && !category) {
@@ -287,16 +293,24 @@ const CodexSearch = () => {
         </form>
       </ThemeContainer>
 
-      {codex.map((item, index) => {
+      {codex.map((item) => {
         return item.type === 'weapon' ? (
-          <WeaponCard key={index} weapon={item.item} mode="codex" />
+          <WeaponCard key={item.item.name} weapon={item.item} mode="codex" />
         ) : item.type === 'armor' ? (
-          <ArmorCard key={index} armor={item.item} mode="codex" />
+          <ArmorCard key={item.item.name} armor={item.item} mode="codex" />
         ) : item.type === 'cybernetic' ? (
-          <CyberneticCard key={index} cybernetic={item.item} mode="codex" />
+          <CyberneticCard
+            key={item.item.name}
+            cybernetic={item.item}
+            mode="codex"
+          />
         ) : (
           item.type === 'vehicle' && (
-            <VehicleCard key={index} vehicle={item.item} mode="codex" />
+            <VehicleCard
+              key={item.item.name}
+              vehicle={item.item}
+              mode="codex"
+            />
           )
         );
       })}

@@ -1,36 +1,11 @@
-import { forwardRef, useEffect, useState } from 'react';
-import ThemeContainer from './ThemeContainer';
+import { forwardRef, useContext, useEffect } from 'react';
+import { motion } from 'motion/react';
+import { LayoutContext } from '../contexts/LayoutContext';
 
 const CloudinaryImage = forwardRef((props, ref) => {
-  const [aspectRatio, setAspectRatio] = useState({ width: 1, height: 1 });
-
-  let color;
-
-  if (props.rarity) {
-    switch (props.rarity) {
-      case 'common':
-        color = 'rgb(156 163 175)';
-        break;
-      case 'uncommon':
-        color = 'rgb(34 197 94)';
-        break;
-      case 'rare':
-        color = 'rgb(220 38 38)';
-        break;
-      case 'blackMarket':
-        color = 'rgb(126 34 206)';
-        break;
-      case 'artifact':
-        color = 'rgb(251 191 36)';
-        break;
-      default:
-        color = 'transparent';
-        break;
-    }
-  }
+  const { layoutSize } = useContext(LayoutContext);
 
   let responsiveUrl;
-  let infoUrl;
 
   if (props.url) {
     const splitUrl = props.url?.split('upload/');
@@ -38,8 +13,6 @@ const CloudinaryImage = forwardRef((props, ref) => {
     responsiveUrl = splitUrl[0]
       .concat('upload/w_500,c_scale/')
       .concat(splitUrl[1]);
-
-    infoUrl = splitUrl[0].concat('upload/fl_getinfo/').concat(splitUrl[1]);
   }
 
   useEffect(() => {
@@ -52,56 +25,19 @@ const CloudinaryImage = forwardRef((props, ref) => {
     }
   }, []);
 
-  useEffect(() => {
-    const getAspecRatio = async () => {
-      try {
-        const response = await fetch(`${infoUrl}`, {
-          headers: { Accept: 'application/json' },
-        });
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch aspect ratio. Status: ${response.status}`,
-          );
-        }
-
-        const data = await response.json();
-
-        if (
-          !data.input ||
-          typeof data.input.width !== 'number' ||
-          typeof data.input.height !== 'number'
-        ) {
-          throw new Error('Unexpected response format from Cloudinary');
-        }
-
-        const imageWidth = data.input.width;
-        const imageHeight = data.input.height;
-
-        if (imageHeight === 0) {
-          throw new Error('Image height is 0, cannot compute aspect ratio');
-        }
-
-        setAspectRatio({
-          width: imageWidth.toString(),
-          height: imageHeight.toString(),
-        });
-      } catch (error) {
-        console.error(`Error getting aspect ratio: ${error.message}`);
-        setAspectRatio(1);
-      }
-    };
-    if (infoUrl) {
-      getAspecRatio();
-    }
-  }, [infoUrl]);
-
   return (
-    <div
-      className={`${props.className} ${props.detailsOpen ? 'max-w-full sm:max-w-[300px] lg:max-w-[400px]' : 'max-w-48 sm:max-w-60'} image-container timing mb-auto aspect-square w-full shrink-0 overflow-hidden sm:min-w-60`}
-      style={{
-        aspectRatio: aspectRatio.width / aspectRatio.height,
-      }}
+    <motion.div
+      className={`${props.className} image-container mb-auto aspect-square w-full overflow-hidden sm:min-w-60`}
+      animate={
+        layoutSize === 'small' || layoutSize === 'xsmall'
+          ? {
+              maxWidth: props.detailsOpen ? 350 : 200,
+            }
+          : {
+              maxWidth: props.detailsOpen ? 400 : 280,
+            }
+      }
+      transition={{ duration: 0.2 }}
     >
       <img
         ref={ref}
@@ -113,7 +49,7 @@ const CloudinaryImage = forwardRef((props, ref) => {
         alt={props.alt}
         onClick={props.onClick}
       />
-    </div>
+    </motion.div>
   );
 });
 

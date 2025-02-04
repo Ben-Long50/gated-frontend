@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import Loading from './Loading';
@@ -35,12 +35,17 @@ import { Action } from 'src/types/action';
 import DieIcon from './icons/DieIcon';
 import useCurrentHealthMutation from '../hooks/useCurrentHealthMutation/useCurrentHealthMutation';
 import useCurrentSanityMutation from '../hooks/useCurrentSanityMutation/useCurrentSanityMutation';
+import WeaponCard from './WeaponCard';
+import ArmorCard from './ArmorCard';
+import CyberneticCard from './CyberneticCard';
 
 const Equipment = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
   const { characterId } = useParams();
+
+  const [activeItem, setActiveItem] = useState({});
 
   const {
     data: character,
@@ -71,21 +76,29 @@ const Equipment = ({ mode }: { mode?: string }) => {
     isPending: statsPending,
   } = useStats(equipment, character?.attributes, character?.perks);
 
-  const handleCurrentHealth = (value) => {
+  const handleCurrentHealth = (value: number) => {
     if (
       !editCurrentHealth.isPending &&
       character?.stats.currentHealth + value <= stats.maxHealth
     ) {
-      editCurrentHealth.mutate(value);
+      if (character?.stats.currentHealth + value <= 0) {
+        editCurrentHealth.mutate(stats.maxHealth - 1);
+      } else {
+        editCurrentHealth.mutate(value);
+      }
     }
   };
 
-  const handleCurrentSanity = (value) => {
+  const handleCurrentSanity = (value: number) => {
     if (
       !editCurrentSanity.isPending &&
       character?.stats.currentSanity + value <= stats.maxSanity
     ) {
-      editCurrentSanity.mutate(value);
+      if (character?.stats.currentSanity + value <= 0) {
+        editCurrentSanity.mutate(stats.maxSanity - 1);
+      } else {
+        editCurrentSanity.mutate(value);
+      }
     }
   };
 
@@ -131,10 +144,10 @@ const Equipment = ({ mode }: { mode?: string }) => {
   return (
     <div className="relative flex w-full max-w-9xl flex-col items-center gap-8">
       <h1 className="text-center">{namePrefix + ' ' + 'Equipment'}</h1>
-      <div className="flex w-full flex-col justify-between gap-8 sm:flex-row">
+      <div className="flex w-full flex-col justify-between gap-8 lg:flex-row">
         {character.picture.imageUrl && (
           <ThemeContainer
-            className="size mx-auto aspect-square w-full max-w-60 rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
+            className="size mx-auto mb-auto aspect-square w-full max-w-60 rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
             chamfer="24"
             borderColor={accentPrimary}
           >
@@ -154,7 +167,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
             total={stats.maxHealth}
             color="rgb(248 113 113)"
             mode="adjustable"
-            mutation={(value) => handleCurrentHealth(value)}
+            mutation={(value: number) => handleCurrentHealth(value)}
           >
             <HealthIcon className="size-8" />
           </StatBar>
@@ -164,7 +177,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
             total={stats.maxSanity}
             color="rgb(96 165 250)"
             mode="adjustable"
-            mutation={(value) => handleCurrentSanity(value)}
+            mutation={(value: number) => handleCurrentSanity(value)}
           >
             <SanityIcon className="size-8" />
           </StatBar>
@@ -186,13 +199,37 @@ const Equipment = ({ mode }: { mode?: string }) => {
           </StatBar>
         </div>
       </div>
-      <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-[3fr_1fr]">
+      {layoutSize !== 'large' &&
+        activeItem !== null &&
+        (activeItem.category === 'weapon' ? (
+          <WeaponCard
+            key={activeItem.item.id}
+            weapon={activeItem.item}
+            mode="equipment"
+          />
+        ) : activeItem.category === 'armor' ? (
+          <ArmorCard
+            key={activeItem.item.id}
+            armor={activeItem.item}
+            mode="equipment"
+          />
+        ) : (
+          activeItem.category === 'cybernetic' && (
+            <CyberneticCard
+              key={activeItem.item.id}
+              cybernetic={activeItem.item}
+              mode="equipment"
+            />
+          )
+        ))}
+      <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-[2fr_1fr] xl:grid-cols-[3fr_1fr]">
         <EquipmentList
           weapons={equippedWeapons}
           armor={equippedArmor}
           cybernetics={equippedCybernetics}
+          activeItem={activeItem}
+          setActiveItem={setActiveItem}
         />
-
         <ThemeContainer
           className="mb-auto rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
           chamfer="24"

@@ -10,7 +10,7 @@ export const LayoutContext = createContext<LayoutSize>(defaultLayoutSize);
 
 const LayoutProvider = ({ children }: { children: ReactNode }) => {
   const getLayoutSize = (): 'large' | 'medium' | 'small' | 'xsmall' => {
-    if (window.innerWidth >= 1280) {
+    if (window.innerWidth >= 1024) {
       return 'large';
     } else if (window.innerWidth > 500 && window.innerWidth < 640) {
       return 'small';

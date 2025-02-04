@@ -24,6 +24,7 @@ const StatBar = ({
   color: string;
   mode?: string;
   children: ReactNode;
+  mutation?: (value: number) => void;
 }) => {
   const { layoutSize } = useContext(LayoutContext);
 

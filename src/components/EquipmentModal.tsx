@@ -24,10 +24,7 @@ const EquipmentModal = ({
   return (
     <>
       <div
-        className={clsx(
-          index % 2 === 0 ? 'left-0' : 'right-0',
-          'absolute top-1/2 z-30 w-full -translate-y-1/2 sm:w-[900px]',
-        )}
+        className="absolute left-1/2 top-1/2 z-30 w-full -translate-x-1/2 -translate-y-1/2 sm:w-[800px]"
         onClick={(e) => e.stopPropagation()}
       >
         {category === 'weapon' ? (

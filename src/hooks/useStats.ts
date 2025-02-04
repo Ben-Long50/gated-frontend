@@ -20,8 +20,6 @@ const useStats = (
 
   const actions = useActions();
 
-  if (actions.isLoading || actions.isPending) return;
-
   const weaponWeight =
     equipment?.weapons?.reduce((sum: number, weapon) => {
       if (weapon.stats.weight) {
@@ -101,20 +99,20 @@ const useStats = (
         }
       } else if (modifier.type === 'Roll') {
         const actionData = actions?.filteredActions?.filter(
-          (action) => modifier.action == action.id,
+          (action) => modifier?.action == action?.id,
         )[0];
 
-        const currentValue = rollBonuses[actionData.name] || 0;
+        const currentValue = rollBonuses[actionData?.name] || 0;
 
         switch (modifier.operator) {
           case 'add':
-            rollBonuses[actionData.name] = currentValue + modifier.dice;
+            rollBonuses[actionData?.name] = currentValue + modifier.dice;
             break;
           case 'subtract':
-            rollBonuses[actionData.name] = currentValue - modifier.dice;
+            rollBonuses[actionData?.name] = currentValue - modifier.dice;
             break;
           default:
-            rollBonuses[actionData.name] = modifier.dice;
+            rollBonuses[actionData?.name] = modifier.dice;
         }
       }
     });
@@ -123,7 +121,7 @@ const useStats = (
   perks?.forEach((perk) => {
     if (!perk.modifiers) return;
 
-    perk.modifiers.forEach((modifier: StatModifier) => {
+    perk.modifiers?.forEach((modifier: StatModifier) => {
       let statKey;
 
       switch (modifier.stat) {

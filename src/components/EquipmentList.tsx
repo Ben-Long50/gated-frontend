@@ -1,35 +1,36 @@
-import { Keyword } from 'src/types/keyword';
-import DamageIcon from './icons/DamageIcon';
-import EquipIcon from './icons/EquipIcon';
-import FlurryIcon from './icons/FlurryIcon';
-import MagCapacityIcon from './icons/MagCapacityIcon';
-import RangeIcon from './icons/RangeIcon';
-import SalvoIcon from './icons/SalvoIcon';
-import StatCard from './StatCard';
-import Tag from './Tag';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { ArmorWithKeywords } from 'src/types/armor';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
-import BlockIcon from './icons/BlockIcon';
-import WardIcon from './icons/WardIcon';
-import ArmorIcon from './icons/ArmorIcon';
-import CyberIcon from './icons/CyberIcon';
-import LightningIcon from './icons/LightningIcon';
+import { useContext, useEffect, useState } from 'react';
 import EquipmentModal from './EquipmentModal';
+import WeaponCard from './WeaponCard';
+import ArmorCard from './ArmorCard';
+import CyberneticCard from './CyberneticCard';
+import { LayoutContext } from '../contexts/LayoutContext';
 
 const EquipmentList = ({
   weapons,
   armor,
   cybernetics,
+  activeItem,
+  setActiveItem,
 }: {
   weapons: WeaponWithKeywords[];
   armor: ArmorWithKeywords[];
   cybernetics: CyberneticWithKeywords[];
+  activeItem: {
+    item: WeaponWithKeywords | ArmorWithKeywords | CyberneticWithKeywords;
+    category: 'weapon' | 'armor' | 'cybernetic';
+  };
+  setActiveItem: (item: {
+    item: WeaponWithKeywords | ArmorWithKeywords | CyberneticWithKeywords;
+    category: 'weapon' | 'armor' | 'cybernetic';
+  }) => void;
 }) => {
+  const { layoutSize } = useContext(LayoutContext);
   const [modalOpen, setModalOpen] = useState(0);
-  const [toolTip, setToolTip] = useState('');
+  const [toolTip, setToolTip] = useState(0);
 
   const toggleModal = () => {
     setModalOpen(0);
@@ -37,13 +38,13 @@ const EquipmentList = ({
 
   useEffect(() => {
     if (toolTip) {
-      document.addEventListener('click', () => setToolTip(''));
+      document.addEventListener('click', () => setToolTip(0));
     } else {
-      document.removeEventListener('click', () => setToolTip(''));
+      document.removeEventListener('click', () => setToolTip(0));
     }
 
     return () => {
-      document.removeEventListener('click', () => setToolTip(''));
+      document.removeEventListener('click', () => setToolTip(0));
     };
   }, [toolTip]);
 
@@ -56,8 +57,31 @@ const EquipmentList = ({
 
   return (
     <div className="flex flex-col gap-8">
+      {layoutSize === 'large' &&
+        activeItem !== null &&
+        (activeItem.category === 'weapon' ? (
+          <WeaponCard
+            key={activeItem.item.id}
+            weapon={activeItem.item}
+            mode="equipment"
+          />
+        ) : activeItem.category === 'armor' ? (
+          <ArmorCard
+            key={activeItem.item.id}
+            armor={activeItem.item}
+            mode="equipment"
+          />
+        ) : (
+          activeItem.category === 'cybernetic' && (
+            <CyberneticCard
+              key={activeItem.item.id}
+              cybernetic={activeItem.item}
+              mode="equipment"
+            />
+          )
+        ))}
       <h2>Equipped Items</h2>
-      <div className="scrollbar-secondary-2 grid grid-cols-1 gap-4 sm:max-h-none sm:grid-cols-2 sm:overflow-y-visible">
+      <div className="scrollbar-secondary-2 grid grid-cols-1 gap-4 sm:max-h-none lg:grid-cols-2 xl:grid-cols-3">
         {itemList.map((item, index) => {
           const rarityColors = {
             common: 'bg-gray-400',
@@ -68,182 +92,61 @@ const EquipmentList = ({
           };
           return (
             item.item.equipped === true && (
-              <>
-                <div
-                  key={index}
-                  className="bg-secondary relative flex items-start gap-3 rounded-br-md rounded-tr-md pr-4 shadow-md shadow-zinc-950 sm:gap-6"
+              <div
+                key={index}
+                className="bg-secondary relative flex items-start gap-3 rounded-br-md rounded-tr-md pr-4 shadow-md shadow-zinc-950 sm:gap-6"
+              >
+                <EquipmentModal
+                  index={index}
+                  item={item.item}
+                  category={item.category}
+                  modalOpen={modalOpen}
+                  toggleModal={toggleModal}
+                />
+                <button
+                  className={clsx(
+                    rarityColors[item.item.rarity] || 'bg-tertiary',
+                    'group relative h-24 w-28 shrink-0 overflow-hidden rounded-bl-md rounded-tl-md pl-1 lg:h-28 lg:w-32',
+                  )}
+                  onClick={() => {
+                    setModalOpen(item.item.id);
+                  }}
                 >
-                  <EquipmentModal
-                    index={index}
-                    item={item.item}
-                    category={item.category}
-                    modalOpen={modalOpen}
-                    toggleModal={toggleModal}
-                  />
-                  <button
-                    className={clsx(
-                      rarityColors[item.item.rarity] || 'bg-tertiary',
-                      'group relative h-24 w-28 shrink-0 overflow-hidden rounded-bl-md rounded-tl-md pl-1 lg:h-28 lg:w-32',
-                    )}
-                    onClick={() => {
-                      setModalOpen(item.item.id);
-                    }}
-                  >
-                    {item.item.picture?.imageUrl ? (
-                      <img
-                        src={item.item.picture?.imageUrl}
-                        alt={item.item.name}
-                        className="group-hover:opacity-80"
-                      />
-                    ) : (
-                      <div className="bg-tertiary h-full w-full p-1 group-hover:opacity-80">
-                        <p className="my-auto break-words text-center text-base">
-                          {item.item.name}
-                        </p>
-                      </div>
-                    )}
-                  </button>
-                  <div className="relative flex h-full w-full flex-col justify-evenly gap-2 overflow-hidden">
-                    <h3 className="overflow-hidden text-ellipsis whitespace-nowrap">
-                      {item.item.name}
-                    </h3>
-                    <div className="flex flex-col gap-2">
-                      {item.item?.keywords && item.item.keywords.length > 0 && (
-                        <div className="scrollbar-secondary flex w-full items-center gap-1 justify-self-start overflow-x-auto pb-1">
-                          {item.item.keywords.map(
-                            (keywordInfo: {
-                              keyword: Keyword;
-                              value?: number;
-                            }) => {
-                              return (
-                                <Tag
-                                  key={keywordInfo.keyword.id + item.item.id}
-                                  label={
-                                    keywordInfo.value
-                                      ? keywordInfo.keyword.name +
-                                        ' ' +
-                                        keywordInfo.value
-                                      : keywordInfo.keyword.name
-                                  }
-                                  description={keywordInfo.keyword.description}
-                                  toolTip={toolTip}
-                                  setToolTip={setToolTip}
-                                />
-                              );
-                            },
-                          )}
-                        </div>
-                      )}
-                      {/* <div className="grid grid-cols-[repeat(auto-fill,minmax(100px,max-content))] gap-2">
-                    {item.category === 'weapon' && (
-                      <>
-                        {item.item.stats.damage && (
-                          <StatCard stat={item.item.stats.damage}>
-                            <DamageIcon className="size-6" />
-                          </StatCard>
-                        )}
-                        {item.item.stats.salvo && (
-                          <StatCard stat={item.item.stats.salvo}>
-                            <SalvoIcon className="size-6" />
-                          </StatCard>
-                        )}
-                        {item.item.stats.flurry && (
-                          <StatCard stat={item.item.stats.flurry}>
-                            <FlurryIcon className="size-6" />
-                          </StatCard>
-                        )}
-                        {item.item.stats.range && (
-                          <StatCard stat={item.item.stats.range}>
-                            <RangeIcon className="size-6" />
-                          </StatCard>
-                        )}
-                        {item.item.stats.weight && (
-                          <StatCard stat={item.item.stats.weight}>
-                            <EquipIcon className="size-6" />
-                          </StatCard>
-                        )}
-                        {item.item.stats.magCapacity && (
-                          <StatCard
-                            stat={
-                              item.item.stats.magCapacity +
-                              ' / ' +
-                              (item.item.stats.magCount
-                                ? item.item.stats.magCapacity *
-                                  (item.item.stats.magCount - 1)
-                                : 'X')
-                            }
-                          >
-                            <MagCapacityIcon className="size-6" />
-                          </StatCard>
-                        )}
-                      </>
-                    )}
-                    {item.category === 'armor' && (
-                      <>
-                        {item.item.stats.armor && (
-                          <StatCard stat={item.item.stats.armor}>
-                            <ArmorIcon className="size-6" />
-                          </StatCard>
-                        )}
-                        {item.item.stats.ward && (
-                          <StatCard stat={item.item.stats.ward}>
-                            <WardIcon className="size-6" />
-                          </StatCard>
-                        )}
-                        {item.item.stats.block && (
-                          <StatCard
-                            stat={
-                              item.item.stats.currentBlock +
-                              ' / ' +
-                              item.item.stats.block
-                            }
-                          >
-                            <BlockIcon className="size-6" />
-                          </StatCard>
-                        )}
-                        {item.item.stats.power && (
-                          <StatCard
-                            stat={
-                              item.item.stats.currentPower +
-                              ' / ' +
-                              item.item.stats.power
-                            }
-                          >
-                            <LightningIcon className="size-6" />
-                          </StatCard>
-                        )}
-                        {item.item.stats.weight && (
-                          <StatCard stat={item.item.stats.weight}>
-                            <EquipIcon className="size-6" />
-                          </StatCard>
-                        )}
-                      </>
-                    )}
-                    {item.category === 'cybernetic' && (
-                      <>
-                        {item.item.stats.cyber && (
-                          <StatCard stat={item.item.stats.cyber}>
-                            <CyberIcon className="size-6" />
-                          </StatCard>
-                        )}
-                        {item.item.stats.power && (
-                          <StatCard
-                            stat={
-                              item.item.stats.currentPower +
-                              ' / ' +
-                              item.item.stats.power
-                            }
-                          >
-                            <LightningIcon className="size-6" />
-                          </StatCard>
-                        )}
-                      </>
-                    )}
-                  </div> */}
+                  {item.item.picture?.imageUrl ? (
+                    <img
+                      src={item.item.picture?.imageUrl}
+                      alt={item.item.name}
+                      className="group-hover:opacity-80"
+                    />
+                  ) : (
+                    <div className="bg-tertiary h-full w-full p-1 group-hover:opacity-80">
+                      <p className="my-auto break-words text-center text-base">
+                        {item.item.name}
+                      </p>
                     </div>
-                  </div>
+                  )}
+                </button>
+                <div className="flex h-full w-full flex-col items-start justify-evenly gap-2 overflow-hidden">
+                  <h3 className="text-ellipsis whitespace-nowrap">
+                    {item.item.name}
+                  </h3>
+                  {activeItem?.item?.id === item.item?.id ? (
+                    <button
+                      className="text-error text-lg hover:underline"
+                      onClick={() => setActiveItem(null)}
+                    >
+                      Disarm
+                    </button>
+                  ) : (
+                    <button
+                      className="text-accent text-lg hover:underline"
+                      onClick={() => setActiveItem(item)}
+                    >
+                      Activate
+                    </button>
+                  )}
                 </div>
-              </>
+              </div>
             )
           );
         })}
