@@ -1,4 +1,11 @@
-import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
+import {
+  ReactNode,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { LayoutContext } from '../contexts/LayoutContext';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -66,10 +73,12 @@ const ItemCard = ({
 
   useEffect(() => {
     if (detailRef.current) {
-      setDetailHeight(detailRef.current.offsetHeight);
+      const rect = detailRef.current.offsetHeight;
+      setDetailHeight(rect);
     }
     if (integrationRef.current) {
-      setIntegrationHeight(integrationRef.current.offsetHeight);
+      const rect = integrationRef.current.offsetHeight;
+      setIntegrationHeight(rect);
     }
   }, [detailRef.current]);
 
@@ -309,14 +318,14 @@ const ItemCard = ({
                           ) => {
                             return (
                               <Tag
-                                id={item.keyword.id + index}
-                                key={item.keyword.id}
+                                id={item.keyword?.id + index}
+                                key={item.keyword?.id}
                                 label={
                                   item.value
-                                    ? item.keyword.name + ' ' + item.value
-                                    : item.keyword.name
+                                    ? item.keyword?.name + ' ' + item.value
+                                    : item.keyword?.name
                                 }
-                                description={item.keyword.description}
+                                description={item.keyword?.description}
                                 toolTip={toolTip}
                                 setToolTip={setToolTip}
                               />

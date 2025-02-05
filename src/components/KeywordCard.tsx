@@ -33,9 +33,11 @@ const KeywordCard = ({
                 </Link>
               )}
           </div>
-          <div className="-my-2" onClick={(e) => e.stopPropagation()}>
-            {children}
-          </div>
+          {children && (
+            <div className="-my-2" onClick={(e) => e.stopPropagation()}>
+              {children}
+            </div>
+          )}
         </div>
       }
     >

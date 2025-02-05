@@ -256,7 +256,9 @@ const CodexSearch = () => {
                     }
                   }}
                 >
-                  <option value="">All keywords</option>
+                  <option key="default" value="">
+                    All keywords
+                  </option>
                   {keywordList?.map((keyword) => {
                     return (
                       <option key={keyword} value={keyword}>
