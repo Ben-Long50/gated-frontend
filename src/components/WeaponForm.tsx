@@ -105,9 +105,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         Object.entries(value.stats).filter(([_, val]) => val),
       );
 
-      value.stats = filteredStats;
-
-      console.log(value);
+      value.stats = { ...weapon?.stats, ...filteredStats };
 
       const formData = new FormData();
 

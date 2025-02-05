@@ -89,7 +89,7 @@ const ItemCard = ({
         borderColor={accentPrimary}
       >
         <div
-          className="bg-primary timing relative flex cursor-pointer flex-col p-4 clip-6"
+          className="bg-primary timing relative flex cursor-pointer flex-col p-2 clip-6 sm:p-4"
           onClick={async (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -196,7 +196,7 @@ const ItemCard = ({
                       </div>
                     )}
                     <div
-                      className={`timing grid h-full w-full grid-cols-[repeat(auto-fill,minmax(105px,max-content))] place-items-center justify-center gap-2`}
+                      className={`timing grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start gap-2`}
                     >
                       {children}
                     </div>
@@ -325,7 +325,7 @@ const ItemCard = ({
                         )}
                     </div>
                   )}
-                  <div className="timing col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,auto))] place-items-center gap-4">
+                  <div className="timing col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(110px,auto))] place-items-center gap-4">
                     {children}
                   </div>
                   {mode === 'equipment' && controls}

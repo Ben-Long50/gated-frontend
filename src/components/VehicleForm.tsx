@@ -125,9 +125,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
         Object.entries(value.stats as VehicleStats).filter(([_, val]) => val),
       );
 
-      value.stats = filteredStats;
-
-      console.log(value);
+      value.stats = { ...vehicle?.stats, ...filteredStats };
 
       const formData = new FormData();
 

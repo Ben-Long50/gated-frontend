@@ -57,7 +57,9 @@ const WeaponCard = ({
       category="weapons"
       mode={mode}
       controls={
-        weapon.stats.currentAmmoCount && <WeaponControls weaponId={weapon.id} />
+        weapon.stats?.currentAmmoCount && (
+          <WeaponControls weaponId={weapon.id} />
+        )
       }
     >
       {weapon.stats.damage && (

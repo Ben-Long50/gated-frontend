@@ -84,8 +84,6 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
     }
   }, [character]);
 
-  if (isLoading || isPending) return <Loading />;
-
   return layoutSize === 'xsmall' || layoutSize === 'small' ? (
     <nav
       ref={navbarRef}
@@ -96,7 +94,7 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
           {character ? (
             <div className="flex items-center gap-4">
               <Link
-                className="group flex items-center gap-4 pt-1.5"
+                className="group flex items-center gap-4"
                 to={`/glam/characters/${character.id}`}
               >
                 <img
@@ -239,7 +237,7 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
         {character ? (
           <div className="flex items-center gap-4">
             <Link
-              className="group flex items-center gap-4 pt-1.5"
+              className="group flex items-center gap-4"
               to={`/glam/characters/${character.id}`}
             >
               <img

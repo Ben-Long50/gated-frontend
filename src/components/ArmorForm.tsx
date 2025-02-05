@@ -96,12 +96,10 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
     },
     onSubmit: async ({ value }) => {
       const filteredStats = Object.fromEntries(
-        Object.entries(value.stats).filter(([stat, val]) => val),
+        Object.entries(value.stats).filter(([_, val]) => val),
       );
 
-      value.stats = filteredStats;
-
-      console.log(value);
+      value.stats = { ...armor?.stats, ...filteredStats };
 
       const formData = new FormData();
 

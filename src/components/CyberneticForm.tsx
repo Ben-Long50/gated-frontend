@@ -1,5 +1,5 @@
 import { useForm } from '@tanstack/react-form';
-import { useContext, useEffect, useState } from 'react';
+import { EventHandler, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
@@ -23,6 +23,9 @@ import ModifierField from './ModifierField';
 import { Modifier } from 'src/types/modifier';
 import useCyberneticQuery from '../hooks/useCyberneticQuery/useCyberneticQuery';
 import { Keyword } from 'src/types/keyword';
+import { Weapon } from 'src/types/weapon';
+import { Armor } from 'src/types/armor';
+import { Action } from 'src/types/action';
 
 const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -153,29 +156,29 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
         Object.entries(value.stats).filter(([_, val]) => val),
       );
 
-      value.stats = filteredStats;
+      value.stats = { ...cybernetic?.stats, ...filteredStats };
 
-      const filteredWeaponStats = value.weapons.map((weapon) =>
+      const filteredWeaponStats = value.weapons.map((weapon: Weapon) =>
         Object.fromEntries(
           Object.entries(weapon.stats).filter(([_, val]) => val),
         ),
       );
 
-      value.weapons.forEach((weapon, index) => {
-        weapon.stats = filteredWeaponStats[index];
+      value.weapons.forEach((weapon: Weapon, index: number) => {
+        weapon.stats = { ...weapon.stats, ...filteredWeaponStats[index] };
       });
 
-      const filteredArmorStats = value.armor.map((armor) =>
+      const filteredArmorStats = value.armor.map((armor: Armor) =>
         Object.fromEntries(
           Object.entries(armor.stats).filter(([_, val]) => val),
         ),
       );
 
-      value.armor.forEach((armor, index) => {
-        armor.stats = filteredArmorStats[index];
+      value.armor.forEach((armor: Armor, index: number) => {
+        armor.stats = { ...armor.stats, ...filteredArmorStats[index] };
       });
 
-      const filteredActions = value.actions.map((action) => {
+      const filteredActions = value.actions.map((action: Action) => {
         const filteredCosts = action.costs.filter((cost) => cost.stat);
         const filteredSubtypes = action.actionSubtypes.filter(
           (subtype) => subtype.length,
@@ -199,9 +202,6 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
         }
       });
       formData.append('cyberneticId', JSON.stringify(cyberneticId || 0));
-
-      const object = Object.fromEntries(formData.entries());
-      console.log(object);
 
       await createCybernetic.mutate(formData);
     },

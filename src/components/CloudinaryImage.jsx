@@ -31,7 +31,7 @@ const CloudinaryImage = forwardRef((props, ref) => {
       animate={
         layoutSize === 'small' || layoutSize === 'xsmall'
           ? {
-              maxWidth: props.detailsOpen ? 350 : 200,
+              maxWidth: props.detailsOpen ? 450 : 200,
             }
           : {
               maxWidth: props.detailsOpen ? 400 : 280,
