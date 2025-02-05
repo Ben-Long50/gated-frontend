@@ -157,7 +157,6 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          <WeaponIcon className="size-12" />
           <h1>{title} Weapon</h1>
         </div>
         <div className="flex w-full gap-4 lg:gap-8">
@@ -393,7 +392,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
                 );
                 return (
                   <div key={keyword.id} className="flex items-center gap-4">
-                    <KeywordCard className="w-full" keyword={keyword}>
+                    <KeywordCard keyword={keyword}>
                       {activeKeyword && (
                         <InputFieldBasic
                           className="max-w-20"

@@ -6,21 +6,25 @@ const Tag = ({
   toolTip,
   setToolTip,
 }: {
-  id: number;
+  id?: number;
   label: string;
-  description: string;
+  description?: string;
   className?: string;
-  toolTip: number;
-  setToolTip: (prevState: number) => void;
+  toolTip?: number;
+  setToolTip?: (prevState: number) => void;
 }) => {
   return (
     <>
       <div
         className={`${className} bg-primary relative cursor-pointer rounded border border-yellow-300 border-opacity-50 px-2 text-base`}
-        onClick={(e) => {
-          e.stopPropagation();
-          setToolTip(id);
-        }}
+        onClick={
+          toolTip && setToolTip && id
+            ? (e) => {
+                e.stopPropagation();
+                setToolTip(id);
+              }
+            : undefined
+        }
       >
         <p className="whitespace-nowrap text-base">{label}</p>
       </div>

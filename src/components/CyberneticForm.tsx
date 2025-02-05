@@ -243,7 +243,6 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          <CyberIcon className="size-12" />
           <h1>{title} Cybernetic</h1>
         </div>
         <div className="flex w-full gap-4 sm:gap-6 lg:gap-8">
@@ -634,10 +633,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
                                           key={keyword.id}
                                           className="flex items-center gap-4"
                                         >
-                                          <KeywordCard
-                                            className="w-full"
-                                            keyword={keyword}
-                                          >
+                                          <KeywordCard keyword={keyword}>
                                             {activeKeyword && (
                                               <InputFieldBasic
                                                 className="max-w-20"

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { ReactNode, useContext } from 'react';
 import Tag from './Tag';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
@@ -8,9 +8,11 @@ import ItemCardSmall from './ItemCardSmall';
 const KeywordCard = ({
   keyword,
   mode,
+  children,
 }: {
   keyword: Keyword;
   mode?: string;
+  children?: ReactNode;
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -30,6 +32,9 @@ const KeywordCard = ({
                   <button className="text-accent hover:underline">Edit</button>
                 </Link>
               )}
+          </div>
+          <div className="-my-2" onClick={(e) => e.stopPropagation()}>
+            {children}
           </div>
         </div>
       }
