@@ -17,8 +17,8 @@ const SubweaponCard = ({
   vehicleId?: number;
   weapon: WeaponWithKeywords;
   quantity: number;
-  toolTip: string;
-  setToolTip: void;
+  toolTip: number;
+  setToolTip: (prevState: number) => void;
 }) => {
   return (
     <div className="flex h-full w-full grow flex-col items-start justify-between gap-4">

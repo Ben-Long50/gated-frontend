@@ -1,15 +1,20 @@
 import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
-import { LayoutContext } from '../contexts/LayoutContext';
-import { useContext } from 'react';
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import BlockIcon from './icons/BlockIcon';
 import StatCard from './StatCard';
+import { ArmorWithKeywords } from 'src/types/armor';
 
-const SubarmorCard = ({ armor, toolTip, setToolTip }) => {
-  const { layoutSize } = useContext(LayoutContext);
-
+const SubarmorCard = ({
+  armor,
+  toolTip,
+  setToolTip,
+}: {
+  armor: ArmorWithKeywords;
+  toolTip: number;
+  setToolTip: (prevState: number) => void;
+}) => {
   return (
     <div className="flex h-full grow flex-col items-start justify-between gap-4">
       <h3> {armor.name}</h3>
