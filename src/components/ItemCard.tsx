@@ -334,7 +334,7 @@ const ItemCard = ({
                         )}
                     </div>
                   )}
-                  <div className="timing col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(110px,auto))] place-items-center gap-4">
+                  <div className="timing col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,min-content))] place-items-center gap-4">
                     {children}
                   </div>
                   {mode === 'equipment' && controls}

@@ -38,7 +38,7 @@ const ArmorControls = ({
         mutation={editCurrentBlock}
         value={-1}
       />
-      {stats.currentPower !== null && (
+      {stats.power && (
         <BtnControl
           title="Activate"
           icon={<LightningIcon className="size-8" />}
@@ -51,7 +51,7 @@ const ArmorControls = ({
         icon={<HullIcon className="size-8" />}
         mutation={refreshBlock}
       />
-      {stats.currentPower !== null && (
+      {stats.power && (
         <BtnControl
           title="Recharge"
           icon={<PowerIcon className="size-8" />}

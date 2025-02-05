@@ -162,7 +162,7 @@ const CodexSearch = () => {
         ? true
         : item.item.keywords?.some(
             (keyword: { keyword: Keyword; value: number }) =>
-              category === keyword.keyword.name,
+              category === keyword.keyword?.name,
           );
     });
 
