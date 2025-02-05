@@ -34,13 +34,13 @@ const SubweaponCard = ({
         {weapon.keywords?.map((item: { keyword: Keyword; value?: number }) => {
           return (
             <Tag
-              key={item.keyword.id}
+              key={item.keyword?.id}
               label={
                 item.value
                   ? item.keyword?.name + ' ' + item.value
                   : item.keyword?.name
               }
-              description={item.keyword.description}
+              description={item.keyword?.description}
               toolTip={toolTip}
               setToolTip={setToolTip}
             />

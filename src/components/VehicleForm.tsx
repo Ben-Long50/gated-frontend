@@ -37,17 +37,19 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
 
   const { data: vehicle } = useVehicleQuery(apiUrl, vehicleId);
 
+  console.log(vehicle);
+
   const vehicleWeapons = useWeapons({
-    itemList: title === 'Modify' && character?.characterInventory?.weapons,
+    itemList:
+      title === 'Modify' ? character?.characterInventory?.weapons : undefined,
     includedKeywords: ['Vehicle'],
   });
 
   const equippedWeapons = useWeapons({ itemList: vehicle?.weapons });
 
-  const weaponList =
-    title === 'Modify'
-      ? vehicleWeapons.filteredWeapons
-      : [...vehicleWeapons.filteredWeapons, ...equippedWeapons.filteredWeapons];
+  const weaponList = !vehicleId
+    ? vehicleWeapons.filteredWeapons
+    : [...vehicleWeapons.filteredWeapons, ...equippedWeapons.filteredWeapons];
 
   const modifications = useModifications({
     itemList: title === 'Modify' && character?.characterInventory.modifications,
