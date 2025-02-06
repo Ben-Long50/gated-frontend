@@ -241,7 +241,7 @@ const ItemCard = ({
                   )}
 
                   <motion.div
-                    className={`${item.picture ? 'mx-auto flex max-w-min flex-col' : 'grid grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start'} scrollbar-secondary-2 w-full shrink-0 gap-2 overflow-y-auto`}
+                    className={`${item.picture ? 'mx-auto flex max-w-min flex-col overflow-y-auto' : 'grid grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start'} scrollbar-secondary-2 w-full shrink-0 gap-2`}
                     style={{
                       height: item.picture ? imageHeight : 'auto',
                     }}
