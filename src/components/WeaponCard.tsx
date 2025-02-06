@@ -23,7 +23,7 @@ const WeaponControls = ({ weaponId }: { weaponId: number }) => {
   const refreshAmmo = useRefreshMutation(apiUrl, weaponId);
 
   return (
-    <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
+    <div className="col-span-2 flex w-full flex-col items-center justify-start gap-2 sm:gap-4">
       <BtnControl
         title="Fire"
         icon={<DamageIcon className="size-8" />}

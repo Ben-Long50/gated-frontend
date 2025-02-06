@@ -31,6 +31,8 @@ export default {
         '75dvh': '75dvh',
       },
       maxWidth: {
+        '1/3': '33%',
+        '1/2': '50%',
         '8xl': '88rem',
         '9xl': '96rem',
         '10xl': '104rem',

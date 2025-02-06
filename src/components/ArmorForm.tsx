@@ -13,7 +13,6 @@ import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import useCreateArmorMutation from '../hooks/useCreateArmorMutation/useCreateArmorMutation';
 import FormLayout from '../layouts/FormLayout';
-import ArmorIcon from './icons/ArmorIcon';
 import { useParams } from 'react-router-dom';
 import InputFieldBasic from './InputFieldBasic';
 import useDeleteArmorMutation from '../hooks/useDeleteArmorMutation/useDeleteArmorMutation';
@@ -358,7 +357,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
                     <KeywordCard className="w-full" keyword={keyword}>
                       {activeKeyword && (
                         <InputFieldBasic
-                          className="max-w-20"
+                          className="max-w-20 shrink-0"
                           type="number"
                           label="Value"
                           value={activeKeyword.value}

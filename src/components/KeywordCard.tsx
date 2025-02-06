@@ -19,8 +19,8 @@ const KeywordCard = ({
   return (
     <ItemCardSmall
       heading={
-        <div className="flex w-full items-center justify-between gap-4 pr-2">
-          <h3> {keyword.name}</h3>
+        <div className="flex w-full shrink items-center justify-between gap-2 pr-2">
+          <h3 className="break-words">{keyword.name}</h3>
           <div
             className="pointer-events-auto -my-2 flex items-center gap-4"
             onClick={(e) => e.stopPropagation()}
@@ -34,7 +34,10 @@ const KeywordCard = ({
               )}
           </div>
           {children && (
-            <div className="-my-2" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="-my-2 shrink-0"
+              onClick={(e) => e.stopPropagation()}
+            >
               {children}
             </div>
           )}

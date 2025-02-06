@@ -1,11 +1,4 @@
-import {
-  ReactNode,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { LayoutContext } from '../contexts/LayoutContext';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -14,7 +7,7 @@ import { Link } from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CardPrice from './CardPrice';
 import Icon from '@mdi/react';
-import { mdiChevronDown } from '@mdi/js';
+import { mdiChevronDown, mdiTriangleDown } from '@mdi/js';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { ArmorWithKeywords } from 'src/types/armor';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
@@ -52,6 +45,7 @@ const ItemCard = ({
   const { user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [imageHeight, setImageHeight] = useState(0);
   const [detailHeight, setDetailHeight] = useState(1000);
   const [integrationHeight, setIntegrationHeight] = useState(1000);
   const [toolTip, setToolTip] = useState(0);
@@ -68,8 +62,29 @@ const ItemCard = ({
     };
   }, [toolTip]);
 
+  const imageRef = useRef(null);
   const detailRef = useRef(null);
   const integrationRef = useRef(null);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (imageRef.current) {
+        setImageHeight(Math.floor(imageRef.current.offsetHeight));
+      }
+    };
+
+    const observer = new ResizeObserver(updateDimensions);
+
+    if (imageRef.current) {
+      observer.observe(imageRef.current);
+    }
+
+    return () => {
+      if (imageRef.current) {
+        observer.unobserve(imageRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (detailRef.current) {
@@ -80,7 +95,7 @@ const ItemCard = ({
       const rect = integrationRef.current.offsetHeight;
       setIntegrationHeight(rect);
     }
-  }, [detailRef.current]);
+  }, [detailRef.current, integrationRef.current]);
 
   return (
     <motion.div
@@ -98,7 +113,7 @@ const ItemCard = ({
         borderColor={accentPrimary}
       >
         <div
-          className="bg-primary timing relative flex cursor-pointer flex-col p-2 clip-6 sm:p-4"
+          className="bg-primary timing relative flex cursor-pointer flex-col p-4 clip-6"
           onClick={async (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -115,7 +130,17 @@ const ItemCard = ({
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-4">
-                      <h2 className="pl-2">{item.name}</h2>
+                      <h2 className="w-full whitespace-break-spaces">
+                        <span>
+                          <Icon
+                            className="text-secondary float-left mr-2 mt-2"
+                            path={mdiTriangleDown}
+                            rotate={-90}
+                            size={0.5}
+                          />
+                        </span>
+                        {item.name}
+                      </h2>
                       {category === 'weapons' && item.vehicleId && (
                         <h4 className="text-error italic">
                           (Currently equipped)
@@ -151,7 +176,22 @@ const ItemCard = ({
                     )}
                   </div>
                 </div>
-                <ItemRarity rarity={item?.rarity} grade={item?.grade} />
+                <div className="flex items-center justify-between">
+                  <ItemRarity rarity={item?.rarity} grade={item?.grade} />
+                  {item.body && (
+                    <div className="mr-4 flex flex-wrap items-center gap-2">
+                      <BodyIcon className="size-8" />
+                      {item.body.map((body, index) => {
+                        return (
+                          <p key={body}>
+                            {body}
+                            <span>{index < item.body.length - 1 && ','}</span>
+                          </p>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
                 {item?.keywords && item.keywords.length > 0 && (
                   <div className="col-span-2 flex w-full flex-wrap items-center gap-1 justify-self-start">
                     {item.keywords.map(
@@ -177,57 +217,70 @@ const ItemCard = ({
                     )}
                   </div>
                 )}
-                <div
-                  className={`flex ${detailsOpen ? 'flex-col' : 'flex-row'} items-start justify-start gap-x-4 gap-y-6`}
+                <motion.div
+                  className={`flex items-start justify-start`}
+                  style={{
+                    height: item.picture && imageHeight,
+                    gap: item.picture && !detailsOpen ? 16 : 0,
+                  }}
                 >
                   {item.picture && (
-                    <CloudinaryImage
-                      rarity={item.rarity}
-                      url={item.picture?.imageUrl}
-                      alt={item.name + ' ' + 'image'}
-                      detailsOpen={detailsOpen}
-                    />
-                  )}
-                  <div
-                    className={`${!detailsOpen && 'scrollbar-secondary max-h-48 overflow-y-auto pr-6'} flex w-full flex-col gap-4`}
-                  >
-                    {item.body && (
-                      <div className="mr-4 flex flex-wrap items-center gap-2">
-                        <BodyIcon className="size-8" />
-                        {item.body.map((body, index) => {
-                          return (
-                            <p key={body}>
-                              {body}
-                              <span>{index < item.body.length - 1 && ','}</span>
-                            </p>
-                          );
-                        })}
-                      </div>
-                    )}
-                    <div
-                      className={`timing grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start gap-2`}
+                    <motion.div
+                      layout="position"
+                      transition={{ duration: 0.2 }}
                     >
-                      {children}
-                    </div>
-                    {mode === 'equipment' && controls}
-                  </div>
-                </div>
-              </div>
-              {mode !== 'equipment' && (
-                <div className="overflow-hidden">
+                      <CloudinaryImage
+                        ref={imageRef}
+                        className="z-20"
+                        rarity={item.rarity}
+                        url={item.picture?.imageUrl}
+                        alt={item.name + ' ' + 'image'}
+                        detailsOpen={detailsOpen}
+                      />
+                    </motion.div>
+                  )}
+
                   <motion.div
-                    ref={detailRef}
-                    className="pt-6"
-                    initial={{ marginTop: -detailHeight - 4 }}
+                    className={`${item.picture ? 'mx-auto flex max-w-min flex-col' : 'grid grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start'} scrollbar-secondary-2 w-full shrink-0 gap-2 overflow-y-auto`}
+                    style={{
+                      height: item.picture ? imageHeight : 'auto',
+                    }}
                     animate={{
-                      marginTop: detailsOpen ? 0 : -detailHeight - 4,
+                      opacity: item.picture && detailsOpen ? 0 : 1,
+                      width: item.picture && detailsOpen ? 0 : 'auto',
+                      // paddingRight: item.picture && detailsOpen ? 0 : 24,
                     }}
                     transition={{ duration: 0.2 }}
                   >
-                    <p className="text-secondary pr-6">{item.description}</p>
+                    {children}
+                    {mode === 'equipment' && controls}
                   </motion.div>
-                </div>
-              )}
+                </motion.div>
+              </div>
+              <div className="overflow-hidden">
+                <motion.div
+                  ref={detailRef}
+                  className="flex flex-col gap-4 pr-8 pt-6"
+                  initial={{ marginTop: -detailHeight - 4 }}
+                  animate={{
+                    marginTop: detailsOpen ? 0 : -detailHeight - 4,
+                  }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {item.picture && (
+                    <div
+                      className={`grid w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start gap-2`}
+                    >
+                      {children}
+                    </div>
+                  )}
+                  {mode !== 'equipment' ? (
+                    <p className="text-secondary">{item.description}</p>
+                  ) : (
+                    controls
+                  )}
+                </motion.div>
+              </div>
             </>
           ) : (
             <div className="relative flex h-full gap-8">
@@ -243,7 +296,15 @@ const ItemCard = ({
                 <div className="grid w-full grow grid-cols-[1fr_auto] items-start gap-6">
                   <div>
                     <div className="flex items-center gap-4">
-                      <h2 className={`${!item.picture && 'pl-4'}`}>
+                      <h2 className="w-full whitespace-break-spaces">
+                        <span>
+                          <Icon
+                            className="text-secondary float-left mr-2.5 mt-2.5"
+                            path={mdiTriangleDown}
+                            rotate={-90}
+                            size={0.5}
+                          />
+                        </span>
                         {item.name}
                       </h2>
                       {category === 'weapons' && item.vehicleId && (
@@ -291,7 +352,9 @@ const ItemCard = ({
                     />
                   </div>
                   {(item.body || item.keywords) && (
-                    <div className="col-span-2 col-start-1 row-start-2 flex flex-wrap items-center gap-1">
+                    <div
+                      className={`${mode === 'equipment' && 'col-span-2'} col-start-1 row-start-2 flex flex-wrap items-center gap-1`}
+                    >
                       {item.body && (
                         <div className="flex flex-col items-center gap-1">
                           <div className="mr-4 flex flex-wrap items-center gap-2">
@@ -334,7 +397,7 @@ const ItemCard = ({
                         )}
                     </div>
                   )}
-                  <div className="timing col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,min-content))] place-items-center gap-4">
+                  <div className="col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-4">
                     {children}
                   </div>
                   {mode === 'equipment' && controls}
@@ -492,7 +555,7 @@ const ItemCard = ({
             </motion.div>
           </div>
           <span
-            className={`absolute bottom-4 right-4 transition duration-300 ${detailsOpen && '-rotate-180'}`}
+            className={`bg-tertiary absolute bottom-4 right-4 rounded-full p-1 shadow-md shadow-zinc-950 transition duration-300 ${detailsOpen && '-rotate-180'}`}
           >
             <Icon
               path={mdiChevronDown}

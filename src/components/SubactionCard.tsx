@@ -13,7 +13,7 @@ const SubactionCard = ({ action }) => {
     >
       <div className="flex items-center justify-start gap-4">
         <h3> {action.name}</h3>
-        <p className="text-tertiary">
+        <p className="text-tertiary italic">
           ({action.actionType[0].toUpperCase() + action.actionType.slice(1)})
         </p>
       </div>

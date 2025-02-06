@@ -72,10 +72,7 @@ const CardPrice = ({
         </button>
       )}
       {price ? (
-        <>
-          <ProfitsIcon className="size-6 shrink-0" />
-          <p>{price + 'p'}</p>
-        </>
+        <p>{price + 'p'}</p>
       ) : (
         <Icon className="text-secondary" path={mdiClose} size={1.5} />
       )}

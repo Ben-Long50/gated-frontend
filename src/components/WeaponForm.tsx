@@ -14,7 +14,6 @@ import useCreateWeaponMutation from '../hooks/useCreateWeaponMutation/useCreateW
 import Loading from './Loading';
 import InputFieldBasic from './InputFieldBasic';
 import FormLayout from '../layouts/FormLayout';
-import WeaponIcon from './icons/WeaponIcon';
 import { useParams } from 'react-router-dom';
 import useDeleteWeaponMutation from '../hooks/useDeleteWeaponMutation/useDeleteWeaponMutation';
 import { Keyword } from 'src/types/keyword';
@@ -395,7 +394,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
                     <KeywordCard keyword={keyword}>
                       {activeKeyword && (
                         <InputFieldBasic
-                          className="max-w-20"
+                          className="max-w-20 shrink-0"
                           type="number"
                           label="Value"
                           value={activeKeyword.value}

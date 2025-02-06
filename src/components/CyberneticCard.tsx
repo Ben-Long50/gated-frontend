@@ -11,6 +11,7 @@ import useEditCyberneticPowerMutation from '../hooks/cyberneticStatHooks/useEdit
 import useRefreshCyberneticPowerMutation from '../hooks/cyberneticStatHooks/useRefreshCyberneticPowerMutation/useRefreshCyberneticPowerMutation';
 import BtnControl from './buttons/BtnControl';
 import PowerIcon from './icons/PowerIcon';
+import BodyIcon from './icons/BodyIcon';
 
 const CyberneticControls = ({ cyberneticId }: { cyberneticId: number }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -73,16 +74,10 @@ const CyberneticCard = ({
               <LightningIcon className="size-8" />
             </StatCard>
           )}
-      {cybernetic.modifiers?.length > 0 && (
-        <div className="col-span-2 my-auto place-self-start">
-          <p className="text-tertiary mb-2 text-base">Modifiers</p>
-          <div className="flex h-full gap-4">
-            {cybernetic.modifiers?.map((modifier: Modifier, index: number) => (
-              <ModifierTag key={index} modifier={modifier} />
-            ))}
-          </div>
-        </div>
-      )}
+      {cybernetic.modifiers?.length > 0 &&
+        cybernetic.modifiers?.map((modifier: Modifier, index: number) => (
+          <ModifierTag key={index} modifier={modifier} />
+        ))}
     </ItemCard>
   );
 };

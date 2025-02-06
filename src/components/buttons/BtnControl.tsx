@@ -15,7 +15,7 @@ const BtnControl = ({
 }) => {
   return (
     <button
-      className="hover:bg-tertiary timing group flex items-center gap-4 rounded-md border border-yellow-300 border-opacity-50 px-2 py-1"
+      className="hover:bg-tertiary timing group flex w-full shrink-0 items-center justify-center gap-4 rounded-md border border-yellow-300 border-opacity-50 px-2 py-1"
       onClick={(e) => {
         if (mutation.isPending) return;
         e.preventDefault();
@@ -28,11 +28,11 @@ const BtnControl = ({
       }}
     >
       {mutation?.isPending ? (
-        <div className="size-8">
+        <div className="size-8 shrink-0">
           <Loading className="group-hover:text-accent" size={1.15} />
         </div>
       ) : (
-        icon
+        <div className="shrink-0">{icon}</div>
       )}
       <p className="timing group-hover:text-accent">{title}</p>
     </button>

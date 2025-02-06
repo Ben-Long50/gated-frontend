@@ -13,7 +13,7 @@ const StatCard = ({
   const { layoutSize } = useContext(LayoutContext);
 
   return (
-    <div className="bg-tertiary flex w-full flex-col items-center gap-1 rounded-lg p-2 shadow-md shadow-zinc-950">
+    <div className="bg-tertiary flex w-full min-w-[100px] flex-col items-center gap-1 rounded-lg px-3 py-2 shadow-md shadow-zinc-950">
       {layoutSize !== 'small' && layoutSize !== 'xsmall' && label && (
         <p>{label}</p>
       )}
