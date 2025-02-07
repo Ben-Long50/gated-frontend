@@ -179,7 +179,7 @@ const ItemCard = ({
                 <div className="flex items-center justify-between">
                   <ItemRarity rarity={item?.rarity} grade={item?.grade} />
                   {item.body && (
-                    <div className="mr-4 flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <BodyIcon className="size-8" />
                       {item.body.map((body, index) => {
                         return (

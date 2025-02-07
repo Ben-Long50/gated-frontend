@@ -31,11 +31,10 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
     <div
       className={`${modifier.operator === 'add' || modifier.operator === 'multiply' ? 'border-green-400' : 'border-red-600'} bg-tertiary flex flex-wrap items-center justify-center gap-x-2 gap-y-0 rounded-md border p-2 shadow-md shadow-zinc-950 sm:flex-nowrap`}
     >
-      <p>{symbol}</p>
       {Array.from({ length: modifier.dice }).map((_, index) => (
         <DieIcon key={index} className="size-7 shrink-0" />
       ))}
-      <p className="whitespace-nowrap">{modifier.action?.name}</p>
+      <p className="text-center">{modifier.action?.name}</p>
     </div>
   );
 };

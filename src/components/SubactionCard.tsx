@@ -4,6 +4,7 @@ import HealthIcon from './icons/HealthIcon';
 import PowerIcon from './icons/PowerIcon';
 import ReactionIcon from './icons/ReactionIcon';
 import SanityIcon from './icons/SanityIcon';
+import WyrmShellIcon from './icons/WyrmShellIcon';
 
 const SubactionCard = ({ action }) => {
   return (
@@ -45,6 +46,9 @@ const SubactionCard = ({ action }) => {
                     <ReactionIcon className="size-8" />
                   )}
                   {cost.stat === 'power' && <PowerIcon className="size-8" />}
+                  {cost.stat === 'wyrmShells' && (
+                    <WyrmShellIcon className="size-8" />
+                  )}
                   <p className="sm:pt-1">{cost.value}</p>
                 </div>
               </div>

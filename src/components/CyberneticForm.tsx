@@ -1,5 +1,5 @@
 import { useForm } from '@tanstack/react-form';
-import { EventHandler, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
@@ -16,7 +16,6 @@ import useCreateCyberneticMutation from '../hooks/useCreateCyberneticMutation/us
 import SelectField from './SelectField';
 import FormLayout from '../layouts/FormLayout';
 import useAttributeTree from '../hooks/useAttributeTree';
-import CyberIcon from './icons/CyberIcon';
 import { useParams } from 'react-router-dom';
 import useDeleteCyberneticMutation from '../hooks/useDeleteCyberneticMutation/useDeleteCyberneticMutation';
 import ModifierField from './ModifierField';
@@ -1025,6 +1024,9 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
                                                     </option>
                                                     <option value="sanity">
                                                       Sanity
+                                                    </option>
+                                                    <option value="wyrmShells">
+                                                      Wyrm shells
                                                     </option>
                                                   </SelectField>
                                                 );

@@ -10,6 +10,8 @@ import ReactionIcon from './icons/ReactionIcon';
 import DieIcon from './icons/DieIcon';
 import { Action } from 'src/types/action';
 import ItemCardSmall from './ItemCardSmall';
+import WyrmShellIcon from './icons/WyrmShellIcon';
+import LightningIcon from './icons/LightningIcon';
 
 const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
   const { user } = useContext(AuthContext);
@@ -65,7 +67,12 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
                   {cost.stat === 'reactionPoints' && (
                     <ReactionIcon className="size-8" />
                   )}
-                  {cost.stat === 'power' && <PowerIcon className="size-8" />}
+                  {cost.stat === 'power' && (
+                    <LightningIcon className="size-8" />
+                  )}
+                  {cost.stat === 'wyrmShells' && (
+                    <WyrmShellIcon className="size-8" />
+                  )}
                   <p className="sm:pt-1">{cost.value}</p>
                 </div>
               </div>

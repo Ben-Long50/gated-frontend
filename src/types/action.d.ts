@@ -29,4 +29,5 @@ enum ActionCostStat {
   health = 'health',
   sanity = 'sanity',
   power = 'power',
+  wyrmShells = 'wyrmShells',
 }

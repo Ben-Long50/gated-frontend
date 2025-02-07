@@ -136,6 +136,7 @@ const ActionForm = ({ mode }: { mode?: string }) => {
                               <option value="power">Power</option>
                               <option value="health">Health</option>
                               <option value="sanity">Sanity</option>
+                              <option value="wyrmShells">Wyrm shells</option>
                             </SelectField>
                           );
                         }}
