@@ -28,20 +28,12 @@ const ActionForm = ({ mode }: { mode?: string }) => {
     (action: Action) => action.id === Number(actionId),
   )[0];
 
-  const createAction = useCreateActionMutation(
-    apiUrl,
-    actionId,
-    setFormMessage,
-  );
-  const deleteAction = useDeleteActionMutation(
-    apiUrl,
-    actionId,
-    setFormMessage,
-  );
+  const createAction = useCreateActionMutation(apiUrl, setFormMessage);
+  const deleteAction = useDeleteActionMutation(apiUrl, setFormMessage);
 
   const handleDelete = () => {
-    if (deleteMode) {
-      deleteAction.mutate();
+    if (deleteMode && actionId) {
+      deleteAction.mutate(actionId);
     } else {
       setDeleteMode(true);
     }
@@ -78,8 +70,7 @@ const ActionForm = ({ mode }: { mode?: string }) => {
       );
 
       value.actionSubtypes = filteredSubtypes;
-
-      console.log(value);
+      value.id = actionId;
 
       await createAction.mutate(value);
     },

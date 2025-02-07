@@ -248,12 +248,10 @@ const ItemCard = ({
                     animate={{
                       opacity: item.picture && detailsOpen ? 0 : 1,
                       width: item.picture && detailsOpen ? 0 : 'auto',
-                      // paddingRight: item.picture && detailsOpen ? 0 : 24,
                     }}
                     transition={{ duration: 0.2 }}
                   >
                     {children}
-                    {mode === 'equipment' && controls}
                   </motion.div>
                 </motion.div>
               </div>
@@ -274,10 +272,8 @@ const ItemCard = ({
                       {children}
                     </div>
                   )}
-                  {mode !== 'equipment' ? (
+                  {mode !== 'equipment' && (
                     <p className="text-secondary">{item.description}</p>
-                  ) : (
-                    controls
                   )}
                 </motion.div>
               </div>
@@ -323,6 +319,7 @@ const ItemCard = ({
                       </p>
                     )}
                   </div>
+
                   <div
                     className={`${mode === 'codex' && 'row-span-2'} timing col-start-2 row-start-1 flex flex-col items-end justify-end gap-x-8 gap-y-4`}
                   >
@@ -400,7 +397,6 @@ const ItemCard = ({
                   <div className="col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-4">
                     {children}
                   </div>
-                  {mode === 'equipment' && controls}
                 </div>
                 {mode !== 'equipment' && (
                   <div className="overflow-hidden">
@@ -423,7 +419,7 @@ const ItemCard = ({
           <div className={`overflow-hidden`}>
             <motion.div
               ref={integrationRef}
-              className="flex flex-col gap-5 p-0.5 pr-8"
+              className="flex flex-col gap-5 p-0.5"
               initial={{ marginTop: -integrationHeight - 36 }}
               animate={{
                 marginTop: detailsOpen
@@ -434,6 +430,7 @@ const ItemCard = ({
               }}
               transition={{ duration: 0.2 }}
             >
+              {mode === 'equipment' && controls}
               {item.weapons && item.weapons?.length > 0 && (
                 <ThemeContainer
                   className="mt-2"
@@ -554,13 +551,11 @@ const ItemCard = ({
               )}
             </motion.div>
           </div>
-          <span
-            className={`bg-tertiary absolute bottom-4 right-4 rounded-full p-1 shadow-md shadow-zinc-950 transition duration-300 ${detailsOpen && '-rotate-180'}`}
-          >
+          <span className="bg-tertiary absolute bottom-4 right-4 rounded-full p-1 shadow-md shadow-zinc-950 transition duration-300">
             <Icon
               path={mdiChevronDown}
               size={1.1}
-              className={`text-secondary`}
+              className={`${detailsOpen && '-rotate-180'} timing text-secondary`}
             ></Icon>
           </span>
         </div>

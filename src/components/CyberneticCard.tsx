@@ -23,13 +23,13 @@ const CyberneticControls = ({ cyberneticId }: { cyberneticId: number }) => {
     <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
       <BtnControl
         title="Activate"
-        icon={<LightningIcon className="size-8" />}
+        icon={<LightningIcon className="size-8 group-hover:fill-yellow-300" />}
         mutation={editCurrentPower}
         value={-1}
       />
       <BtnControl
         title="Recharge"
-        icon={<PowerIcon className="size-8" />}
+        icon={<PowerIcon className="size-8 group-hover:fill-yellow-300" />}
         mutation={refreshPower}
       />
     </div>

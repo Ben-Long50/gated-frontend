@@ -22,10 +22,7 @@ import useUpdateCharacterMutation from '../hooks/useCharacterUpdateMutation/useC
 import useDeleteCharacterMutation from '../hooks/useDeleteCharacterMutation/useDeleteCharacterMutation';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
-import { Character } from 'src/types/character';
-import useCharactersQuery from '../hooks/useCharactersQuery/useCharactersQuery';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
-import useEquipmentQuery from '../hooks/useEquipmentQuery/useEquipmentQuery';
 import useStats from '../hooks/useStats';
 
 const CharacterUpdateForm = () => {
@@ -42,20 +39,8 @@ const CharacterUpdateForm = () => {
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, characterId);
 
-  console.log(character);
-
-  const {
-    data: equipment,
-    isLoading: equipmentLoading,
-    isPending: equipmentPending,
-  } = useEquipmentQuery(
-    apiUrl,
-    character?.id,
-    character?.characterInventory?.id,
-  );
-
-  const isLoading = characterLoading || equipmentLoading;
-  const isPending = characterPending || equipmentPending;
+  const isLoading = characterLoading;
+  const isPending = characterPending;
 
   const [checkedPerks, setCheckedPerks] = useState(() => {
     return character?.perks.map((perk) => perk.id);
@@ -65,7 +50,11 @@ const CharacterUpdateForm = () => {
   const attributeTree = useAttributeTree(character?.attributes);
   const perks = usePerks(attributeTree?.tree);
 
-  const { stats } = useStats(equipment, attributeTree.tree, character?.perks);
+  const { stats } = useStats(
+    character?.characterInventory,
+    attributeTree.tree,
+    character?.perks,
+  );
 
   const updateCharacter = useUpdateCharacterMutation(
     apiUrl,

@@ -18,7 +18,7 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
     <ItemCardSmall
       heading={
         <div className="flex w-full items-center justify-between gap-4 pr-2">
-          <h3> {action.name}</h3>
+          <h3> {action?.name}</h3>
           {((mode === 'codex' && user?.role === 'ADMIN') ||
             (mode === 'codex' && user?.role === 'SUPERADMIN')) && (
             <Link to={`/glam/codex/actions/${action.id}/update`}>
@@ -29,7 +29,7 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
       }
     >
       <div className="flex items-center gap-2">
-        {action.actionSubtypes?.map((subtype) => {
+        {action?.actionSubtypes?.map((subtype) => {
           return (
             <Tag
               key={subtype}
@@ -38,22 +38,22 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
           );
         })}
       </div>
-      {action.attribute && (
+      {action?.attribute && (
         <div className="flex items-center gap-4">
           <DieIcon className="size-8" />
           <p>
-            {action.attribute[0].toUpperCase() +
-              action.attribute.slice(1) +
+            {action?.attribute[0].toUpperCase() +
+              action?.attribute.slice(1) +
               ': ' +
-              action.skill[0].toUpperCase() +
-              action.skill.slice(1)}
+              action?.skill[0].toUpperCase() +
+              action?.skill.slice(1)}
           </p>
         </div>
       )}
-      {action.costs?.length > 0 && (
+      {action?.costs?.length > 0 && (
         <div className="flex flex-wrap items-center justify-start gap-4">
           <p className="font-semibold tracking-widest">Costs</p>
-          {action.costs.map((cost) => {
+          {action?.costs.map((cost) => {
             return (
               <div key={cost.stat} className="flex flex-col items-center">
                 <div className="flex items-center gap-2">
@@ -73,7 +73,7 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
           })}
         </div>
       )}
-      <p className="text-secondary">{action.description}</p>
+      <p className="text-secondary">{action?.description}</p>
     </ItemCardSmall>
   );
 };

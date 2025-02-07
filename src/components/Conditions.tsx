@@ -82,14 +82,18 @@ const Conditions = ({ mode }: { mode?: string }) => {
                 <h2 className="col-span-2 pl-6 sm:mb-4">
                   {category.length > 0
                     ? category[0].toUpperCase() + category.slice(1)
-                    : 'All'}{' '}
+                    : 'All'}
                   conditions
                 </h2>
               )}
             </searchForm.Subscribe>
             {conditions.filteredConditions.map((condition) => {
               return (
-                <ConditionCard key={condition.name} condition={condition} />
+                <ConditionCard
+                  key={condition.name}
+                  condition={condition}
+                  mode="codex"
+                />
               );
             })}
           </div>

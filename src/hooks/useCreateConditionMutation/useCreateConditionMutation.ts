@@ -11,8 +11,8 @@ const useCreateConditionMutation = (
     mutationFn: (formData: object) => {
       return createCondition(formData, conditionId, apiUrl);
     },
-    onSuccess: () => {
-      setFormMessage('Condition successfully created');
+    onSuccess: (data) => {
+      setFormMessage(data.message);
       queryClient.invalidateQueries({
         queryKey: ['condition'],
         exact: false,

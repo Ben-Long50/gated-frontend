@@ -101,26 +101,24 @@ const StatBar = ({
         <div
           className={`text-tertiary flex items-center gap-2 justify-self-end whitespace-nowrap text-xl`}
         >
+          <p className={`${current > total && 'text-error'}`}>{current}</p>/
+          <p>{total}</p>
           {mode === 'adjustable' && (
             <div className="flex flex-col">
               <button
                 className="text-tertiary hover:text-accent"
-                onClick={() => {
-                  mutation(1);
-                }}
+                onClick={mutation ? () => mutation(1) : undefined}
               >
                 <Icon path={mdiChevronUp} size={1} />
               </button>
               <button
                 className="text-tertiary hover:text-accent"
-                onClick={() => mutation(-1)}
+                onClick={mutation ? () => mutation(-1) : undefined}
               >
                 <Icon path={mdiChevronDown} size={1} />
               </button>
             </div>
           )}
-          <p className={`${current > total && 'text-error'}`}>{current}</p>/
-          <p>{total}</p>
         </div>
       )}
     </>

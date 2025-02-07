@@ -54,7 +54,7 @@ const useArmor = (fetchOptions?: FetchOptions) => {
     const kw = [
       ...new Set(
         armorWithKeywords.flatMap((armor: ArmorWithKeywords) => {
-          return armor.keywords?.map((keyword) => keyword.keyword.name);
+          return armor.keywords?.map((keyword) => keyword.keyword?.name);
         }),
       ),
     ] as string[];

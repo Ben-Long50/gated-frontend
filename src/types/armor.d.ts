@@ -10,6 +10,7 @@ interface Armor {
   description: string;
   stats: ArmorStats;
   price: number;
+  equipped: boolean;
   keywords: { keywordId: number; value?: number }[];
 }
 
@@ -22,6 +23,7 @@ interface ArmorWithKeywords {
   description: string;
   stats: ArmorStats;
   price: number;
+  equipped: boolean;
   keywords: { keyword: Keyword; value?: number }[];
 }
 

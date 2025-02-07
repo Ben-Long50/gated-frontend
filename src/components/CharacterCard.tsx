@@ -13,34 +13,20 @@ import ArmorIcon from './icons/ArmorIcon';
 import EvasionIcon from './icons/EvasionIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import CloudinaryImage from './CloudinaryImage';
-import useEquipmentQuery from '../hooks/useEquipmentQuery/useEquipmentQuery';
 import useStats from '../hooks/useStats';
-import { AuthContext } from '../contexts/AuthContext';
-import Loading from './Loading';
+import { Character } from 'src/types/character';
 
-const CharacterCard = ({ character }) => {
-  const { apiUrl } = useContext(AuthContext);
+const CharacterCard = ({ character }: { character: Character }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
   const attributeTree = useAttributeTree(character?.attributes);
 
-  const {
-    data: equipment,
-    isLoading: equipmentLoading,
-    isPending: equipmentPending,
-  } = useEquipmentQuery(
-    apiUrl,
-    character?.id,
-    character?.characterInventory?.id,
+  const { stats } = useStats(
+    character?.characterInventory,
+    character?.attributes,
+    character?.perks,
   );
-
-  const isLoading = equipmentLoading;
-  const isPending = equipmentPending;
-
-  const { stats } = useStats(equipment, attributeTree.tree, character?.perks);
-
-  if (isLoading || isPending) return <Loading />;
 
   return (
     <ThemeContainer

@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router-dom';
 
 const useDeleteActionMutation = (
   apiUrl: string,
-  actionId: string,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: () => {
+    mutationFn: (actionId: string) => {
       return deleteAction(apiUrl, actionId);
     },
     onSuccess: () => {

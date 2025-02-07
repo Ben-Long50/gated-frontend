@@ -37,6 +37,9 @@ export default {
         '9xl': '96rem',
         '10xl': '104rem',
       },
+      minWidth: {
+        '1/2': '50%',
+      },
       backgroundColor: {
         'zinc-850': 'rgb(31, 31, 34)',
         'zinc-150': 'rgb(236, 236, 238)',

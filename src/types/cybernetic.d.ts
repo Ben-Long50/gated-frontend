@@ -16,6 +16,7 @@ export interface Cybernetic {
   cyber: number;
   stats: Partial<CyberneticStats>;
   price: number;
+  equipped: boolean;
   body: string[];
   weapons: Weapon[];
   armor: Armor[];
@@ -35,6 +36,7 @@ export interface CyberneticWithKeywords {
   cyber: number;
   stats: Partial<CyberneticStats>;
   price: number;
+  equipped: boolean;
   body: string[];
   weapons: WeaponWithKeywords[];
   armor: ArmorWithKeywords[];

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -23,7 +23,6 @@ import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 import Loading from './Loading';
 import useStats from '../hooks/useStats';
-import useEquipmentQuery from '../hooks/useEquipmentQuery/useEquipmentQuery';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 
 const CharacterSheet = () => {
@@ -43,21 +42,13 @@ const CharacterSheet = () => {
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, characterId);
 
-  const {
-    data: equipment,
-    isLoading: equipmentLoading,
-    isPending: equipmentPending,
-  } = useEquipmentQuery(
-    apiUrl,
-    character?.id,
-    character?.characterInventory?.id,
-  );
+  const isLoading = characterLoading;
+  const isPending = characterPending;
 
-  const isLoading = characterLoading || equipmentLoading;
-  const isPending = characterPending || equipmentPending;
+  console.log(character);
 
   const { stats } = useStats(
-    equipment,
+    character?.characterInventory,
     character?.attributes,
     character?.perks,
   );

@@ -3,16 +3,15 @@ import createAction from './createAction';
 
 const useCreateActionMutation = (
   apiUrl: string,
-  actionId: string,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: object) => {
-      return createAction(formData, actionId, apiUrl);
+      return createAction(formData, apiUrl);
     },
-    onSuccess: () => {
-      setFormMessage('Action successfully created');
+    onSuccess: (data) => {
+      setFormMessage(data.message);
       queryClient.invalidateQueries({
         queryKey: ['action'],
         exact: false,

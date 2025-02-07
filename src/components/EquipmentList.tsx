@@ -53,7 +53,7 @@ const EquipmentList = ({
     <div className="flex flex-col gap-8">
       {children}
       <h2>Equipped Items</h2>
-      <div className="scrollbar-secondary-2 grid grid-cols-1 gap-4 sm:max-h-none lg:grid-cols-2 xl:grid-cols-3">
+      <div className="scrollbar-secondary-2 grid w-full grid-cols-1 gap-4 sm:max-h-none lg:grid-cols-2">
         {itemList.map((item, index) => {
           const rarityColors = {
             common: 'bg-gray-400',
@@ -66,7 +66,7 @@ const EquipmentList = ({
             item.item.equipped === true && (
               <div
                 key={index}
-                className="bg-secondary relative flex items-start gap-3 rounded-br-md rounded-tr-md pr-4 shadow-md shadow-zinc-950 sm:gap-6"
+                className="bg-secondary relative flex w-full items-start gap-3 rounded-br-md rounded-tr-md pr-4 shadow-md shadow-zinc-950 sm:gap-6"
               >
                 <EquipmentModal
                   index={index}
@@ -99,7 +99,7 @@ const EquipmentList = ({
                   )}
                 </button>
                 <div className="flex h-full w-full flex-col items-start justify-evenly gap-2 overflow-hidden">
-                  <h3 className="text-ellipsis whitespace-nowrap">
+                  <h3 className="line-clamp-2 text-ellipsis">
                     {item.item.name}
                   </h3>
                   {active?.id === item.item?.id ? (

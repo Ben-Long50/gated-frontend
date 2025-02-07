@@ -25,6 +25,8 @@ interface Character {
   weapons: WeaponWithKeywords[];
   armor: ArmorWithKeywords[];
   cybernetics: CyberneticWithKeywords[];
+  characterCart: CharacterCart;
+  characterInventory: CharacterInventory;
 }
 
 interface CharacterStats {
@@ -41,4 +43,13 @@ interface CharacterCart {
   armor: ArmorWithKeywords[];
   cybernetics: CyberneticWithKeywords[];
   vehicles: VehicleWithWeapons[];
+}
+
+interface CharacterInventory {
+  id: number;
+  characterId: number;
+  weapons: Weapon[];
+  armor: Armor[];
+  cybernetics: Cybernetic[];
+  vehicles: Vehicle[];
 }

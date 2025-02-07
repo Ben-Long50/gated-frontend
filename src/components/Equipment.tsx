@@ -17,7 +17,6 @@ import useCybernetics from '../hooks/useCybernetics';
 import { ArmorWithKeywords } from 'src/types/armor';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import { useParams } from 'react-router-dom';
-import useEquipmentQuery from '../hooks/useEquipmentQuery/useEquipmentQuery';
 import useToggleEquipmentMutation from '../hooks/useEquipmentToggleMutation/useEquipmentToggleMutation';
 import useStats from '../hooks/useStats';
 import EvasionIcon from './icons/EvasionIcon';
@@ -38,6 +37,7 @@ import useCurrentSanityMutation from '../hooks/useCurrentSanityMutation/useCurre
 import WeaponCard from './WeaponCard';
 import ArmorCard from './ArmorCard';
 import CyberneticCard from './CyberneticCard';
+import useEquipment from '../hooks/useEquipment';
 
 const Equipment = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -56,50 +56,20 @@ const Equipment = ({ mode }: { mode?: string }) => {
     isPending: characterPending,
   } = useActiveCharacterQuery(apiUrl);
 
-  const {
-    data: equipment,
-    isLoading: equipmentLoading,
-    isPending: equipmentPending,
-  } = useEquipmentQuery(
-    apiUrl,
-    character?.id,
-    character?.characterInventory?.id,
-  );
-
   const toggleEquipment = useToggleEquipmentMutation(apiUrl);
 
   const editCurrentHealth = useCurrentHealthMutation(apiUrl, character?.id);
 
   const editCurrentSanity = useCurrentSanityMutation(apiUrl, character?.id);
 
-  const {
-    stats,
-    rollBonuses,
-    isLoading: statsLoading,
-    isPending: statsPending,
-  } = useStats(equipment, character?.attributes, character?.perks);
-
   const handleCurrentHealth = (value: number) => {
-    if (
-      editCurrentHealth.isPending ||
-      character?.stats.currentHealth + value > stats.maxHealth
-    )
-      return;
-
+    if (character?.stats.currentHealth <= 0) return;
     editCurrentHealth.mutate(value);
   };
 
   const handleCurrentSanity = (value: number) => {
-    if (
-      editCurrentSanity.isPending ||
-      character?.stats.currentSanity + value > stats.maxSanity
-    )
-      return;
     editCurrentSanity.mutate(value);
   };
-
-  const isLoading = characterLoading || equipmentLoading || statsLoading;
-  const isPending = characterPending || equipmentPending || statsPending;
 
   const { filteredWeapons: weapons } = useWeapons({
     itemList: character?.characterInventory?.weapons,
@@ -112,15 +82,23 @@ const Equipment = ({ mode }: { mode?: string }) => {
     itemList: character?.characterInventory?.cybernetics,
   });
 
-  const { filteredWeapons: equippedWeapons } = useWeapons({
-    itemList: equipment?.weapons,
-  });
-  const { filteredArmor: equippedArmor } = useArmor({
-    itemList: equipment?.armor,
-  });
-  const { filteredCybernetics: equippedCybernetics } = useCybernetics({
-    itemList: equipment?.cybernetics,
-  });
+  const { equippedWeapons, equippedArmor, equippedCybernetics } = useEquipment(
+    character?.characterInventory,
+  );
+
+  const {
+    stats,
+    rollBonuses,
+    isLoading: statsLoading,
+    isPending: statsPending,
+  } = useStats(
+    character?.characterInventory,
+    character?.attributes,
+    character?.perks,
+  );
+
+  const isLoading = characterLoading || statsLoading;
+  const isPending = characterPending || statsPending;
 
   const activeItem = useMemo(() => {
     switch (active?.category) {
@@ -174,7 +152,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
           </ThemeContainer>
         )}
         <div
-          className={` ${layoutSize !== 'xsmall' && layoutSize !== 'small' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full gap-4`}
+          className={` ${layoutSize !== 'xsmall' && layoutSize !== 'small' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full items-center gap-4`}
         >
           <StatBar
             title="Health"
@@ -229,7 +207,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
             />
           )
         ))}
-      <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-[2fr_1fr] xl:grid-cols-[3fr_1fr]">
+      <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-[2fr_1fr] xl:grid-cols-[2.5fr_1fr]">
         <EquipmentList
           weapons={equippedWeapons}
           armor={equippedArmor}
@@ -401,7 +379,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
                 <hr className="border border-yellow-300 border-opacity-50" />
                 <h3 className="pl-4">Unique Actions</h3>
                 {actionList.map((action: Action) => (
-                  <ActionCard key={action.id} action={action} />
+                  <ActionCard key={action?.id} action={action} />
                 ))}
               </>
             )}
@@ -419,7 +397,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
             <h2 className="pl-4">Inventory</h2>
             <p className="text-tertiary italic">(Double click to equip)</p>
           </div>
-          {Object.entries(itemObject).map(([key, value], index) => {
+          {Object.entries(itemObject).map(([key, value]) => {
             return (
               <ThemeContainer
                 key={key}
@@ -464,21 +442,15 @@ const Equipment = ({ mode }: { mode?: string }) => {
                               }
                             }}
                           >
-                            {toggleEquipment?.isPending && (
+                            {item.equipped === true && (
                               <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
-                                <Loading path={mdiCheckCircle} size={3} />
+                                <Icon
+                                  className="text-tertiary group-hover:text-secondary"
+                                  path={mdiCheckCircle}
+                                  size={3}
+                                />
                               </div>
                             )}
-                            {item.equipped === true &&
-                              !toggleEquipment?.isPending && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
-                                  <Icon
-                                    className="text-tertiary group-hover:text-secondary"
-                                    path={mdiCheckCircle}
-                                    size={3}
-                                  />
-                                </div>
-                              )}
                             {item.picture?.imageUrl ? (
                               <img
                                 className="hover:opacity-80"
@@ -487,7 +459,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
                               />
                             ) : (
                               <div className="bg-tertiary h-full w-full p-1 hover:opacity-80">
-                                <p className="my-auto break-words text-center text-base">
+                                <p className="my-auto text-center text-base">
                                   {item.name}
                                 </p>
                               </div>

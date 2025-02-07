@@ -1,10 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const createAction = async (
-  formData: object,
-  actionId: string,
-  apiUrl: string,
-) => {
+const createAction = async (formData: object, apiUrl: string) => {
   try {
     const response = await fetch(`${apiUrl}/actions`, {
       method: 'POST',
@@ -12,7 +8,7 @@ const createAction = async (
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ ...formData, actionId }),
+      body: JSON.stringify({ ...formData }),
     });
     const data = await handleResponse(response);
     return data;

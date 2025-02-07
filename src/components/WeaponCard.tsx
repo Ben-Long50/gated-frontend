@@ -26,18 +26,20 @@ const WeaponControls = ({ weaponId }: { weaponId: number }) => {
     <div className="col-span-2 flex w-full flex-col items-center justify-start gap-2 sm:gap-4">
       <BtnControl
         title="Fire"
-        icon={<DamageIcon className="size-8" />}
+        icon={<DamageIcon className="size-8 group-hover:fill-yellow-300" />}
         mutation={editCurrentAmmo}
         value={-1}
       />
       <BtnControl
         title="Reload"
-        icon={<MagCapacityIcon className="size-8" />}
+        icon={
+          <MagCapacityIcon className="size-8 group-hover:fill-yellow-300" />
+        }
         mutation={reloadAmmo}
       />
       <BtnControl
         title="Refresh"
-        icon={<SpareAmmoIcon className="size-8" />}
+        icon={<SpareAmmoIcon className="size-8 group-hover:fill-yellow-300" />}
         mutation={refreshAmmo}
       />
     </div>
