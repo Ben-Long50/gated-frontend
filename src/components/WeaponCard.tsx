@@ -5,7 +5,7 @@ import RangeIcon from './icons/RangeIcon';
 import EquipIcon from './icons/EquipIcon';
 import MagCapacityIcon from './icons/MagCapacityIcon';
 import ItemCard from './ItemCard';
-import { WeaponWithKeywords } from 'src/types/weapon';
+import { WeaponStats, WeaponWithKeywords } from 'src/types/weapon';
 import StatCard from './StatCard';
 import BtnControl from './buttons/BtnControl';
 import SpareAmmoIcon from './icons/SpareAmmoIcon';
@@ -15,7 +15,13 @@ import { AuthContext } from '../contexts/AuthContext';
 import useReloadMutation from '../hooks/weaponStatHooks/useReloadAmmoMutation/useReloadAmmoMutation';
 import useRefreshMutation from '../hooks/weaponStatHooks/useRefreshAmmoMutation/useRefreshAmmoMutation';
 
-const WeaponControls = ({ weaponId }: { weaponId: number }) => {
+const WeaponControls = ({
+  stats,
+  weaponId,
+}: {
+  stats: WeaponStats;
+  weaponId: number;
+}) => {
   const { apiUrl } = useContext(AuthContext);
 
   const editCurrentAmmo = useEditAmmoMutation(apiUrl, weaponId);
@@ -27,7 +33,11 @@ const WeaponControls = ({ weaponId }: { weaponId: number }) => {
       <BtnControl
         title="Fire"
         icon={<DamageIcon className="size-8 group-hover:fill-yellow-300" />}
-        mutation={editCurrentAmmo}
+        mutation={
+          stats.currentAmmoCount &&
+          stats.currentAmmoCount > 0 &&
+          editCurrentAmmo
+        }
         value={-1}
       />
       <BtnControl
@@ -35,7 +45,9 @@ const WeaponControls = ({ weaponId }: { weaponId: number }) => {
         icon={
           <MagCapacityIcon className="size-8 group-hover:fill-yellow-300" />
         }
-        mutation={reloadAmmo}
+        mutation={
+          stats.currentMagCount && stats.currentMagCount > 0 && reloadAmmo
+        }
       />
       <BtnControl
         title="Refresh"
@@ -59,8 +71,8 @@ const WeaponCard = ({
       category="weapons"
       mode={mode}
       controls={
-        weapon.stats?.currentAmmoCount && (
-          <WeaponControls weaponId={weapon.id} />
+        weapon.stats?.magCapacity && (
+          <WeaponControls stats={weapon.stats} weaponId={weapon.id} />
         )
       }
     >
