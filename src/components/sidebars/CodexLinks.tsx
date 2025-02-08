@@ -18,8 +18,15 @@ import Icon from '@mdi/react';
 import { mdiMagnify } from '@mdi/js';
 import { NavLink } from 'react-router-dom';
 import { LayoutContext } from '../../contexts/LayoutContext';
+import PotionIcon from '../../components/icons/PotionIcon';
+import GadgetIcon from '../../components/icons/GadgetIcon';
+import SackIcon from '../../components/icons/SackIcon';
 
-const CodexLinks = ({ setSidebarVisibility }) => {
+const CodexLinks = ({
+  setSidebarVisibility,
+}: {
+  setSidebarVisibility: (mode: boolean) => void;
+}) => {
   const { apiUrl, user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
 
@@ -69,7 +76,6 @@ const CodexLinks = ({ setSidebarVisibility }) => {
             <p className="text-inherit">The Book</p>
           </>
         }
-        numberOfEntries={bookSections?.length + 1 || 2}
       >
         {bookSections?.map((section) => {
           return (
@@ -246,6 +252,64 @@ const CodexLinks = ({ setSidebarVisibility }) => {
             <LinkSidebar
               title="Create a new mod"
               path="codex/vehicles/modifications/create"
+              setSidebarVisibility={setSidebarVisibility}
+            />
+          </>
+        )}
+      </LinkListSidebar>
+      <LinkListSidebar
+        title={
+          <>
+            <SackIcon className="size-8" />
+            <p className="text-inherit">Items</p>
+          </>
+        }
+      >
+        <LinkSidebar
+          title="All Items"
+          path="codex/items"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSublistSidebar
+          title="Reusables"
+          icon={<GadgetIcon className="size-8" />}
+        >
+          <LinkSidebar
+            title="Gadgets"
+            path="codex/items/chemicalTherapy"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+          <LinkSidebar
+            title="Anomalies"
+            path="codex/items/chemicalAssistance"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        </LinkSublistSidebar>
+        <LinkSublistSidebar
+          title="Consumables"
+          icon={<PotionIcon className="size-8" />}
+        >
+          <LinkSidebar
+            title="Chemical therapy"
+            path="codex/consumables/chemicalTherapy"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+          <LinkSidebar
+            title="Chemical assistance"
+            path="codex/consumables/chemicalAssistance"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+          <LinkSidebar
+            title="Misc. consumables"
+            path="codex/consumables/misc"
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        </LinkSublistSidebar>
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+          <>
+            <LinkSidebar
+              title="Create a new item"
+              path="codex/items/create"
               setSidebarVisibility={setSidebarVisibility}
             />
           </>

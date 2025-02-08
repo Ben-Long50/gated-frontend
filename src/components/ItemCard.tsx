@@ -168,7 +168,7 @@ const ItemCard = ({
                     )}
                     {((mode === 'codex' && user?.role === 'ADMIN') ||
                       (mode === 'codex' && user?.role === 'SUPERADMIN')) && (
-                      <Link to={`/glam/codex/item/${item.id}/update`}>
+                      <Link to={`/glam/codex/${category}/${item.id}/update`}>
                         <button className="text-accent hover:underline">
                           Edit
                         </button>
@@ -289,7 +289,7 @@ const ItemCard = ({
                 />
               )}
               <div className="w-full">
-                <div className="grid w-full grow grid-cols-[1fr_auto] items-start gap-6">
+                <div className="grid w-full grow grid-cols-[2fr-1fr] items-start gap-6">
                   <div>
                     <div className="flex items-center gap-4">
                       <h2 className="w-full whitespace-break-spaces">
@@ -321,7 +321,7 @@ const ItemCard = ({
                   </div>
 
                   <div
-                    className={`${mode === 'codex' && 'row-span-2'} timing col-start-2 row-start-1 flex flex-col items-end justify-end gap-x-8 gap-y-4`}
+                    className={`${mode === 'codex' && 'row-span-2'} timing col-start-2 row-start-1 flex flex-col items-end justify-end gap-x-8 gap-y-2`}
                   >
                     {mode === 'codex' && (
                       <div className="flex items-center justify-end gap-4">
@@ -350,7 +350,7 @@ const ItemCard = ({
                   </div>
                   {(item.body || item.keywords) && (
                     <div
-                      className={`${mode === 'equipment' && 'col-span-2'} col-start-1 row-start-2 flex flex-wrap items-center gap-1`}
+                      className={` ${mode !== 'codex' && 'col-span-2'} col-start-1 row-start-2 flex flex-wrap items-center gap-1`}
                     >
                       {item.body && (
                         <div className="flex flex-col items-center gap-1">

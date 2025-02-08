@@ -1,8 +1,16 @@
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
-const LinkSublistSidebar = ({ title, children }) => {
+const LinkSublistSidebar = ({
+  title,
+  icon,
+  children,
+}: {
+  title: string;
+  icon?: ReactNode;
+  children: ReactNode;
+}) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   const height = children.length * 44 + 4;
@@ -10,12 +18,13 @@ const LinkSublistSidebar = ({ title, children }) => {
   return (
     <div className={`timing relative flex flex-col pr-2 clip-4`}>
       <button
-        className="text-primary z-10 flex items-center gap-6 pl-4"
+        className={`${icon && 'pb-2'} text-primary z-10 flex items-center gap-6 pl-4`}
         onClick={(e) => {
           e.stopPropagation();
           setDetailsOpen(!detailsOpen);
         }}
       >
+        {icon}
         <p>{title}</p>
         <span
           className={`ml-auto transition duration-300 ${detailsOpen && '-rotate-180'}`}

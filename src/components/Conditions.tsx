@@ -81,8 +81,8 @@ const Conditions = ({ mode }: { mode?: string }) => {
               {(category) => (
                 <h2 className="col-span-2 pl-6 sm:mb-4">
                   {category.length > 0
-                    ? category[0].toUpperCase() + category.slice(1)
-                    : 'All'}
+                    ? category[0].toUpperCase() + category.slice(1) + ' '
+                    : 'All '}
                   conditions
                 </h2>
               )}

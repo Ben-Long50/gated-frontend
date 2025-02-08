@@ -27,12 +27,13 @@ const CloudinaryImage = forwardRef((props, ref) => {
 
   return (
     <motion.div
-      className={`${props.className} image-container mb-auto aspect-square w-full overflow-hidden lg:shrink-0`}
+      className={`${props.className} mb-auto aspect-square w-full overflow-hidden lg:shrink-0`}
       animate={
-        layoutSize !== 'small' &&
-        layoutSize !== 'xsmall' && {
-          maxWidth: props.detailsOpen ? 400 : 280,
-        }
+        layoutSize !== 'small' && layoutSize !== 'xsmall'
+          ? {
+              width: props.detailsOpen ? 'clamp(280px, 50%, 400px)' : 280,
+            }
+          : {}
       }
       transition={{ duration: 0.2 }}
     >

@@ -11,6 +11,7 @@ const LinkSidebar = ({
 }: {
   title: string;
   path: string;
+  setSidebarVisibility: (mode: boolean) => void;
 }) => {
   const { layoutSize } = useContext(LayoutContext);
 

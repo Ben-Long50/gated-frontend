@@ -43,6 +43,7 @@ import Cart from './components/Cart';
 import Inventory from './components/Inventory';
 import Equipment from './components/Equipment';
 import CodexSearch from './components/CodexSearch';
+import ItemForm from './components/ItemForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -263,14 +264,24 @@ const router = createBrowserRouter(
           <Route path="armor">
             <Route
               index
-              element={<Armor title="All Armor" mode="codex" key="armor" />}
+              element={
+                <Armor
+                  title="All Armor"
+                  fetchOptions={{ excludedKeywords: ['Cybernetic'] }}
+                  mode="codex"
+                  key="armor"
+                />
+              }
             />
             <Route
               path="basic"
               element={
                 <Armor
                   title="Basic Armor"
-                  fetchOptions={{ includedKeywords: ['Armor'] }}
+                  fetchOptions={{
+                    includedKeywords: ['Armor'],
+                    excludedKeywords: ['Cybernetic'],
+                  }}
                   mode="codex"
                   key="basic armor"
                 />
@@ -281,7 +292,10 @@ const router = createBrowserRouter(
               element={
                 <Armor
                   title="Power Armor"
-                  fetchOptions={{ includedKeywords: ['Power'] }}
+                  fetchOptions={{
+                    includedKeywords: ['Power'],
+                    excludedKeywords: ['Cybernetic'],
+                  }}
                   mode="codex"
                   key="power armor"
                 />
@@ -405,7 +419,14 @@ const router = createBrowserRouter(
               }
             />
           </Route>
-
+          <Route path="items">
+            <Route
+              path="create"
+              element={
+                <ItemForm title="Create" mode="codex" key="create item" />
+              }
+            />
+          </Route>
           <Route path="perks">
             <Route index element={<Perks mode="codex" key="perks" />} />
             <Route

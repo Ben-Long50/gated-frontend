@@ -1,18 +1,30 @@
 import ThemeContainer from '../../components/ThemeContainer';
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import { Children, isValidElement, useContext, useState } from 'react';
+import {
+  Children,
+  isValidElement,
+  ReactNode,
+  useContext,
+  useState,
+} from 'react';
 import { ThemeContext } from '../../contexts/ThemeContext';
 
-const LinkListSidebar = ({ title, children, numberOfEntries }) => {
+const LinkListSidebar = ({
+  title,
+  children,
+}: {
+  title: ReactNode;
+  children: ReactNode;
+}) => {
   const { accentPrimary } = useContext(ThemeContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [hover, setHover] = useState(false);
 
-  function countChildren(children) {
+  function countChildren(children: ReactNode) {
     let count = 0;
 
-    function recurse(childNodes) {
+    function recurse(childNodes: ReactNode) {
       Children.forEach(childNodes, (child) => {
         count++;
         if (isValidElement(child) && child.props.children) {
