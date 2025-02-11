@@ -1,6 +1,6 @@
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import { ReactNode, useState } from 'react';
+import { Children, isValidElement, ReactNode, useState } from 'react';
 
 const LinkSublistSidebar = ({
   title,
@@ -13,7 +13,23 @@ const LinkSublistSidebar = ({
 }) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
 
-  const height = children.length * 44 + 4;
+  function countChildren(children: ReactNode) {
+    let count = 0;
+
+    function recurse(childNodes: ReactNode) {
+      Children.forEach(childNodes, (child) => {
+        count++;
+        if (isValidElement(child) && child.props.children) {
+          recurse(child.props.children);
+        }
+      });
+    }
+
+    recurse(children);
+
+    return count;
+  }
+  const height = countChildren(children) * 44 + 4;
 
   return (
     <div className={`timing relative flex flex-col pr-2 clip-4`}>

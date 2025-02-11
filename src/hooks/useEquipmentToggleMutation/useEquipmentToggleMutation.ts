@@ -54,6 +54,15 @@ const useToggleEquipmentMutation = (apiUrl: string) => {
                       : cybernetic,
                 ),
             };
+          case 'item':
+            return {
+              ...prevCharacterData?.characterInventory,
+              items: prevCharacterData?.characterInventory.items.map((item) =>
+                item.id === mutationInfo.itemId
+                  ? { ...item, equipped: !item.equipped }
+                  : item,
+              ),
+            };
           default:
             return;
         }

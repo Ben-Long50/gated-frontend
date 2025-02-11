@@ -14,7 +14,7 @@ const ModCard = ({
 }: {
   vehicleId?: number;
   modification: Modification;
-  mode: string;
+  mode?: string;
 }) => {
   const { user } = useContext(AuthContext);
 

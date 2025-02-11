@@ -5,16 +5,21 @@ export interface Action {
   name: string;
   description: string;
   costs: ActionCost[];
-  attribute: string;
-  skill: string;
+  roll: ActionRoll[];
   actionType: ActionType;
   actionSubtypes: string[];
+  duration: { unit: string; value: number | null };
   cybernetics: Cybernetic[];
 }
 
 interface ActionCost {
   stat: ActionCostStat;
   value: number;
+}
+
+interface ActionRoll {
+  attribute: string;
+  skill: string;
 }
 
 enum ActionType {

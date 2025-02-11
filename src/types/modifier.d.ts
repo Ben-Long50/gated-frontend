@@ -1,3 +1,5 @@
+import { Action } from './action';
+
 export type Modifier = StatModifier | RollModifier;
 
 export interface StatModifier {
@@ -5,27 +7,16 @@ export interface StatModifier {
   stat: Stat;
   operator: ModifierOperator;
   value: number;
+  duration?: { unit: string; value: number };
 }
 
 export interface RollModifier {
   type: 'Roll';
-  action: number;
+  action: Action;
   operator: ModifierOperator;
   dice: number;
+  duration?: { unit: string; value: number };
 }
-
-// export enum Stat {
-//   currentHealth = 'currentHealth',
-//   maxHealth = 'maxHealth',
-//   currentSanity = 'currentSanity',
-//   maxSanity = 'maxSanity',
-//   cyber = 'cyber',
-//   equip = 'equip',
-//   speed = 'speed',
-//   evasion = 'evasion',
-//   armor = 'armor',
-//   ward = 'ward',
-// }
 
 export type ModifierType = 'Stat' | 'Roll';
 
@@ -44,10 +35,3 @@ export type Stat =
   | 'Permanent insanity';
 
 export type ModifierOperator = 'add' | 'subtract' | 'multiply' | 'divide';
-
-// export enum ModifierOperator {
-//   add = 'add',
-//   subtract = 'subtract',
-//   multiply = 'multiply',
-//   divide = 'divide',
-// }

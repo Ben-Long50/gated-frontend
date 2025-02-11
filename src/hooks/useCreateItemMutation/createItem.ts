@@ -1,14 +1,11 @@
 import handleResponse from '../handleResponse';
 
-const createItem = async (apiUrl: string, formData: object) => {
+const createItem = async (apiUrl: string, formData: FormData) => {
   try {
     const response = await fetch(`${apiUrl}/items`, {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
+      body: formData,
     });
     const data = await handleResponse(response);
     return data;

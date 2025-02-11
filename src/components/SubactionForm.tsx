@@ -9,6 +9,20 @@ import useAttributeTree from '../hooks/useAttributeTree';
 const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
   const attributeTree = useAttributeTree();
 
+  const durationUnits = [
+    'second',
+    'minute',
+    'hour',
+    'day',
+    'week',
+    'month',
+    'year',
+    'turn',
+    'round',
+    'scene',
+    'session',
+  ];
+
   return (
     <form.Field name="actions" mode="array">
       {(field) => (
@@ -40,7 +54,7 @@ const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
                   {(field) => {
                     return (
                       <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
-                        {field.state.value.map((_, j) => {
+                        {field.state.value.map((_, j: number) => {
                           return (
                             <div
                               key={j}
@@ -120,53 +134,117 @@ const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
                     );
                   }}
                 </form.Field>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
-                  <form.Field
-                    name={`actions[${i}].attribute`}
-                    listeners={{
-                      onChange: () => {
-                        form.setFieldValue(`actions[${i}].skill`, '');
-                      },
-                    }}
-                  >
-                    {(field) => (
-                      <SelectField label="Attribute" field={field}>
-                        <option defaultValue=""></option>
-                        {Object.entries(attributeTree.tree).map(
-                          ([attribute, _]) => {
-                            return (
-                              <option key={attribute} value={`${attribute}`}>
-                                {attribute[0].toUpperCase() +
-                                  attribute.slice(1)}
-                              </option>
-                            );
-                          },
-                        )}
-                      </SelectField>
-                    )}
-                  </form.Field>
-                  <form.Field name={`actions[${i}].skill`}>
-                    {(field) => {
-                      return (
-                        <SelectField label="Skill" field={field}>
-                          <option defaultValue=""></option>
-                          {form.state.values.actions[i].attribute &&
-                            Object.entries(
-                              attributeTree.tree[
-                                form.state.values.actions[i].attribute
-                              ].skills,
-                            ).map(([skill, _]) => {
-                              return (
-                                <option key={skill} value={`${skill}`}>
-                                  {skill[0].toUpperCase() + skill.slice(1)}
-                                </option>
-                              );
-                            })}
-                        </SelectField>
-                      );
-                    }}
-                  </form.Field>
-                </div>
+                <form.Field name={`actions[${i}].roll`} mode="array">
+                  {(field) => {
+                    console.log(field);
+
+                    return (
+                      <div className="flex w-full flex-col gap-4 sm:gap-6 lg:gap-8">
+                        {field.state.value.map((_, j: number) => (
+                          <div
+                            key={j}
+                            className="flex w-full gap-4 sm:gap-6 lg:gap-8"
+                          >
+                            <div className="flex w-full flex-col gap-4 sm:flex-row sm:gap-6 lg:gap-8">
+                              <form.Field
+                                name={`actions[${i}].roll[${j}].attribute`}
+                                listeners={{
+                                  onChange: () => {
+                                    form.setFieldValue(
+                                      `actions[${i}].roll[${j}].skill`,
+                                      '',
+                                    );
+                                  },
+                                }}
+                              >
+                                {(field) => (
+                                  <SelectField
+                                    className="w-full"
+                                    label="Attribute"
+                                    field={field}
+                                  >
+                                    <option defaultValue=""></option>
+                                    {Object.entries(attributeTree.tree).map(
+                                      ([attribute, _]) => {
+                                        return (
+                                          <option
+                                            key={attribute}
+                                            value={`${attribute}`}
+                                          >
+                                            {attribute[0].toUpperCase() +
+                                              attribute.slice(1)}
+                                          </option>
+                                        );
+                                      },
+                                    )}
+                                  </SelectField>
+                                )}
+                              </form.Field>
+                              <form.Field
+                                name={`actions[${i}].roll[${j}].skill`}
+                              >
+                                {(field) => {
+                                  return (
+                                    <SelectField
+                                      className="w-full"
+                                      label="Skill"
+                                      field={field}
+                                    >
+                                      <option defaultValue=""></option>
+                                      {form.state.values.actions[i].roll[j]
+                                        .attribute &&
+                                        Object.entries(
+                                          attributeTree.tree[
+                                            form.state.values.actions[i].roll[j]
+                                              .attribute
+                                          ].skills,
+                                        ).map(([skill, _]) => {
+                                          return (
+                                            <option
+                                              key={skill}
+                                              value={`${skill}`}
+                                            >
+                                              {skill[0].toUpperCase() +
+                                                skill.slice(1)}
+                                            </option>
+                                          );
+                                        })}
+                                    </SelectField>
+                                  );
+                                }}
+                              </form.Field>
+                            </div>
+                            <button
+                              className="sm:-ml-2 lg:-ml-4"
+                              onClick={() => field.removeValue(j)}
+                              type="button"
+                            >
+                              <Icon
+                                className="text-tertiary"
+                                path={mdiClose}
+                                size={1}
+                              />
+                            </button>
+                          </div>
+                        ))}
+                        <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
+                          <button
+                            className="text-accent self-end hover:underline"
+                            onClick={() =>
+                              field.pushValue({
+                                attribute: '',
+                                skill: '',
+                              })
+                            }
+                            type="button"
+                          >
+                            Add roll
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  }}
+                </form.Field>
                 <form.Field name={`actions[${i}].actionType`}>
                   {(field) => (
                     <SelectField label="Action type" field={field}>
@@ -243,6 +321,40 @@ const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
                     );
                   }}
                 </form.Field>
+                <div className="flex w-full items-center gap-4 lg:gap-8">
+                  <form.Field name={`actions[${i}].duration.unit`}>
+                    {(field) => (
+                      <SelectField
+                        className="w-full"
+                        label="Effect duration"
+                        field={field}
+                      >
+                        <option value=""></option>
+                        {durationUnits.map((unit) => (
+                          <option key={unit} value={unit}>
+                            {unit[0].toUpperCase() + unit.slice(1)}
+                          </option>
+                        ))}
+                      </SelectField>
+                    )}
+                  </form.Field>
+                  <form.Field
+                    name={`actions[${i}].duration.value`}
+                    validators={{
+                      onChange: ({ value }) =>
+                        value && value <= 0 ? 'Minimum value is 1' : undefined,
+                    }}
+                  >
+                    {(field) => (
+                      <InputField
+                        className="w-full max-w-28"
+                        type="number"
+                        label="Dur. value"
+                        field={field}
+                      />
+                    )}
+                  </form.Field>
+                </div>
                 <form.Field
                   name={`actions[${i}].description`}
                   validators={{
@@ -274,8 +386,14 @@ const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
                     stat: string;
                     value: number;
                   }[],
-                  attribute: '',
-                  skill: '',
+                  roll: [] as {
+                    attribute: string;
+                    skill: string;
+                  }[],
+                  // duration: { units: '', value: null } as {
+                  //   units: string;
+                  //   value: number | null;
+                  // },
                   actionType: '',
                   actionSubtypes: ['unique'] as string[],
                   description: '',

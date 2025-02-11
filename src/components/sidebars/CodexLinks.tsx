@@ -276,12 +276,12 @@ const CodexLinks = ({
         >
           <LinkSidebar
             title="Gadgets"
-            path="codex/items/chemicalTherapy"
+            path="codex/items/reusables/gadgets"
             setSidebarVisibility={setSidebarVisibility}
           />
           <LinkSidebar
             title="Anomalies"
-            path="codex/items/chemicalAssistance"
+            path="codex/items/reusables/anomalies"
             setSidebarVisibility={setSidebarVisibility}
           />
         </LinkSublistSidebar>
@@ -291,17 +291,17 @@ const CodexLinks = ({
         >
           <LinkSidebar
             title="Chemical therapy"
-            path="codex/consumables/chemicalTherapy"
+            path="codex/items/consumables/chemicalTherapy"
             setSidebarVisibility={setSidebarVisibility}
           />
           <LinkSidebar
             title="Chemical assistance"
-            path="codex/consumables/chemicalAssistance"
+            path="codex/items/consumables/chemicalAssistance"
             setSidebarVisibility={setSidebarVisibility}
           />
           <LinkSidebar
             title="Misc. consumables"
-            path="codex/consumables/misc"
+            path="codex/items/consumables/misc"
             setSidebarVisibility={setSidebarVisibility}
           />
         </LinkSublistSidebar>

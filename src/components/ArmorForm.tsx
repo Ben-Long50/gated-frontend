@@ -19,6 +19,7 @@ import useDeleteArmorMutation from '../hooks/useDeleteArmorMutation/useDeleteArm
 import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
 import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
+import SubactionForm from './SubactionForm';
 
 const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -89,6 +90,20 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
         power: armor?.stats.power || '',
         weight: armor?.stats.weight || '',
       },
+      actions:
+        armor?.actions ||
+        ([] as {
+          name: string;
+          costs: { stat: string; value: number }[];
+          roll: { attribute: string; skill: string }[];
+          actionType: string;
+          actionSubtypes: string[];
+          duration: {
+            unit: string;
+            value: number;
+          };
+          description: string;
+        }[]),
       price: armor?.price || null,
       keywords:
         armorKeywordData || ([] as { keywordId: number; value?: number }[]),
@@ -332,6 +347,8 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
           </div>
         </div>
         <hr className="border-yellow-300 border-opacity-50" />
+        <SubactionForm form={armorForm} />
+        <hr className="border-yellow-300 border-opacity-50" />
         <h2>Armor keywords</h2>
         <searchForm.Field name="query">
           {(field) => (
@@ -344,6 +361,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
             />
           )}
         </searchForm.Field>
+
         <armorForm.Field name="keywords">
           {(field) => (
             <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto pr-2 md:grid md:grid-cols-2">

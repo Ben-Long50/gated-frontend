@@ -11,7 +11,8 @@ import useWeapons from '../hooks/useWeapons';
 const VehicleWeapons = () => {
   const { accentPrimary } = useContext(ThemeContext);
 
-  const weapons = useWeapons(['Vehicle']);
+  const weapons = useWeapons({ includedKeywords: ['Vehicle'] });
+  console.log(weapons);
 
   const searchForm = useForm({
     defaultValues: {

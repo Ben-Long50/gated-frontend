@@ -4,15 +4,18 @@ import createItem from './createItem';
 const useCreateItemMutation = (
   apiUrl: string,
   setFormMessage: (message: string) => void,
-  itemId?: string,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData: object) => {
-      return createItem(apiUrl, formData, itemId);
+    mutationFn: (formData: FormData) => {
+      return createItem(apiUrl, formData);
     },
     onSuccess: (data) => {
       setFormMessage(data.message);
+      queryClient.invalidateQueries({
+        queryKey: ['activeCharacter'],
+        exact: false,
+      });
       queryClient.invalidateQueries({
         queryKey: ['item'],
         exact: false,

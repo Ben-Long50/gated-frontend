@@ -1,6 +1,10 @@
-import { forwardRef, useEffect } from 'react';
+import { forwardRef, useContext, useEffect } from 'react';
+import { motion } from 'motion/react';
+import { LayoutContext } from '../contexts/LayoutContext';
 
 const CloudinaryImageSmall = forwardRef((props, ref) => {
+  const { layoutSize } = useContext(LayoutContext);
+
   let responsiveUrl;
 
   if (props.url) {
@@ -22,12 +26,22 @@ const CloudinaryImageSmall = forwardRef((props, ref) => {
   }, []);
 
   return (
-    <div
-      className={`${props.className} image-container timing my-auto flex aspect-square shrink-0 justify-center overflow-hidden clip-4`}
+    <motion.div
+      className={`${props.className} mb-auto aspect-square w-full shrink-0 overflow-hidden`}
+      initial={{ width: 100 }}
+      animate={
+        layoutSize !== 'small' && layoutSize !== 'xsmall'
+          ? {
+              width: props.detailsOpen ? 200 : 100,
+            }
+          : {}
+      }
+      transition={{ duration: 0.2 }}
     >
-      <img
+      <motion.img
+        transition={{ duration: 0.2 }}
         ref={ref}
-        className="cld-responsive text-secondary object-cover text-xl"
+        className="cld-responsive text-secondary w-full object-cover text-xl"
         width={props.width}
         height={props.height}
         data-src={responsiveUrl}
@@ -35,7 +49,7 @@ const CloudinaryImageSmall = forwardRef((props, ref) => {
         alt={props.alt}
         onClick={props.onClick}
       />
-    </div>
+    </motion.div>
   );
 });
 

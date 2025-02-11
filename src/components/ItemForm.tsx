@@ -1,5 +1,5 @@
 import { useForm } from '@tanstack/react-form';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
@@ -14,17 +14,32 @@ import ModifierField from './ModifierField';
 import useDeleteItemMutation from '../hooks/useDeleteItemMutation/useDeleteItemMutation';
 import useCreateItemMutation from '../hooks/useCreateItemMutation/useCreateItemMutation';
 import useItemQuery from '../hooks/useItemQuery/useItemQuery';
+import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
+import Icon from '@mdi/react';
+import ThemeContainer from './ThemeContainer';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
+  const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { itemId } = useParams();
 
   const { data: item } = useItemQuery(apiUrl, itemId);
 
+  const [imagePreview, setImagePreview] = useState(
+    item?.picture?.imageUrl || '',
+  );
+
   const createItem = useCreateItemMutation(apiUrl, setFormMessage);
   const deleteItem = useDeleteItemMutation(apiUrl, setFormMessage, itemId);
+
+  useEffect(() => {
+    if (item) {
+      setImagePreview(item.picture?.imageUrl);
+    } else setImagePreview('');
+  }, [item, itemId]);
 
   const handleDelete = () => {
     if (deleteMode) {
@@ -38,43 +53,47 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
     itemForm.reset();
   };
 
-  const durationUnits = [
-    'second',
-    'minute',
-    'hour',
-    'day',
-    'turn',
-    'round',
-    'scene',
-    'session',
-  ];
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0]; // Get the selected file
+
+    if (selectedFile) {
+      itemForm.setFieldValue('picture', selectedFile);
+
+      // Create a URL for the selected file to preview
+      const fileUrl = URL.createObjectURL(selectedFile);
+      setImagePreview(fileUrl);
+    }
+  };
 
   const itemForm = useForm({
     defaultValues: {
+      id: Number(itemId) || 0,
       name: item?.name || '',
       rarity: item?.rarity || '',
       grade: item?.grade || 1,
+      picture: item?.picture || '',
       category: item?.category || '',
+      subcategory: item?.subcategory || '',
       itemType: item?.itemType || '',
       description: item?.description || '',
       stats: {
-        stacks: item?.stats?.stacks || '',
+        currentStacks: item?.stats?.currentStacks || '',
+        maxStacks: item?.stats?.maxStacks || '',
         power: item?.stats?.power || '',
         weight: item?.stats?.weight || '',
-      },
-      duration: {
-        unit: item?.duration?.unit || '',
-        value: item?.duration?.value || '',
       },
       actions:
         item?.actions ||
         ([] as {
           name: string;
           costs: { stat: string; value: number }[];
-          attribute: string;
-          skill: string;
+          roll: { attribute: string; skill: string }[];
           actionType: string;
           actionSubtypes: string[];
+          duration: {
+            unit: string;
+            value: number;
+          };
           description: string;
         }[]),
       modifiers: item?.modifiers || ([] as Modifier[]),
@@ -86,6 +105,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
       );
 
       value.stats = { ...item?.stats, ...filteredStats };
+      console.log(value);
 
       const formData = new FormData();
 
@@ -96,8 +116,8 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      formData.append('itemId', JSON.stringify(itemId || 0));
-      // await createItem.mutate(formData);
+
+      await createItem.mutate(formData);
     },
   });
 
@@ -203,6 +223,44 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
               </SelectField>
             )}
           </itemForm.Field>
+          <itemForm.Subscribe selector={() => itemForm.state.values.category}>
+            {(category) => (
+              <itemForm.Field
+                name="subcategory"
+                validators={{
+                  onSubmit: ({ value }) =>
+                    !value ? 'Select a subcategory' : undefined,
+                }}
+              >
+                {(field) => (
+                  <SelectField
+                    className="w-full"
+                    label="Item subcategory"
+                    field={field}
+                  >
+                    <option value=""></option>
+                    {category === 'reusable' ? (
+                      <>
+                        <option value="anomaly">Anomaly</option>
+                        <option value="gadget">Gadget</option>
+                      </>
+                    ) : (
+                      <>
+                        <option value="chemicalTherapy">
+                          Chemical therapy
+                        </option>
+                        <option value="chemicalAssistance">
+                          Chemical assistance
+                        </option>
+
+                        <option value="misc">Misc.</option>
+                      </>
+                    )}
+                  </SelectField>
+                )}
+              </itemForm.Field>
+            )}
+          </itemForm.Subscribe>
           <itemForm.Field
             name="itemType"
             validators={{
@@ -220,23 +278,71 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
             )}
           </itemForm.Field>
         </div>
-        <itemForm.Field
-          name="description"
-          validators={{
-            onChange: ({ value }) =>
-              value.length < 2
-                ? 'Item description must be at least 2 characters long'
-                : undefined,
-          }}
-        >
-          {(field) => (
-            <TextAreaField
-              className="h-48 w-full sm:h-full"
-              label="Item description"
-              field={field}
-            />
-          )}
-        </itemForm.Field>
+        <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 sm:grid-rows-1">
+          <ThemeContainer
+            className="mx-auto w-full max-w-sm"
+            chamfer="24"
+            borderColor={accentPrimary}
+          >
+            {!imagePreview ? (
+              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center clip-6">
+                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
+                  <Icon
+                    className="text-tertiary"
+                    path={mdiImagePlus}
+                    size={3}
+                  />
+                  <p className="text-tertiary font-semibold">
+                    Upload item picture
+                  </p>
+                  <p className="text-tertiary">PNG, JPG, JPEG</p>
+                </div>
+                <input
+                  id="file"
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </label>
+            ) : (
+              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
+                <img
+                  className="fade-in-bottom"
+                  src={imagePreview}
+                  alt="Preview"
+                />
+                <button
+                  className="text-secondary absolute right-2 top-2"
+                  onClick={() => {
+                    itemForm.setFieldValue('picture', '');
+                    setImagePreview('');
+                  }}
+                >
+                  <div className="rounded bg-zinc-950">
+                    <Icon path={mdiCloseBox} size={1.5} />
+                  </div>
+                </button>
+              </div>
+            )}
+          </ThemeContainer>
+          <itemForm.Field
+            name="description"
+            validators={{
+              onChange: ({ value }) =>
+                value.length < 2
+                  ? 'Item description must be at least 2 characters long'
+                  : undefined,
+            }}
+          >
+            {(field) => (
+              <TextAreaField
+                className="h-40 w-full sm:h-full"
+                label="Item description"
+                field={field}
+              />
+            )}
+          </itemForm.Field>
+        </div>
         <div>
           <itemForm.Subscribe selector={() => itemForm.state.values.category}>
             {(category) => (
@@ -256,13 +362,17 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
                     <InputField
                       className="grow"
                       type="number"
-                      label="Weight"
+                      label={
+                        category === 'consumable'
+                          ? 'Weight per stack'
+                          : 'Weight'
+                      }
                       field={field}
                     />
                   )}
                 </itemForm.Field>
                 {category === 'consumable' && (
-                  <itemForm.Field name="stats.stacks">
+                  <itemForm.Field name="stats.currentStacks">
                     {(field) => (
                       <InputField
                         className="grow"
@@ -273,50 +383,27 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
                     )}
                   </itemForm.Field>
                 )}
+                {category === 'consumable' && (
+                  <itemForm.Field name="stats.maxStacks">
+                    {(field) => (
+                      <InputField
+                        className="grow"
+                        type="number"
+                        label="Max. stacks"
+                        field={field}
+                      />
+                    )}
+                  </itemForm.Field>
+                )}
               </div>
             )}
           </itemForm.Subscribe>
-        </div>
-        <div className="flex w-full items-center gap-4 lg:gap-8">
-          <itemForm.Field name="duration.unit">
-            {(field) => (
-              <SelectField
-                className="w-full"
-                label="Effect duration"
-                field={field}
-              >
-                <option value=""></option>
-                {durationUnits.map((unit) => (
-                  <option key={unit} value={unit}>
-                    {unit[0].toUpperCase() + unit.slice(1)}
-                  </option>
-                ))}
-              </SelectField>
-            )}
-          </itemForm.Field>
-          <itemForm.Field
-            name="duration.value"
-            validators={{
-              onChange: ({ value }) =>
-                value && value <= 0 ? 'Minimum value is 1' : undefined,
-            }}
-          >
-            {(field) => (
-              <InputField
-                className="w-full max-w-28"
-                type="number"
-                label="Dur. value"
-                field={field}
-              />
-            )}
-          </itemForm.Field>
         </div>
         <hr className="border-yellow-300 border-opacity-50" />
         <SubactionForm form={itemForm} />
         <hr className="border-yellow-300 border-opacity-50" />
         <ModifierField form={itemForm} />
         <hr className="border-yellow-300 border-opacity-50" />
-
         <BtnRect type="submit" className="group w-full">
           {createItem.isPending ? (
             <Loading

@@ -4,7 +4,6 @@ import InputField from './InputField';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import useActions from '../hooks/useActions';
-import { useForm } from '@tanstack/react-form';
 
 const ModifierField = ({ form }) => {
   const types: ModifierType[] = ['Roll', 'Stat'];
@@ -32,151 +31,208 @@ const ModifierField = ({ form }) => {
     'Permanent insanity',
   ];
 
+  const durationUnits = [
+    'second',
+    'minute',
+    'hour',
+    'day',
+    'week',
+    'month',
+    'year',
+    'turn',
+    'round',
+    'scene',
+    'session',
+  ];
+
   return (
     <form.Field name="modifiers" mode="array">
       {(field) => (
         <div className="flex w-full flex-col gap-4 lg:gap-8">
           {field.state.value.map((_, i: number) => {
             return (
-              <div key={i} className="flex flex-col gap-4 sm:flex-row lg:gap-6">
-                <form.Field name={`modifiers[${i}].type`}>
-                  {(subField) => {
-                    return (
-                      <SelectField
-                        className="grow"
-                        label="Modifier Type"
-                        field={subField}
-                      >
-                        <option value=""></option>
-                        {types.map((type) => {
-                          return (
-                            <option key={type} value={type}>
-                              {type}
+              <div key={i} className="flex w-full items-center gap-4 lg:gap-8">
+                <div className="flex w-full flex-col gap-4 lg:gap-8">
+                  <div className="flex w-full flex-col gap-4 sm:flex-row lg:gap-8">
+                    <form.Field name={`modifiers[${i}].type`}>
+                      {(subField) => {
+                        return (
+                          <SelectField
+                            className="grow"
+                            label="Modifier Type"
+                            field={subField}
+                          >
+                            <option value=""></option>
+                            {types.map((type) => {
+                              return (
+                                <option key={type} value={type}>
+                                  {type}
+                                </option>
+                              );
+                            })}
+                          </SelectField>
+                        );
+                      }}
+                    </form.Field>
+                    <form.Subscribe
+                      selector={(state) => state.values.modifiers[i].type}
+                    >
+                      {(modifierType: string) => (
+                        <>
+                          {modifierType === 'Roll' && (
+                            <>
+                              <form.Field name={`modifiers[${i}].action`}>
+                                {(subField) => {
+                                  return (
+                                    <SelectField
+                                      className="grow"
+                                      label="Action"
+                                      field={subField}
+                                    >
+                                      <option defaultValue=""></option>
+                                      {filteredActions.map((action) => (
+                                        <option
+                                          key={action.id}
+                                          value={action.id}
+                                        >
+                                          {action.name}
+                                        </option>
+                                      ))}
+                                    </SelectField>
+                                  );
+                                }}
+                              </form.Field>
+                              <form.Field name={`modifiers[${i}].operator`}>
+                                {(subField) => {
+                                  return (
+                                    <SelectField
+                                      className="grow"
+                                      label="Operator"
+                                      field={subField}
+                                    >
+                                      <option defaultValue=""></option>
+                                      {Object.values(operators).map((item) => {
+                                        return (
+                                          <option key={item} value={item}>
+                                            {item}
+                                          </option>
+                                        );
+                                      })}
+                                    </SelectField>
+                                  );
+                                }}
+                              </form.Field>
+                              <form.Field name={`modifiers[${i}].dice`}>
+                                {(subField) => {
+                                  return (
+                                    <InputField
+                                      className="max-w-28"
+                                      type="number"
+                                      label="Dice"
+                                      field={subField}
+                                    />
+                                  );
+                                }}
+                              </form.Field>
+                            </>
+                          )}
+                          {modifierType === 'Stat' && (
+                            <>
+                              <form.Field name={`modifiers[${i}].stat`}>
+                                {(subField) => {
+                                  return (
+                                    <SelectField
+                                      className="grow"
+                                      label="Stat"
+                                      field={subField}
+                                    >
+                                      <option defaultValue=""></option>
+                                      {stats.map((item) => {
+                                        return (
+                                          <option key={item} value={item}>
+                                            {item}
+                                          </option>
+                                        );
+                                      })}
+                                    </SelectField>
+                                  );
+                                }}
+                              </form.Field>
+                              <form.Field name={`modifiers[${i}].operator`}>
+                                {(subField) => {
+                                  return (
+                                    <SelectField
+                                      className="grow"
+                                      label="Operator"
+                                      field={subField}
+                                    >
+                                      <option defaultValue=""></option>
+                                      {Object.values(operators).map((item) => {
+                                        return (
+                                          <option key={item} value={item}>
+                                            {item}
+                                          </option>
+                                        );
+                                      })}
+                                    </SelectField>
+                                  );
+                                }}
+                              </form.Field>
+                              <form.Field name={`modifiers[${i}].value`}>
+                                {(subField) => {
+                                  return (
+                                    <InputField
+                                      className="max-w-28"
+                                      type="number"
+                                      label="Value"
+                                      field={subField}
+                                    />
+                                  );
+                                }}
+                              </form.Field>
+                            </>
+                          )}
+                        </>
+                      )}
+                    </form.Subscribe>
+                  </div>
+                  <div className="flex w-full items-center gap-4 lg:gap-8">
+                    <form.Field name={`modifiers[${i}].duration.unit`}>
+                      {(field) => (
+                        <SelectField
+                          className="w-full"
+                          label="Modifier duration"
+                          field={field}
+                        >
+                          <option value=""></option>
+                          {durationUnits.map((unit) => (
+                            <option key={unit} value={unit}>
+                              {unit[0].toUpperCase() + unit.slice(1)}
                             </option>
-                          );
-                        })}
-                      </SelectField>
-                    );
-                  }}
-                </form.Field>
-                <form.Subscribe
-                  selector={(state) => state.values.modifiers[i].type}
-                >
-                  {(modifierType: string) => (
-                    <>
-                      {modifierType === 'Roll' && (
-                        <>
-                          <form.Field name={`modifiers[${i}].action`}>
-                            {(subField) => {
-                              return (
-                                <SelectField
-                                  className="grow"
-                                  label="Action"
-                                  field={subField}
-                                >
-                                  <option defaultValue=""></option>
-                                  {filteredActions.map((action) => (
-                                    <option key={action.id} value={action.id}>
-                                      {action.name}
-                                    </option>
-                                  ))}
-                                </SelectField>
-                              );
-                            }}
-                          </form.Field>
-                          <form.Field name={`modifiers[${i}].operator`}>
-                            {(subField) => {
-                              return (
-                                <SelectField
-                                  className="grow"
-                                  label="Operator"
-                                  field={subField}
-                                >
-                                  <option defaultValue=""></option>
-                                  {Object.values(operators).map((item) => {
-                                    return (
-                                      <option key={item} value={item}>
-                                        {item}
-                                      </option>
-                                    );
-                                  })}
-                                </SelectField>
-                              );
-                            }}
-                          </form.Field>
-                          <form.Field name={`modifiers[${i}].dice`}>
-                            {(subField) => {
-                              return (
-                                <InputField
-                                  className="max-w-28"
-                                  type="number"
-                                  label="Dice"
-                                  field={subField}
-                                />
-                              );
-                            }}
-                          </form.Field>
-                        </>
+                          ))}
+                        </SelectField>
                       )}
-                      {modifierType === 'Stat' && (
-                        <>
-                          <form.Field name={`modifiers[${i}].stat`}>
-                            {(subField) => {
-                              return (
-                                <SelectField
-                                  className="grow"
-                                  label="Stat"
-                                  field={subField}
-                                >
-                                  <option defaultValue=""></option>
-                                  {stats.map((item) => {
-                                    return (
-                                      <option key={item} value={item}>
-                                        {item}
-                                      </option>
-                                    );
-                                  })}
-                                </SelectField>
-                              );
-                            }}
-                          </form.Field>
-                          <form.Field name={`modifiers[${i}].operator`}>
-                            {(subField) => {
-                              return (
-                                <SelectField
-                                  className="grow"
-                                  label="Operator"
-                                  field={subField}
-                                >
-                                  <option defaultValue=""></option>
-                                  {Object.values(operators).map((item) => {
-                                    return (
-                                      <option key={item} value={item}>
-                                        {item}
-                                      </option>
-                                    );
-                                  })}
-                                </SelectField>
-                              );
-                            }}
-                          </form.Field>
-                          <form.Field name={`modifiers[${i}].value`}>
-                            {(subField) => {
-                              return (
-                                <InputField
-                                  className="max-w-28"
-                                  type="number"
-                                  label="Value"
-                                  field={subField}
-                                />
-                              );
-                            }}
-                          </form.Field>
-                        </>
+                    </form.Field>
+                    <form.Field
+                      name={`modifiers[${i}].duration.value`}
+                      validators={{
+                        onChange: ({ value }) =>
+                          value && value <= 0
+                            ? 'Minimum value is 1'
+                            : undefined,
+                      }}
+                    >
+                      {(field) => (
+                        <InputField
+                          className="w-full max-w-28"
+                          type="number"
+                          label="Dur. value"
+                          field={field}
+                        />
                       )}
-                    </>
-                  )}
-                </form.Subscribe>
+                    </form.Field>
+                  </div>
+                </div>
                 <button
                   className="sm:-ml-2 lg:-ml-4"
                   onClick={() => field.removeValue(i)}

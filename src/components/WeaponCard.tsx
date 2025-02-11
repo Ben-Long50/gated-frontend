@@ -30,30 +30,38 @@ const WeaponControls = ({
 
   return (
     <div className="col-span-2 flex w-full flex-col items-center justify-start gap-2 sm:gap-4">
-      <BtnControl
-        title="Fire"
-        icon={<DamageIcon className="size-8 group-hover:fill-yellow-300" />}
-        mutation={
-          stats.currentAmmoCount &&
-          stats.currentAmmoCount > 0 &&
-          editCurrentAmmo
-        }
-        value={-1}
-      />
-      <BtnControl
-        title="Reload"
-        icon={
-          <MagCapacityIcon className="size-8 group-hover:fill-yellow-300" />
-        }
-        mutation={
-          stats.currentMagCount && stats.currentMagCount > 0 && reloadAmmo
-        }
-      />
-      <BtnControl
-        title="Refresh"
-        icon={<SpareAmmoIcon className="size-8 group-hover:fill-yellow-300" />}
-        mutation={refreshAmmo}
-      />
+      {stats.currentAmmoCount && stats.currentAmmoCount > 0 ? (
+        <BtnControl
+          title="Fire"
+          icon={<DamageIcon className="size-8 group-hover:fill-yellow-300" />}
+          mutation={
+            stats.currentAmmoCount &&
+            stats.currentAmmoCount > 0 &&
+            editCurrentAmmo
+          }
+          value={-1}
+        />
+      ) : null}
+      {stats.currentMagCount && stats.currentMagCount > 0 ? (
+        <BtnControl
+          title="Reload"
+          icon={
+            <MagCapacityIcon className="size-8 group-hover:fill-yellow-300" />
+          }
+          mutation={
+            stats.currentMagCount && stats.currentMagCount > 0 && reloadAmmo
+          }
+        />
+      ) : null}
+      {stats.magCapacity && (
+        <BtnControl
+          title="Refresh"
+          icon={
+            <SpareAmmoIcon className="size-8 group-hover:fill-yellow-300" />
+          }
+          mutation={refreshAmmo}
+        />
+      )}
     </div>
   );
 };
@@ -70,11 +78,7 @@ const WeaponCard = ({
       item={weapon}
       category="weapons"
       mode={mode}
-      controls={
-        weapon.stats?.magCapacity && (
-          <WeaponControls stats={weapon.stats} weaponId={weapon.id} />
-        )
-      }
+      controls={<WeaponControls stats={weapon.stats} weaponId={weapon.id} />}
     >
       {weapon.stats.damage && (
         <StatCard label="DMG" stat={weapon.stats.damage}>

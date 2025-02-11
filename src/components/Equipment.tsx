@@ -24,7 +24,13 @@ import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import Icon from '@mdi/react';
-import { mdiCheckCircle, mdiCircle, mdiCircleOutline, mdiClose } from '@mdi/js';
+import {
+  mdiCheckCircle,
+  mdiCircle,
+  mdiCircleOutline,
+  mdiClose,
+  mdiTriangleDown,
+} from '@mdi/js';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 import clsx from 'clsx';
@@ -38,6 +44,9 @@ import WeaponCard from './WeaponCard';
 import ArmorCard from './ArmorCard';
 import CyberneticCard from './CyberneticCard';
 import useEquipment from '../hooks/useEquipment';
+import { Item } from 'src/types/item';
+import useItems from '../hooks/useItems';
+import MiscItemCard from './MiscItemCard';
 
 const Equipment = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -81,10 +90,12 @@ const Equipment = ({ mode }: { mode?: string }) => {
   const { filteredCybernetics: cybernetics } = useCybernetics({
     itemList: character?.characterInventory?.cybernetics,
   });
+  const { filteredItems: items } = useItems({
+    itemList: character?.characterInventory?.items,
+  });
 
-  const { equippedWeapons, equippedArmor, equippedCybernetics } = useEquipment(
-    character?.characterInventory,
-  );
+  const { equippedWeapons, equippedArmor, equippedCybernetics, equippedItems } =
+    useEquipment(character?.characterInventory);
 
   const {
     stats,
@@ -114,13 +125,26 @@ const Equipment = ({ mode }: { mode?: string }) => {
         return equippedCybernetics.filter(
           (cybernetic: CyberneticWithKeywords) => cybernetic.id === active.id,
         )[0];
+      case 'item':
+        return equippedItems.filter((item: Item) => item.id === active.id)[0];
       default:
         break;
     }
-  }, [active, equippedWeapons, equippedArmor, equippedCybernetics]);
+  }, [
+    active,
+    equippedWeapons,
+    equippedArmor,
+    equippedCybernetics,
+    equippedItems,
+  ]);
 
   const actionList =
-    equippedCybernetics
+    [
+      ...equippedWeapons,
+      ...equippedArmor,
+      ...equippedCybernetics,
+      ...equippedItems,
+    ]
       ?.map((cybernetic: CyberneticWithKeywords) => cybernetic.actions)
       .flat() || [];
 
@@ -128,6 +152,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
     weapons: { list: weapons, category: 'weapon' },
     armor: { list: armor, category: 'armor' },
     cybernetics: { list: cybernetics, category: 'cybernetic' },
+    items: { list: items, category: 'item' },
   };
 
   const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
@@ -198,13 +223,15 @@ const Equipment = ({ mode }: { mode?: string }) => {
           <WeaponCard key={active.id} weapon={activeItem} mode="equipment" />
         ) : active.category === 'armor' ? (
           <ArmorCard key={active.id} armor={activeItem} mode="equipment" />
+        ) : active.category === 'cybernetic' ? (
+          <CyberneticCard
+            key={active.id}
+            cybernetic={activeItem}
+            mode="equipment"
+          />
         ) : (
-          active.category === 'cybernetic' && (
-            <CyberneticCard
-              key={active.id}
-              cybernetic={activeItem}
-              mode="equipment"
-            />
+          active.category === 'item' && (
+            <MiscItemCard key={active.id} item={activeItem} mode="equipment" />
           )
         ))}
       <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-[2fr_1fr] xl:grid-cols-[2.5fr_1fr]">
@@ -212,6 +239,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
           weapons={equippedWeapons}
           armor={equippedArmor}
           cybernetics={equippedCybernetics}
+          items={equippedItems}
           active={active}
           setActive={setActive}
         >
@@ -225,23 +253,37 @@ const Equipment = ({ mode }: { mode?: string }) => {
               />
             ) : active.category === 'armor' ? (
               <ArmorCard key={active.id} armor={activeItem} mode="equipment" />
+            ) : active.category === 'cybernetic' ? (
+              <CyberneticCard
+                key={active.id}
+                cybernetic={activeItem}
+                mode="equipment"
+              />
             ) : (
-              active.category === 'cybernetic' && (
-                <CyberneticCard
+              active.category === 'item' && (
+                <MiscItemCard
                   key={active.id}
-                  cybernetic={activeItem}
+                  item={activeItem}
                   mode="equipment"
                 />
               )
             ))}
         </EquipmentList>
         <ThemeContainer
-          className="mb-auto rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
+          className="mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
           chamfer="24"
           borderColor={accentPrimary}
         >
           <div className="bg-primary flex h-full flex-col gap-4 p-4 pr-6 clip-6">
-            <h3 className="pl-4">Stats</h3>
+            <div className="flex items-center gap-4">
+              <Icon
+                className="text-primary"
+                path={mdiTriangleDown}
+                size={0.35}
+                rotate={-90}
+              />
+              <h3>Stats</h3>
+            </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
                 <SpeedIcon className="size-8" />
@@ -355,7 +397,15 @@ const Equipment = ({ mode }: { mode?: string }) => {
             {Object.keys(rollBonuses).length > 0 && (
               <>
                 <hr className="border border-yellow-300 border-opacity-50" />
-                <h3 className="pl-4">Roll Bonuses</h3>
+                <div className="flex items-center gap-4">
+                  <Icon
+                    className="text-primary"
+                    path={mdiTriangleDown}
+                    size={0.35}
+                    rotate={-90}
+                  />
+                  <h3>Roll Bonuses</h3>
+                </div>
                 {Object.entries(rollBonuses).map(
                   ([action, bonus]: [string, number], index: number) => (
                     <div
@@ -377,7 +427,15 @@ const Equipment = ({ mode }: { mode?: string }) => {
             {actionList.length > 0 && (
               <>
                 <hr className="border border-yellow-300 border-opacity-50" />
-                <h3 className="pl-4">Unique Actions</h3>
+                <div className="flex items-center gap-4">
+                  <Icon
+                    className="text-primary"
+                    path={mdiTriangleDown}
+                    size={0.35}
+                    rotate={-90}
+                  />
+                  <h3>Unique Actions</h3>
+                </div>
                 {actionList.map((action: Action) => (
                   <ActionCard key={action?.id} action={action} />
                 ))}
@@ -386,95 +444,109 @@ const Equipment = ({ mode }: { mode?: string }) => {
           </div>
         </ThemeContainer>
       </div>
-
-      <ThemeContainer
-        className="w-full rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-        chamfer="24"
-        borderColor={accentPrimary}
-      >
-        <div className="bg-primary flex w-full flex-col gap-8 p-4 clip-6">
-          <div className="flex items-center gap-4">
-            <h2 className="pl-4">Inventory</h2>
-            <p className="text-tertiary italic">(Double click to equip)</p>
-          </div>
+      <div className="flex w-full flex-col gap-8">
+        <div className="flex items-center gap-4">
+          <Icon
+            className="text-primary"
+            path={mdiTriangleDown}
+            size={0.5}
+            rotate={-90}
+          />
+          <h2>Inventory</h2>
+          <p className="text-tertiary italic">(Double click to equip)</p>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-8">
           {Object.entries(itemObject).map(([key, value]) => {
             return (
-              <ThemeContainer
-                key={key}
-                chamfer="16"
-                borderColor={accentPrimary}
-              >
-                <p className="text-accent absolute -top-3 left-5 z-20 text-base">
-                  {key[0].toUpperCase() + key.slice(1)}
-                </p>
-                <div className="bg-primary flex w-full flex-col gap-2 p-4 pt-6 clip-4">
-                  <div className="grid w-full grid-cols-[repeat(auto-fill,100px)] gap-2">
-                    {value.list.map(
-                      (
-                        item:
-                          | WeaponWithKeywords
-                          | ArmorWithKeywords
-                          | CyberneticWithKeywords,
-                      ) => {
-                        const rarityColors = {
-                          common: 'bg-gray-400',
-                          uncommon: 'bg-green-500',
-                          rare: 'bg-red-600',
-                          blackMarket: 'bg-purple-700',
-                          artifact: 'bg-amber-400',
-                        };
+              value.list.length > 0 && (
+                <ThemeContainer
+                  key={key}
+                  className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-zinc-950"
+                  chamfer="24"
+                  borderColor={accentPrimary}
+                >
+                  <div className="bg-primary flex w-full flex-col gap-2 p-4 clip-6">
+                    <div className="flex items-center gap-4">
+                      <Icon
+                        className="text-primary"
+                        path={mdiTriangleDown}
+                        size={0.35}
+                        rotate={-90}
+                      />
+                      <h3>{key[0].toUpperCase() + key.slice(1)}</h3>
+                    </div>
+                    <div className="grid w-full grid-cols-4 gap-2 sm:grid-cols-[repeat(auto-fill,100px)]">
+                      {value.list.map(
+                        (
+                          item:
+                            | WeaponWithKeywords
+                            | ArmorWithKeywords
+                            | CyberneticWithKeywords
+                            | Item,
+                        ) => {
+                          const rarityColors = {
+                            common: 'bg-gray-400',
+                            uncommon: 'bg-green-500',
+                            rare: 'bg-red-600',
+                            blackMarket: 'bg-purple-700',
+                            artifact: 'bg-amber-400',
+                          };
 
-                        return (
-                          <div
-                            className={clsx(
-                              rarityColors[item.rarity] || 'bg-tertiary',
-                              'group relative cursor-pointer select-none overflow-hidden rounded-md pl-1',
-                            )}
-                            key={item.id}
-                            onDoubleClick={() => {
-                              if (characterId) {
-                                toggleEquipment.mutate({
-                                  characterId: character?.id,
-                                  inventoryId: character?.characterInventory.id,
-                                  category: value.category,
-                                  itemId: item.id,
-                                });
-                              }
-                            }}
-                          >
-                            {item.equipped === true && (
-                              <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
-                                <Icon
-                                  className="text-tertiary group-hover:text-secondary"
-                                  path={mdiCheckCircle}
-                                  size={3}
+                          return (
+                            <div
+                              className={clsx(
+                                rarityColors[item.rarity] || 'bg-tertiary',
+                                'group relative cursor-pointer select-none overflow-hidden rounded-md pl-1',
+                              )}
+                              key={item.id}
+                              onDoubleClick={() => {
+                                if (characterId) {
+                                  console.log(value.category);
+
+                                  toggleEquipment.mutate({
+                                    characterId: character?.id,
+                                    inventoryId:
+                                      character?.characterInventory.id,
+                                    category: value.category,
+                                    itemId: item.id,
+                                  });
+                                }
+                              }}
+                            >
+                              {item.equipped === true && (
+                                <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
+                                  <Icon
+                                    className="text-tertiary group-hover:text-secondary"
+                                    path={mdiCheckCircle}
+                                    size={3}
+                                  />
+                                </div>
+                              )}
+                              {item.picture?.imageUrl ? (
+                                <img
+                                  className="hover:opacity-80"
+                                  src={item.picture?.imageUrl}
+                                  alt={item.name}
                                 />
-                              </div>
-                            )}
-                            {item.picture?.imageUrl ? (
-                              <img
-                                className="hover:opacity-80"
-                                src={item.picture?.imageUrl}
-                                alt={item.name}
-                              />
-                            ) : (
-                              <div className="bg-tertiary h-full w-full p-1 hover:opacity-80">
-                                <p className="my-auto text-center text-base">
-                                  {item.name}
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      },
-                    )}
+                              ) : (
+                                <div className="bg-tertiary h-full w-full p-1 hover:opacity-80">
+                                  <p className="my-auto text-center text-base">
+                                    {item.name}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        },
+                      )}
+                    </div>
                   </div>
-                </div>
-              </ThemeContainer>
+                </ThemeContainer>
+              )
             );
           })}
         </div>
-      </ThemeContainer>
+      </div>
     </div>
   );
 };

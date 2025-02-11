@@ -22,7 +22,7 @@ const FormLayout = ({
       chamfer="32"
       borderColor={accentPrimary}
     >
-      <div className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-6 lg:p-8">
+      <div className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-8">
         {children}
         {itemId && (
           <div className="flex flex-col gap-4">

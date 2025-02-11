@@ -1,7 +1,18 @@
 import { Modifier } from 'src/types/modifier';
 import DieIcon from './icons/DieIcon';
+import useActions from '../hooks/useActions';
 
 const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
+  const actions = useActions();
+  console.log(modifier);
+
+  const action =
+    modifier.type === 'Roll'
+      ? actions.filteredActions.find(
+          (action) => action.id === modifier.action.id,
+        )
+      : null;
+
   let symbol = '';
   switch (modifier.operator) {
     case 'add':
@@ -34,7 +45,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
       {Array.from({ length: modifier.dice }).map((_, index) => (
         <DieIcon key={index} className="size-7 shrink-0" />
       ))}
-      <p className="text-center">{modifier.action?.name}</p>
+      <p className="text-center">{action?.name}</p>
     </div>
   );
 };

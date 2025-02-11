@@ -19,6 +19,7 @@ import useDeleteWeaponMutation from '../hooks/useDeleteWeaponMutation/useDeleteW
 import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
 import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
+import SubactionForm from './SubactionForm';
 
 const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -95,6 +96,20 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         magCount: weapon?.stats.magCount || '',
         weight: weapon?.stats.weight || '',
       },
+      actions:
+        weapon?.actions ||
+        ([] as {
+          name: string;
+          costs: { stat: string; value: number }[];
+          roll: { attribute: string; skill: string }[];
+          actionType: string;
+          actionSubtypes: string[];
+          duration: {
+            unit: string;
+            value: number;
+          };
+          description: string;
+        }[]),
       price: weapon?.price || null,
       keywords:
         weaponKeywordData || ([] as { keywordId: number; value?: number }[]),
@@ -367,6 +382,8 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
             </weaponForm.Field>
           </div>
         </div>
+        <hr className="border-yellow-300 border-opacity-50" />
+        <SubactionForm form={weaponForm} />
         <hr className="border-yellow-300 border-opacity-50" />
         <h2>Weapon keywords</h2>
         <searchForm.Field name="query">

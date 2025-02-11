@@ -22,6 +22,7 @@ const Weapons = ({
   const { accentPrimary } = useContext(ThemeContext);
 
   const weapons = useWeapons(fetchOptions);
+  console.log(weapons);
 
   const searchForm = useForm({
     defaultValues: {

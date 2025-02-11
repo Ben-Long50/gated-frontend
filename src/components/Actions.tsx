@@ -8,6 +8,8 @@ import useActions from '../hooks/useActions';
 import ActionCard from './ActionCard';
 import Loading from './Loading';
 import SelectField from './SelectField';
+import { mdiTriangleDown } from '@mdi/js';
+import Icon from '@mdi/react';
 
 const Actions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -89,34 +91,42 @@ const Actions = ({ mode }: { mode?: string }) => {
         </form>
       </ThemeContainer>
       <ThemeContainer
-        chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
+        chamfer="24"
         className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
         borderColor={accentPrimary}
       >
-        <div
-          className={`bg-primary flex w-full flex-col gap-4 px-3 py-4 ${layoutSize === 'small' || layoutSize === 'xsmall' ? 'clip-6' : 'clip-8'} sm:gap-6 sm:p-6 lg:gap-8 lg:p-8`}
-        >
+        <div className="bg-primary flex w-full flex-col gap-8 p-4 clip-6 sm:p-8">
+          <searchForm.Subscribe selector={(state) => state.values.category}>
+            {(category) => {
+              let title = 'All actions';
+              switch (category) {
+                case 'action':
+                  title = 'Actions';
+                  break;
+                case 'extendedAction':
+                  title = 'Extended Actions';
+                  break;
+                case 'reaction':
+                  title = 'Reactions';
+                  break;
+                default:
+                  title = 'All actions';
+                  break;
+              }
+              return (
+                <div className="flex items-center gap-4">
+                  <Icon
+                    className="text-primary"
+                    path={mdiTriangleDown}
+                    size={0.5}
+                    rotate={-90}
+                  />
+                  <h2>{title}</h2>
+                </div>
+              );
+            }}
+          </searchForm.Subscribe>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            <searchForm.Subscribe selector={(state) => state.values.category}>
-              {(category) => {
-                let title = 'All actions';
-                switch (category) {
-                  case 'action':
-                    title = 'Actions';
-                    break;
-                  case 'extendedAction':
-                    title = 'Extended Actions';
-                    break;
-                  case 'reaction':
-                    title = 'Reactions';
-                    break;
-                  default:
-                    title = 'All actions';
-                    break;
-                }
-                return <h2 className="col-span-2 pl-6 sm:mb-4">{title}</h2>;
-              }}
-            </searchForm.Subscribe>
             {actions.filteredActions.map((action) => {
               return (
                 <ActionCard key={action.name} action={action} mode={mode} />

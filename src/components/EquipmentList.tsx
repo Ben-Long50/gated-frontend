@@ -4,11 +4,15 @@ import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import clsx from 'clsx';
 import { ReactNode, useEffect, useState } from 'react';
 import EquipmentModal from './EquipmentModal';
+import Icon from '@mdi/react';
+import { mdiTriangleDown } from '@mdi/js';
+import { Item } from 'src/types/item';
 
 const EquipmentList = ({
   weapons,
   armor,
   cybernetics,
+  items,
   active,
   setActive,
   children,
@@ -16,6 +20,7 @@ const EquipmentList = ({
   weapons: WeaponWithKeywords[];
   armor: ArmorWithKeywords[];
   cybernetics: CyberneticWithKeywords[];
+  items: Item[];
   active: {
     id: null | number;
     category: null | string;
@@ -42,17 +47,25 @@ const EquipmentList = ({
     };
   }, [toolTip]);
 
-  const itemList = [weapons, armor, cybernetics].flatMap((group, i) =>
+  const itemList = [weapons, armor, cybernetics, items].flatMap((group, i) =>
     group.map((item) => ({
-      category: ['weapon', 'armor', 'cybernetic'][i],
+      category: ['weapon', 'armor', 'cybernetic', 'item'][i],
       item,
     })),
   );
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex w-full flex-col gap-8">
       {children}
-      <h2>Equipped Items</h2>
+      <div className="flex items-center gap-4">
+        <Icon
+          className="text-primary"
+          path={mdiTriangleDown}
+          size={0.5}
+          rotate={-90}
+        />
+        <h2>Equipped Items</h2>
+      </div>
       <div className="scrollbar-secondary-2 grid w-full grid-cols-1 gap-4 sm:max-h-none lg:grid-cols-2">
         {itemList.map((item, index) => {
           const rarityColors = {
@@ -66,59 +79,60 @@ const EquipmentList = ({
             item.item.equipped === true && (
               <div
                 key={index}
-                className="bg-secondary relative flex w-full items-start gap-3 rounded-br-md rounded-tr-md pr-4 shadow-md shadow-zinc-950 sm:gap-6"
+                className="flex flex-col rounded-br-4xl rounded-tl-4xl shadow-md shadow-zinc-950"
               >
-                <EquipmentModal
-                  index={index}
-                  item={item.item}
-                  category={item.category}
-                  modalOpen={modalOpen}
-                  toggleModal={toggleModal}
-                />
-                <button
-                  className={clsx(
-                    rarityColors[item.item.rarity] || 'bg-tertiary',
-                    'group relative h-24 w-28 shrink-0 overflow-hidden rounded-bl-md rounded-tl-md pl-1 lg:h-28 lg:w-32',
-                  )}
-                  onClick={() => {
-                    setModalOpen(item.item.id);
-                  }}
-                >
-                  {item.item.picture?.imageUrl ? (
-                    <img
-                      src={item.item.picture?.imageUrl}
-                      alt={item.item.name}
-                      className="group-hover:opacity-80"
-                    />
-                  ) : (
-                    <div className="bg-tertiary h-full w-full p-1 group-hover:opacity-80">
-                      <p className="my-auto break-words text-center text-base">
-                        {item.item.name}
-                      </p>
-                    </div>
-                  )}
-                </button>
-                <div className="flex h-full w-full flex-col items-start justify-evenly gap-2 overflow-hidden">
-                  <h3 className="line-clamp-2 text-ellipsis">
-                    {item.item.name}
-                  </h3>
-                  {active?.id === item.item?.id ? (
-                    <button
-                      className="text-error text-lg hover:underline"
-                      onClick={() => setActive({ id: null, category: null })}
-                    >
-                      Disarm
-                    </button>
-                  ) : (
-                    <button
-                      className="text-accent text-lg hover:underline"
-                      onClick={() =>
-                        setActive({ id: item.item.id, category: item.category })
-                      }
-                    >
-                      Activate
-                    </button>
-                  )}
+                <div className="bg-secondary relative flex w-full items-start gap-3 pr-4 clip-4 sm:gap-6">
+                  <button
+                    className={clsx(
+                      rarityColors[item.item.rarity] || 'bg-tertiary',
+                      'group relative h-24 w-28 shrink-0 overflow-hidden pl-1 lg:h-28 lg:w-32',
+                    )}
+                    onClick={() =>
+                      setActive({
+                        id: item.item.id,
+                        category: item.category,
+                      })
+                    }
+                  >
+                    {item.item.picture?.imageUrl ? (
+                      <img
+                        src={item.item.picture?.imageUrl}
+                        alt={item.item.name}
+                        className="group-hover:opacity-80"
+                      />
+                    ) : (
+                      <div className="bg-tertiary h-full w-full p-1 group-hover:opacity-80">
+                        <p className="my-auto break-words text-center text-base">
+                          {item.item.name}
+                        </p>
+                      </div>
+                    )}
+                  </button>
+                  <div className="flex h-full w-full flex-col items-start justify-evenly gap-2 overflow-hidden">
+                    <h3 className="line-clamp-2 text-ellipsis">
+                      {item.item.name}
+                    </h3>
+                    {active?.id === item.item?.id ? (
+                      <button
+                        className="text-error text-lg hover:underline"
+                        onClick={() => setActive({ id: null, category: null })}
+                      >
+                        Disarm
+                      </button>
+                    ) : (
+                      <button
+                        className="text-accent text-lg hover:underline"
+                        onClick={() =>
+                          setActive({
+                            id: item.item.id,
+                            category: item.category,
+                          })
+                        }
+                      >
+                        Activate
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             )

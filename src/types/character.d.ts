@@ -52,4 +52,5 @@ interface CharacterInventory {
   armor: Armor[];
   cybernetics: Cybernetic[];
   vehicles: Vehicle[];
+  items: Item[];
 }

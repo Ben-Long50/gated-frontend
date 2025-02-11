@@ -8,6 +8,8 @@ import Loading from './Loading';
 import useConditions from '../hooks/useConditions';
 import ConditionCard from './ConditionCard';
 import SelectField from './SelectField';
+import Icon from '@mdi/react';
+import { mdiTriangleDown } from '@mdi/js';
 
 const Conditions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -69,33 +71,41 @@ const Conditions = ({ mode }: { mode?: string }) => {
         </form>
       </ThemeContainer>
       <ThemeContainer
-        chamfer={`${layoutSize === 'small' || layoutSize === 'xsmall' ? '24' : '32'}`}
+        chamfer="24"
         className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
         borderColor={accentPrimary}
       >
-        <div
-          className={`bg-primary flex w-full flex-col gap-4 px-3 py-4 ${layoutSize === 'small' || layoutSize === 'xsmall' ? 'clip-6' : 'clip-8'} sm:gap-6 sm:p-6 lg:gap-8 lg:p-8`}
-        >
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+        <div className="bg-primary flex w-full flex-col gap-8 p-4 clip-6 sm:p-8">
+          <div className="flex flex-col gap-8">
             <searchForm.Subscribe selector={(state) => state.values.category}>
               {(category) => (
-                <h2 className="col-span-2 pl-6 sm:mb-4">
-                  {category.length > 0
-                    ? category[0].toUpperCase() + category.slice(1) + ' '
-                    : 'All '}
-                  conditions
-                </h2>
+                <div className="flex items-center gap-4">
+                  <Icon
+                    className="text-primary"
+                    path={mdiTriangleDown}
+                    size={0.5}
+                    rotate={-90}
+                  />
+                  <h2>
+                    {category.length > 0
+                      ? category[0].toUpperCase() + category.slice(1) + ' '
+                      : 'All '}
+                    conditions
+                  </h2>
+                </div>
               )}
             </searchForm.Subscribe>
-            {conditions.filteredConditions.map((condition) => {
-              return (
-                <ConditionCard
-                  key={condition.name}
-                  condition={condition}
-                  mode="codex"
-                />
-              );
-            })}
+            <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
+              {conditions.filteredConditions.map((condition) => {
+                return (
+                  <ConditionCard
+                    key={condition.name}
+                    condition={condition}
+                    mode="codex"
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
       </ThemeContainer>

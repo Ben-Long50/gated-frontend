@@ -8,6 +8,7 @@ import useActiveCharacterQuery from '../../hooks/useActiveCharacterQuery/useActi
 import InventoryIcon from '../../components/icons/InventoryIcon';
 import EquipmentIcon from '../../components/icons/EquipmentIcon';
 import VehicleIcon from '../../components/icons/VehicleIcon';
+import LinkSublistSidebar from './LinkSublistSidebar';
 
 const CharacterLinks = ({ setSidebarVisibility }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -78,6 +79,43 @@ const CharacterLinks = ({ setSidebarVisibility }) => {
           path={`characters/${character?.id}/inventory/cybernetics`}
           setSidebarVisibility={setSidebarVisibility}
         />
+
+        <LinkSublistSidebar title="Items">
+          <LinkSidebar
+            title="All Items"
+            path={`characters/${character?.id}/inventory/items`}
+            setSidebarVisibility={setSidebarVisibility}
+          />
+          <LinkSublistSidebar title="Reusables">
+            <LinkSidebar
+              title="Gadgets"
+              path={`characters/${character?.id}/inventory/items/reusables/gadgets`}
+              setSidebarVisibility={setSidebarVisibility}
+            />
+            <LinkSidebar
+              title="Anomalies"
+              path={`characters/${character?.id}/inventory/items/reusables/anomalies`}
+              setSidebarVisibility={setSidebarVisibility}
+            />
+          </LinkSublistSidebar>
+          <LinkSublistSidebar title="Consumables">
+            <LinkSidebar
+              title="Chemical therapy"
+              path={`characters/${character?.id}/inventory/items/consumables/chemicalTherapy`}
+              setSidebarVisibility={setSidebarVisibility}
+            />
+            <LinkSidebar
+              title="Chemical assistance"
+              path={`characters/${character?.id}/inventory/items/consumables/chemicalAssistance`}
+              setSidebarVisibility={setSidebarVisibility}
+            />
+            <LinkSidebar
+              title="Misc. consumables"
+              path={`characters/${character?.id}/inventory/items/consumables/misc`}
+              setSidebarVisibility={setSidebarVisibility}
+            />
+          </LinkSublistSidebar>
+        </LinkSublistSidebar>
       </LinkListSidebar>
       <LinkListSidebar
         title={

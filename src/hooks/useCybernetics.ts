@@ -69,7 +69,7 @@ const useCybernetics = (fetchOptions?: FetchOptions) => {
     if (list.length === 0) return [];
 
     return list?.map((cybernetic: Cybernetic) => {
-      const keywordDetails = cybernetic.keywords.map((keyword) => {
+      const keywordDetails = cybernetic.keywords?.map((keyword) => {
         const details = keywords.filteredKeywords.find(
           (item: Keyword) => item.id === keyword.keywordId,
         );

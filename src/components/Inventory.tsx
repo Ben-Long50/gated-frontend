@@ -7,6 +7,7 @@ import Weapons from './Weapons';
 import Armor from './Armor';
 import Cybernetics from './Cybernetics';
 import Vehicles from './Vehicles';
+import Items from './Items';
 
 const Inventory = ({ category }: { category: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -51,6 +52,65 @@ const Inventory = ({ category }: { category: string }) => {
           }}
           mode="inventory"
           key={character?.id + ' ' + 'cybernetics'}
+        />
+      ) : category === 'items' ? (
+        <Items
+          title={namePrefix + ' ' + 'Items'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.items,
+          }}
+          mode="inventory"
+          key={character?.id + ' ' + 'items'}
+        />
+      ) : category === 'gadgets' ? (
+        <Items
+          title={namePrefix + ' ' + 'Gadgets'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.items,
+            includedKeywords: ['gadget'],
+          }}
+          mode="inventory"
+          key={character?.id + ' ' + 'gadgets'}
+        />
+      ) : category === 'anomalies' ? (
+        <Items
+          title={namePrefix + ' ' + 'Anomalies'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.items,
+            includedKeywords: ['anomaly'],
+          }}
+          mode="inventory"
+          key={character?.id + ' ' + 'anomalies'}
+        />
+      ) : category === 'chemicalTherapy' ? (
+        <Items
+          title={namePrefix + ' ' + 'Chemical Therapy'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.items,
+            includedKeywords: ['chemicalTherapy'],
+          }}
+          mode="inventory"
+          key={character?.id + ' ' + 'chemicalTherapy'}
+        />
+      ) : category === 'chemicalAssistance' ? (
+        <Items
+          title={namePrefix + ' ' + 'Chemical Assistance'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.items,
+            includedKeywords: ['chemicalAssistance'],
+          }}
+          mode="inventory"
+          key={character?.id + ' ' + 'chemicalAssistance'}
+        />
+      ) : category === 'misc' ? (
+        <Items
+          title={namePrefix + ' ' + 'Misc. Consumables'}
+          fetchOptions={{
+            itemList: character?.characterInventory?.items,
+            includedKeywords: ['misc'],
+          }}
+          mode="inventory"
+          key={character?.id + ' ' + 'misc'}
         />
       ) : category === 'vehicle weapons' ? (
         <Weapons

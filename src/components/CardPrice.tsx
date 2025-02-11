@@ -1,6 +1,5 @@
 import { mdiCartMinus, mdiCartPlus, mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
-import ProfitsIcon from './icons/ProfitsIcon';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';

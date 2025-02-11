@@ -1,7 +1,7 @@
 import CyberIcon from './icons/CyberIcon';
 import { Modifier } from 'src/types/modifier';
 import ItemCard from './ItemCard';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
+import { CyberneticStats, CyberneticWithKeywords } from 'src/types/cybernetic';
 import StatCard from './StatCard';
 import LightningIcon from './icons/LightningIcon';
 import ModifierTag from './ModifierTag';
@@ -13,7 +13,13 @@ import BtnControl from './buttons/BtnControl';
 import PowerIcon from './icons/PowerIcon';
 import BodyIcon from './icons/BodyIcon';
 
-const CyberneticControls = ({ cyberneticId }: { cyberneticId: number }) => {
+const CyberneticControls = ({
+  cyberneticId,
+  stats,
+}: {
+  cyberneticId: number;
+  stats: CyberneticStats;
+}) => {
   const { apiUrl } = useContext(AuthContext);
 
   const editCurrentPower = useEditCyberneticPowerMutation(apiUrl, cyberneticId);
@@ -21,17 +27,24 @@ const CyberneticControls = ({ cyberneticId }: { cyberneticId: number }) => {
 
   return (
     <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
-      <BtnControl
-        title="Activate"
-        icon={<LightningIcon className="size-8 group-hover:fill-yellow-300" />}
-        mutation={editCurrentPower}
-        value={-1}
-      />
-      <BtnControl
-        title="Recharge"
-        icon={<PowerIcon className="size-8 group-hover:fill-yellow-300" />}
-        mutation={refreshPower}
-      />
+      {stats.currentPower && stats.currentPower > 0 ? (
+        <BtnControl
+          title="Activate"
+          icon={
+            <LightningIcon className="size-8 group-hover:fill-yellow-300" />
+          }
+          mutation={editCurrentPower}
+          value={-1}
+        />
+      ) : null}
+
+      {stats.power && (
+        <BtnControl
+          title="Recharge"
+          icon={<PowerIcon className="size-8 group-hover:fill-yellow-300" />}
+          mutation={refreshPower}
+        />
+      )}
     </div>
   );
 };
@@ -49,9 +62,10 @@ const CyberneticCard = ({
       category="cybernetics"
       mode={mode}
       controls={
-        cybernetic.stats.currentPower && (
-          <CyberneticControls cyberneticId={cybernetic.id} />
-        )
+        <CyberneticControls
+          cyberneticId={cybernetic.id}
+          stats={cybernetic.stats}
+        />
       }
     >
       {cybernetic.stats.cyber && (

@@ -37,8 +37,6 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
 
   const { data: vehicle } = useVehicleQuery(apiUrl, vehicleId);
 
-  console.log(vehicle);
-
   const vehicleWeapons = useWeapons({
     itemList:
       title === 'Modify' ? character?.characterInventory?.weapons : undefined,
@@ -46,10 +44,6 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
   });
 
   const equippedWeapons = useWeapons({ itemList: vehicle?.weapons });
-
-  const weaponList = !vehicleId
-    ? vehicleWeapons.filteredWeapons
-    : [...vehicleWeapons.filteredWeapons, ...equippedWeapons.filteredWeapons];
 
   const modifications = useModifications({
     itemList: title === 'Modify' && character?.characterInventory.modifications,
@@ -99,6 +93,15 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
       setImagePreview(vehicle.picture?.imageUrl);
     }
   }, [vehicle]);
+
+  const searchForm = useForm({
+    defaultValues: {
+      query: '',
+    },
+    onSubmit: ({ value }) => {
+      vehicleWeapons.filterByQuery(value.query);
+    },
+  });
 
   const vehicleForm = useForm({
     defaultValues: {
@@ -431,7 +434,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
         <hr className="border-yellow-300 border-opacity-50" />
         <div className="relative flex flex-col" onClick={() => setToolTip('')}>
           <div
-            className={`${weaponDetailsOpen && 'pb-8'} timing flex cursor-pointer items-center justify-between`}
+            className={`${weaponDetailsOpen && 'pb-4'} timing flex cursor-pointer items-center justify-between`}
             onClick={() => setWeaponDetailsOpen(!weaponDetailsOpen)}
           >
             <h3>Mount weapons</h3>
@@ -451,45 +454,115 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
             </div>
           </div>
           <div
-            className={`${weaponDetailsOpen ? 'max-h-[500px] py-1' : 'max-h-0'} timing scrollbar-primary flex flex-col gap-8 overflow-y-auto pl-1 pr-4`}
+            className={`${weaponDetailsOpen ? 'max-h-[1000px]' : 'max-h-0'} timing flex flex-col gap-4 overflow-hidden`}
           >
             <vehicleForm.Field name="weapons">
-              {(field) =>
-                weaponList.map((weapon: WeaponWithKeywords) => {
-                  const activeWeapon = field.state.value.includes(weapon.id);
+              {(field) => (
+                <>
+                  <div className="flex flex-col gap-8 py-1 pl-1 pr-4">
+                    {equippedWeapons.filteredWeapons.map(
+                      (weapon: WeaponWithKeywords) => {
+                        const activeWeapon = field.state.value.includes(
+                          weapon.id,
+                        );
 
-                  return (
-                    <div className="flex items-center gap-8" key={weapon.id}>
-                      <SubweaponCard
-                        vehicleId={vehicle?.id}
-                        weapon={weapon}
-                        toolTip={toolTip}
-                        setToolTip={setToolTip}
-                      />
+                        return (
+                          <div
+                            className="flex items-center gap-8"
+                            key={weapon.id}
+                          >
+                            <SubweaponCard
+                              vehicleId={vehicle?.id}
+                              weapon={weapon}
+                              toolTip={toolTip}
+                              setToolTip={setToolTip}
+                            />
 
-                      <input
-                        type="checkbox"
-                        className="size-6"
-                        checked={!!activeWeapon}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            field.handleChange([
-                              ...field.state.value,
-                              weapon.id,
-                            ]);
-                          } else {
-                            field.handleChange(
-                              field.state.value.filter(
-                                (item: number) => item !== weapon.id,
-                              ),
-                            );
-                          }
-                        }}
-                      />
-                    </div>
-                  );
-                })
-              }
+                            <input
+                              type="checkbox"
+                              className="size-6"
+                              checked={!!activeWeapon}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  field.handleChange([
+                                    ...field.state.value,
+                                    weapon.id,
+                                  ]);
+                                } else {
+                                  field.handleChange(
+                                    field.state.value.filter(
+                                      (item: number) => item !== weapon.id,
+                                    ),
+                                  );
+                                }
+                              }}
+                            />
+                          </div>
+                        );
+                      },
+                    )}
+                  </div>
+                  <hr className="border-yellow-300 border-opacity-50" />
+                  <form className="bg-primary flex w-full flex-col gap-4 p-0.5 pt-2">
+                    <searchForm.Field name="query">
+                      {(field) => (
+                        <InputField
+                          label="Search vehicle weapons"
+                          field={field}
+                          onChange={() => {
+                            searchForm.handleSubmit();
+                          }}
+                        />
+                      )}
+                    </searchForm.Field>
+                  </form>
+                  <div
+                    className={`scrollbar-primary flex flex-col gap-8 overflow-y-auto py-1 pl-1 pr-4`}
+                  >
+                    {vehicleWeapons.filteredWeapons.map(
+                      (weapon: WeaponWithKeywords) => {
+                        const activeWeapon = field.state.value.includes(
+                          weapon.id,
+                        );
+
+                        return (
+                          <div
+                            className="flex items-center gap-8"
+                            key={weapon.id}
+                          >
+                            <SubweaponCard
+                              vehicleId={vehicle?.id}
+                              weapon={weapon}
+                              toolTip={toolTip}
+                              setToolTip={setToolTip}
+                            />
+
+                            <input
+                              type="checkbox"
+                              className="size-6"
+                              checked={!!activeWeapon}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  field.handleChange([
+                                    ...field.state.value,
+                                    weapon.id,
+                                  ]);
+                                } else {
+                                  field.handleChange(
+                                    field.state.value.filter(
+                                      (item: number) => item !== weapon.id,
+                                    ),
+                                  );
+                                }
+                              }}
+                            />
+                          </div>
+                        );
+                      },
+                    )}
+                  </div>
+                </>
+              )}
             </vehicleForm.Field>
           </div>
         </div>

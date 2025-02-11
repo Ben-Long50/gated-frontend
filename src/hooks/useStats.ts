@@ -8,6 +8,7 @@ import { Perk } from 'src/types/perk';
 import useActions from './useActions';
 import useEquipment from './useEquipment';
 import { CharacterInventory } from 'src/types/character';
+import { Item } from 'src/types/item';
 
 const useStats = (
   inventory: CharacterInventory,
@@ -18,7 +19,7 @@ const useStats = (
 
   const actions = useActions();
 
-  const { equippedWeapons, equippedArmor, equippedCybernetics } =
+  const { equippedWeapons, equippedArmor, equippedCybernetics, equippedItems } =
     useEquipment(inventory);
 
   const weaponWeight = equippedWeapons?.reduce(
@@ -46,6 +47,15 @@ const useStats = (
     },
     0,
   );
+
+  const itemWeight = equippedItems?.reduce((sum: number, item: Item) => {
+    if (item.stats.currentStacks && item.stats.weight) {
+      return sum + item.stats.currentStacks * item.stats.weight;
+    } else if (item.stats.weight) {
+      return sum + item.stats.weight;
+    }
+    return sum;
+  }, 0);
 
   const armorValue = equippedArmor?.reduce(
     (sum: number, armor: ArmorWithKeywords) => {
@@ -86,7 +96,7 @@ const useStats = (
     armor: 0 + armorValue,
     ward: 0 + wardValue,
     evasion: 1,
-    weight: 0 + weaponWeight + armorWeight,
+    weight: 0 + weaponWeight + armorWeight + itemWeight,
     cyber: 0 + equippedCyber,
     permanentInjuries: 5,
     permanentInsanities: 5,

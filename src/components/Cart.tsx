@@ -19,6 +19,10 @@ import { useForm } from '@tanstack/react-form';
 import InputField from './InputField';
 import useCompletePurchaseMutation from '../hooks/useCompletePurchaseMutation/useCompletePurchaseMutation';
 import useModifications from '../hooks/useModifications';
+import Icon from '@mdi/react';
+import { mdiTriangleDown } from '@mdi/js';
+import useItems from '../hooks/useItems';
+import { Item } from 'src/types/item';
 
 const Cart = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -56,6 +60,7 @@ const Cart = () => {
   const modifications = useModifications({
     itemList: character?.characterCart?.modifications,
   });
+  const items = useItems({ itemList: character?.characterCart?.items });
 
   const cartForm = useForm({
     defaultValues: {
@@ -81,6 +86,9 @@ const Cart = () => {
       ),
       modifications: modifications?.filteredMods?.map((mod: Modification) => {
         return { modId: mod.id, price: mod.price, quantity: 1 };
+      }),
+      items: items?.filteredItems?.map((item: Item) => {
+        return { itemId: item.id, price: item.price, quantity: 1 };
       }),
     },
     onSubmit: async ({ value }) => {
@@ -216,72 +224,76 @@ const Cart = () => {
       {Object.entries(cartForm.state.values).map(([key, value]) => {
         return (
           <cartForm.Field key={key} name={`${key}`} mode="array">
-            {(field) => (
-              <div className="flex w-full flex-col gap-4">
-                {field.state.value.length > 0 && (
-                  <h2 className="pl-4">
-                    {key[0].toUpperCase() + key.slice(1)}
-                  </h2>
-                )}
-                {field.state.value.map((_, i: number) => {
-                  let item;
-                  switch (key) {
-                    case 'weapons':
-                      item = weapons?.filteredWeapons[i];
-                      break;
-                    case 'armor':
-                      item = armor?.filteredArmor[i];
-                      break;
-                    case 'cybernetics':
-                      item = cybernetics?.filteredCybernetics[i];
-                      break;
-                    case 'vehicles':
-                      item = vehicles?.filteredVehicles[i];
-                      break;
-                    case 'modifications':
-                      item = modifications?.filteredMods[i];
-                      break;
-                    default:
-                      item = '';
-                      break;
-                  }
-                  return (
-                    <cartForm.Field key={`${key}.${i}`} name={`${key}.${i}`}>
-                      {() => (
-                        <CartCard
-                          item={item}
-                          category={key}
-                          handleRemove={() => field.removeValue(i)}
-                        >
-                          <cartForm.Field
-                            name={`${key}.${i}.quantity`}
-                            validators={{
-                              onChange: ({ value }) => {
-                                if (value == 0) {
-                                  return 'Quantity cannot be 0';
-                                } else if (value < 1) {
-                                  return 'Quantity cannot be negative';
-                                }
-                                return undefined;
-                              },
-                            }}
+            {(field) =>
+              field.state.value.length > 0 && (
+                <div className="text-secondary flex w-full flex-col gap-4">
+                  <div className="flex items-center gap-4">
+                    <Icon path={mdiTriangleDown} size={0.5} rotate={-90} />
+                    <h2>{key[0].toUpperCase() + key.slice(1)}</h2>
+                  </div>
+                  {field.state.value.map((_, i: number) => {
+                    let item;
+                    switch (key) {
+                      case 'weapons':
+                        item = weapons?.filteredWeapons[i];
+                        break;
+                      case 'armor':
+                        item = armor?.filteredArmor[i];
+                        break;
+                      case 'cybernetics':
+                        item = cybernetics?.filteredCybernetics[i];
+                        break;
+                      case 'vehicles':
+                        item = vehicles?.filteredVehicles[i];
+                        break;
+                      case 'modifications':
+                        item = modifications?.filteredMods[i];
+                        break;
+                      case 'items':
+                        item = items?.filteredItems[i];
+                        break;
+                      default:
+                        item = '';
+                        break;
+                    }
+                    return (
+                      <cartForm.Field key={`${key}.${i}`} name={`${key}.${i}`}>
+                        {() => (
+                          <CartCard
+                            item={item}
+                            category={key}
+                            handleRemove={() => field.removeValue(i)}
                           >
-                            {(subfield) => (
-                              <InputField
-                                className="bg-secondary max-w-20"
-                                label="Qty."
-                                type="number"
-                                field={subfield}
-                              />
-                            )}
-                          </cartForm.Field>
-                        </CartCard>
-                      )}
-                    </cartForm.Field>
-                  );
-                })}
-              </div>
-            )}
+                            <cartForm.Field
+                              name={`${key}.${i}.quantity`}
+                              validators={{
+                                onChange: ({ value }) => {
+                                  if (value == 0) {
+                                    return 'Quantity cannot be 0';
+                                  } else if (value < 1) {
+                                    return 'Quantity cannot be negative';
+                                  }
+                                  return undefined;
+                                },
+                              }}
+                            >
+                              {(subfield) => (
+                                <InputField
+                                  className="bg-secondary max-w-20"
+                                  label="Qty."
+                                  type="number"
+                                  field={subfield}
+                                />
+                              )}
+                            </cartForm.Field>
+                          </CartCard>
+                        )}
+                      </cartForm.Field>
+                    );
+                  })}
+                </div>
+              )
+            }
           </cartForm.Field>
         );
       })}

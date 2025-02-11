@@ -45,6 +45,17 @@ const ActionForm = ({ mode }: { mode?: string }) => {
 
   const attributeTree = useAttributeTree();
 
+  const durationUnits = [
+    'second',
+    'minute',
+    'hour',
+    'day',
+    'turn',
+    'round',
+    'scene',
+    'session',
+  ];
+
   const actionForm = useForm({
     defaultValues: {
       name: action?.name || '',
@@ -54,10 +65,17 @@ const ActionForm = ({ mode }: { mode?: string }) => {
           stat: string;
           value: number;
         }[]),
-      attribute: action?.attribute || '',
-      skill: action?.skill || '',
+      roll:
+        action?.roll ||
+        ([] as {
+          attribute: string;
+          skill: string;
+        }[]),
       actionType: action?.actionType || '',
       actionSubtypes: action?.actionSubtypes || ([] as string[]),
+      duration:
+        action?.duration ||
+        ({ unit: '', value: null } as { unit: string; value: number | null }),
       description: action?.description || '',
     },
     onSubmit: async ({ value }) => {
@@ -180,49 +198,103 @@ const ActionForm = ({ mode }: { mode?: string }) => {
             );
           }}
         </actionForm.Field>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
-          <actionForm.Field
-            name="attribute"
-            listeners={{
-              onChange: () => {
-                actionForm.setFieldValue('skill', '');
-              },
-            }}
-          >
-            {(field) => (
-              <SelectField label="Attribute" field={field}>
-                <option defaultValue=""></option>
-                {Object.entries(attributeTree.tree).map(([attribute, _]) => {
-                  return (
-                    <option key={attribute} value={`${attribute}`}>
-                      {attribute[0].toUpperCase() + attribute.slice(1)}
-                    </option>
-                  );
-                })}
-              </SelectField>
-            )}
-          </actionForm.Field>
-          <actionForm.Field name="skill">
-            {(field) => {
-              return (
-                <SelectField label="Skill" field={field}>
-                  <option defaultValue=""></option>
-                  {actionForm.state.values.attribute &&
-                    Object.entries(
-                      attributeTree.tree[actionForm.state.values.attribute]
-                        .skills,
-                    ).map(([skill, _]) => {
-                      return (
-                        <option key={skill} value={`${skill}`}>
-                          {skill[0].toUpperCase() + skill.slice(1)}
-                        </option>
-                      );
-                    })}
-                </SelectField>
-              );
-            }}
-          </actionForm.Field>
-        </div>
+        <actionForm.Field name="roll" mode="array">
+          {(field) => {
+            console.log(field);
+
+            return (
+              <div className="flex w-full flex-col gap-4 sm:gap-6 lg:gap-8">
+                {field.state.value.map((_, j: number) => (
+                  <div key={j} className="flex w-full gap-4 sm:gap-6 lg:gap-8">
+                    <div className="flex w-full flex-col gap-4 sm:flex-row sm:gap-6 lg:gap-8">
+                      <actionForm.Field
+                        name={`roll[${j}].attribute`}
+                        listeners={{
+                          onChange: () => {
+                            actionForm.setFieldValue(`roll[${j}].skill`, '');
+                          },
+                        }}
+                      >
+                        {(field) => (
+                          <SelectField
+                            className="w-full"
+                            label="Attribute"
+                            field={field}
+                          >
+                            <option defaultValue=""></option>
+                            {Object.entries(attributeTree.tree).map(
+                              ([attribute, _]) => {
+                                return (
+                                  <option
+                                    key={attribute}
+                                    value={`${attribute}`}
+                                  >
+                                    {attribute[0].toUpperCase() +
+                                      attribute.slice(1)}
+                                  </option>
+                                );
+                              },
+                            )}
+                          </SelectField>
+                        )}
+                      </actionForm.Field>
+                      <actionForm.Field name={`roll[${j}].skill`}>
+                        {(field) => {
+                          return (
+                            <SelectField
+                              className="w-full"
+                              label="Skill"
+                              field={field}
+                            >
+                              <option defaultValue=""></option>
+                              {actionForm.state.values.roll[j].attribute &&
+                                Object.entries(
+                                  attributeTree.tree[
+                                    actionForm.state.values.roll[j].attribute
+                                  ].skills,
+                                ).map(([skill, _]) => {
+                                  return (
+                                    <option key={skill} value={`${skill}`}>
+                                      {skill[0].toUpperCase() + skill.slice(1)}
+                                    </option>
+                                  );
+                                })}
+                            </SelectField>
+                          );
+                        }}
+                      </actionForm.Field>
+                    </div>
+                    <button
+                      className="sm:-ml-2 lg:-ml-4"
+                      onClick={() => field.removeValue(j)}
+                      type="button"
+                    >
+                      <Icon
+                        className="text-tertiary"
+                        path={mdiClose}
+                        size={1}
+                      />
+                    </button>
+                  </div>
+                ))}
+                <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
+                  <button
+                    className="text-accent self-end hover:underline"
+                    onClick={() =>
+                      field.pushValue({
+                        attribute: '',
+                        skill: '',
+                      })
+                    }
+                    type="button"
+                  >
+                    Add roll
+                  </button>
+                </div>
+              </div>
+            );
+          }}
+        </actionForm.Field>
         <actionForm.Field
           name="actionType"
           validators={{
@@ -295,6 +367,40 @@ const ActionForm = ({ mode }: { mode?: string }) => {
             );
           }}
         </actionForm.Field>
+        <div className="flex w-full items-center gap-4 lg:gap-8">
+          <actionForm.Field name="duration.unit">
+            {(field) => (
+              <SelectField
+                className="w-full"
+                label="Effect duration"
+                field={field}
+              >
+                <option value=""></option>
+                {durationUnits.map((unit) => (
+                  <option key={unit} value={unit}>
+                    {unit[0].toUpperCase() + unit.slice(1)}
+                  </option>
+                ))}
+              </SelectField>
+            )}
+          </actionForm.Field>
+          <actionForm.Field
+            name="duration.value"
+            validators={{
+              onChange: ({ value }) =>
+                value && value <= 0 ? 'Minimum value is 1' : undefined,
+            }}
+          >
+            {(field) => (
+              <InputField
+                className="w-full max-w-28"
+                type="number"
+                label="Dur. value"
+                field={field}
+              />
+            )}
+          </actionForm.Field>
+        </div>
         <actionForm.Field
           name="description"
           validators={{

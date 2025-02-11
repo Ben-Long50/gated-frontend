@@ -23,6 +23,9 @@ import SubmodificationCard from './SubmodificationCard';
 import BodyIcon from './icons/BodyIcon';
 import BtnRect from './buttons/BtnRect';
 import { motion } from 'motion/react';
+import { Item } from 'src/types/item';
+import StopwatchIcon from './icons/StopwatchIcon';
+import { subcategoryMap } from '../types/maps';
 
 const ItemCard = ({
   item,
@@ -35,7 +38,8 @@ const ItemCard = ({
     | WeaponWithKeywords
     | ArmorWithKeywords
     | CyberneticWithKeywords
-    | VehicleWithWeapons;
+    | VehicleWithWeapons
+    | Item;
   category: string;
   mode: string;
   controls?: ReactNode;
@@ -130,17 +134,15 @@ const ItemCard = ({
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-4">
-                      <h2 className="w-full whitespace-break-spaces">
-                        <span>
-                          <Icon
-                            className="text-secondary float-left mr-2 mt-2"
-                            path={mdiTriangleDown}
-                            rotate={-90}
-                            size={0.5}
-                          />
-                        </span>
-                        {item.name}
-                      </h2>
+                      <div className="flex items-center gap-4">
+                        <Icon
+                          className="text-primary"
+                          path={mdiTriangleDown}
+                          size={0.5}
+                          rotate={-90}
+                        />
+                        <h2>{item.name}</h2>
+                      </div>
                       {category === 'weapons' && item.vehicleId && (
                         <h4 className="text-error italic">
                           (Currently equipped)
@@ -217,6 +219,22 @@ const ItemCard = ({
                     )}
                   </div>
                 )}
+                {item?.category && (
+                  <div className="flex items-center gap-4">
+                    <h4>{subcategoryMap[item.subcategory]}</h4>
+                    <p className="text-tertiary italic">
+                      ({item.category[0].toUpperCase() + item.category.slice(1)}
+                      )
+                    </p>
+                    <Icon
+                      className="text-secondary"
+                      path={mdiTriangleDown}
+                      size={0.35}
+                      rotate={-90}
+                    />
+                    <p>{item.itemType}</p>
+                  </div>
+                )}
                 <motion.div
                   className={`flex items-start justify-start`}
                   style={{
@@ -225,23 +243,17 @@ const ItemCard = ({
                   }}
                 >
                   {item.picture && (
-                    <motion.div
-                      layout="position"
-                      transition={{ duration: 0.2 }}
-                    >
-                      <CloudinaryImage
-                        ref={imageRef}
-                        className="z-20"
-                        rarity={item.rarity}
-                        url={item.picture?.imageUrl}
-                        alt={item.name + ' ' + 'image'}
-                        detailsOpen={detailsOpen}
-                      />
-                    </motion.div>
+                    <CloudinaryImage
+                      ref={imageRef}
+                      className="z-20"
+                      rarity={item.rarity}
+                      url={item.picture?.imageUrl}
+                      alt={item.name + ' ' + 'image'}
+                      detailsOpen={detailsOpen}
+                    />
                   )}
-
                   <motion.div
-                    className={`${item.picture ? 'mx-auto flex max-w-min flex-col overflow-y-auto' : 'grid grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start'} scrollbar-secondary-2 w-full shrink-0 gap-2`}
+                    className={`${item.picture ? 'mx-auto flex max-w-min grow flex-col overflow-y-auto' : 'grid grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start'} scrollbar-secondary-2 w-full shrink-0 gap-2`}
                     style={{
                       height: item.picture ? imageHeight : 'auto',
                     }}
@@ -272,6 +284,16 @@ const ItemCard = ({
                       {children}
                     </div>
                   )}
+                  {item.modifiers && item.modifiers[0]?.duration && (
+                    <div className="flex items-center gap-4">
+                      <StopwatchIcon className="size-7" />
+                      <p>{item.modifiers[0].duration?.value}</p>
+                      <p>
+                        {item.modifiers[0].duration?.unit[0].toUpperCase() +
+                          item.modifiers[0].duration?.unit.slice(1)}
+                      </p>
+                    </div>
+                  )}
                   {mode !== 'equipment' && (
                     <p className="text-secondary">{item.description}</p>
                   )}
@@ -292,17 +314,15 @@ const ItemCard = ({
                 <div className="grid w-full grow grid-cols-[2fr-1fr] items-start gap-6">
                   <div>
                     <div className="flex items-center gap-4">
-                      <h2 className="w-full whitespace-break-spaces">
-                        <span>
-                          <Icon
-                            className="text-secondary float-left mr-2.5 mt-2.5"
-                            path={mdiTriangleDown}
-                            rotate={-90}
-                            size={0.5}
-                          />
-                        </span>
-                        {item.name}
-                      </h2>
+                      <div className="flex items-center gap-4">
+                        <Icon
+                          className="text-primary"
+                          path={mdiTriangleDown}
+                          size={0.5}
+                          rotate={-90}
+                        />
+                        <h2>{item.name}</h2>
+                      </div>
                       {category === 'weapons' && item.vehicleId && (
                         <h4 className="text-error italic">
                           (Currently equipped)
@@ -348,7 +368,7 @@ const ItemCard = ({
                       grade={item?.grade}
                     />
                   </div>
-                  {(item.body || item.keywords) && (
+                  {(item.body || item.keywords || item.category) && (
                     <div
                       className={` ${mode !== 'codex' && 'col-span-2'} col-start-1 row-start-2 flex flex-wrap items-center gap-1`}
                     >
@@ -392,6 +412,24 @@ const ItemCard = ({
                             );
                           },
                         )}
+                      {item?.category && (
+                        <div className="flex items-center gap-4">
+                          <h4>{subcategoryMap[item.subcategory]}</h4>
+                          <p className="text-tertiary italic">
+                            (
+                            {item.category[0].toUpperCase() +
+                              item.category.slice(1)}
+                            )
+                          </p>
+                          <Icon
+                            className="text-secondary"
+                            path={mdiTriangleDown}
+                            size={0.35}
+                            rotate={-90}
+                          />
+                          <p>{item.itemType}</p>
+                        </div>
+                      )}
                     </div>
                   )}
                   <div className="col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-4">
@@ -402,13 +440,23 @@ const ItemCard = ({
                   <div className="overflow-hidden">
                     <motion.p
                       ref={detailRef}
-                      className="text-secondary pr-8"
+                      className="text-secondary flex flex-col gap-4 pr-8"
                       initial={{ marginTop: -detailHeight - 4 }}
                       animate={{
                         marginTop: detailsOpen ? 24 : -detailHeight - 4,
                       }}
                       transition={{ duration: 0.2 }}
                     >
+                      {item.modifiers && item.modifiers[0]?.duration && (
+                        <div className="flex items-center gap-4">
+                          <StopwatchIcon className="size-7" />
+                          <p>{item.modifiers[0].duration?.value}</p>
+                          <p>
+                            {item.modifiers[0].duration?.unit[0].toUpperCase() +
+                              item.modifiers[0].duration?.unit.slice(1)}
+                          </p>
+                        </div>
+                      )}
                       {item.description}
                     </motion.p>
                   </div>

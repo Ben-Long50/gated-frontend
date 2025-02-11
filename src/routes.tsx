@@ -44,6 +44,7 @@ import Inventory from './components/Inventory';
 import Equipment from './components/Equipment';
 import CodexSearch from './components/CodexSearch';
 import ItemForm from './components/ItemForm';
+import Items from './components/Items';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -98,12 +99,48 @@ const router = createBrowserRouter(
             element={<CyberneticForm title="Modify" mode="inventory" />}
           />
           <Route
+            path=":characterId/inventory/items"
+            element={<Inventory category="items" />}
+          />
+          <Route
+            path=":characterId/inventory/items/reusables/gadgets"
+            element={<Inventory category="gadgets" />}
+          />
+          <Route
+            path=":characterId/inventory/items/reusables/anomalies"
+            element={<Inventory category="anomalies" />}
+          />
+          <Route
+            path=":characterId/inventory/items/consumables/chemicalTherapy"
+            element={<Inventory category="chemicalTherapy" />}
+          />
+          <Route
+            path=":characterId/inventory/items/consumables/chemicalAssistance"
+            element={<Inventory category="chemicalAssistance" />}
+          />
+          <Route
+            path=":characterId/inventory/items/consumables/misc"
+            element={<Inventory category="misc" />}
+          />
+          <Route
+            path=":characterId/inventory/items/:itemId/modify"
+            element={<ItemForm title="Modify" mode="inventory" />}
+          />
+          <Route
+            path=":characterId/inventory/items/:category/:subcategory/:itemId/modify"
+            element={<ItemForm title="Modify" mode="inventory" />}
+          />
+          <Route
             path=":characterId/inventory/vehicles"
             element={<Inventory category="vehicles" />}
           />
           <Route
             path=":characterId/inventory/vehicles/weapons"
             element={<Inventory category="vehicle weapons" />}
+          />
+          <Route
+            path=":characterId/inventory/vehicles/weapons/:weaponId/modify"
+            element={<WeaponForm title="Modify" mode="inventory" />}
           />
           <Route
             path=":characterId/inventory/vehicles/modifications"
@@ -421,9 +458,74 @@ const router = createBrowserRouter(
           </Route>
           <Route path="items">
             <Route
+              index
+              element={<Items title="All Items" mode="codex" key="items" />}
+            />
+            <Route
+              path="reusables/gadgets"
+              element={
+                <Items
+                  title="Gadgets"
+                  mode="codex"
+                  key="gadgets"
+                  fetchOptions={{ includedKeywords: ['gadget'] }}
+                />
+              }
+            />
+            <Route
+              path="reusables/anomalies"
+              element={
+                <Items
+                  title="Anomalies"
+                  mode="codex"
+                  key="anomalies"
+                  fetchOptions={{ includedKeywords: ['anomaly'] }}
+                />
+              }
+            />
+            <Route
+              path="consumables/chemicalTherapy"
+              element={
+                <Items
+                  title="Chemical Therapy"
+                  mode="codex"
+                  key="chemicalTherapy"
+                  fetchOptions={{ includedKeywords: ['chemicalTherapy'] }}
+                />
+              }
+            />
+            <Route
+              path="consumables/chemicalAssistance"
+              element={
+                <Items
+                  title="Chemical Assistance"
+                  mode="codex"
+                  key="chemicalAssistance"
+                  fetchOptions={{ includedKeywords: ['chemicalAssistance'] }}
+                />
+              }
+            />
+            <Route
+              path="consumables/misc"
+              element={
+                <Items
+                  title="Misc. Consumables"
+                  mode="codex"
+                  key="misc"
+                  fetchOptions={{ includedKeywords: ['misc'] }}
+                />
+              }
+            />
+            <Route
               path="create"
               element={
                 <ItemForm title="Create" mode="codex" key="create item" />
+              }
+            />
+            <Route
+              path=":itemId/update"
+              element={
+                <ItemForm title="Update" mode="codex" key="update item" />
               }
             />
           </Route>

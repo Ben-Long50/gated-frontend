@@ -708,7 +708,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
                             </cyberneticForm.Field>
                           </div>
                         ))}
-                        <div className="flex w-full items-center justify-between">
+                        <div className="flex w-full flex-row-reverse items-center justify-between">
                           <button
                             className="text-accent hover:underline"
                             onClick={(e) => {
@@ -919,7 +919,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
                             </cyberneticForm.Field>
                           </div>
                         ))}
-                        <div className="flex w-full items-center justify-between">
+                        <div className="flex w-full flex-row-reverse items-center justify-between">
                           <button
                             className="text-accent hover:underline"
                             onClick={(e) => {

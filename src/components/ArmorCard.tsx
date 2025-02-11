@@ -32,13 +32,15 @@ const ArmorControls = ({
 
   return (
     <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
-      <BtnControl
-        title="Block"
-        icon={<BlockIcon className="size-8 group-hover:fill-yellow-300" />}
-        mutation={editCurrentBlock}
-        value={-1}
-      />
-      {stats.power && (
+      {stats.block && stats.currentBlock > 0 ? (
+        <BtnControl
+          title="Block"
+          icon={<BlockIcon className="size-8 group-hover:fill-yellow-300" />}
+          mutation={editCurrentBlock}
+          value={-1}
+        />
+      ) : null}
+      {stats.currentPower && stats.currentPower > 0 ? (
         <BtnControl
           title="Activate"
           icon={
@@ -47,7 +49,7 @@ const ArmorControls = ({
           mutation={editCurrentPower}
           value={-1}
         />
-      )}
+      ) : null}
       <BtnControl
         title="Repair"
         icon={<HullIcon className="size-8 group-hover:fill-yellow-300" />}
