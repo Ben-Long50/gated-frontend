@@ -461,7 +461,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
               value.list.length > 0 && (
                 <ThemeContainer
                   key={key}
-                  className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-zinc-950"
+                  className="mb-auto rounded-br-4xl rounded-tl-4xl shadow-lg shadow-zinc-950"
                   chamfer="24"
                   borderColor={accentPrimary}
                 >

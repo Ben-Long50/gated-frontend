@@ -136,11 +136,9 @@ const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
                 </form.Field>
                 <form.Field name={`actions[${i}].roll`} mode="array">
                   {(field) => {
-                    console.log(field);
-
                     return (
                       <div className="flex w-full flex-col gap-4 sm:gap-6 lg:gap-8">
-                        {field.state.value.map((_, j: number) => (
+                        {field.state.value?.map((_, j: number) => (
                           <div
                             key={j}
                             className="flex w-full gap-4 sm:gap-6 lg:gap-8"

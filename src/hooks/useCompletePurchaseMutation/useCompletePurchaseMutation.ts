@@ -13,10 +13,6 @@ const useCompletePurchaseMutation = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['equipment'],
-        exact: false,
-      });
-      queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],
         exact: false,
       });
