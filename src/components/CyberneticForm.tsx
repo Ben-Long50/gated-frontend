@@ -105,7 +105,8 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
       stats: {
         cyber: cybernetic?.stats.cyber || '',
         power: cybernetic?.stats.power || '',
-      } as { cyber: number; power?: number },
+        currentPower: cybernetic?.stats.currentPower || '',
+      } as { cyber: number; power?: number; currentPower?: number },
       body: cybernetic?.body || ([''] as string[]),
       price: cybernetic?.price || null,
       weapons:
@@ -150,13 +151,13 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
         ([] as { keywordId: number; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
+      value.stats.currentPower = value.stats.power;
 
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
-      );
+      ) as { cyber: number; power?: number; currentPower?: number };
 
-      value.stats = { ...cybernetic?.stats, ...filteredStats };
+      value.stats = { ...filteredStats };
 
       const filteredWeaponStats = value.weapons.map((weapon: Weapon) =>
         Object.fromEntries(

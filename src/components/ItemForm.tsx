@@ -18,6 +18,7 @@ import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Icon from '@mdi/react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { ItemStats } from 'src/types/item';
 
 const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -77,11 +78,12 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
       itemType: item?.itemType || '',
       description: item?.description || '',
       stats: {
-        currentStacks: item?.stats?.currentStacks || '',
-        maxStacks: item?.stats?.maxStacks || '',
-        power: item?.stats?.power || '',
-        weight: item?.stats?.weight || '',
-      },
+        currentStacks: item?.stats.currentStacks || '',
+        maxStacks: item?.stats.maxStacks || '',
+        power: item?.stats.power || '',
+        currentPower: item?.stats.currentPower || '',
+        weight: item?.stats.weight || '',
+      } as ItemStats,
       actions:
         item?.actions ||
         ([] as {
@@ -100,11 +102,13 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
       price: item?.price || null,
     },
     onSubmit: async ({ value }) => {
+      value.stats.currentPower = value.stats.power;
+
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
       );
 
-      value.stats = { ...item?.stats, ...filteredStats };
+      value.stats = { ...filteredStats };
       console.log(value);
 
       const formData = new FormData();

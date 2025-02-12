@@ -32,11 +32,16 @@ interface VehicleStats {
   speed?: number;
   agility?: number;
   hull?: number;
+  currentHull?: number;
   armor?: number;
   cargo?: number;
+  currentCargo?: number;
   hangar?: number;
+  currentHangar?: number;
   pass?: number;
+  currentPass?: number;
   weapon?: number;
+  currentWeapon?: number;
 }
 
 export interface Modification {

@@ -4,7 +4,6 @@ import useActions from '../hooks/useActions';
 
 const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
   const actions = useActions();
-  console.log(modifier);
 
   const action =
     modifier.type === 'Roll'

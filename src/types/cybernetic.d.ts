@@ -46,7 +46,7 @@ export interface CyberneticWithKeywords {
 }
 
 interface CyberneticStats {
-  cyber?: number;
+  cyber: number;
   currentPower?: number;
   power?: number;
 }

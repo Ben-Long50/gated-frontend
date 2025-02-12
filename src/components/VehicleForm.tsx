@@ -115,24 +115,38 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
         speed: vehicle?.stats?.speed || '',
         agility: vehicle?.stats?.agility || '',
         hull: vehicle?.stats?.hull || '',
+        currentHull: vehicle?.stats?.currentHull || '',
         armor: vehicle?.stats?.armor || '',
         cargo: vehicle?.stats?.cargo || '',
+        currentCargo: vehicle?.stats?.currentCargo || '',
         hangar: vehicle?.stats?.hangar || '',
+        currentHangar: vehicle?.stats?.currentHangar || '',
         pass: vehicle?.stats?.pass || '',
+        currentPass: vehicle?.stats?.currentPass || '',
         weapon: vehicle?.stats?.weapon || '',
-      },
+        currentWeapon: vehicle?.stats?.currentWeapon || '',
+      } as VehicleStats,
       price: vehicle?.price || null,
       weapons: vehicleWeaponDetails || [],
       modifications: modIds || [],
     },
     onSubmit: async ({ value }) => {
+      value.stats.currentHull = value.stats.hull;
+      value.stats.currentWeapon = value.weapons.length;
+
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats as VehicleStats).filter(([_, val]) => val),
       );
 
-      value.stats = { ...vehicle?.stats, ...filteredStats };
+      value.stats = { ...filteredStats };
+
+      if (value.stats.cargo) value.stats.currentCargo = 0;
+      if (value.stats.hangar) value.stats.currentHangar = 0;
+      if (value.stats.pass) value.stats.currentPass = 0;
 
       const formData = new FormData();
+
+      console.log(value);
 
       Object.entries(value).forEach(([key, value]) => {
         if (key === 'picture' && value instanceof File) {

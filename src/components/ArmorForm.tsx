@@ -20,6 +20,7 @@ import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
 import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
 import SubactionForm from './SubactionForm';
+import { ArmorStats } from 'src/types/armor';
 
 const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -87,9 +88,11 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
         armor: armor?.stats.armor || '',
         ward: armor?.stats.ward || '',
         block: armor?.stats.block || '',
+        currentBlock: armor?.stats.currentBlock || '',
         power: armor?.stats.power || '',
+        currentPower: armor?.stats.currentPower || '',
         weight: armor?.stats.weight || '',
-      },
+      } as ArmorStats,
       actions:
         armor?.actions ||
         ([] as {
@@ -109,11 +112,14 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
         armorKeywordData || ([] as { keywordId: number; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
+      value.stats.currentBlock = value.stats.block;
+      value.stats.currentPower = value.stats.power;
+
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
       );
 
-      value.stats = { ...armor?.stats, ...filteredStats };
+      value.stats = { ...filteredStats };
 
       const formData = new FormData();
 

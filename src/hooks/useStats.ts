@@ -88,11 +88,11 @@ const useStats = (
   );
 
   const stats = {
-    maxHealth: 10 + tree.getPoints('violence', 'threshold') * 2,
-    maxSanity: 5 + tree.getPoints('esoterica', 'mysticism') * 2,
-    maxWeight: 10 + tree.getPoints('violence', 'threshold') * 2,
-    maxCyber: 4 + tree.getPoints('cybernetica', 'chromebits') * 2,
-    speed: 4 + tree.getPoints('violence', 'assault') * 2,
+    maxHealth: 10 + tree.getPoints('violence', 'threshold') * 1,
+    maxSanity: 5 + tree.getPoints('esoterica', 'mysticism') * 1,
+    maxWeight: 10 + tree.getPoints('violence', 'threshold') * 1,
+    maxCyber: 4 + tree.getPoints('cybernetica', 'chromebits') * 1,
+    speed: 4 + tree.getPoints('violence', 'assault') * 1,
     armor: 0 + armorValue,
     ward: 0 + wardValue,
     evasion: 1,
@@ -104,7 +104,7 @@ const useStats = (
 
   const rollBonuses = {} as { key: number };
 
-  equippedCybernetics?.forEach((cybernetic) => {
+  equippedCybernetics?.forEach((cybernetic: CyberneticWithKeywords) => {
     if (!cybernetic.modifiers) return;
 
     cybernetic.modifiers.forEach((modifier: Modifier) => {
@@ -123,21 +123,17 @@ const useStats = (
             stats[statKey] = modifier.value;
         }
       } else if (modifier.type === 'Roll') {
-        const actionData = actions?.filteredActions?.filter(
-          (action) => modifier?.action == action?.id,
-        )[0];
-
-        const currentValue = rollBonuses[actionData?.name] || 0;
+        const currentValue = rollBonuses[modifier.action?.name] || 0;
 
         switch (modifier.operator) {
           case 'add':
-            rollBonuses[actionData?.name] = currentValue + modifier.dice;
+            rollBonuses[modifier.action?.name] = currentValue + modifier.dice;
             break;
           case 'subtract':
-            rollBonuses[actionData?.name] = currentValue - modifier.dice;
+            rollBonuses[modifier.action?.name] = currentValue - modifier.dice;
             break;
           default:
-            rollBonuses[actionData?.name] = modifier.dice;
+            rollBonuses[modifier.action?.name] = modifier.dice;
         }
       }
     });

@@ -20,6 +20,7 @@ import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
 import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
 import SubactionForm from './SubactionForm';
+import { WeaponStats } from 'src/types/weapon';
 
 const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -93,9 +94,11 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         flurry: weapon?.stats.flurry || '',
         range: weapon?.stats.range || '',
         magCapacity: weapon?.stats.magCapacity || '',
+        currentAmmoCount: weapon?.stats.currentAmmoCount || '',
         magCount: weapon?.stats.magCount || '',
+        currentMagCount: weapon?.stats.currentMagCount || '',
         weight: weapon?.stats.weight || '',
-      },
+      } as WeaponStats,
       actions:
         weapon?.actions ||
         ([] as {
@@ -115,11 +118,16 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         weaponKeywordData || ([] as { keywordId: number; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
+      value.stats.currentAmmoCount = value.stats.magCapacity;
+      value.stats.currentMagCount = value.stats.magCount
+        ? value.stats.magCount - 1
+        : 0;
+
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
       );
 
-      value.stats = { ...weapon?.stats, ...filteredStats };
+      value.stats = { ...filteredStats };
 
       const formData = new FormData();
 
