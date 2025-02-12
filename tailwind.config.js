@@ -22,6 +22,7 @@ export default {
         logo: ['Omnitrinx', 'Exo-regular', 'Inter'],
         kings: ['kings'],
         zen: ['zen-dots'],
+        bonheur: ['bonheur'],
       },
       height: {
         '70dvh': '70dvh',

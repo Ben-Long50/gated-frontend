@@ -8,6 +8,11 @@
 }
 
 @font-face {
+  font-family: 'bonheur';
+  src: url('/bonheur.ttf') format('truetype');
+}
+
+@font-face {
   font-family: 'exo-regular';
   src: url('/exo-regular.otf') format('opentype');
 }

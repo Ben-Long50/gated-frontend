@@ -47,7 +47,6 @@ import useEquipment from '../hooks/useEquipment';
 import { Item } from 'src/types/item';
 import useItems from '../hooks/useItems';
 import MiscItemCard from './MiscItemCard';
-import useActions from '../hooks/useActions';
 
 const Equipment = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
