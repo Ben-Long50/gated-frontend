@@ -11,7 +11,7 @@ const AuthLayout = () => {
     <div
       className={`${theme} grid h-dvh w-dvw grid-cols-[2fr_1fr_2fr] items-center gap-8 max-sm:p-4 sm:gap-20`}
       style={{
-        backgroundImage: `url('public/glam_city_4.jpeg')`,
+        backgroundImage: `url('/glam_city_4.jpeg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
