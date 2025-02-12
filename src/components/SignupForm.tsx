@@ -35,7 +35,7 @@ const SignupForm = () => {
     <ThemeContainer
       chamfer="24"
       borderColor={accentPrimary}
-      className="mx-auto w-full max-w-2xl rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
+      className="mx-auto w-full max-w-2xl rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
       position="mx-auto max-w-xl w-full"
       as="form"
     >
@@ -47,7 +47,7 @@ const SignupForm = () => {
           signupForm.handleSubmit();
         }}
       >
-        <h1 className="text-accent text-center text-4xl font-normal md:text-5xl">
+        <h1 className="text-accent text-center font-normal">
           Create credentials
         </h1>
         <div className="flex flex-col gap-4 md:gap-6">

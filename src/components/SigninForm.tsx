@@ -52,7 +52,7 @@ const SigninForm = () => {
     <ThemeContainer
       chamfer="24"
       borderColor={accentPrimary}
-      className="mx-auto w-full max-w-2xl rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
+      className="mx-auto w-full max-w-2xl rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
     >
       <form
         className="bg-primary flex flex-col gap-6 p-4 clip-6 md:gap-8 md:p-8 lg:min-w-[500px]"
@@ -62,9 +62,7 @@ const SigninForm = () => {
           signinForm.handleSubmit();
         }}
       >
-        <h1 className="text-accent text-center font-normal md:text-5xl">
-          Credentials
-        </h1>
+        <h1 className="text-accent text-center font-normal">Credentials</h1>
         <div className="flex flex-col gap-4 md:gap-6">
           <signinForm.Field
             name="email"
