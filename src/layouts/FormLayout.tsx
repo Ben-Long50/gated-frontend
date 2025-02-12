@@ -8,6 +8,7 @@ const FormLayout = ({
   children,
   itemId,
   createMutation,
+  modifyMutation,
   deleteMutation,
   handleDelete,
   handleReset,
@@ -16,6 +17,22 @@ const FormLayout = ({
   setDeleteMode,
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
+
+  const isPending =
+    createMutation?.isPending ||
+    modifyMutation?.isPending ||
+    deleteMutation?.isPending;
+
+  const isSuccess =
+    createMutation?.isSuccess ||
+    modifyMutation?.isSuccess ||
+    deleteMutation?.isSuccess;
+
+  const isError =
+    createMutation?.isError ||
+    modifyMutation?.isError ||
+    deleteMutation?.isError;
+
   return (
     <ThemeContainer
       className="mb-auto w-full max-w-5xl rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
@@ -60,13 +77,9 @@ const FormLayout = ({
         )}
         {formMessage && (
           <div className="flex w-full items-center justify-between">
-            {(createMutation.isPending || deleteMutation.isPending) && (
-              <p>Submitting...</p>
-            )}
-            {(createMutation.isSuccess || deleteMutation.isSuccess) && (
-              <p>{formMessage}</p>
-            )}
-            {(createMutation.isError || deleteMutation.isError) && (
+            {isPending && <p>Submitting...</p>}
+            {isSuccess && <p>{formMessage}</p>}
+            {isError && (
               <p>
                 Error: <span className="text-error">{formMessage}</span>
               </p>

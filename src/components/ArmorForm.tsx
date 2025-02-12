@@ -21,6 +21,7 @@ import SelectField from './SelectField';
 import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
 import SubactionForm from './SubactionForm';
 import { ArmorStats } from 'src/types/armor';
+import useModifyArmorMutation from '../hooks/useModifyArmorMutation/useModifyArmorMutation';
 
 const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -38,6 +39,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   );
 
   const createArmor = useCreateArmorMutation(apiUrl, setFormMessage);
+  const modifyArmor = useModifyArmorMutation(apiUrl, armorId, setFormMessage);
   const deleteArmor = useDeleteArmorMutation(apiUrl, armorId, setFormMessage);
 
   const handleDelete = () => {
@@ -131,7 +133,11 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
         }
       });
       formData.append('armorId', JSON.stringify(armorId || 0));
-      await createArmor.mutate(formData);
+      if (mode === 'create' || mode === 'update') {
+        await createArmor.mutate(formData);
+      } else if (mode === 'modify') {
+        await modifyArmor.mutate(formData);
+      }
     },
   });
 
@@ -155,6 +161,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
     <FormLayout
       itemId={armorId}
       createMutation={createArmor}
+      modifyMutation={modifyArmor}
       deleteMutation={deleteArmor}
       handleDelete={handleDelete}
       handleReset={handleReset}
@@ -434,7 +441,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
           )}
         </armorForm.Field>
         <BtnRect type="submit" className="group w-full">
-          {createArmor.isPending ? (
+          {createArmor.isPending || modifyArmor.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}

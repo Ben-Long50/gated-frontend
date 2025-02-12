@@ -21,6 +21,7 @@ import SelectField from './SelectField';
 import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
 import SubactionForm from './SubactionForm';
 import { WeaponStats } from 'src/types/weapon';
+import useModifyWeaponMutation from '../hooks/useModifyWeaponMutation/useModifyWeaponMutation';
 
 const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -38,6 +39,11 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   );
 
   const createWeapon = useCreateWeaponMutation(apiUrl, setFormMessage);
+  const modifyWeapon = useModifyWeaponMutation(
+    apiUrl,
+    weaponId,
+    setFormMessage,
+  );
   const deleteWeapon = useDeleteWeaponMutation(
     apiUrl,
     weaponId,
@@ -128,6 +134,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
       );
 
       value.stats = { ...filteredStats };
+      console.log(value);
 
       const formData = new FormData();
 
@@ -139,7 +146,12 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         }
       });
       formData.append('weaponId', JSON.stringify(weaponId || 0));
-      await createWeapon.mutate(formData);
+
+      if (mode === 'create' || mode === 'update') {
+        await createWeapon.mutate(formData);
+      } else if (mode === 'modify') {
+        await modifyWeapon.mutate(formData);
+      }
     },
   });
 
@@ -163,6 +175,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
     <FormLayout
       itemId={weaponId}
       createMutation={createWeapon}
+      modifyMutation={modifyWeapon}
       deleteMutation={deleteWeapon}
       handleDelete={handleDelete}
       handleReset={handleReset}
@@ -472,7 +485,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
           )}
         </weaponForm.Field>
         <BtnRect type="submit" className="group w-full">
-          {createWeapon.isPending ? (
+          {createWeapon.isPending || modifyWeapon.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}

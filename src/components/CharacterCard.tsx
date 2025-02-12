@@ -30,17 +30,26 @@ const CharacterCard = ({ character }: { character: Character }) => {
 
   return (
     <ThemeContainer
-      className="rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
+      className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
       chamfer="32"
       borderColor={accentPrimary}
     >
-      <div className="bg-primary flex flex-wrap gap-4 p-6 clip-8 sm:flex-nowrap md:gap-8">
-        <CloudinaryImage
-          className={`mx-auto my-auto aspect-square w-full max-w-72 clip-6`}
-          url={character.picture?.imageUrl}
-          alt={`${character.firstName} ${character.lastName}'s image`}
-        />
-        <div className="flex w-full flex-col justify-between gap-4 md:gap-6">
+      <div className="bg-primary flex flex-col items-center gap-8 p-6 clip-8 md:flex-row">
+        <div className="grid grid-cols-[1fr_auto_1fr]">
+          <ThemeContainer
+            className="col-span-1 col-start-2 rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
+            chamfer="24"
+            borderColor={accentPrimary}
+          >
+            <CloudinaryImage
+              className="w-full min-w-[280px] max-w-[400px]"
+              detailsOpen={true}
+              url={character.picture?.imageUrl}
+              alt={`${character.firstName} ${character.lastName}'s image`}
+            />
+          </ThemeContainer>
+        </div>
+        <div className="flex h-full w-full flex-col justify-between gap-4 md:gap-6">
           <div className="flex w-full items-center justify-between md:px-8">
             <h1 className="text-center text-3xl font-semibold tracking-widest">
               {character.firstName + ' ' + character.lastName}

@@ -470,7 +470,7 @@ const CharacterUpdateForm = () => {
           </searchForm.Field>
         </div>
         <PerkList
-          className="scrollbar-primary-2 max-h-[400px] overflow-y-auto pr-4"
+          className="scrollbar-primary-2 max-h-[500px] overflow-y-auto py-4 pr-4"
           perkTree={perks.filteredPerkTree}
           mode="form"
           checkedPerks={checkedPerks}

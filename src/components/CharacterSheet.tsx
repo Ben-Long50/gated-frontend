@@ -45,8 +45,6 @@ const CharacterSheet = () => {
   const isLoading = characterLoading;
   const isPending = characterPending;
 
-  console.log(character);
-
   const { stats } = useStats(
     character?.characterInventory,
     character?.attributes,

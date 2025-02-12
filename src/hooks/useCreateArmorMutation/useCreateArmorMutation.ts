@@ -10,8 +10,8 @@ const useCreateArmorMutation = (
     mutationFn: (formData: FormData) => {
       return createArmor(formData, apiUrl);
     },
-    onSuccess: () => {
-      setFormMessage('Armor successfully created');
+    onSuccess: (data) => {
+      setFormMessage(data.message);
       queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],
         exact: false,

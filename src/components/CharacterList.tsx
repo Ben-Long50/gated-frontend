@@ -80,7 +80,7 @@ const CharacterList = () => {
           </ThemeContainer>
         </>
       )}
-      <div className="grid grid-flow-row gap-10">
+      <div className="grid w-full grid-flow-row gap-10">
         {characters?.map((character) => {
           return <CharacterCard key={character.id} character={character} />;
         })}

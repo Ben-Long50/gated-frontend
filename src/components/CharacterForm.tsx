@@ -26,18 +26,29 @@ import CyberIcon from './icons/CyberIcon';
 import EquipIcon from './icons/EquipIcon';
 import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';
+import useStats from '../hooks/useStats';
+import { CharacterInventory } from 'src/types/character';
+import { Perk } from 'src/types/perk';
 
 const CharacterForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const [checkedPerks, setCheckedPerks] = useState<number[]>([]);
+  const [checkedPerks, setCheckedPerks] = useState<Perk[]>([]);
   const [imagePreview, setImagePreview] = useState('');
 
   const attributeTree = useAttributeTree();
 
   const perks = usePerks(attributeTree?.tree);
+
+  const { stats } = useStats(
+    {} as CharacterInventory,
+    attributeTree?.tree,
+    checkedPerks,
+  );
+  console.log(stats);
+  console.log(checkedPerks);
 
   const createCharacter = useCreateCharacterMutation(apiUrl);
 
@@ -67,10 +78,12 @@ const CharacterForm = () => {
         currentSanity: 0,
       },
       attributes: attributeTree.tree,
-      perks: [],
+      perks: [] as any[],
     },
     onSubmit: ({ value }) => {
       const formData = new FormData();
+
+      value.perks = value.perks.map((perk: Perk) => perk.id);
 
       Object.entries(value).forEach(([key, value]) => {
         if (key === 'picture' && value instanceof File) {
@@ -238,32 +251,32 @@ const CharacterForm = () => {
         >
           <StatBar
             title="Health"
-            current={attributeTree.stats.health}
-            total={attributeTree.stats.health}
+            current={stats.maxHealth}
+            total={stats.maxHealth}
             color="rgb(248 113 113)"
           >
             <HealthIcon className="size-8" />
           </StatBar>
           <StatBar
             title="Sanity"
-            current={attributeTree.stats.sanity}
-            total={attributeTree.stats.sanity}
+            current={stats.maxSanity}
+            total={stats.maxSanity}
             color="rgb(96 165 250)"
           >
             <SanityIcon className="size-8" />
           </StatBar>
           <StatBar
             title="Cyber"
-            current={attributeTree.stats.cyber}
-            total={attributeTree.stats.cyber}
+            current={stats.maxCyber}
+            total={stats.maxCyber}
             color="rgb(52 211 153)"
           >
             <CyberIcon className="size-8" />
           </StatBar>
           <StatBar
             title="Equip"
-            current={attributeTree.stats.equip}
-            total={attributeTree.stats.equip}
+            current={stats.maxWeight}
+            total={stats.maxWeight}
             color="rgb(251 191 36)"
           >
             <EquipIcon className="size-8" />
@@ -424,7 +437,7 @@ const CharacterForm = () => {
           </searchForm.Field>
         </div>
         <PerkList
-          className="scrollbar-primary-2 max-h-[400px] overflow-y-auto pr-4"
+          className="scrollbar-primary-2 max-h-[500px] overflow-y-auto py-4 pr-4"
           perkTree={perks.filteredPerkTree}
           mode="form"
           checkedPerks={checkedPerks}

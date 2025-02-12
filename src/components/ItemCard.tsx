@@ -243,14 +243,22 @@ const ItemCard = ({
                   }}
                 >
                   {item.picture && (
-                    <CloudinaryImage
-                      ref={imageRef}
-                      className="z-20"
-                      rarity={item.rarity}
-                      url={item.picture?.imageUrl}
-                      alt={item.name + ' ' + 'image'}
-                      detailsOpen={detailsOpen}
-                    />
+                    <motion.div
+                      className="z-20 shrink-0"
+                      initial={{ width: 280 }}
+                      animate={{
+                        width: detailsOpen
+                          ? '100%'
+                          : 'clamp(200px, 50%, 300px)',
+                      }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <CloudinaryImage
+                        ref={imageRef}
+                        url={item.picture?.imageUrl}
+                        alt={item.name + ' ' + 'image'}
+                      />
+                    </motion.div>
                   )}
                   <motion.div
                     className={`${item.picture ? 'mx-auto flex max-w-min grow flex-col overflow-y-auto' : 'grid grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start'} scrollbar-secondary-2 w-full shrink-0 gap-2`}
@@ -303,12 +311,19 @@ const ItemCard = ({
           ) : (
             <div className="relative flex h-full gap-8">
               {item.picture && (
-                <CloudinaryImage
-                  rarity={item.rarity}
-                  url={item.picture?.imageUrl}
-                  alt={item.name + ' ' + 'image'}
-                  detailsOpen={detailsOpen}
-                />
+                <motion.div
+                  className="shrink-0"
+                  initial={{ width: 280 }}
+                  animate={{
+                    width: detailsOpen ? 'clamp(280px, 50%, 400px)' : 280,
+                  }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <CloudinaryImage
+                    url={item.picture?.imageUrl}
+                    alt={item.name + ' ' + 'image'}
+                  />
+                </motion.div>
               )}
               <div className="w-full">
                 <div className="grid w-full grow grid-cols-[2fr-1fr] items-start gap-6">

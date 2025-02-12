@@ -9,16 +9,17 @@ const PerkList = ({
   perkTree,
   checkedPerks,
   setCheckedPerks,
+  className,
   mode,
 }: {
   perkTree: Partial<PerkTree>;
-  checkedPerks?: number[];
-  setCheckedPerks?: SetState<number[]>;
+  checkedPerks?: Perk[];
+  setCheckedPerks?: SetState<Perk[]>;
   className?: string;
   mode?: string;
 }) => {
   return (
-    <div className="bg-primary z-20 flex w-full flex-col gap-8 p-4 clip-6 sm:p-8">
+    <div className={`${className} bg-primary z-20 flex w-full flex-col gap-8`}>
       {Object.entries(perkTree).map(([perkType, skills]) => {
         return (
           Object.entries(skills).reduce(
@@ -59,17 +60,17 @@ const PerkList = ({
                                   <input
                                     className="size-6"
                                     type="checkbox"
-                                    checked={checkedPerks?.includes(perk.id)}
+                                    checked={checkedPerks?.includes(perk)}
                                     onChange={() => {
-                                      if (!checkedPerks?.includes(perk.id)) {
+                                      if (!checkedPerks?.includes(perk)) {
                                         setCheckedPerks([
                                           ...checkedPerks,
-                                          perk.id,
+                                          perk,
                                         ]);
                                       } else {
-                                        setCheckedPerks((prevPerks: number[]) =>
+                                        setCheckedPerks((prevPerks: Perk[]) =>
                                           prevPerks.filter(
-                                            (id) => id !== perk.id,
+                                            (prev) => prev.id !== perk.id,
                                           ),
                                         );
                                       }

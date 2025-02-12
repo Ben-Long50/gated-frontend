@@ -80,7 +80,7 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/weapons/:weaponId/modify"
-            element={<WeaponForm title="Modify" mode="inventory" />}
+            element={<WeaponForm title="Modify" mode="modify" />}
           />
           <Route
             path=":characterId/inventory/armor"
@@ -88,7 +88,7 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/armor/:armorId/modify"
-            element={<ArmorForm title="Modify" mode="inventory" />}
+            element={<ArmorForm title="Modify" mode="modify" />}
           />
           <Route
             path=":characterId/inventory/cybernetics"
@@ -96,7 +96,7 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/cybernetics/:cyberneticId/modify"
-            element={<CyberneticForm title="Modify" mode="inventory" />}
+            element={<CyberneticForm title="Modify" mode="modify" />}
           />
           <Route
             path=":characterId/inventory/items"
@@ -124,11 +124,11 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/items/:itemId/modify"
-            element={<ItemForm title="Modify" mode="inventory" />}
+            element={<ItemForm title="Modify" mode="modify" />}
           />
           <Route
             path=":characterId/inventory/items/:category/:subcategory/:itemId/modify"
-            element={<ItemForm title="Modify" mode="inventory" />}
+            element={<ItemForm title="Modify" mode="modify" />}
           />
           <Route
             path=":characterId/inventory/vehicles"
@@ -140,7 +140,7 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/vehicles/weapons/:weaponId/modify"
-            element={<WeaponForm title="Modify" mode="inventory" />}
+            element={<WeaponForm title="Modify" mode="modify" />}
           />
           <Route
             path=":characterId/inventory/vehicles/modifications"
@@ -148,7 +148,7 @@ const router = createBrowserRouter(
           />
           <Route
             path=":characterId/inventory/vehicles/:vehicleId/modify"
-            element={<VehicleForm title="Modify" mode="inventory" />}
+            element={<VehicleForm title="Modify" mode="modify" />}
           />
         </Route>
 
@@ -287,13 +287,13 @@ const router = createBrowserRouter(
             <Route
               path="create"
               element={
-                <WeaponForm title="Create" mode="codex" key="create weapon" />
+                <WeaponForm title="Create" mode="create" key="create weapon" />
               }
             />
             <Route
               path=":weaponId/update"
               element={
-                <WeaponForm title="Update" mode="codex" key="update weapon" />
+                <WeaponForm title="Update" mode="update" key="update weapon" />
               }
             />
           </Route>
@@ -341,13 +341,13 @@ const router = createBrowserRouter(
             <Route
               path="create"
               element={
-                <ArmorForm title="Create" mode="codex" key="create armor" />
+                <ArmorForm title="Create" mode="create" key="create armor" />
               }
             />
             <Route
               path=":armorId/update"
               element={
-                <ArmorForm title="Update" mode="codex" key="update armor" />
+                <ArmorForm title="Update" mode="update" key="update armor" />
               }
             />
           </Route>
@@ -368,7 +368,7 @@ const router = createBrowserRouter(
               element={
                 <CyberneticForm
                   title="Create"
-                  mode="codex"
+                  mode="create"
                   key="create cybernetics"
                 />
               }
@@ -378,7 +378,7 @@ const router = createBrowserRouter(
               element={
                 <CyberneticForm
                   title="Update"
-                  mode="codex"
+                  mode="update"
                   key="update cybernetics"
                 />
               }
@@ -408,7 +408,7 @@ const router = createBrowserRouter(
               element={
                 <WeaponForm
                   title="Update"
-                  mode="codex"
+                  mode="update"
                   key="update vehicle weapon"
                 />
               }
@@ -426,7 +426,11 @@ const router = createBrowserRouter(
             <Route
               path="create"
               element={
-                <VehicleForm title="Create" mode="codex" key="create vehicle" />
+                <VehicleForm
+                  title="Create"
+                  mode="create"
+                  key="create vehicle"
+                />
               }
             />
             <Route
@@ -434,7 +438,7 @@ const router = createBrowserRouter(
               element={
                 <VehicleModForm
                   title="Create"
-                  mode="codex"
+                  mode="create"
                   key="create modification"
                 />
               }
@@ -442,7 +446,11 @@ const router = createBrowserRouter(
             <Route
               path=":vehicleId/update"
               element={
-                <VehicleForm title="Update" mode="codex" key="update vehicle" />
+                <VehicleForm
+                  title="Update"
+                  mode="update"
+                  key="update vehicle"
+                />
               }
             />
             <Route
@@ -450,7 +458,7 @@ const router = createBrowserRouter(
               element={
                 <VehicleModForm
                   title="Update"
-                  mode="codex"
+                  mode="update"
                   key="update modification"
                 />
               }
@@ -519,13 +527,13 @@ const router = createBrowserRouter(
             <Route
               path="create"
               element={
-                <ItemForm title="Create" mode="codex" key="create item" />
+                <ItemForm title="Create" mode="create" key="create item" />
               }
             />
             <Route
               path=":itemId/update"
               element={
-                <ItemForm title="Update" mode="codex" key="update item" />
+                <ItemForm title="Update" mode="update" key="update item" />
               }
             />
           </Route>
@@ -533,11 +541,11 @@ const router = createBrowserRouter(
             <Route index element={<Perks mode="codex" key="perks" />} />
             <Route
               path="create"
-              element={<PerkForm mode="codex" key="create perk" />}
+              element={<PerkForm mode="create" key="create perk" />}
             />
             <Route
               path=":perkId/update"
-              element={<PerkForm mode="codex" key="update perk" />}
+              element={<PerkForm mode="update" key="update perk" />}
             />
           </Route>
 
@@ -545,11 +553,11 @@ const router = createBrowserRouter(
             <Route index element={<Keywords mode="codex" key="keywords" />} />
             <Route
               path="create"
-              element={<KeywordForm mode="codex" key="create keyword" />}
+              element={<KeywordForm mode="create" key="create keyword" />}
             />
             <Route
               path=":keywordId/update"
-              element={<KeywordForm mode="codex" key="update keyword" />}
+              element={<KeywordForm mode="update" key="update keyword" />}
             />
           </Route>
 
@@ -557,11 +565,11 @@ const router = createBrowserRouter(
             <Route index element={<Actions mode="codex" key="actions" />} />
             <Route
               path="create"
-              element={<ActionForm mode="codex" key="create action" />}
+              element={<ActionForm mode="create" key="create action" />}
             />
             <Route
               path=":actionId/update"
-              element={<ActionForm mode="codex" key="update action" />}
+              element={<ActionForm mode="update" key="update action" />}
             />
           </Route>
 
@@ -572,11 +580,11 @@ const router = createBrowserRouter(
             />
             <Route
               path="create"
-              element={<ConditionForm mode="codex" key="create condition" />}
+              element={<ConditionForm mode="create" key="create condition" />}
             />
             <Route
               path=":conditionId/update"
-              element={<ConditionForm mode="codex" key="update condition" />}
+              element={<ConditionForm mode="update" key="update condition" />}
             />
           </Route>
         </Route>

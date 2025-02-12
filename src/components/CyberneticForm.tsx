@@ -26,6 +26,7 @@ import { Weapon } from 'src/types/weapon';
 import { Armor } from 'src/types/armor';
 import { Action } from 'src/types/action';
 import SubactionForm from './SubactionForm';
+import useModifyCyberneticMutation from '../hooks/useModifyCyberneticMutation/useModifyCyberneticMutation';
 
 const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -44,6 +45,11 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
   );
 
   const createCybernetic = useCreateCyberneticMutation(apiUrl, setFormMessage);
+  const modifyCybernetic = useModifyCyberneticMutation(
+    apiUrl,
+    cyberneticId,
+    setFormMessage,
+  );
   const deleteCybernetic = useDeleteCyberneticMutation(
     apiUrl,
     cyberneticId,
@@ -204,7 +210,11 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
       });
       formData.append('cyberneticId', JSON.stringify(cyberneticId || 0));
 
-      await createCybernetic.mutate(formData);
+      if (mode === 'create' || mode === 'update') {
+        await createCybernetic.mutate(formData);
+      } else if (mode === 'modify') {
+        await modifyCybernetic.mutate(formData);
+      }
     },
   });
 
@@ -228,6 +238,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
     <FormLayout
       itemId={cyberneticId}
       createMutation={createCybernetic}
+      modifyMutation={modifyCybernetic}
       deleteMutation={deleteCybernetic}
       handleDelete={handleDelete}
       handleReset={handleReset}
@@ -1040,7 +1051,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
           )}
         </cyberneticForm.Field>
         <BtnRect type="submit" className="group w-full">
-          {createCybernetic.isPending ? (
+          {createCybernetic.isPending || modifyCybernetic.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}

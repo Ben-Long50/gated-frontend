@@ -19,6 +19,7 @@ import Icon from '@mdi/react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { ItemStats } from 'src/types/item';
+import useModifyItemMutation from '../hooks/useModifyItemMutation/useModifyItemMutation';
 
 const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -34,6 +35,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   );
 
   const createItem = useCreateItemMutation(apiUrl, setFormMessage);
+  const modifyItem = useModifyItemMutation(apiUrl, itemId, setFormMessage);
   const deleteItem = useDeleteItemMutation(apiUrl, setFormMessage, itemId);
 
   useEffect(() => {
@@ -121,7 +123,11 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
         }
       });
 
-      await createItem.mutate(formData);
+      if (mode === 'create' || mode === 'update') {
+        await createItem.mutate(formData);
+      } else if (mode === 'modify') {
+        await modifyItem.mutate(formData);
+      }
     },
   });
 
@@ -129,6 +135,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
     <FormLayout
       itemId={itemId}
       createMutation={createItem}
+      modifyMutation={modifyItem}
       deleteMutation={deleteItem}
       handleDelete={handleDelete}
       handleReset={handleReset}
@@ -409,7 +416,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
         <ModifierField form={itemForm} />
         <hr className="border-yellow-300 border-opacity-50" />
         <BtnRect type="submit" className="group w-full">
-          {createItem.isPending ? (
+          {createItem.isPending || modifyItem.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}

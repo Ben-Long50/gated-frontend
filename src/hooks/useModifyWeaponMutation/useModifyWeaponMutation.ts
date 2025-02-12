@@ -1,35 +1,24 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import createCybernetic from './createCybernetic';
+import modifyWeapon from './modifyWeapon';
 
-const useCreateCyberneticMutation = (
+const useModifyWeaponMutation = (
   apiUrl: string,
+  weaponId: string,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: FormData) => {
-      return createCybernetic(formData, apiUrl);
+      return modifyWeapon(formData, weaponId, apiUrl);
     },
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['weapons'],
-        exact: false,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['armor'],
-        exact: false,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['actions'],
-        exact: false,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
+        queryKey: ['weapon'],
         exact: false,
       });
       return queryClient.invalidateQueries({
-        queryKey: ['cybernetics'],
+        queryKey: ['activeCharacter'],
         exact: false,
       });
     },
@@ -40,4 +29,4 @@ const useCreateCyberneticMutation = (
   });
 };
 
-export default useCreateCyberneticMutation;
+export default useModifyWeaponMutation;

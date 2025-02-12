@@ -10,8 +10,8 @@ const useCreateVehicleMutation = (
     mutationFn: (formData: FormData) => {
       return createVehicle(formData, apiUrl);
     },
-    onSuccess: () => {
-      setFormMessage('Vehicle successfully created');
+    onSuccess: (data) => {
+      setFormMessage(data.message);
       queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],
         exact: false,

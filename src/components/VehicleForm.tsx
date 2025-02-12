@@ -22,6 +22,7 @@ import useWeapons from '../hooks/useWeapons';
 import SelectField from './SelectField';
 import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
+import useModifyVehicleMutation from '../hooks/useModifyVehicleMutation/useModifyVehicleMutation';
 
 const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -61,7 +62,11 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
   );
 
   const createVehicle = useCreateVehicleMutation(apiUrl, setFormMessage);
-
+  const modifyVehicle = useModifyVehicleMutation(
+    apiUrl,
+    vehicleId,
+    setFormMessage,
+  );
   const deleteVehicle = useDeleteVehicleMutation(
     apiUrl,
     vehicleId,
@@ -156,7 +161,12 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
         }
       });
       formData.append('vehicleId', JSON.stringify(vehicleId || 0));
-      await createVehicle.mutate(formData);
+
+      if (mode === 'create' || mode === 'update') {
+        await createVehicle.mutate(formData);
+      } else if (mode === 'modify') {
+        await modifyVehicle.mutate(formData);
+      }
     },
     validators: {
       onSubmit: ({ value }) => {
@@ -202,6 +212,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
     <FormLayout
       itemId={vehicleId}
       createMutation={createVehicle}
+      modifyMutation={modifyVehicle}
       deleteMutation={deleteVehicle}
       handleDelete={handleDelete}
       handleReset={handleReset}
@@ -658,7 +669,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
           }
         </vehicleForm.Subscribe>
         <BtnRect type="submit" className="group w-full">
-          {createVehicle.isPending ? (
+          {createVehicle.isPending || modifyVehicle.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}

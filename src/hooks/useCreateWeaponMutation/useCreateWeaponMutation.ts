@@ -10,8 +10,8 @@ const useCreateWeaponMutation = (
     mutationFn: (formData: FormData) => {
       return createWeapon(formData, apiUrl);
     },
-    onSuccess: () => {
-      setFormMessage('Weapon successfully created');
+    onSuccess: (data) => {
+      setFormMessage(data.message);
       queryClient.invalidateQueries({
         queryKey: ['weapon'],
         exact: false,
