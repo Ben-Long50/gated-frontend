@@ -18,7 +18,7 @@ const AuthLayout = () => {
       }}
     >
       <motion.div
-        className="col-span-3 flex flex-col items-center justify-center gap-6 overflow-visible border-yellow-300 border-opacity-50 bg-fixed p-4 py-8 sm:col-span-1 sm:gap-12 sm:border-r sm:bg-zinc-900 sm:bg-opacity-70 lg:p-8"
+        className="col-span-3 flex h-full flex-col items-center justify-center gap-6 overflow-visible border-yellow-300 border-opacity-50 bg-fixed p-4 py-8 sm:col-span-1 sm:gap-12 sm:border-r sm:bg-zinc-900 sm:bg-opacity-70 lg:p-8"
         initial={{ translateX: '-100%', opacity: 0 }}
         animate={{ translateX: 0, opacity: 1 }}
         transition={{ duration: 2, ease: [0, 0.5, 0.2, 1.01] }}
