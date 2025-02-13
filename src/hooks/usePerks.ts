@@ -10,16 +10,11 @@ import {
   ViolencePerks,
 } from '../types/perk';
 import { AttributeTree } from '../types/attributeTree';
-import { Modifier } from 'src/types/modifier';
-import { Action } from 'src/types/action';
-import useActions from './useActions';
 
 const usePerks = (attributeTree?: AttributeTree) => {
   const { apiUrl } = useContext(AuthContext);
 
   const { data: perks, isLoading, isPending } = usePerksQuery(apiUrl);
-
-  const actions = useActions();
 
   const [query, setQuery] = useState('');
   const [attributeQuery, setAttributeQuery] = useState('');
@@ -114,7 +109,7 @@ const usePerks = (attributeTree?: AttributeTree) => {
     ? getSatisfiedPerks(attributeTree)
     : sortPerks(perks || []);
 
-  const filteredPerkTree = sortPerks(
+  const filteredPerkTree: Partial<PerkTree> = sortPerks(
     Object.entries(perkTree)
       .filter(([attribute]) =>
         attribute.toLowerCase().includes(attributeQuery.toLowerCase()),

@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import ThemeContainer from './ThemeContainer';
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import SelectField from './SelectField';
 import InputField from './InputField';
@@ -38,6 +38,9 @@ const CodexSearch = () => {
   const [nameQuery, setNameQuery] = useState<string | null>(null);
   const [descriptionQuery, setDescriptionQuery] = useState<string | null>(null);
   const [category, setCategory] = useState('');
+
+  const nameTimerRef = useRef<number | null>(null);
+  const descriptionTimerRef = useRef<number | null>(null);
 
   const {
     filteredWeapons: weapons,
@@ -99,72 +102,74 @@ const CodexSearch = () => {
     .map((item) => Object.values(item).flat())
     .flat();
 
-  const codexWeapons = weapons.map((weapon: WeaponWithKeywords) => ({
-    type: 'weapon',
-    item: weapon,
-  }));
-  const codexArmor = armor.map((armor: ArmorWithKeywords) => ({
-    type: 'armor',
-    item: armor,
-  }));
-  const codexCybernetics = cybernetics.map(
-    (cybernetic: CyberneticWithKeywords) => ({
-      type: 'cybernetic',
-      item: cybernetic,
-    }),
-  );
-  const codexVehicles = vehicles.map((vehicle: VehicleWithWeapons) => ({
-    type: 'vehicle',
-    item: vehicle,
-  }));
-  const codexMods = modifications.map((mod: Modification) => ({
-    type: 'modification',
-    item: mod,
-  }));
-  const codexKeywords = keywords.map((keyword: Keyword) => ({
-    type: 'keyword',
-    item: keyword,
-  }));
-  const codexPerks = perkArray.map((perk: Perk) => ({
-    type: 'perk',
-    item: perk,
-  }));
-  const codexActions = actions.map((action: Action) => ({
-    type: 'action',
-    item: action,
-  }));
-  const codexConditions = conditions.map((condition: Condition) => ({
-    type: 'condition',
-    item: condition,
-  }));
+  const codex = useMemo(() => {
+    const allItems = [
+      ...weapons.map((weapon: WeaponWithKeywords) => ({
+        type: 'weapon',
+        item: weapon,
+      })),
+      ...armor.map((armor: ArmorWithKeywords) => ({
+        type: 'armor',
+        item: armor,
+      })),
+      ...cybernetics.map((cybernetic: CyberneticWithKeywords) => ({
+        type: 'cybernetic',
+        item: cybernetic,
+      })),
+      ...vehicles.map((vehicle: VehicleWithWeapons) => ({
+        type: 'vehicle',
+        item: vehicle,
+      })),
+      ...modifications.map((mod: Modification) => ({
+        type: 'modification',
+        item: mod,
+      })),
+      ...keywords.map((keyword: Keyword) => ({
+        type: 'keyword',
+        item: keyword,
+      })),
+      ...perkArray.map((perk: Perk) => ({
+        type: 'perk',
+        item: perk,
+      })),
+      ...actions.map((action: Action) => ({ type: 'action', item: action })),
+      ...conditions.map((condition: Condition) => ({
+        type: 'condition',
+        item: condition,
+      })),
+    ];
+    console.log(nameQuery, descriptionQuery);
 
-  const codex = [
-    codexWeapons,
-    codexArmor,
-    codexCybernetics,
-    codexVehicles,
-    codexMods,
-    codexKeywords,
-    codexPerks,
-    codexActions,
-    codexConditions,
-  ]
-    .flat()
-    .filter(
-      (item) =>
-        item.item.name?.toLowerCase().includes(nameQuery?.toLowerCase()) &&
-        item.item.description
-          ?.toLowerCase()
-          .includes(descriptionQuery?.toLowerCase()),
-    )
-    .filter((item) => {
-      return category === ''
-        ? true
-        : item.item.keywords?.some(
-            (keyword: { keyword: Keyword; value: number }) =>
-              category === keyword.keyword?.name,
-          );
+    const nameFilter = nameQuery?.toLowerCase() ?? null;
+    const descFilter = descriptionQuery?.toLowerCase() ?? null;
+    const hasCategoryFilter = category !== '';
+
+    return allItems.filter(({ item }) => {
+      const nameMatch = item.name?.toLowerCase().includes(nameFilter);
+      const descMatch = item.description?.toLowerCase().includes(descFilter);
+
+      const categoryMatch =
+        !hasCategoryFilter ||
+        item.keywords?.some(
+          (keyword: { keyword: Keyword }) => category === keyword.keyword?.name,
+        );
+
+      return nameMatch && descMatch && categoryMatch;
     });
+  }, [
+    weapons,
+    armor,
+    cybernetics,
+    vehicles,
+    modifications,
+    keywords,
+    perkArray,
+    actions,
+    conditions,
+    nameQuery,
+    descriptionQuery,
+    category,
+  ]);
 
   const keywordList = [weaponKeywords, armorKeywords].flat();
 
@@ -190,29 +195,38 @@ const CodexSearch = () => {
     conditionsPending;
 
   const filterByNameQuery = (query: string) => {
-    if (!descriptionQuery && !query && !category) {
-      setNameQuery(null);
-    } else {
-      setNameQuery(query);
+    if (nameTimerRef.current) {
+      clearTimeout(nameTimerRef.current);
     }
-    if ((query && !descriptionQuery) || (category && !descriptionQuery)) {
-      setDescriptionQuery('');
-    } else if (!descriptionQuery) {
-      setDescriptionQuery(null);
-    }
+
+    nameTimerRef.current = setTimeout(() => {
+      setNameQuery(query || (!descriptionQuery && !category ? null : query));
+
+      if ((query && !descriptionQuery) || (category && !descriptionQuery)) {
+        setDescriptionQuery('');
+      } else if (!descriptionQuery) {
+        setDescriptionQuery(null);
+      }
+    }, 200);
   };
 
   const filterByDescriptionQuery = (query: string) => {
-    if (!nameQuery && !query && !category) {
-      setDescriptionQuery(null);
-    } else {
-      setDescriptionQuery(query);
+    if (descriptionTimerRef.current) {
+      clearTimeout(descriptionTimerRef.current);
     }
-    if ((query && !nameQuery) || (category && !nameQuery)) {
-      setNameQuery('');
-    } else if (!nameQuery) {
-      setNameQuery(null);
-    }
+
+    nameTimerRef.current = setTimeout(() => {
+      if (!nameQuery && !query && !category) {
+        setDescriptionQuery(null);
+      } else {
+        setDescriptionQuery(query);
+      }
+      if ((query && !nameQuery) || (category && !nameQuery)) {
+        setNameQuery('');
+      } else if (!nameQuery) {
+        setNameQuery(null);
+      }
+    }, 200);
   };
 
   const searchForm = useForm({
@@ -297,19 +311,27 @@ const CodexSearch = () => {
 
       {codex.map((item) => {
         return item.type === 'weapon' ? (
-          <WeaponCard key={item.item.name} weapon={item.item} mode="codex" />
+          <WeaponCard
+            key={item.item.name + item.item.id}
+            weapon={item.item}
+            mode="codex"
+          />
         ) : item.type === 'armor' ? (
-          <ArmorCard key={item.item.name} armor={item.item} mode="codex" />
+          <ArmorCard
+            key={item.item.name + item.item.id}
+            armor={item.item}
+            mode="codex"
+          />
         ) : item.type === 'cybernetic' ? (
           <CyberneticCard
-            key={item.item.name}
+            key={item.item.name + item.item.id}
             cybernetic={item.item}
             mode="codex"
           />
         ) : (
           item.type === 'vehicle' && (
             <VehicleCard
-              key={item.item.name}
+              key={item.item.name + item.item.id}
               vehicle={item.item}
               mode="codex"
             />
