@@ -114,13 +114,6 @@ const MiscItemCard = ({ item, mode }: { item: Item; mode: string }) => {
           <StackIcon className="size-8" />
         </StatCard>
       )}
-      {item.modifiers?.length > 0 && (
-        <>
-          {item.modifiers?.map((modifier: Modifier, index: number) => (
-            <ModifierTag key={index} modifier={modifier} />
-          ))}
-        </>
-      )}
     </ItemCard>
   );
 };
