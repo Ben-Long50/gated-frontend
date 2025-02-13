@@ -68,7 +68,7 @@ const PerkForm = ({ mode }: { mode?: string }) => {
       modifiers:
         perk?.modifiers?.map((modifier: Modifier) => ({
           type: modifier.type,
-          action: modifier.action.id || null,
+          action: modifier.action?.id || null,
           stat: modifier.stat || null,
           operator: modifier.operator,
           valueType: modifier.valueType,

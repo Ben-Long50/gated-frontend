@@ -154,7 +154,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
       modifiers:
         cybernetic?.modifiers?.map((modifier: Modifier) => ({
           type: modifier.type,
-          action: modifier.action.id || null,
+          action: modifier.action?.id || null,
           stat: modifier.stat || null,
           operator: modifier.operator,
           valueType: modifier.valueType,
