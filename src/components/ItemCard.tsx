@@ -26,6 +26,8 @@ import { motion } from 'motion/react';
 import { Item } from 'src/types/item';
 import StopwatchIcon from './icons/StopwatchIcon';
 import { subcategoryMap } from '../types/maps';
+import ModifierTag from './ModifierTag';
+import { Modifier } from 'src/types/modifier';
 
 const ItemCard = ({
   item,
@@ -227,7 +229,7 @@ const ItemCard = ({
                       )
                     </p>
                     <Icon
-                      className="text-secondary"
+                      className="text-secondary shrink-0"
                       path={mdiTriangleDown}
                       size={0.35}
                       rotate={-90}
@@ -236,7 +238,7 @@ const ItemCard = ({
                   </div>
                 )}
                 <motion.div
-                  className={`flex items-start justify-start`}
+                  className={`flex w-full items-start`}
                   style={{
                     height: item.picture && imageHeight,
                     gap: item.picture && !detailsOpen ? 16 : 0,
@@ -261,17 +263,33 @@ const ItemCard = ({
                     </motion.div>
                   )}
                   <motion.div
-                    className={`${item.picture ? 'mx-auto flex max-w-min grow flex-col overflow-y-auto' : 'grid grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start'} scrollbar-secondary-2 w-full shrink-0 gap-2`}
+                    className={`${item.picture ? 'mx-auto flex-col' : 'flex-row'} flex items-center gap-4 overflow-y-auto`}
                     style={{
                       height: item.picture ? imageHeight : 'auto',
                     }}
-                    animate={{
-                      opacity: item.picture && detailsOpen ? 0 : 1,
-                      width: item.picture && detailsOpen ? 0 : 'auto',
-                    }}
+                    animate={
+                      item.picture && {
+                        opacity: item.picture && detailsOpen ? 0 : 1,
+                        width: item.picture && detailsOpen ? 0 : '120px',
+                      }
+                    }
                     transition={{ duration: 0.2 }}
                   >
-                    {children}
+                    <div
+                      className={`${item.picture ? 'flex max-w-min flex-col' : 'grid w-full grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start'} scrollbar-secondary-2 w-full shrink-0 gap-2`}
+                    >
+                      {children}
+                    </div>
+
+                    {item.modifiers && item.modifiers?.length > 0 && (
+                      <div className="flex flex-col items-center gap-2 sm:gap-4">
+                        {item.modifiers?.map(
+                          (modifier: Modifier, index: number) => (
+                            <ModifierTag key={index} modifier={modifier} />
+                          ),
+                        )}
+                      </div>
+                    )}
                   </motion.div>
                 </motion.div>
               </div>
@@ -286,10 +304,20 @@ const ItemCard = ({
                   transition={{ duration: 0.2 }}
                 >
                   {item.picture && (
-                    <div
-                      className={`grid w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start gap-2`}
-                    >
-                      {children}
+                    <div className="flex w-full items-center gap-4">
+                      <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-2 sm:gap-4">
+                        {children}
+                      </div>
+
+                      {item.modifiers && item.modifiers?.length > 0 && (
+                        <div className="flex w-full items-center gap-2 sm:gap-4">
+                          {item.modifiers?.map(
+                            (modifier: Modifier, index: number) => (
+                              <ModifierTag key={index} modifier={modifier} />
+                            ),
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                   {item.modifiers && item.modifiers[0]?.duration && (
@@ -447,8 +475,20 @@ const ItemCard = ({
                       )}
                     </div>
                   )}
-                  <div className="col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-4">
-                    {children}
+                  <div className="col-span-2 flex w-full flex-wrap items-center gap-4">
+                    <div className="grid h-full grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-4">
+                      {children}
+                    </div>
+
+                    {item.modifiers && item.modifiers?.length > 0 && (
+                      <div className="flex items-center gap-2 sm:gap-4">
+                        {item.modifiers?.map(
+                          (modifier: Modifier, index: number) => (
+                            <ModifierTag key={index} modifier={modifier} />
+                          ),
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
                 {mode !== 'equipment' && (

@@ -41,7 +41,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
 
   return modifier.type === 'stat' ? (
     <div
-      className={`${modifier.operator === 'add' || modifier.operator === 'multiply' ? 'border-green-400' : 'border-red-600'} bg-tertiary mr-auto flex max-w-[150px] flex-wrap items-center justify-center gap-2 gap-y-0 rounded-md border px-2 py-1 shadow-md shadow-zinc-950`}
+      className={`${modifier.operator === 'add' || modifier.operator === 'multiply' ? 'border-green-400' : 'border-red-600'} bg-tertiary flex flex-wrap items-center justify-center gap-x-2 gap-y-0 rounded-md border px-2 py-1 shadow-md shadow-zinc-950`}
     >
       <p>{symbol}</p>
       {modifier.value && <p className="text-center">{modifier.value}</p>}
@@ -75,7 +75,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
     </div>
   ) : (
     <div
-      className={`${modifier.operator === 'add' || modifier.operator === 'multiply' ? 'border-green-400' : 'border-red-600'} bg-tertiary mr-auto flex flex-wrap items-center justify-center gap-x-2 gap-y-0 rounded-md border p-2 shadow-md shadow-zinc-950`}
+      className={`${modifier.operator === 'add' || modifier.operator === 'multiply' ? 'border-green-400' : 'border-red-600'} bg-tertiary flex flex-wrap items-center justify-center gap-x-2 gap-y-0 rounded-md border px-2 py-1 shadow-md shadow-zinc-950`}
     >
       {modifier.value && (
         <div className="flex items-center gap-0.5">

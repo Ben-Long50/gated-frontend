@@ -88,10 +88,6 @@ const CyberneticCard = ({
               <LightningIcon className="size-8" />
             </StatCard>
           )}
-      {cybernetic.modifiers?.length > 0 &&
-        cybernetic.modifiers?.map((modifier: Modifier, index: number) => (
-          <ModifierTag key={index} modifier={modifier} />
-        ))}
     </ItemCard>
   );
 };

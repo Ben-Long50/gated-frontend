@@ -89,7 +89,7 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
         )}
       </div>
       {perk.modifiers?.length > 0 && (
-        <div className="flex flex-col gap-4">
+        <div className="flex w-full flex-wrap gap-4">
           {perk.modifiers?.map((modifier: Modifier, index: number) => {
             console.log(modifier);
 
