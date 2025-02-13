@@ -41,11 +41,37 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
 
   return modifier.type === 'stat' ? (
     <div
-      className={`${modifier.operator === 'add' || modifier.operator === 'multiply' ? 'border-green-400' : 'border-red-600'} bg-tertiary mr-auto flex max-w-[150px] flex-wrap items-center gap-2 rounded-md border px-2 py-1 shadow-md shadow-zinc-950`}
+      className={`${modifier.operator === 'add' || modifier.operator === 'multiply' ? 'border-green-400' : 'border-red-600'} bg-tertiary mr-auto flex max-w-[150px] flex-wrap items-center justify-center gap-2 gap-y-0 rounded-md border px-2 py-1 shadow-md shadow-zinc-950`}
     >
-      <p className="text-center">
-        {symbol + ' ' + modifier.value + ' ' + stats[modifier.stat]}
-      </p>
+      <p>{symbol}</p>
+      {modifier.value && <p className="text-center">{modifier.value}</p>}
+      {modifier.valueType === 'attribute' && modifier.attribute && (
+        <>
+          <p className="text-center font-semibold">
+            {modifier.attribute[0].toUpperCase() + modifier.attribute?.slice(1)}
+          </p>
+          <Icon
+            className="text-secondary shrink-0"
+            path={mdiTriangleDown}
+            rotate={-90}
+            size={0.35}
+          />
+        </>
+      )}
+      {modifier.valueType === 'skill' && modifier.skill && (
+        <>
+          <p className="text-center font-semibold">
+            {modifier.skill[0].toUpperCase() + modifier.skill?.slice(1)}
+          </p>
+          <Icon
+            className="text-secondary shrink-0"
+            path={mdiTriangleDown}
+            rotate={-90}
+            size={0.35}
+          />
+        </>
+      )}
+      <p className="text-center">{stats[modifier.stat]}</p>
     </div>
   ) : (
     <div
