@@ -60,7 +60,9 @@ const PerkList = ({
                                   <input
                                     className="size-6"
                                     type="checkbox"
-                                    checked={checkedPerks?.includes(perk)}
+                                    checked={checkedPerks
+                                      ?.map((perk) => perk.id)
+                                      .includes(perk.id)}
                                     onChange={() => {
                                       if (!checkedPerks?.includes(perk)) {
                                         setCheckedPerks([

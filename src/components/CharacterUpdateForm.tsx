@@ -24,6 +24,7 @@ import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import useStats from '../hooks/useStats';
+import { Perk } from 'src/types/perk';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -42,9 +43,9 @@ const CharacterUpdateForm = () => {
   const isLoading = characterLoading;
   const isPending = characterPending;
 
-  const [checkedPerks, setCheckedPerks] = useState(() => {
-    return character?.perks.map((perk) => perk.id);
-  });
+  const [checkedPerks, setCheckedPerks] = useState(character?.perks);
+  console.log(character.perks);
+
   const [imagePreview, setImagePreview] = useState(character?.picture.imageUrl);
 
   const attributeTree = useAttributeTree(character?.attributes);
@@ -108,6 +109,8 @@ const CharacterUpdateForm = () => {
       perks: character?.perks ?? '',
     },
     onSubmit: async ({ value }) => {
+      value.perks = value.perks.map((perk: Perk) => perk.id);
+
       const formData = new FormData();
 
       if (value.stats.currentHealth == 0) {
