@@ -45,7 +45,6 @@ const TableToolbarPlugin = (props: { iconSize: number }): JSX.Element => {
             className="text-accent hover:underline"
             onClick={(e) => {
               e.preventDefault();
-              console.log('table');
               editor.dispatchCommand(INSERT_TABLE_COMMAND, {
                 columns: String(cols),
                 rows: String(rows),

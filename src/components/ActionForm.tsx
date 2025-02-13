@@ -200,8 +200,6 @@ const ActionForm = ({ mode }: { mode?: string }) => {
         </actionForm.Field>
         <actionForm.Field name="roll" mode="array">
           {(field) => {
-            console.log(field);
-
             return (
               <div className="flex w-full flex-col gap-4 sm:gap-6 lg:gap-8">
                 {field.state.value.map((_, j: number) => (

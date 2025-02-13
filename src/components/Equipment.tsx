@@ -501,8 +501,6 @@ const Equipment = ({ mode }: { mode?: string }) => {
                               key={item.id}
                               onDoubleClick={() => {
                                 if (characterId) {
-                                  console.log(value.category);
-
                                   toggleEquipment.mutate({
                                     characterId: character?.id,
                                     inventoryId:

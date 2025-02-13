@@ -53,8 +53,6 @@ const BookEntryForm = () => {
         value.bookEntryId = bookEntry.id;
       }
 
-      console.log(value);
-
       await createBookEntry.mutate(value);
     },
   });

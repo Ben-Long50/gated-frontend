@@ -14,8 +14,6 @@ const BookEntry = () => {
     isPending,
   } = useBookEntryQuery(apiUrl, bookEntryId);
 
-  console.log(bookEntry);
-
   if (isLoading || isPending) {
     return <Loading />;
   }

@@ -57,8 +57,6 @@ const PatchNoteForm = () => {
         value.patchNoteId = patchNote.id;
       }
 
-      console.log(value);
-
       await createPatchNote.mutate(value);
     },
   });

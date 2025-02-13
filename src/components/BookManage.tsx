@@ -54,7 +54,6 @@ const BookManage = () => {
       title: section.title || '',
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
       if (section.id) {
         value.bookSectionId = section.id;
       }

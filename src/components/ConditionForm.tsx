@@ -55,8 +55,6 @@ const ConditionForm = ({ mode }: { mode?: string }) => {
       description: condition?.description || '',
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
-
       await createCondition.mutate(value);
     },
   });

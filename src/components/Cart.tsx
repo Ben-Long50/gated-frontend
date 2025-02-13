@@ -92,7 +92,6 @@ const Cart = () => {
       }),
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
       await completePurchase.mutate(value, {
         onSuccess: () => cartForm.reset(),
       });

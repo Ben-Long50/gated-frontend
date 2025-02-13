@@ -15,7 +15,6 @@ const useDeleteCharacterMutation = (apiUrl: string, characterId?: string) => {
         exact: false,
       });
       navigate('/glam/characters');
-      console.log('Character successfully deleted');
     },
     onError: () => {
       console.error('Error creating character');

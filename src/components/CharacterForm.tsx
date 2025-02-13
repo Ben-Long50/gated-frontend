@@ -47,8 +47,6 @@ const CharacterForm = () => {
     attributeTree?.tree,
     checkedPerks,
   );
-  console.log(stats);
-  console.log(checkedPerks);
 
   const createCharacter = useCreateCharacterMutation(apiUrl);
 

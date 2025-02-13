@@ -151,8 +151,6 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
 
       const formData = new FormData();
 
-      console.log(value);
-
       Object.entries(value).forEach(([key, value]) => {
         if (key === 'picture' && value instanceof File) {
           formData.append(key, value);

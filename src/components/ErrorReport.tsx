@@ -21,8 +21,6 @@ const ErrorReport = () => {
         'Go ahead and tell me what you did and how you got here... Or just tell me a funny story',
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
-
       await createErrorReport.mutate(value);
     },
   });

@@ -134,7 +134,6 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
       );
 
       value.stats = { ...filteredStats };
-      console.log(value);
 
       const formData = new FormData();
 

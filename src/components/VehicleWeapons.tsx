@@ -12,7 +12,6 @@ const VehicleWeapons = () => {
   const { accentPrimary } = useContext(ThemeContext);
 
   const weapons = useWeapons({ includedKeywords: ['Vehicle'] });
-  console.log(weapons);
 
   const searchForm = useForm({
     defaultValues: {

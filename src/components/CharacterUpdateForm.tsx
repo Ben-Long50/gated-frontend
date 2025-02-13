@@ -115,8 +115,6 @@ const CharacterUpdateForm = () => {
         value.stats.currentHealth = attributeTree.stats.health;
       }
       if (value.stats.currentSanity == 0) {
-        console.log(value.stats.currentSanity);
-
         value.stats.insanities++;
         value.stats.currentSanity = attributeTree.stats.sanity;
       }
@@ -132,8 +130,7 @@ const CharacterUpdateForm = () => {
           formData.append(key, JSON.stringify(val));
         }
       });
-      const formDataObj = Object.fromEntries(formData.entries());
-      console.log(formDataObj);
+
       updateCharacter.mutate(formData);
     },
   });

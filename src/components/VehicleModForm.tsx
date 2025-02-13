@@ -50,8 +50,6 @@ const VehicleModForm = ({ title, mode }: { title: string; mode?: string }) => {
       price: modification?.price || '',
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
-
       await createModification.mutate(value);
     },
   });

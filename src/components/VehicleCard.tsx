@@ -18,8 +18,6 @@ const VehicleCard = ({
   vehicle: VehicleWithWeapons;
   mode: string;
 }) => {
-  console.log(vehicle);
-
   return (
     <ItemCard item={vehicle} category="vehicles" mode={mode}>
       {vehicle.stats.size && (

@@ -1,8 +1,15 @@
-import { useContext } from 'react';
+import { ReactNode, useContext } from 'react';
 import ThemeContainer from '../components/ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import Icon from '@mdi/react';
 import { mdiAlertOutline } from '@mdi/js';
+import { UseMutationResult } from '@tanstack/react-query';
+
+type MutationType<TData = any, TVariables = any> = UseMutationResult<
+  TData,
+  unknown,
+  TVariables
+>;
 
 const FormLayout = ({
   children,
@@ -15,6 +22,17 @@ const FormLayout = ({
   formMessage,
   deleteMode,
   setDeleteMode,
+}: {
+  children: ReactNode;
+  itemId?: string;
+  createMutation: MutationType;
+  modifyMutation?: MutationType;
+  deleteMutation: MutationType;
+  handleDelete: () => void;
+  handleReset: () => void;
+  formMessage: string;
+  deleteMode: boolean;
+  setDeleteMode: (value: boolean) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
