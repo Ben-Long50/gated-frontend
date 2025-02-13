@@ -52,13 +52,17 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
               <p className="font-semibold">
                 {roll.attribute[0].toUpperCase() + roll.attribute.slice(1)}
               </p>
-              <Icon
-                className="text-secondary"
-                path={mdiTriangleDown}
-                size={0.35}
-                rotate={-90}
-              />
-              <p>{roll.skill[0].toUpperCase() + roll.skill.slice(1)}</p>
+              {roll.skill && (
+                <>
+                  <Icon
+                    className="text-secondary"
+                    path={mdiTriangleDown}
+                    size={0.35}
+                    rotate={-90}
+                  />
+                  <p>{roll.skill[0].toUpperCase() + roll.skill.slice(1)}</p>{' '}
+                </>
+              )}
             </div>
           ))}
         </div>

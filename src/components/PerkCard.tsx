@@ -1,11 +1,10 @@
-import { mdiCircle, mdiSquare, mdiTriangleSmallUp } from '@mdi/js';
+import { mdiSquare, mdiTriangleSmallUp } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { Modifier } from 'src/types/modifier';
-import DieIcon from './icons/DieIcon';
 import { Perk } from 'src/types/perk';
 import ItemCardSmall from './ItemCardSmall';
 import ModifierTag from './ModifierTag';
@@ -91,9 +90,9 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
       </div>
       {perk.modifiers?.length > 0 && (
         <div className="flex flex-col gap-4">
-          {perk.modifiers?.map((modifier: Modifier, index: number) => (
-            <ModifierTag key={index} modifier={modifier} />
-          ))}
+          {perk.modifiers?.map((modifier: Modifier, index: number) => {
+            return <ModifierTag key={index} modifier={modifier} />;
+          })}
         </div>
       )}
       <p className="text-secondary">{perk.description}</p>

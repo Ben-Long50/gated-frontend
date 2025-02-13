@@ -1,17 +1,7 @@
 import { Modifier } from 'src/types/modifier';
 import DieIcon from './icons/DieIcon';
-import useActions from '../hooks/useActions';
 
 const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
-  const actions = useActions();
-
-  const action =
-    modifier.type === 'Roll'
-      ? actions.filteredActions.find(
-          (action) => action.id === modifier?.action?.id,
-        )
-      : null;
-
   let symbol = '';
   switch (modifier.operator) {
     case 'add':
@@ -29,6 +19,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
     default:
       break;
   }
+
   return modifier.type === 'Stat' ? (
     <div
       className={`${modifier.operator === 'add' || modifier.operator === 'multiply' ? 'border-green-400' : 'border-red-600'} bg-tertiary mr-auto flex max-w-[150px] flex-wrap items-center gap-2 rounded-md border px-2 py-1 shadow-md shadow-zinc-950 sm:flex-nowrap`}
@@ -44,7 +35,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
       {Array.from({ length: modifier.dice }).map((_, index) => (
         <DieIcon key={index} className="size-7 shrink-0" />
       ))}
-      <p className="text-center">{action?.name}</p>
+      <p className="text-center">{modifier.action?.name}</p>
     </div>
   );
 };
