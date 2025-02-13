@@ -8,7 +8,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
   const action =
     modifier.type === 'Roll'
       ? actions.filteredActions.find(
-          (action) => action.id === modifier.action.id,
+          (action) => action.id === modifier?.action?.id,
         )
       : null;
 

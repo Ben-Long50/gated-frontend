@@ -32,16 +32,18 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
         </div>
       }
     >
-      <div className="flex items-center gap-2">
-        {action?.actionSubtypes?.map((subtype) => {
-          return (
-            <Tag
-              key={subtype}
-              label={subtype[0].toUpperCase() + subtype.slice(1)}
-            />
-          );
-        })}
-      </div>
+      {action?.actionSubtypes?.length > 0 && (
+        <div className="flex items-center gap-2">
+          {action?.actionSubtypes?.map((subtype) => {
+            return (
+              <Tag
+                key={subtype}
+                label={subtype[0].toUpperCase() + subtype.slice(1)}
+              />
+            );
+          })}
+        </div>
+      )}
       {action?.roll && action?.roll.length > 0 && (
         <div className="flex flex-col gap-2">
           {action.roll.map((roll, index) => (
