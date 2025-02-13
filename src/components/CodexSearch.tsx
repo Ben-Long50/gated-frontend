@@ -138,7 +138,6 @@ const CodexSearch = () => {
         item: condition,
       })),
     ];
-    console.log(nameQuery, descriptionQuery);
 
     const nameFilter = nameQuery?.toLowerCase() ?? null;
     const descFilter = descriptionQuery?.toLowerCase() ?? null;

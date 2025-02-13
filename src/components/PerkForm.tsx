@@ -28,8 +28,6 @@ const PerkForm = ({ mode }: { mode?: string }) => {
     (perk: Perk) => perk.id === Number(perkId),
   )[0];
 
-  console.log(perk);
-
   const createPerk = useCreatePerkMutation(apiUrl, perkId, setFormMessage);
   const deletePerk = useDeletePerkMutation(apiUrl, perkId, setFormMessage);
 
@@ -81,7 +79,6 @@ const PerkForm = ({ mode }: { mode?: string }) => {
     },
     onSubmit: async ({ value }) => {
       value.requirements = attributeTree.destructureTree(value.requirements);
-      console.log(value);
 
       await createPerk.mutate(value);
     },

@@ -44,7 +44,6 @@ const CharacterUpdateForm = () => {
   const isPending = characterPending;
 
   const [checkedPerks, setCheckedPerks] = useState(character?.perks);
-  console.log(character.perks);
 
   const [imagePreview, setImagePreview] = useState(character?.picture.imageUrl);
 
