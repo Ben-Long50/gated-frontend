@@ -10,13 +10,13 @@ const SelectField = ({ field, ...props }) => {
   const handleBorder = () => {
     if (
       (field.state.value?.length === 0 || field.state.value === null) &&
-      field.state.meta.errors.length === 0 &&
+      field.state.meta.errors?.length === 0 &&
       !focus
     ) {
       setBorderColor('transparent');
-    } else if (focus && field.state.meta.errors.length === 0) {
+    } else if (focus && field.state.meta.errors?.length === 0) {
       setBorderColor(accentPrimary);
-    } else if (field.state.meta.errors.length > 0) {
+    } else if (field.state.meta.errors?.length > 0) {
       setBorderColor(errorPrimary);
     } else if (field.state.value) {
       setBorderColor(accentPrimary);
@@ -53,7 +53,7 @@ const SelectField = ({ field, ...props }) => {
         </select>
         <label
           htmlFor={field.name}
-          className={` ${field.state.meta.errors.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
+          className={` ${field.state.meta.errors?.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
         >
           {props.label}
         </label>

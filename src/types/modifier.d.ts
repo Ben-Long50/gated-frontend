@@ -3,35 +3,29 @@ import { Action } from './action';
 export type Modifier = StatModifier | RollModifier;
 
 export interface StatModifier {
-  type: 'Stat';
-  stat: Stat;
+  type: 'stat';
+  stat: string;
   operator: ModifierOperator;
-  value: number;
+  valueType: ValueType;
+  attribute?: string;
+  skill?: string;
+  value?: number;
   duration?: { unit: string; value: number };
 }
 
 export interface RollModifier {
-  type: 'Roll';
+  type: 'roll';
   action: Action;
   operator: ModifierOperator;
-  dice: number;
+  valueType: ValueType;
+  attribute?: string;
+  skill?: string;
+  value?: number;
   duration?: { unit: string; value: number };
 }
 
-export type ModifierType = 'Stat' | 'Roll';
+export type ModifierType = 'stat' | 'roll';
 
-export type Stat =
-  | 'Health'
-  | 'Max health'
-  | 'Sanity'
-  | 'Max sanity'
-  | 'Cyber'
-  | 'Equip'
-  | 'Speed'
-  | 'Evasion'
-  | 'Armor'
-  | 'Ward'
-  | 'Permanent injury'
-  | 'Permanent insanity';
+export type ValueType = 'number' | 'attribute' | 'skill';
 
 export type ModifierOperator = 'add' | 'subtract' | 'multiply' | 'divide';

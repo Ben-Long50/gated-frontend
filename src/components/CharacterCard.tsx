@@ -42,7 +42,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
             borderColor={accentPrimary}
           >
             <CloudinaryImage
-              className="w-full min-w-[280px] max-w-[400px]"
+              className="bg-primary w-full min-w-[280px] max-w-[400px]"
               detailsOpen={true}
               url={character.picture?.imageUrl}
               alt={`${character.firstName} ${character.lastName}'s image`}

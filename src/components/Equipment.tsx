@@ -413,12 +413,13 @@ const Equipment = ({ mode }: { mode?: string }) => {
                       key={index}
                     >
                       <div className="flex items-center gap-4">
-                        <DieIcon className="text-secondary size-8" />
+                        <div className="flex items-center gap-0.5">
+                          {Array.from({ length: bonus }).map((_, index) => (
+                            <DieIcon key={index} className="size-8 shrink-0" />
+                          ))}
+                        </div>
                         <h4>{action}</h4>
                       </div>
-                      <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                        {bonus}
-                      </p>
                     </div>
                   ),
                 )}
@@ -504,7 +505,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
                                   toggleEquipment.mutate({
                                     characterId: character?.id,
                                     inventoryId:
-                                      character?.characterInventory.id,
+                                      character?.characterInventory?.id,
                                     category: value.category,
                                     itemId: item.id,
                                   });

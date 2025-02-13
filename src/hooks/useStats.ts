@@ -51,6 +51,8 @@ const useStats = (
   const itemWeight = equippedItems?.reduce((sum: number, item: Item) => {
     if (item.stats.currentStacks && item.stats.weight) {
       return sum + item.stats.currentStacks * item.stats.weight;
+    } else if (item.stats.currentStacks === 0) {
+      return sum;
     } else if (item.stats.weight) {
       return sum + item.stats.weight;
     }
@@ -104,73 +106,80 @@ const useStats = (
 
   const rollBonuses = {} as { key: number };
 
+  const getBonusValue = (modifier: Modifier) => {
+    let bonusValue;
+
+    switch (modifier.valueType) {
+      case 'number':
+        bonusValue = modifier.value || 0;
+        break;
+      case 'attribute':
+        bonusValue = tree.getPoints(modifier.attribute);
+        break;
+      case 'skill':
+        bonusValue = tree.getPoints(modifier.attribute, modifier.skill);
+        break;
+      default:
+        bonusValue = 0;
+        break;
+    }
+
+    return bonusValue;
+  };
+
+  const calculateBonus = (modifier: Modifier) => {
+    const bonusValue = getBonusValue(modifier);
+
+    if (modifier.type === 'stat') {
+      const currentValue = stats[modifier.stat] || 0;
+
+      switch (modifier.operator) {
+        case 'add':
+          stats[modifier.stat] = currentValue + bonusValue;
+          break;
+        case 'subtract':
+          stats[modifier.stat] = currentValue - bonusValue;
+          break;
+        default:
+          stats[modifier.stat] = bonusValue;
+      }
+    } else if (modifier.type === 'roll') {
+      const currentValue = rollBonuses[modifier.action?.name] || 0;
+
+      switch (modifier.operator) {
+        case 'add':
+          rollBonuses[modifier.action?.name] = currentValue + bonusValue;
+          break;
+        case 'subtract':
+          rollBonuses[modifier.action?.name] = currentValue - bonusValue;
+          break;
+        default:
+          rollBonuses[modifier.action?.name] = bonusValue;
+      }
+    }
+  };
+
   equippedCybernetics?.forEach((cybernetic: CyberneticWithKeywords) => {
     if (!cybernetic.modifiers) return;
 
     cybernetic.modifiers.forEach((modifier: Modifier) => {
-      if (modifier.type === 'Stat') {
-        const statKey = modifier.stat.toLowerCase();
-        const currentValue = stats[statKey] ?? 0;
+      calculateBonus(modifier);
+    });
+  });
 
-        switch (modifier.operator) {
-          case 'add':
-            stats[statKey] = currentValue + modifier.value;
-            break;
-          case 'subtract':
-            stats[statKey] = currentValue - modifier.value;
-            break;
-          default:
-            stats[statKey] = modifier.value;
-        }
-      } else if (modifier.type === 'Roll') {
-        const currentValue = rollBonuses[modifier.action?.name] || 0;
+  equippedItems?.forEach((item: Item) => {
+    if (!item.modifiers) return;
 
-        switch (modifier.operator) {
-          case 'add':
-            rollBonuses[modifier.action?.name] = currentValue + modifier.dice;
-            break;
-          case 'subtract':
-            rollBonuses[modifier.action?.name] = currentValue - modifier.dice;
-            break;
-          default:
-            rollBonuses[modifier.action?.name] = modifier.dice;
-        }
-      }
+    item.modifiers?.forEach((modifier: Modifier) => {
+      calculateBonus(modifier);
     });
   });
 
   perks?.forEach((perk) => {
     if (!perk.modifiers) return;
 
-    perk.modifiers?.forEach((modifier: StatModifier) => {
-      let statKey;
-
-      switch (modifier.stat) {
-        case 'Cyber':
-          statKey = 'maxCyber';
-          break;
-        case 'Max health':
-          statKey = 'maxHealth';
-          break;
-        case 'Permanent injury':
-          statKey = 'permanentInjuries';
-          break;
-        default:
-          break;
-      }
-
-      const currentValue = stats[statKey] ?? 0;
-
-      switch (modifier.operator) {
-        case 'add':
-          stats[statKey] = currentValue + modifier.value;
-          break;
-        case 'subtract':
-          stats[statKey] = currentValue - modifier.value;
-          break;
-        default:
-          stats[statKey] = modifier.value;
-      }
+    perk.modifiers?.forEach((modifier: Modifier) => {
+      calculateBonus(modifier);
     });
   });
 

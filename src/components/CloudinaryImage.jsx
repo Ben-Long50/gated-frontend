@@ -25,7 +25,7 @@ const CloudinaryImage = forwardRef((props, ref) => {
   return (
     <motion.img
       ref={ref}
-      className={`${props.className} cld-responsive text-secondary w-full text-xl clip-6`}
+      className={`${props.className} cld-responsive text-secondary aspect-square w-full text-xl clip-6`}
       width={props.width}
       height={props.height}
       data-src={responsiveUrl}

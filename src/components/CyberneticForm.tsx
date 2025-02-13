@@ -151,7 +151,18 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
           actionSubtypes: string[];
           description: string;
         }[]),
-      modifiers: cybernetic?.modifiers || ([] as Modifier[]),
+      modifiers:
+        cybernetic?.modifiers?.map((modifier: Modifier) => ({
+          type: modifier.type,
+          action: modifier.action.id || null,
+          stat: modifier.stat || null,
+          operator: modifier.operator,
+          valueType: modifier.valueType,
+          attribute: modifier.attribute,
+          skill: modifier.skill,
+          value: modifier.value,
+          duration: modifier.duration,
+        })) || ([] as Modifier[]),
       keywords:
         cyberneticKeywordData ||
         ([] as { keywordId: number; value?: number }[]),

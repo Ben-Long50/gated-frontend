@@ -102,7 +102,7 @@ const MiscItemCard = ({ item, mode }: { item: Item; mode: string }) => {
           <EquipIcon className="size-8" />
         </StatCard>
       )}
-      {item.stats.currentStacks && (
+      {item.stats.currentStacks !== null && (
         <StatCard
           label="STACKS"
           stat={

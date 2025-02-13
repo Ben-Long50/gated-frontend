@@ -100,7 +100,18 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
           };
           description: string;
         }[]),
-      modifiers: item?.modifiers || ([] as Modifier[]),
+      modifiers:
+        item?.modifiers?.map((modifier: Modifier) => ({
+          type: modifier.type,
+          action: modifier.action?.id || null,
+          stat: modifier.stat || null,
+          operator: modifier.operator,
+          valueType: modifier.valueType,
+          attribute: modifier.attribute,
+          skill: modifier.skill,
+          value: modifier.value,
+          duration: modifier.duration,
+        })) || ([] as Modifier[]),
       price: item?.price || null,
     },
     onSubmit: async ({ value }) => {

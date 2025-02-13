@@ -6,17 +6,12 @@ import { Weapon } from 'src/types/weapon';
 import useKeywords from './useKeywords';
 import { Keyword } from 'src/types/keyword';
 import { Armor } from 'src/types/armor';
-import useActions from './useActions';
-import { Modifier } from 'src/types/modifier';
-import { Action } from 'src/types/action';
 import { FetchOptions } from 'src/types/fetchOptions';
 
 const useCybernetics = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
   const keywords = useKeywords();
-
-  const actions = useActions();
 
   const {
     data: cybernetics,
@@ -50,17 +45,6 @@ const useCybernetics = (fetchOptions?: FetchOptions) => {
     });
   };
 
-  const getModifierActions = (modifiers: Modifier[]) => {
-    if (!modifiers || modifiers.length === 0) return;
-    return modifiers?.map((modifier: Modifier) => {
-      if (modifier.type === 'Stat') return modifier;
-      const actionDetails = actions.filteredActions.find(
-        (item: Action) => item.id === Number(modifier.action),
-      );
-      return { ...modifier, action: actionDetails };
-    });
-  };
-
   const cyberneticsWithKeywords = useMemo(() => {
     if (!cybernetics || !keywords) return null;
 
@@ -77,14 +61,12 @@ const useCybernetics = (fetchOptions?: FetchOptions) => {
       });
       const integratedWeaopns = getWeaponsKeywords(cybernetic.weapons);
       const integratedArmor = getArmorKeywords(cybernetic.armor);
-      const modifiers = getModifierActions(cybernetic.modifiers);
 
       return {
         ...cybernetic,
         keywords: keywordDetails,
         weapons: integratedWeaopns,
         armor: integratedArmor,
-        modifiers,
       };
     });
   }, [fetchOptions, cybernetics, keywords]);

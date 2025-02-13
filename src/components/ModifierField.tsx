@@ -1,14 +1,17 @@
-import { ModifierOperator, ModifierType, Stat } from 'src/types/modifier';
+import { ModifierOperator, ModifierType } from 'src/types/modifier';
 import SelectField from './SelectField';
 import InputField from './InputField';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import useActions from '../hooks/useActions';
+import usePerks from '../hooks/usePerks';
 
 const ModifierField = ({ form }) => {
-  const types: ModifierType[] = ['Roll', 'Stat'];
+  const types: ModifierType[] = ['roll', 'stat'];
 
   const { filteredActions } = useActions();
+
+  const perks = usePerks();
 
   const operators: ModifierOperator[] = [
     'add',
@@ -16,20 +19,23 @@ const ModifierField = ({ form }) => {
     'multiply',
     'divide',
   ];
-  const stats: Stat[] = [
-    'Health',
-    'Max health',
-    'Sanity',
-    'Max sanity',
-    'Cyber',
-    'Equip',
-    'Speed',
-    'Evasion',
-    'Armor',
-    'Ward',
-    'Permanent injury',
-    'Permanent insanity',
-  ];
+
+  const stats = {
+    health: 'Health',
+    maxHealth: 'Max health',
+    sanity: 'Sanity',
+    maxSanity: 'Max sanity',
+    cyber: 'Cyber',
+    maxCyber: 'Max cyber',
+    weight: 'Equip',
+    maxWeight: 'Max Equip',
+    speed: 'Speed',
+    evasion: 'Evasion',
+    armor: 'Armor',
+    ward: 'Ward',
+    permanentInjuries: 'Permanent injury',
+    permanentInsanities: 'Permanent insanity',
+  };
 
   const durationUnits = [
     'second',
@@ -53,7 +59,7 @@ const ModifierField = ({ form }) => {
             return (
               <div key={i} className="flex w-full items-center gap-4 lg:gap-8">
                 <div className="flex w-full flex-col gap-4 lg:gap-8">
-                  <div className="flex w-full flex-col gap-4 sm:flex-row lg:gap-8">
+                  <div className="grid w-full grid-cols-3 gap-4 lg:gap-8">
                     <form.Field name={`modifiers[${i}].type`}>
                       {(subField) => {
                         return (
@@ -66,7 +72,7 @@ const ModifierField = ({ form }) => {
                             {types.map((type) => {
                               return (
                                 <option key={type} value={type}>
-                                  {type}
+                                  {type[0].toUpperCase() + type.slice(1)}
                                 </option>
                               );
                             })}
@@ -79,7 +85,7 @@ const ModifierField = ({ form }) => {
                     >
                       {(modifierType: string) => (
                         <>
-                          {modifierType === 'Roll' && (
+                          {modifierType === 'roll' && (
                             <>
                               <form.Field name={`modifiers[${i}].action`}>
                                 {(subField) => {
@@ -122,21 +128,9 @@ const ModifierField = ({ form }) => {
                                   );
                                 }}
                               </form.Field>
-                              <form.Field name={`modifiers[${i}].dice`}>
-                                {(subField) => {
-                                  return (
-                                    <InputField
-                                      className="max-w-28"
-                                      type="number"
-                                      label="Dice"
-                                      field={subField}
-                                    />
-                                  );
-                                }}
-                              </form.Field>
                             </>
                           )}
-                          {modifierType === 'Stat' && (
+                          {modifierType === 'stat' && (
                             <>
                               <form.Field name={`modifiers[${i}].stat`}>
                                 {(subField) => {
@@ -147,13 +141,15 @@ const ModifierField = ({ form }) => {
                                       field={subField}
                                     >
                                       <option defaultValue=""></option>
-                                      {stats.map((item) => {
-                                        return (
-                                          <option key={item} value={item}>
-                                            {item}
-                                          </option>
-                                        );
-                                      })}
+                                      {Object.entries(stats).map(
+                                        ([key, value]) => {
+                                          return (
+                                            <option key={key} value={key}>
+                                              {value}
+                                            </option>
+                                          );
+                                        },
+                                      )}
                                     </SelectField>
                                   );
                                 }}
@@ -178,19 +174,113 @@ const ModifierField = ({ form }) => {
                                   );
                                 }}
                               </form.Field>
-                              <form.Field name={`modifiers[${i}].value`}>
-                                {(subField) => {
-                                  return (
-                                    <InputField
-                                      className="max-w-28"
-                                      type="number"
-                                      label="Value"
-                                      field={subField}
-                                    />
-                                  );
-                                }}
-                              </form.Field>
                             </>
+                          )}
+                        </>
+                      )}
+                    </form.Subscribe>
+                    <form.Field
+                      name={`modifiers[${i}.valueType]`}
+                      listeners={{
+                        onChange: () => {
+                          form.setFieldValue(`modifiers[${i}.attribute]`, null);
+                          form.setFieldValue(`modifiers[${i}.skill]`, null);
+                          form.setFieldValue(`modifiers[${i}.value]`, null);
+                        },
+                      }}
+                    >
+                      {(subField) => (
+                        <SelectField
+                          className="grow"
+                          label="Value Type"
+                          field={subField}
+                        >
+                          <option defaultValue=""></option>
+                          <option value="number">Number</option>
+                          <option value="attribute">Attribute Points</option>
+                          <option value="skill">Skill Points</option>
+                        </SelectField>
+                      )}
+                    </form.Field>
+                    <form.Subscribe
+                      selector={(state) => state.values.modifiers[i].valueType}
+                    >
+                      {(valueType) => (
+                        <>
+                          {(valueType === 'attribute' ||
+                            valueType === 'skill') && (
+                            <form.Field name={`modifiers[${i}.attribute]`}>
+                              {(field) => (
+                                <SelectField
+                                  label="Attribute"
+                                  field={field}
+                                  onChange={() => {
+                                    perks.filterByAttribute(field.state.value);
+                                    perks.filterBySkill('');
+                                  }}
+                                >
+                                  <option value=""></option>
+                                  <option value="cybernetica">
+                                    Cybernetica
+                                  </option>
+                                  <option value="esoterica">Esoterica</option>
+                                  <option value="peace">Peace</option>
+                                  <option value="violence">Violence</option>
+                                </SelectField>
+                              )}
+                            </form.Field>
+                          )}
+
+                          {valueType === 'skill' && (
+                            <form.Subscribe
+                              selector={(state) =>
+                                state.values.modifiers[i].attribute
+                              }
+                            >
+                              {(selectedAttribute) => (
+                                <form.Field name={`modifiers[${i}.skill]`}>
+                                  {(field) => (
+                                    <SelectField
+                                      label="Skill"
+                                      field={field}
+                                      onChange={() => {
+                                        perks.filterBySkill(field.state.value);
+                                      }}
+                                    >
+                                      <option value=""></option>
+                                      {Object.entries(perks.emptyTree).map(
+                                        ([attribute, skills]) =>
+                                          attribute === selectedAttribute
+                                            ? Object.entries(skills).map(
+                                                ([skill]) => (
+                                                  <option
+                                                    key={skill}
+                                                    value={skill}
+                                                  >
+                                                    {skill[0].toUpperCase() +
+                                                      skill.slice(1)}
+                                                  </option>
+                                                ),
+                                              )
+                                            : null,
+                                      )}
+                                    </SelectField>
+                                  )}
+                                </form.Field>
+                              )}
+                            </form.Subscribe>
+                          )}
+                          {valueType === 'number' && (
+                            <form.Field name={`modifiers[${i}].value`}>
+                              {(subField) => (
+                                <InputField
+                                  className="max-w-28"
+                                  type="number"
+                                  label="Value"
+                                  field={subField}
+                                />
+                              )}
+                            </form.Field>
                           )}
                         </>
                       )}
