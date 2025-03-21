@@ -34,27 +34,33 @@ const ItemCardSmall = ({
           className={`text-primary flex w-full items-center justify-between`}
         >
           {heading}
-          <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>
-            <Icon
-              path={mdiChevronDown}
-              size={1.1}
-              className={`text-secondary`}
-            ></Icon>
-          </span>
+          {children && (
+            <span className={`timing shrink-0 ${detailsOpen && '-rotate-180'}`}>
+              <Icon
+                path={mdiChevronDown}
+                size={1.1}
+                className={`text-secondary`}
+              ></Icon>
+            </span>
+          )}
         </summary>
-        <div className={`${detailsOpen && 'pr-1 pt-4'} timing overflow-hidden`}>
-          <motion.div
-            ref={detailRef}
-            className="flex flex-col gap-4"
-            initial={{ marginTop: -detailHeight - 4 }}
-            animate={{
-              marginTop: detailsOpen ? 0 : -detailHeight - 4,
-            }}
-            transition={{ duration: 0.2 }}
+        {children && (
+          <div
+            className={`${detailsOpen && 'pr-1 pt-4'} timing overflow-hidden`}
           >
-            {children}
-          </motion.div>
-        </div>
+            <motion.div
+              ref={detailRef}
+              className="flex flex-col gap-4"
+              initial={{ marginTop: -detailHeight - 4 }}
+              animate={{
+                marginTop: detailsOpen ? 0 : -detailHeight - 4,
+              }}
+              transition={{ duration: 0.2 }}
+            >
+              {children}
+            </motion.div>
+          </div>
+        )}
       </div>
     </div>
   );

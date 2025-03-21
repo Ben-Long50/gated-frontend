@@ -57,7 +57,11 @@ const InputFieldBasic = (props) => {
             }
             handleBorder();
             if (props.onChange) {
-              props.onChange(Number(e.target.value));
+              if (props.type === 'number') {
+                props.onChange(Number(e.target.value));
+              } else {
+                props.onChange(e.target.value);
+              }
             }
           }}
         />

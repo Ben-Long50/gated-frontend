@@ -18,7 +18,6 @@ import CharacterIcon from './icons/CharacterIcon';
 import NavMenuDesktop from './NavMenuDesktop';
 import useSignoutMutation from '../hooks/useSignoutMutation/useSignoutMutation';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
-import Loading from './Loading';
 
 const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -278,6 +277,9 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
       </div>
 
       <div className="relative flex items-center justify-items-end gap-10">
+        <Link to="campaigns">
+          <BtnNavbar className="bg-primary">Campaigns</BtnNavbar>
+        </Link>
         <Link to="codex">
           <BtnNavbar className="bg-primary">Codex</BtnNavbar>
         </Link>

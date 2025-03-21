@@ -131,7 +131,7 @@ const SignupForm = () => {
             <span className="pl-2 hover:underline">Sign in</span>
           </Link>
         </p>
-        {errors.length > 0 && (
+        {errors?.length > 0 && (
           <div className="flex flex-col gap-3 self-start">
             <span className="text-primary">Error creating account:</span>
             {errors.map((error, index) => (

@@ -32,8 +32,18 @@ const CharacterLinks = ({ setSidebarVisibility }) => {
         }
       >
         <LinkSidebar
-          title="Character list"
+          title="All characters"
           path="characters"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Player characters"
+          path="characters/playerCharacters"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <LinkSidebar
+          title="Non-player characters"
+          path="characters/nonPlayerCharacters"
           setSidebarVisibility={setSidebarVisibility}
         />
         <LinkSidebar

@@ -45,6 +45,8 @@ import Equipment from './components/Equipment';
 import CodexSearch from './components/CodexSearch';
 import ItemForm from './components/ItemForm';
 import Items from './components/Items';
+import Campaigns from './components/Campaigns';
+import CampaignForm from './components/CampaignForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -62,6 +64,12 @@ const router = createBrowserRouter(
       <Route path="glam" element={<MainLayout />} errorElement={<ErrorPage />}>
         <Route path="error">
           <Route index element={<ErrorReports />} />
+        </Route>
+
+        <Route path="campaigns">
+          <Route path="participant" element={<Campaigns />} />
+          <Route path="gm" element={<Campaigns />} />
+          <Route path="create" element={<CampaignForm title="Create" />} />
         </Route>
 
         <Route path="characters">

@@ -6,6 +6,7 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import Sidebar from '../components/sidebars/Sidebar';
 import CodexLinks from '../components/sidebars/CodexLinks';
 import CharacterLinks from '../components/sidebars/CharacterLinks';
+import CampaignLinks from '../components/sidebars/CampaignLinks';
 
 const MainLayout = () => {
   const { theme } = useContext(ThemeContext);
@@ -33,6 +34,9 @@ const MainLayout = () => {
         )}
         {pathname.startsWith('/glam/characters') && (
           <CharacterLinks setSidebarVisibility={setSidebarVisibility} />
+        )}
+        {pathname.startsWith('/glam/campaigns') && (
+          <CampaignLinks setSidebarVisibility={setSidebarVisibility} />
         )}
       </Sidebar>
       <div
