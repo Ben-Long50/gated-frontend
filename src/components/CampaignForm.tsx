@@ -1,7 +1,6 @@
 import { useForm } from '@tanstack/react-form';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { ThemeContext } from '../contexts/ThemeContext';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import Loading from './Loading';
@@ -13,8 +12,11 @@ import { Link, useParams } from 'react-router-dom';
 import LexicalEditor from './lexical/LexicalEditor';
 import useUsersQuery from '../hooks/useUsersQuery/useUsersQuery';
 import ItemCardSmall from './ItemCardSmall';
-import { mdiTriangleDown } from '@mdi/js';
+import { mdiCloseBox, mdiImagePlus, mdiTriangleDown } from '@mdi/js';
 import Icon from '@mdi/react';
+import useCreateCampaignMutation from '../hooks/useCreateCampaignMutation/useCreateCampaignMutation';
+import ThemeContainer from './ThemeContainer';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -23,8 +25,9 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const [nameQuery, setNameQuery] = useState('');
+  const [imagePreview, setImagePreview] = useState('');
 
-  //   const createCampaign = useCreateCampaignMutation(apiUrl, setFormMessage);
+  const createCampaign = useCreateCampaignMutation(apiUrl, setFormMessage);
 
   const campaign = null;
 
@@ -42,12 +45,14 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
     defaultValues: {
       name: campaign?.name || '',
       location: campaign?.location || '',
+      picture: campaign?.picture || '',
       factions: campaign?.factions || ([''] as string[]),
-      background:
-        campaign?.background ?? ({} as { html: string; nodes: string }),
+      briefing: campaign?.briefing || ({} as { html: string; nodes: string }),
       players: campaign?.players || ([] as User[]),
     },
     onSubmit: async ({ value }) => {
+      console.log(value);
+
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, value]) => {
@@ -59,20 +64,28 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
       });
       formData.append('campaignId', JSON.stringify(campaignId || 0));
       if (mode === 'create' || mode === 'update') {
-        // await createCampaign.mutate(formData);
+        await createCampaign.mutate(formData);
       } else if (mode === 'modify') {
         // await modifyArmor.mutate(formData);
       }
     },
   });
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      campaignForm.setFieldValue('picture', selectedFile);
+
+      const fileUrl = URL.createObjectURL(selectedFile);
+      setImagePreview(fileUrl);
+    }
+  };
+
   return (
     <FormLayout
       itemId={campaignId}
-      //   createMutation={createCampaign}
-      //   modifyMutation={modifyArmor}
-      //   deleteMutation={deleteArmor}
-      //   handleDelete={handleDelete}
+      createMutation={createCampaign}
       handleReset={handleReset}
       formMessage={formMessage}
       deleteMode={deleteMode}
@@ -124,6 +137,46 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             <InputField label="Campaign location (city name)" field={field} />
           )}
         </campaignForm.Field>
+        <ThemeContainer
+          className="mx-auto w-full"
+          chamfer="24"
+          borderColor={accentPrimary}
+        >
+          {!imagePreview ? (
+            <label className="bg-secondary flex aspect-[5/2] w-full cursor-pointer flex-col items-center justify-center clip-6">
+              <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
+                <Icon className="text-tertiary" path={mdiImagePlus} size={3} />
+                <p className="text-tertiary font-semibold">
+                  Upload campaign cover picture
+                </p>
+                <p className="text-tertiary">PNG, JPG, JPEG</p>
+              </div>
+              <input
+                id="file"
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </label>
+          ) : (
+            <div className="bg-secondary relative flex aspect-[5/2] w-full items-center justify-center overflow-hidden bg-black clip-6">
+              <img
+                className="fade-in-bottom"
+                src={imagePreview}
+                alt="Preview"
+              />
+              <button
+                className="text-secondary absolute right-2 top-2"
+                onClick={() => {
+                  campaignForm.setFieldValue('picture', '');
+                  setImagePreview('');
+                }}
+              >
+                <Icon path={mdiCloseBox} size={1.5} />
+              </button>
+            </div>
+          )}
+        </ThemeContainer>
         <div className="flex items-center gap-4">
           <Icon
             className="text-primary"
@@ -165,10 +218,14 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                         field={subfield}
                       >
                         <option value=""></option>
-                        <option value="common">The Church</option>
-                        <option value="uncommon">Corporate Holdouts</option>
-                        <option value="rare">Federal Reservists</option>
-                        <option value="blackMarket">Noblebloods</option>
+                        <option value="theChurch">The Church</option>
+                        <option value="corporateHoldouts">
+                          Corporate Holdouts
+                        </option>
+                        <option value="federalReservists">
+                          Federal Reservists
+                        </option>
+                        <option value="noblebloods">Noblebloods</option>
                       </SelectField>
                     )}
                   </campaignForm.Field>
@@ -198,21 +255,21 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
               size={0.4}
               rotate={-90}
             />
-            <h3>Campaign Background</h3>
+            <h3>Campaign Briefing</h3>
           </div>
           <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
             Craft a backstory for your upcoming campaign. This backstory will
             serve as the first taste of the world for your campaign participants
             and act as a starting point for the campaign's overarching
             narrative. The text entered below will be shown to your campaign's
-            participants as a "Session 0" introduction. Remember, your story
-            should integrate the factions chosen above, weaving their influence
-            throughout as much of the storytelling as possible. The world of
-            GatED is a dark and brutal place; danger, betrayal and action can be
-            found around every corner of the city streets.
+            participants as a "Session 0" introduction briefing. Remember, your
+            story should integrate the factions chosen above, weaving their
+            influence throughout as much of the storytelling as possible. The
+            world of GatED is a dark and brutal place; danger, betrayal and
+            action can be found around every corner of the city streets.
           </p>
           <campaignForm.Field
-            name="background"
+            name="briefing"
             validators={{
               onChange: ({ value }) =>
                 value.html.length < 20
@@ -384,14 +441,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             }}
           </campaignForm.Field>
         </div>
-        <BtnRect
-          type="submit"
-          className="group w-full"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-        >
+        <BtnRect type="submit" className="group w-full">
           {campaign ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"

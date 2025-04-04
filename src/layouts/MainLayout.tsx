@@ -13,9 +13,7 @@ const MainLayout = () => {
   const { layoutSize } = useContext(LayoutContext);
   const { pathname } = useLocation();
 
-  const [sidebarVisibility, setSidebarVisibility] = useState(
-    layoutSize === 'large' ? true : false,
-  );
+  const [sidebarVisibility, setSidebarVisibility] = useState(false);
   const [navbarHeight, setNavbarHeight] = useState(0);
 
   return (

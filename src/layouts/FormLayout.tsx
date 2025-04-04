@@ -27,8 +27,8 @@ const FormLayout = ({
   itemId?: string;
   createMutation: MutationType;
   modifyMutation?: MutationType;
-  deleteMutation: MutationType;
-  handleDelete: () => void;
+  deleteMutation?: MutationType;
+  handleDelete?: () => void;
   handleReset: () => void;
   formMessage: string;
   deleteMode: boolean;

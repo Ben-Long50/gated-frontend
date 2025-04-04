@@ -47,6 +47,7 @@ import ItemForm from './components/ItemForm';
 import Items from './components/Items';
 import Campaigns from './components/Campaigns';
 import CampaignForm from './components/CampaignForm';
+import Campaign from './components/Campaign';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -67,9 +68,13 @@ const router = createBrowserRouter(
         </Route>
 
         <Route path="campaigns">
-          <Route path="participant" element={<Campaigns />} />
-          <Route path="gm" element={<Campaigns />} />
-          <Route path="create" element={<CampaignForm title="Create" />} />
+          <Route path=":campaignId" element={<Campaign />} />
+          <Route path="participant" element={<Campaigns title="Player" />} />
+          <Route path="owner" element={<Campaigns title="Owner" />} />
+          <Route
+            path="create"
+            element={<CampaignForm title="Create" mode="create" />}
+          />
         </Route>
 
         <Route path="characters">
