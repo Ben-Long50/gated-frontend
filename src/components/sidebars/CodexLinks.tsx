@@ -23,8 +23,10 @@ import GadgetIcon from '../../components/icons/GadgetIcon';
 import SackIcon from '../../components/icons/SackIcon';
 
 const CodexLinks = ({
+  sidebarVisibility,
   setSidebarVisibility,
 }: {
+  sidebarVisibility: boolean;
   setSidebarVisibility: (mode: boolean) => void;
 }) => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -45,8 +47,8 @@ const CodexLinks = ({
       <NavLink
         className={({ isActive }) =>
           isActive
-            ? 'text-accent group flex gap-6 p-2 pl-4'
-            : 'text-secondary group flex gap-6 p-2 pl-4'
+            ? 'text-accent group flex p-2'
+            : 'text-secondary group flex p-2'
         }
         to="/glam/codex/search"
         end
@@ -56,26 +58,25 @@ const CodexLinks = ({
           path={mdiMagnify}
           rotate={90}
         />
-        <button
-          className="w-full text-left text-inherit"
-          onClick={() => {
-            if (layoutSize !== 'large') {
-              setSidebarVisibility(false);
-            }
-          }}
-        >
-          <div className="timing group-hover:text-accent text-xl tracking-wide text-inherit">
-            Search codex
-          </div>
-        </button>
+        {
+          <button
+            className={`${!sidebarVisibility && 'invisible -translate-x-full opacity-0'} timing w-full pl-4 text-left text-inherit`}
+            onClick={() => {
+              if (layoutSize !== 'large') {
+                setSidebarVisibility(false);
+              }
+            }}
+          >
+            <div className="timing group-hover:text-accent whitespace-nowrap text-xl tracking-wide text-inherit">
+              Search codex
+            </div>
+          </button>
+        }
       </NavLink>
       <LinkListSidebar
-        title={
-          <>
-            <BookIcon className="size-8" />
-            <p className="text-inherit">The Book</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<BookIcon className="group-hover:text-accent size-8 shrink-0" />}
+        title="The Book"
       >
         {bookSections?.map((section) => {
           return (
@@ -112,12 +113,9 @@ const CodexLinks = ({
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <WeaponIcon className="size-8" />
-            <p className="text-inherit">Weapons</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<WeaponIcon className="size-8 shrink-0" />}
+        title="Weapons"
       >
         <LinkSidebar
           title="All weapons"
@@ -168,12 +166,9 @@ const CodexLinks = ({
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <ArmorIcon className="size-8" />
-            <p className="text-inherit">Armor</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<ArmorIcon className="size-8 shrink-0" />}
+        title="Armor"
       >
         <LinkSidebar
           title="All armor"
@@ -199,12 +194,9 @@ const CodexLinks = ({
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <CyberIcon className="size-8" />
-            <p className="text-inherit">Cybernetics</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<CyberIcon className="size-8 shrink-0" />}
+        title="Cybernetics"
       >
         <LinkSidebar
           title="All cybernetics"
@@ -220,12 +212,9 @@ const CodexLinks = ({
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <VehicleIcon className="size-8" />
-            <p className="text-inherit">Vehicles</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<VehicleIcon className="size-8 shrink-0" />}
+        title="Vehicles"
       >
         <LinkSidebar
           title="All vehicles"
@@ -258,12 +247,9 @@ const CodexLinks = ({
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <SackIcon className="size-8" />
-            <p className="text-inherit">Items</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<SackIcon className="size-8 shrink-0" />}
+        title="Items"
       >
         <LinkSidebar
           title="All Items"
@@ -272,7 +258,7 @@ const CodexLinks = ({
         />
         <LinkSublistSidebar
           title="Reusables"
-          icon={<GadgetIcon className="size-8" />}
+          icon={<GadgetIcon className="size-8 shrink-0" />}
         >
           <LinkSidebar
             title="Gadgets"
@@ -287,7 +273,7 @@ const CodexLinks = ({
         </LinkSublistSidebar>
         <LinkSublistSidebar
           title="Consumables"
-          icon={<PotionIcon className="size-8" />}
+          icon={<PotionIcon className="size-8 shrink-0" />}
         >
           <LinkSidebar
             title="Chemical therapy"
@@ -316,12 +302,9 @@ const CodexLinks = ({
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <PerkIcon className="size-8" />
-            <p className="text-inherit">Perks</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<PerkIcon className="size-8 shrink-0" />}
+        title="Perks"
       >
         <LinkSidebar
           title="All perks"
@@ -337,12 +320,9 @@ const CodexLinks = ({
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <KeywordIcon className="size-8" />
-            <p className="text-inherit">Keywords</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<KeywordIcon className="size-8 shrink-0" />}
+        title="Keywords"
       >
         <LinkSidebar
           title="All keywords"
@@ -358,12 +338,9 @@ const CodexLinks = ({
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <ActionIcon className="size-8" />
-            <p className="text-inherit">Actions</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<ActionIcon className="size-8 shrink-0" />}
+        title="Actions"
       >
         <LinkSidebar
           title="All actions"
@@ -379,12 +356,9 @@ const CodexLinks = ({
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <ConditionIcon className="size-8" />
-            <p className="text-inherit">Conditions</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<ConditionIcon className="size-8 shrink-0" />}
+        title="Conditions"
       >
         <LinkSidebar
           title="All conditions"

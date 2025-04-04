@@ -25,21 +25,15 @@ const LinkSidebar = ({
       to={path}
       end
     >
-      <Icon
-        className="timing group-hover:text-accent text-inherit"
-        path={mdiTriangleSmallUp}
-        rotate={90}
-        size={1}
-      />
       <button
-        className="w-full text-left text-inherit"
+        className="w-full pl-4 text-left text-inherit"
         onClick={() => {
           if (layoutSize !== 'large') {
             setSidebarVisibility(false);
           }
         }}
       >
-        <div className="timing group-hover:text-accent text-lg tracking-wide text-inherit">
+        <div className="timing group-hover:text-accent whitespace-nowrap text-xl tracking-wide text-inherit">
           {title}
         </div>
       </button>

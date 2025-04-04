@@ -11,11 +11,15 @@ import {
 import { ThemeContext } from '../../contexts/ThemeContext';
 
 const LinkListSidebar = ({
+  icon,
   title,
   children,
+  sidebarVisibility,
 }: {
-  title: ReactNode;
+  icon: ReactNode;
+  title: string;
   children: ReactNode;
+  sidebarVisibility?: boolean;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -38,45 +42,56 @@ const LinkListSidebar = ({
     return count;
   }
 
-  const height = countChildren(children) * 60;
+  const count = countChildren(children);
+
+  const height = count * 60;
 
   return (
-    <ThemeContainer
-      className={`timing w-full rounded-br-4xl rounded-tl-4xl ${detailsOpen && 'z-10 shadow-list shadow-slate-950'}`}
-      chamfer="16"
-      borderColor={hover ? accentPrimary : 'transparent'}
+    <div
+      className={`timing relative flex flex-col clip-4`}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
-      <div
-        className={`${detailsOpen ? 'bg-tertiary' : 'bg-secondary'} timing relative flex flex-col pr-3 clip-4`}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
+      <button
+        className="text-primary group z-10 flex items-center p-2"
+        onClick={(e) => {
+          e.stopPropagation();
+          setDetailsOpen(!detailsOpen);
+        }}
       >
-        <button
-          className="text-primary z-10 flex items-center gap-6 p-2 pl-4"
-          onClick={(e) => {
-            e.stopPropagation();
-            setDetailsOpen(!detailsOpen);
-          }}
-        >
-          {title}
-          <span
-            className={`ml-auto transition duration-300 ${detailsOpen && '-rotate-180'}`}
+        {icon}
+        {
+          <div
+            className={`${!sidebarVisibility && 'invisible -translate-x-full opacity-0'} timing flex w-full items-center justify-between`}
           >
-            <Icon
-              path={mdiChevronDown}
-              size={1.1}
-              className={`text-primary`}
-            ></Icon>
-          </span>
-        </button>
-        <div
-          className={`${detailsOpen ? 'pb-4 pt-2' : ''} timing flex flex-col gap-4 pl-6`}
-          style={detailsOpen ? { maxHeight: height } : { maxHeight: 0 }}
-        >
-          {children}
-        </div>
+            <p className="group-hover:text-accent timing whitespace-nowrap pl-4 text-inherit">
+              {title}
+            </p>
+            <span
+              className={`ml-auto transition duration-300 ${detailsOpen && '-rotate-180'}`}
+            >
+              <Icon
+                path={mdiChevronDown}
+                size={1.1}
+                className={`text-primary group-hover:text-accent`}
+              ></Icon>
+            </span>
+          </div>
+        }
+      </button>
+      <div
+        className={`timing flex flex-col gap-4`}
+        style={detailsOpen ? { maxHeight: height } : { maxHeight: 0 }}
+      >
+        {sidebarVisibility && (
+          <div
+            className={`${detailsOpen && 'mt-2'} timing ml-4 flex flex-col gap-4 border-l border-gray-400`}
+          >
+            {children}
+          </div>
+        )}
       </div>
-    </ThemeContainer>
+    </div>
   );
 };
 

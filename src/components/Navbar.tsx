@@ -11,7 +11,12 @@ import BtnNavbar from './buttons/BtnNavbar';
 import { Link } from 'react-router-dom';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
-import { mdiCartOutline, mdiMenu } from '@mdi/js';
+import {
+  mdiBellAlertOutline,
+  mdiBellOutline,
+  mdiCartOutline,
+  mdiMenu,
+} from '@mdi/js';
 import PyramidIcon from './icons/PyramidIcon';
 import NavMenuMobile from './NavMenuMobile';
 import CharacterIcon from './icons/CharacterIcon';
@@ -286,7 +291,9 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
         <Link to="characters">
           <BtnNavbar className="bg-primary">Characters</BtnNavbar>
         </Link>
-
+        <Link to="notifications">
+          <Icon path={mdiBellOutline} className="text-secondary size-8" />
+        </Link>
         <button
           className="z-10 shrink-0"
           onClick={() => {

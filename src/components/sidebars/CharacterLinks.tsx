@@ -10,7 +10,13 @@ import EquipmentIcon from '../../components/icons/EquipmentIcon';
 import VehicleIcon from '../../components/icons/VehicleIcon';
 import LinkSublistSidebar from './LinkSublistSidebar';
 
-const CharacterLinks = ({ setSidebarVisibility }) => {
+const CharacterLinks = ({
+  sidebarVisibility,
+  setSidebarVisibility,
+}: {
+  sidebarVisibility: boolean;
+  setSidebarVisibility: (mode: boolean) => void;
+}) => {
   const { apiUrl } = useContext(AuthContext);
 
   const {
@@ -24,12 +30,9 @@ const CharacterLinks = ({ setSidebarVisibility }) => {
   return (
     <>
       <LinkListSidebar
-        title={
-          <>
-            <CharacterIcon className="size-8" />
-            <p className="text-inherit">Characters</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<CharacterIcon className="size-8 shrink-0" />}
+        title="Characters"
       >
         <LinkSidebar
           title="All characters"
@@ -53,12 +56,9 @@ const CharacterLinks = ({ setSidebarVisibility }) => {
         />
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <EquipmentIcon className="size-8" />
-            <p className="text-inherit">Equipment</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<EquipmentIcon className="size-8 shrink-0" />}
+        title="Equipment"
       >
         <LinkSidebar
           title="Equipment"
@@ -67,12 +67,9 @@ const CharacterLinks = ({ setSidebarVisibility }) => {
         />
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <InventoryIcon className="size-8" />
-            <p className="text-inherit">Inventory</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<InventoryIcon className="size-8 shrink-0" />}
+        title="Inventory"
       >
         <LinkSidebar
           title="Weapons"
@@ -128,12 +125,9 @@ const CharacterLinks = ({ setSidebarVisibility }) => {
         </LinkSublistSidebar>
       </LinkListSidebar>
       <LinkListSidebar
-        title={
-          <>
-            <VehicleIcon className="size-8" />
-            <p className="text-inherit">Garage</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<VehicleIcon className="size-8 shrink-0" />}
+        title="Vehicles"
       >
         <LinkSidebar
           title="Vehicles"

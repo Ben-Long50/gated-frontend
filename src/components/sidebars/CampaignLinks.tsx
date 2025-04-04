@@ -4,18 +4,21 @@ import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import CharacterIcon from '../icons/CharacterIcon';
 
-const CampaignLinks = ({ setSidebarVisibility }) => {
+const CampaignLinks = ({
+  sidebarVisibility,
+  setSidebarVisibility,
+}: {
+  sidebarVisibility: boolean;
+  setSidebarVisibility: (mode: boolean) => void;
+}) => {
   const { apiUrl } = useContext(AuthContext);
 
   return (
     <>
       <LinkListSidebar
-        title={
-          <>
-            <CharacterIcon className="size-8" />
-            <p className="text-inherit">Campaigns</p>
-          </>
-        }
+        sidebarVisibility={sidebarVisibility}
+        icon={<CharacterIcon className="size-8 shrink-0" />}
+        title="Campaigns"
       >
         <LinkSidebar
           title="Participant campaigns"

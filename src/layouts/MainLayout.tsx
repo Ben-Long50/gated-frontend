@@ -30,18 +30,27 @@ const MainLayout = () => {
         navbarHeight={navbarHeight}
       >
         {pathname.startsWith('/glam/codex') && (
-          <CodexLinks setSidebarVisibility={setSidebarVisibility} />
+          <CodexLinks
+            sidebarVisibility={sidebarVisibility}
+            setSidebarVisibility={setSidebarVisibility}
+          />
         )}
         {pathname.startsWith('/glam/characters') && (
-          <CharacterLinks setSidebarVisibility={setSidebarVisibility} />
+          <CharacterLinks
+            sidebarVisibility={sidebarVisibility}
+            setSidebarVisibility={setSidebarVisibility}
+          />
         )}
         {pathname.startsWith('/glam/campaigns') && (
-          <CampaignLinks setSidebarVisibility={setSidebarVisibility} />
+          <CampaignLinks
+            sidebarVisibility={sidebarVisibility}
+            setSidebarVisibility={setSidebarVisibility}
+          />
         )}
       </Sidebar>
       <div
         id="portal-root"
-        className={`timing relative col-end-3 ${sidebarVisibility ? 'col-start-2' : 'col-start-1'} z-10 row-start-2 flex flex-col items-center overflow-y-auto px-2 py-4 max-xl:col-start-1 max-sm:pt-20 sm:p-8 lg:px-16`}
+        className={`timing relative z-10 col-start-1 col-end-3 row-start-2 flex flex-col items-center overflow-y-auto px-2 py-4 max-xl:col-start-1 max-sm:pt-20 sm:p-8 lg:px-16`}
       >
         <Outlet context={{ navbarHeight }} />
       </div>
