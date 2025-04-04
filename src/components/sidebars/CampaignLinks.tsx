@@ -21,13 +21,13 @@ const CampaignLinks = ({
         title="Campaigns"
       >
         <LinkSidebar
-          title="Participant campaigns"
-          path={`campaigns/participant`}
+          title="Player campaigns"
+          path={`campaigns/player`}
           setSidebarVisibility={setSidebarVisibility}
         />
         <LinkSidebar
-          title="GM campaigns"
-          path={`campaigns/gm`}
+          title="Owner campaigns"
+          path={`campaigns/owner`}
           setSidebarVisibility={setSidebarVisibility}
         />
         <LinkSidebar

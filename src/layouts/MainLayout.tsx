@@ -50,7 +50,7 @@ const MainLayout = () => {
       </Sidebar>
       <div
         id="portal-root"
-        className={`timing relative z-10 col-start-1 col-end-3 row-start-2 flex flex-col items-center overflow-y-auto px-2 py-4 max-xl:col-start-1 max-sm:pt-20 sm:p-8 lg:px-16`}
+        className={`timing relative z-10 col-start-1 col-end-3 row-start-2 ml-[68px] flex flex-col items-center overflow-y-auto px-2 py-4 max-xl:col-start-1 max-sm:pt-20 sm:p-8 lg:px-16`}
       >
         <Outlet context={{ navbarHeight }} />
       </div>

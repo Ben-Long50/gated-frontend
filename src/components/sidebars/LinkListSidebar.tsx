@@ -81,15 +81,19 @@ const LinkListSidebar = ({
       </button>
       <div
         className={`timing flex flex-col gap-4`}
-        style={detailsOpen ? { maxHeight: height } : { maxHeight: 0 }}
+        style={
+          detailsOpen && sidebarVisibility
+            ? { maxHeight: height }
+            : { maxHeight: 0 }
+        }
       >
-        {sidebarVisibility && (
+        {
           <div
             className={`${detailsOpen && 'mt-2'} timing ml-4 flex flex-col gap-4 border-l border-gray-400`}
           >
             {children}
           </div>
-        )}
+        }
       </div>
     </div>
   );
