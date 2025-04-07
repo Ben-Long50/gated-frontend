@@ -12,12 +12,11 @@ import { Link, useParams } from 'react-router-dom';
 import LexicalEditor from './lexical/LexicalEditor';
 import useUsersQuery from '../hooks/useUsersQuery/useUsersQuery';
 import ItemCardSmall from './ItemCardSmall';
-import { mdiCloseBox, mdiImagePlus, mdiTriangleDown } from '@mdi/js';
+import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Icon from '@mdi/react';
 import useCreateCampaignMutation from '../hooks/useCreateCampaignMutation/useCreateCampaignMutation';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import ArrowHeader2 from './ArrowHeader2';
 import ArrowHeader3 from './ArrowHeader3';
 import AffiliationBar from './AffiliationBar';
 import Divider from './Divider';
@@ -60,6 +59,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
       briefing: campaign?.briefing || ({} as { html: string; nodes: string }),
       players: campaign?.players || ([] as User[]),
     },
+
     onSubmit: async ({ value }) => {
       console.log(value);
 

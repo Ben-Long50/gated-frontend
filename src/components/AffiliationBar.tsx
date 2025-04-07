@@ -1,34 +1,80 @@
+import { mdiTriangleDown } from '@mdi/js';
+import Icon from '@mdi/react';
 import { FieldApi } from '@tanstack/react-form';
 import { useState } from 'react';
 
-const AffiliationBar = ({ field }: { field: FieldApi }) => {
-  const [hoverValue, setHoverValue] = useState<number | null>(null);
+const AffiliationBar = ({
+  field,
+  value,
+}: {
+  field?: FieldApi;
+  value?: number;
+}) => {
+  const [hoverValue, setHoverValue] = useState<number | null>(value || null);
+
+  const affiliationValue = field?.state?.value ?? value;
   return (
-    <div className="flex w-full flex-col gap-4">
-      <div className="grid grid-cols-11 place-items-center">
+    <div className="flex w-full flex-col">
+      <div className="flex items-center justify-between">
         {Array.from({ length: 11 }).map((_, index) => (
           <div
             key={index}
-            className={`${field.state.value === index - 5 && 'bg-tertiary border-[2px] border-yellow-300 border-opacity-50'} flex size-8 items-center justify-center rounded-lg text-base font-semibold`}
+            className={`flex h-8 w-0 items-center justify-center rounded-lg text-center text-base font-semibold`}
           >
-            <p className="text-base font-bold">{index - 5}</p>
+            <p
+              className={`${affiliationValue === index - 5 && 'text-accent !text-3xl'} timing text-base font-bold`}
+            >
+              {index - 5}
+            </p>
           </div>
         ))}
       </div>
-      <div className="grid h-4 w-full grid-cols-11 rounded bg-gradient-to-r from-red-600 via-yellow-300 to-green-500">
-        {Array.from({ length: 11 }).map((_, index) => (
-          <button
-            key={index}
-            className={`${index === 10 && 'rounded-r'} ${index === 0 && 'rounded-l'} relative ${field.state.value < index - 5 && 'bg-zinc-500'} ${hoverValue && hoverValue >= index && 'bg-opacity-60'} w-full ${hoverValue && hoverValue < index && field.state.value >= index - 5 && 'bg-zinc-500 bg-opacity-60'} timing`}
-            onMouseEnter={() => setHoverValue(index)}
-            onMouseLeave={() => setHoverValue(null)}
-            onClick={(e) => {
-              e.preventDefault();
-              field.handleChange(index - 5);
-            }}
-          ></button>
-        ))}
+      <div className="w-full">
+        <div className="my-4 grid h-5 w-full grid-cols-10 rounded bg-gradient-to-r from-red-600 via-yellow-300 to-green-500">
+          {Array.from({ length: 10 }).map((_, index) => (
+            <button
+              key={index}
+              className={`${index === 9 && 'rounded-r'} ${index === 0 && 'rounded-l'} relative ${affiliationValue < index - 4 && 'bg-zinc-500'} ${hoverValue !== null && hoverValue >= index && 'bg-opacity-60'} w-full ${hoverValue !== null && hoverValue < index && affiliationValue >= index - 4 && 'bg-zinc-500 bg-opacity-60'} timing`}
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const isLeftHalf = e.clientX < rect.left + rect.width / 2;
+                setHoverValue(isLeftHalf ? index - 1 : index);
+              }}
+              onMouseLeave={() => setHoverValue(null)}
+              onClick={(e) => {
+                e.preventDefault();
+                const rect = e.currentTarget.getBoundingClientRect();
+                const isLeftHalf = e.clientX < rect.left + rect.width / 2;
+                if (!value) {
+                  return isLeftHalf
+                    ? field.handleChange(index - 5)
+                    : field.handleChange(index - 4);
+                }
+              }}
+            >
+              {affiliationValue === index - 4 && (
+                <div className="absolute right-0 top-0 z-10 -translate-y-2 translate-x-1/2">
+                  <Icon
+                    className="text-accent"
+                    path={mdiTriangleDown}
+                    size={0.75}
+                  />
+                </div>
+              )}
+              {hoverValue === index && (
+                <div className="absolute right-0 top-0 z-10 -translate-y-2 translate-x-1/2">
+                  <Icon
+                    className="text-accent opacity-50"
+                    path={mdiTriangleDown}
+                    size={0.75}
+                  />
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
+
       <div className="flex w-full items-center justify-between">
         <p className="text-tertiary">Aggressive</p>
         <p className="text-tertiary">Neutral</p>

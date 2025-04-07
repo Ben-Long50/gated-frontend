@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
-import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import Icon from '@mdi/react';
 import { mdiCircle, mdiCrown, mdiTriangleDown } from '@mdi/js';
@@ -13,12 +12,11 @@ import LocationIcon from './icons/LocationIcon';
 import { Session } from 'src/types/campaign';
 import { User } from 'src/types/user';
 import ArrowHeader2 from './ArrowHeader2';
-import CloudinaryImageSmall from './CloudinaryImageSmall';
 import { Character } from 'src/types/character';
-import CloudinaryImage from './CloudinaryImage';
-import CharacterPicture from './CharacterPicture';
 import CharacterCard from './CharacterCard';
 import Divider from './Divider';
+import NoblebloodIcon from './icons/NoblebloodIcon';
+import FederalIcon from './icons/FederalIcon';
 
 const Campaign = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -72,7 +70,7 @@ const Campaign = () => {
         </div>
       </div>
       <div className="flex w-full max-w-7xl flex-col items-center gap-8">
-        <h1 className="text-shadow-sm font-zen text-6xl font-normal text-shadow-x-xs text-shadow-y-xs text-shadow-zinc-950">
+        <h1 className="text-shadow-sm text-center font-zen text-6xl font-normal text-shadow-x-xs text-shadow-y-xs text-shadow-zinc-950">
           {campaign.name}
         </h1>
         <div className="flex items-center gap-4">
@@ -108,6 +106,28 @@ const Campaign = () => {
                     </div>
                   }
                 />
+              </Link>
+            ))}
+          </div>
+          <div className="flex flex-col gap-4">
+            <ArrowHeader2 title="Factions" />
+            {campaign.factions.map((faction: Faction) => (
+              <Link
+                className="w-full"
+                key={faction.id}
+                to={`factions/${faction.id}`}
+              >
+                <div className="timing flex w-full items-center justify-between rounded-lg p-2 ring-yellow-300 ring-opacity-50 hover:ring-2">
+                  <div className="flex items-center gap-4">
+                    {faction.factionType === 'federalReservists' && (
+                      <FederalIcon className="text-secondary size-16" />
+                    )}
+                    {faction.factionType === 'noblebloods' && (
+                      <NoblebloodIcon className="text-secondary size-16" />
+                    )}
+                    <ArrowHeader2 title={faction.name} />
+                  </div>
+                </div>
               </Link>
             ))}
           </div>

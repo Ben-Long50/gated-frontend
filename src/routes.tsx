@@ -49,6 +49,7 @@ import Campaigns from './components/Campaigns';
 import CampaignForm from './components/CampaignForm';
 import Campaign from './components/Campaign';
 import Session from './components/Session';
+import Faction from './components/Faction';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -69,7 +70,10 @@ const router = createBrowserRouter(
         </Route>
 
         <Route path="campaigns">
-          <Route path=":campaignId" element={<Campaign />} />
+          <Route path=":campaignId">
+            <Route index element={<Campaign />} />
+            <Route path="factions/:factionId" element={<Faction />} />
+          </Route>
           <Route path=":campaignId/sessions/:sessionId" element={<Session />} />
           <Route path="participant" element={<Campaigns title="Player" />} />
           <Route path="owner" element={<Campaigns title="Owner" />} />
