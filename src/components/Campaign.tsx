@@ -18,6 +18,7 @@ import { Character } from 'src/types/character';
 import CloudinaryImage from './CloudinaryImage';
 import CharacterPicture from './CharacterPicture';
 import CharacterCard from './CharacterCard';
+import Divider from './Divider';
 
 const Campaign = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -80,7 +81,7 @@ const Campaign = () => {
             {campaign.location}
           </h2>
         </div>
-        <div className="mt-48 grid w-full grid-cols-2 gap-8">
+        <div className="mt-40 grid w-full grid-cols-2 gap-8">
           <div className="flex flex-col gap-4">
             <ArrowHeader2 title="Sessions" />
             {campaign.sessions.map((session: Session) => (
@@ -110,6 +111,7 @@ const Campaign = () => {
               </Link>
             ))}
           </div>
+          <Divider className="col-span-2" />
           <div className="col-span-2 flex flex-col items-start gap-4">
             <ArrowHeader2 title="Player Characters" />
             {campaign.characters.map((character: Character) => (

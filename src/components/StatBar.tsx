@@ -53,7 +53,7 @@ const StatBar = ({
             ) : (
               <div key={index} className="relative">
                 <Icon
-                  className="-my-2 scale-x-150 scale-y-50"
+                  className="-my-2 scale-x-150 scale-y-75"
                   path={mdiRectangle}
                   size={1}
                   color={color}
@@ -70,7 +70,7 @@ const StatBar = ({
             )
           ) : layoutSize === 'small' || layoutSize === 'xsmall' ? (
             <div key={index} className="relative">
-              <Icon className="text-gray-400" path={mdiCircle} size={0.5} />
+              <Icon className="text-gray-500" path={mdiCircle} size={0.5} />
               {index > total - 1 && (
                 <Icon
                   path={mdiClose}
@@ -82,7 +82,7 @@ const StatBar = ({
           ) : (
             <div key={index} className="relative">
               <Icon
-                className="-my-2 scale-x-150 scale-y-50 text-gray-400"
+                className="-my-2 scale-x-150 scale-y-75 text-gray-500"
                 path={mdiRectangle}
                 size={1}
               />

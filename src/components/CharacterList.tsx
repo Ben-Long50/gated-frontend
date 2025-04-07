@@ -12,7 +12,7 @@ import { useForm } from '@tanstack/react-form';
 import SelectField from './SelectField';
 import { Character } from 'src/types/character';
 import { ThemeContext } from '../contexts/ThemeContext';
-import ArrowHeader2 from './ArrowHeader1';
+import ArrowHeader2 from './ArrowHeader2';
 
 const CharacterList = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -38,7 +38,7 @@ const CharacterList = () => {
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-6">
+    <div className="flex w-full max-w-7xl flex-col items-center gap-6">
       {!characters || characters?.length === 0 ? (
         <div className="flex w-full flex-col items-center justify-center gap-8">
           <h1 className="text-center">

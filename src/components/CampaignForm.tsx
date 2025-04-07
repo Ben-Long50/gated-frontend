@@ -1,4 +1,4 @@
-import { useForm } from '@tanstack/react-form';
+import { useForm, ValidationError } from '@tanstack/react-form';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
@@ -17,6 +17,10 @@ import Icon from '@mdi/react';
 import useCreateCampaignMutation from '../hooks/useCreateCampaignMutation/useCreateCampaignMutation';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
+import ArrowHeader2 from './ArrowHeader2';
+import ArrowHeader3 from './ArrowHeader3';
+import AffiliationBar from './AffiliationBar';
+import Divider from './Divider';
 
 const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -46,7 +50,13 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
       name: campaign?.name || '',
       location: campaign?.location || '',
       picture: campaign?.picture || '',
-      factions: campaign?.factions || ([''] as string[]),
+      factions:
+        campaign?.factions ||
+        ([
+          { factionType: '', name: '' },
+          { factionType: '', name: '' },
+        ] as { factionType: string; name: string }[]),
+      affiliation: 0,
       briefing: campaign?.briefing || ({} as { html: string; nodes: string }),
       players: campaign?.players || ([] as User[]),
     },
@@ -64,7 +74,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
       });
       formData.append('campaignId', JSON.stringify(campaignId || 0));
       if (mode === 'create' || mode === 'update') {
-        await createCampaign.mutate(formData);
+        // await createCampaign.mutate(formData);
       } else if (mode === 'modify') {
         // await modifyArmor.mutate(formData);
       }
@@ -106,26 +116,18 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
         <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
           Welcome to campaign creation! This page should only be filled out if
           you intend to act as the game master for an upcoming game. If that's
-          the case then continue on and craft the perfect cybernetic,
+          the case then continue on and craft the perfect cybermystic,
           apocalyptic, metropolitan hellscape for your players to endure. The
           information you provide will act as the backbone for your campaign's
           narrative.
         </p>
-        <div className="flex items-center gap-4">
-          <Icon
-            className="text-primary"
-            path={mdiTriangleDown}
-            size={0.4}
-            rotate={-90}
-          />
-          <h3>Basic Campaign Information</h3>
-        </div>
+        <ArrowHeader3 title="Basic Campaign Information" />
         <campaignForm.Field
           name="name"
           validators={{
             onChange: ({ value }) =>
               value.length < 2
-                ? 'Armor name must be at least 2 characters long'
+                ? 'Campaign name must be at least 2 characters long'
                 : undefined,
           }}
         >
@@ -133,7 +135,15 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             <InputField className="grow" label="Campaign name" field={field} />
           )}
         </campaignForm.Field>
-        <campaignForm.Field name="location">
+        <campaignForm.Field
+          name="location"
+          validators={{
+            onChange: ({ value }) =>
+              value.length < 2
+                ? 'Campaign location name must be at least 2 characters long'
+                : undefined,
+          }}
+        >
           {(field) => (
             <InputField label="Campaign location (city name)" field={field} />
           )}
@@ -178,15 +188,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             </div>
           )}
         </ThemeContainer>
-        <div className="flex items-center gap-4">
-          <Icon
-            className="text-primary"
-            path={mdiTriangleDown}
-            size={0.4}
-            rotate={-90}
-          />
-          <h3>Campaign Factions</h3>
-        </div>
+        <ArrowHeader3 title="Campaign Factions" />
         <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
           Decide which warring factions (The Powers that Be) of GatED will be
           present in your campaign. It is strongly recommended that a standard
@@ -200,36 +202,53 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
           </span>{' '}
           Choose wisely!
         </p>
-        <campaignForm.Field
-          name="factions"
-          mode="array"
-          validators={{
-            onSubmit: ({ value }) => (!value ? 'Select a faction' : undefined),
-          }}
-        >
+        <campaignForm.Field name="factions" mode="array">
           {(field) => (
             <div className="flex w-full flex-col gap-4 lg:gap-8">
               {field.state.value.map((_, i: number) => {
                 return (
-                  <campaignForm.Field key={i} name={`factions[${i}]`}>
-                    {(subfield) => (
-                      <SelectField
-                        className="w-full"
-                        label="Faction"
-                        field={subfield}
-                      >
-                        <option value=""></option>
-                        <option value="theChurch">The Church</option>
-                        <option value="corporateHoldouts">
-                          Corporate Holdouts
-                        </option>
-                        <option value="federalReservists">
-                          Federal Reservists
-                        </option>
-                        <option value="noblebloods">Noblebloods</option>
-                      </SelectField>
-                    )}
-                  </campaignForm.Field>
+                  <div className="flex w-full flex-col gap-4" key={i}>
+                    <campaignForm.Field
+                      name={`factions[${i}].factionType`}
+                      validators={{
+                        onSubmit: ({ value }) =>
+                          !value ? 'Select a faction type' : undefined,
+                      }}
+                    >
+                      {(subfield) => (
+                        <SelectField
+                          className="w-full"
+                          label="Faction type"
+                          field={subfield}
+                        >
+                          <option value=""></option>
+                          <option value="churchOfElShaddai">
+                            Church of El Shaddai
+                          </option>
+                          <option value="corporateHoldouts">
+                            Corporate Holdouts
+                          </option>
+                          <option value="federalReservists">
+                            Federal Reservists
+                          </option>
+                          <option value="noblebloods">Noblebloods</option>
+                        </SelectField>
+                      )}
+                    </campaignForm.Field>
+                    <campaignForm.Field
+                      name={`factions[${i}].name`}
+                      validators={{
+                        onSubmit: ({ value }) =>
+                          !value
+                            ? 'Create a unique name for this faction'
+                            : undefined,
+                      }}
+                    >
+                      {(subfield) => (
+                        <InputField field={subfield} label="Faction name" />
+                      )}
+                    </campaignForm.Field>
+                  </div>
                 );
               })}
               <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
@@ -248,16 +267,19 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             </div>
           )}
         </campaignForm.Field>
+        <ArrowHeader3 title="Starting Faction Affiliation" />
+        <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
+          On the scale shown below, choose the starting relationship between
+          your two major factions. This chosen relationship will help guide the
+          campaign narrative and give insight into the benefits and consequences
+          of potential alliances or rivalries for the players taking part in the
+          campaign.
+        </p>
+        <campaignForm.Field name="affiliation">
+          {(field) => <AffiliationBar field={field} />}
+        </campaignForm.Field>
         <div className="flex flex-col gap-8">
-          <div className="flex items-center gap-4">
-            <Icon
-              className="text-primary"
-              path={mdiTriangleDown}
-              size={0.4}
-              rotate={-90}
-            />
-            <h3>Campaign Briefing</h3>
-          </div>
+          <ArrowHeader3 title="Campaign Briefing" />
           <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
             Craft a backstory for your upcoming campaign. This backstory will
             serve as the first taste of the world for your campaign participants
@@ -296,15 +318,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
           </campaignForm.Field>
         </div>
         <div className="flex flex-col gap-8">
-          <div className="flex items-center gap-4">
-            <Icon
-              className="text-primary"
-              path={mdiTriangleDown}
-              size={0.4}
-              rotate={-90}
-            />
-            <h3>Invite Players</h3>
-          </div>
+          <ArrowHeader3 title="Invite Players" />
           <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
             Search for the names of the friends you want to invite to this
             campaign and check the box next to their names. When the campaign is
@@ -320,23 +334,34 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
               setNameQuery(value);
             }}
           ></InputFieldBasic>
-          <campaignForm.Field name="players">
+          <campaignForm.Field
+            name="players"
+            validators={{
+              onChange: ({ value }) =>
+                value.length < 2
+                  ? 'You must invite at least 2 players to create a campaign'
+                  : undefined,
+            }}
+          >
             {(field) => {
               const playerArray = field.state.value;
 
               return (
                 <div className="flex flex-col gap-4">
+                  {field.state.meta.errors &&
+                    field.state.meta.errors.map((error: ValidationError) => (
+                      <p
+                        key={error?.toString()}
+                        className="timing text-error mt-1 text-base italic leading-5"
+                        role="alert"
+                      >
+                        {error}
+                      </p>
+                    ))}
                   {field.state.value.length > 0 && (
-                    <div className="flex items-center gap-4">
-                      <Icon
-                        className="text-primary"
-                        path={mdiTriangleDown}
-                        size={0.4}
-                        rotate={-90}
-                      />
-                      <h3>Selected Players</h3>
-                    </div>
+                    <ArrowHeader3 title="Selected Players" />
                   )}
+
                   {playerArray.map((user: User) => (
                     <div className="flex items-center gap-4" key={user.id}>
                       <ItemCardSmall
@@ -379,9 +404,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                       />
                     </div>
                   ))}
-                  {field.state.value.length > 0 && (
-                    <hr className="border border-yellow-300 border-opacity-50" />
-                  )}
+                  {field.state.value.length > 0 && <Divider />}
                   {usersLoading || usersPending ? (
                     <Loading />
                   ) : (

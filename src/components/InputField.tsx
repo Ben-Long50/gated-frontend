@@ -30,7 +30,7 @@ const InputField = ({ field, ...props }) => {
   return (
     <div className={`${props.className}`}>
       <ThemeContainer
-        className={`${props.className} ml-auto`}
+        className={`${props.className} ml-auto shadow-md`}
         chamfer="small"
         borderColor={borderColor}
       >

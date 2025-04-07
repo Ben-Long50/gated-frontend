@@ -25,7 +25,7 @@ const ItemCardSmall = ({
 
   return (
     <div
-      className={`mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-zinc-950`}
+      className={`mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-black`}
     >
       <div
         className={`${className} bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
