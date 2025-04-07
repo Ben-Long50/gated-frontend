@@ -1,8 +1,6 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutContext } from '../../contexts/LayoutContext';
-import { mdiTriangleSmallUp } from '@mdi/js';
-import Icon from '@mdi/react';
 
 const LinkSidebar = ({
   title,

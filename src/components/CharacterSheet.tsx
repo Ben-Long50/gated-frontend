@@ -24,6 +24,9 @@ import InsanityIcon from './icons/InsanityIcon';
 import Loading from './Loading';
 import useStats from '../hooks/useStats';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
+import ArrowHeader2 from './ArrowHeader2';
+import ArrowHeader1 from './ArrowHeader1';
+import ArrowHeader3 from './ArrowHeader3';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -63,16 +66,14 @@ const CharacterSheet = () => {
         <div className="flex w-full gap-4">
           <ThemeContainer
             className="w-full grow rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-            chamfer="16"
+            chamfer="small"
             borderColor={accentPrimary}
           >
-            <div className="bg-primary flex h-full w-full items-center justify-between gap-4 px-4 py-2 clip-4 sm:px-8">
-              <h1 className="text-start text-3xl font-semibold tracking-widest">
-                {character.firstName + ' ' + character.lastName}
-              </h1>
-              <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
-                {character.level}
-              </p>
+            <div className="bg-primary flex h-full w-full items-center justify-between gap-4 px-4 py-2 clip-4">
+              <ArrowHeader1
+                title={character.firstName + ' ' + character.lastName}
+              />
+              <h1 className="text-accent">{character.level}</h1>
             </div>
           </ThemeContainer>
           <div className="flex flex-col items-center gap-1 pr-2">
@@ -113,7 +114,7 @@ const CharacterSheet = () => {
         {character.picture.imageUrl && (
           <ThemeContainer
             className="size mx-auto aspect-square w-full max-w-96 rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-            chamfer="24"
+            chamfer="medium"
             borderColor={accentPrimary}
           >
             <img
@@ -125,15 +126,17 @@ const CharacterSheet = () => {
         )}
 
         <ThemeContainer
-          chamfer="24"
+          chamfer="medium"
           className="mb-auto max-h-96 w-full rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
           borderColor={accentPrimary}
         >
           <div className="bg-primary scrollbar-secondary max-h-96 overflow-y-auto p-4 clip-6">
-            <div className="flex w-full items-center justify-between px-2">
-              <h3 className="">
-                {character.firstName + ' ' + character.lastName}'s Story
-              </h3>
+            <div className="flex w-full items-center justify-between">
+              <ArrowHeader3
+                title={
+                  character.firstName + ' ' + character.lastName + "'s Story"
+                }
+              />
               <button
                 className="text-tertiary hover:underline"
                 onClick={() => setStoryVisibility(!storyVisibility)}
@@ -184,7 +187,7 @@ const CharacterSheet = () => {
       <div className="flex flex-col gap-8">
         <ThemeContainer
           className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-          chamfer="24"
+          chamfer="medium"
           borderColor={accentPrimary}
         >
           <div className="bg-primary flex flex-wrap justify-center gap-8 px-8 py-4 clip-6 lg:justify-between lg:pl-10">
@@ -283,7 +286,7 @@ const CharacterSheet = () => {
               <ThemeContainer
                 key={attribute}
                 className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-                chamfer="24"
+                chamfer="medium"
                 borderColor={accentPrimary}
               >
                 <div className="bg-primary p-6 clip-6">
@@ -300,18 +303,14 @@ const CharacterSheet = () => {
       </div>
       <ThemeContainer
         className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-        chamfer="24"
+        chamfer="medium"
         borderColor={accentPrimary}
       >
         <div className="bg-primary p-4 clip-6">
-          <h2 className="mb-2 py-2 pl-4 text-left text-2xl font-semibold tracking-widest">
-            Perks
-          </h2>
           <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
+            <ArrowHeader2 className="col-span-2" title="Perks" />
             {character.perks.map((perk) => {
-              return (
-                <PerkCard className="w-full" key={perk.name} perk={perk} />
-              );
+              return <PerkCard key={perk.name} perk={perk} />;
             })}
           </div>
         </div>

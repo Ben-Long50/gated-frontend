@@ -1,44 +1,29 @@
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode } from 'react';
 import ThemeBorder from './ThemeBorder';
 
-const ThemeContainer = (props) => {
-  const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
-
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    const observer = new ResizeObserver(updateDimensions);
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
-      }
-    };
-  }, []);
-
-  const updateDimensions = () => {
-    if (containerRef.current) {
-      setDimensions({
-        height: Math.floor(containerRef.current.offsetHeight),
-        width: Math.floor(containerRef.current.offsetWidth),
-      });
-    }
+const ThemeContainer = ({
+  className,
+  borderColor,
+  chamfer,
+  children,
+}: {
+  className?: string;
+  borderColor: string;
+  chamfer: string;
+  children: ReactNode;
+}) => {
+  const radiusMap = {
+    small: 'rounded-tl-4xl rounded-br-4xl',
+    medium: 'rounded-tl-5xl rounded-br-5xl',
+    large: 'rounded-tl-5xl rounded-br-5xl',
   };
 
   return (
-    <div ref={containerRef} className={`${props.className} relative`}>
-      <ThemeBorder
-        className="absolute right-[1px] top-[1px]"
-        height={dimensions.height}
-        width={dimensions.width}
-        borderColor={props.borderColor}
-        chamfer={props.chamfer}
-      />
-      {props.children}
+    <div
+      className={`${className} ${radiusMap[chamfer]} relative shadow-lg shadow-black`}
+    >
+      <ThemeBorder borderColor={borderColor} chamfer={chamfer} />
+      {children}
     </div>
   );
 };

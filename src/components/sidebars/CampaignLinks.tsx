@@ -2,7 +2,7 @@ import LinkListSidebar from './LinkListSidebar';
 import LinkSidebar from './LinkSidebar';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
-import CharacterIcon from '../icons/CharacterIcon';
+import CampaignIcon from '../icons/CampaignIcon';
 
 const CampaignLinks = ({
   sidebarVisibility,
@@ -17,7 +17,9 @@ const CampaignLinks = ({
     <>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<CharacterIcon className="size-8 shrink-0" />}
+        icon={
+          <CampaignIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+        }
         title="Campaigns"
       >
         <LinkSidebar

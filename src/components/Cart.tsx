@@ -119,7 +119,7 @@ const Cart = () => {
       </h1>
       <ThemeContainer
         className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
-        chamfer="24"
+        chamfer="medium"
         borderColor={accentPrimary}
       >
         <div className="bg-primary flex w-full flex-col gap-4 p-4 clip-6 sm:px-8">

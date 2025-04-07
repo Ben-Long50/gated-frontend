@@ -15,6 +15,7 @@ import SpeedIcon from './icons/SpeedIcon';
 import CloudinaryImage from './CloudinaryImage';
 import useStats from '../hooks/useStats';
 import { Character } from 'src/types/character';
+import ArrowHeader1 from './ArrowHeader2';
 
 const CharacterCard = ({ character }: { character: Character }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -31,14 +32,14 @@ const CharacterCard = ({ character }: { character: Character }) => {
   return (
     <ThemeContainer
       className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
-      chamfer="32"
+      chamfer="large"
       borderColor={accentPrimary}
     >
       <div className="bg-primary flex flex-col items-center gap-8 p-6 clip-8 md:flex-row">
         <div className="grid grid-cols-[1fr_auto_1fr]">
           <ThemeContainer
             className="col-span-1 col-start-2 rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
-            chamfer="24"
+            chamfer="medium"
             borderColor={accentPrimary}
           >
             <CloudinaryImage
@@ -50,10 +51,11 @@ const CharacterCard = ({ character }: { character: Character }) => {
           </ThemeContainer>
         </div>
         <div className="flex h-full w-full flex-col justify-between gap-4 md:gap-6">
-          <div className="flex w-full items-center justify-between md:px-8">
-            <h1 className="text-center text-3xl font-semibold tracking-widest">
-              {character.firstName + ' ' + character.lastName}
-            </h1>
+          <div className="flex w-full items-center justify-between">
+            <ArrowHeader1
+              title={character.firstName + ' ' + character.lastName}
+            />
+
             <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
               {character.level}
             </p>

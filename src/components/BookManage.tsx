@@ -71,7 +71,7 @@ const BookManage = () => {
       <h1 className="text-center">Manage Book</h1>
       <ThemeContainer
         className="rounded-5xl shadow-xl shadow-zinc-950"
-        chamfer="32"
+        chamfer="large"
         borderColor={accentPrimary}
       >
         <div className="bg-primary flex flex-col gap-4 p-4 clip-8 sm:p-6 lg:p-8">

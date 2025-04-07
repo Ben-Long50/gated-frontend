@@ -96,6 +96,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
+          if (createCampaign.isPending) return;
           campaignForm.handleSubmit();
         }}
       >
@@ -139,7 +140,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
         </campaignForm.Field>
         <ThemeContainer
           className="mx-auto w-full"
-          chamfer="24"
+          chamfer="medium"
           borderColor={accentPrimary}
         >
           {!imagePreview ? (
@@ -442,7 +443,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
           </campaignForm.Field>
         </div>
         <BtnRect type="submit" className="group w-full">
-          {campaign ? (
+          {createCampaign.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}

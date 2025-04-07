@@ -10,6 +10,7 @@ import Loading from './Loading';
 import SelectField from './SelectField';
 import { mdiTriangleDown } from '@mdi/js';
 import Icon from '@mdi/react';
+import ArrowHeader2 from './ArrowHeader1';
 
 const Actions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -37,12 +38,12 @@ const Actions = ({ mode }: { mode?: string }) => {
       <h1 className="text-center">Actions</h1>
       <ThemeContainer
         className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
-        chamfer="24"
+        chamfer="medium"
         borderColor={accentPrimary}
       >
         <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
           <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
-            <h3 className="col-span-2 pl-4 sm:col-span-1">Filter options</h3>
+            <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
               {(field) => (
                 <SelectField
@@ -91,14 +92,14 @@ const Actions = ({ mode }: { mode?: string }) => {
         </form>
       </ThemeContainer>
       <ThemeContainer
-        chamfer="24"
+        chamfer="medium"
         className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
         borderColor={accentPrimary}
       >
         <div className="bg-primary flex w-full flex-col gap-8 p-4 clip-6 sm:p-8">
           <searchForm.Subscribe selector={(state) => state.values.category}>
             {(category) => {
-              let title = 'All actions';
+              let title = 'All Actions';
               switch (category) {
                 case 'action':
                   title = 'Actions';
@@ -110,20 +111,10 @@ const Actions = ({ mode }: { mode?: string }) => {
                   title = 'Reactions';
                   break;
                 default:
-                  title = 'All actions';
+                  title = 'All Actions';
                   break;
               }
-              return (
-                <div className="flex items-center gap-4">
-                  <Icon
-                    className="text-primary"
-                    path={mdiTriangleDown}
-                    size={0.5}
-                    rotate={-90}
-                  />
-                  <h2>{title}</h2>
-                </div>
-              );
+              return <ArrowHeader2 title={title} />;
             }}
           </searchForm.Subscribe>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">

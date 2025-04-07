@@ -9,7 +9,7 @@ const BtnRect = (props) => {
   return (
     <ThemeContainer
       className={`${props.className}`}
-      chamfer="16"
+      chamfer="small"
       borderColor={hover ? accentPrimary : 'transparent'}
     >
       <button

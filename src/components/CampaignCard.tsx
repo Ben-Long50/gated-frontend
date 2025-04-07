@@ -16,7 +16,7 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
   return (
     <ThemeContainer
       className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
-      chamfer="32"
+      chamfer="large"
       borderColor={accentPrimary}
     >
       <div

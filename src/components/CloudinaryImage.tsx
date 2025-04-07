@@ -1,11 +1,25 @@
-import { forwardRef, useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'motion/react';
 
-const CloudinaryImage = forwardRef((props, ref) => {
+const CloudinaryImage = ({
+  className,
+  url,
+  width,
+  height,
+  alt,
+  onClick,
+}: {
+  className: string;
+  url: string;
+  width: number;
+  height: number;
+  alt: string;
+  onClick: () => void;
+}) => {
   let responsiveUrl;
 
-  if (props.url) {
-    const splitUrl = props.url?.split('upload/');
+  if (url) {
+    const splitUrl = url?.split('upload/');
 
     responsiveUrl = splitUrl[0]
       .concat('upload/w_500,c_scale/')
@@ -24,17 +38,16 @@ const CloudinaryImage = forwardRef((props, ref) => {
 
   return (
     <motion.img
-      ref={ref}
-      className={`${props.className} cld-responsive text-secondary aspect-square w-full text-xl clip-6`}
-      width={props.width}
-      height={props.height}
+      className={`${className} cld-responsive text-secondary aspect-square w-full text-xl clip-6`}
+      width={width}
+      height={height}
       data-src={responsiveUrl}
       loading="lazy"
-      alt={props.alt}
-      onClick={props.onClick}
+      alt={alt}
+      onClick={onClick}
     />
   );
-});
+};
 
 CloudinaryImage.displayName = 'CloudinaryImage';
 

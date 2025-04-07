@@ -5,10 +5,10 @@ import {
   mdiCircleOutline,
   mdiSquare,
   mdiSquareOutline,
-  mdiTriangleSmallUp,
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import { LayoutContext } from '../contexts/LayoutContext';
+import ArrowHeader3 from './ArrowHeader3';
 
 const AttributeCard = (props) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -17,9 +17,9 @@ const AttributeCard = (props) => {
   return (
     <>
       <div className="mb-4 flex w-full flex-wrap items-center justify-between gap-2 sm:gap-4">
-        <h2 className="text-2xl font-semibold tracking-widest">
+        <h3>
           {props.attribute.charAt(0).toUpperCase() + props.attribute.slice(1)}{' '}
-        </h2>
+        </h3>
         <div className="flex gap-2 sm:gap-4">
           {Array.from({ length: 4 }).map((_, index) => (
             <button
@@ -57,18 +57,12 @@ const AttributeCard = (props) => {
       <div className="flex flex-col gap-3">
         {Object.entries(props.skills).map(([skill, { points }]) => (
           <li
-            className="flex w-full flex-wrap items-center gap-1 pl-3"
+            className="flex w-full flex-wrap items-center justify-between gap-1 pl-2"
             key={skill}
           >
-            <Icon
-              className="text-primary"
-              path={mdiTriangleSmallUp}
-              rotate={90}
-              size={1}
+            <ArrowHeader3
+              title={skill.charAt(0).toUpperCase() + skill.slice(1)}
             />
-            <h3 className="grow pl-2 text-xl">
-              {skill.charAt(0).toUpperCase() + skill.slice(1)}
-            </h3>
             <div className="flex gap-2 sm:gap-4">
               {Array.from({ length: 4 }).map((_, index) => (
                 <button

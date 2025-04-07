@@ -31,7 +31,9 @@ const CharacterLinks = ({
     <>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<CharacterIcon className="size-8 shrink-0" />}
+        icon={
+          <CharacterIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+        }
         title="Characters"
       >
         <LinkSidebar
@@ -57,7 +59,9 @@ const CharacterLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<EquipmentIcon className="size-8 shrink-0" />}
+        icon={
+          <EquipmentIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+        }
         title="Equipment"
       >
         <LinkSidebar
@@ -68,7 +72,9 @@ const CharacterLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<InventoryIcon className="size-8 shrink-0" />}
+        icon={
+          <InventoryIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+        }
         title="Inventory"
       >
         <LinkSidebar
@@ -126,7 +132,9 @@ const CharacterLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<VehicleIcon className="size-8 shrink-0" />}
+        icon={
+          <VehicleIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+        }
         title="Vehicles"
       >
         <LinkSidebar

@@ -1,14 +1,6 @@
-import ThemeContainer from '../../components/ThemeContainer';
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import {
-  Children,
-  isValidElement,
-  ReactNode,
-  useContext,
-  useState,
-} from 'react';
-import { ThemeContext } from '../../contexts/ThemeContext';
+import { Children, isValidElement, ReactNode, useState } from 'react';
 
 const LinkListSidebar = ({
   icon,
@@ -21,7 +13,6 @@ const LinkListSidebar = ({
   children: ReactNode;
   sidebarVisibility?: boolean;
 }) => {
-  const { accentPrimary } = useContext(ThemeContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [hover, setHover] = useState(false);
 
@@ -53,7 +44,7 @@ const LinkListSidebar = ({
       onMouseLeave={() => setHover(false)}
     >
       <button
-        className="text-primary group z-10 flex items-center p-2"
+        className="text-primary group z-10 flex items-center"
         onClick={(e) => {
           e.stopPropagation();
           setDetailsOpen(!detailsOpen);

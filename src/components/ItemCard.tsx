@@ -114,7 +114,7 @@ const ItemCard = ({
       className="w-full"
     >
       <ThemeContainer
-        chamfer="24"
+        chamfer="medium"
         className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
         borderColor={accentPrimary}
       >
@@ -537,7 +537,7 @@ const ItemCard = ({
               {item.weapons && item.weapons?.length > 0 && (
                 <ThemeContainer
                   className="mt-2"
-                  chamfer="16"
+                  chamfer="small"
                   borderColor={accentPrimary}
                 >
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
@@ -570,7 +570,7 @@ const ItemCard = ({
               {item.armor && item.armor?.length > 0 && (
                 <ThemeContainer
                   className="mt-2"
-                  chamfer="16"
+                  chamfer="small"
                   borderColor={accentPrimary}
                 >
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
@@ -600,7 +600,7 @@ const ItemCard = ({
               {item.actions && item.actions?.length > 0 && (
                 <ThemeContainer
                   className="mt-2"
-                  chamfer="16"
+                  chamfer="small"
                   borderColor={accentPrimary}
                 >
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
@@ -624,7 +624,7 @@ const ItemCard = ({
                 </ThemeContainer>
               )}
               {item.modifications?.length > 0 && (
-                <ThemeContainer chamfer="16" borderColor={accentPrimary}>
+                <ThemeContainer chamfer="small" borderColor={accentPrimary}>
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Modifications
                   </p>

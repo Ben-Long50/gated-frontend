@@ -29,7 +29,7 @@ const SelectField = ({ field, ...props }) => {
 
   return (
     <div className={`${props.className}`}>
-      <ThemeContainer chamfer="16" borderColor={borderColor}>
+      <ThemeContainer chamfer="small" borderColor={borderColor}>
         <select
           className={`${props.className} text-secondary timing focus:bg-primary h-[44px] w-full rounded-none lg:h-[48px] ${field.state.value?.length === 0 || !field.state.value ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pr-2 pt-3 outline-none clip-4`}
           name={field.name}

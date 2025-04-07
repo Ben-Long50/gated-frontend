@@ -34,7 +34,7 @@ const LinkSublistSidebar = ({
   return (
     <div className={`timing relative flex flex-col pr-2 clip-4`}>
       <button
-        className={`${icon && 'pb-2'} text-primary group z-10 flex items-center gap-6 pl-4`}
+        className={`text-primary group z-10 flex items-center gap-6 pl-4`}
         onClick={(e) => {
           e.stopPropagation();
           setDetailsOpen(!detailsOpen);

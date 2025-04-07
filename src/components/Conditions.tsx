@@ -10,6 +10,7 @@ import ConditionCard from './ConditionCard';
 import SelectField from './SelectField';
 import Icon from '@mdi/react';
 import { mdiTriangleDown } from '@mdi/js';
+import ArrowHeader2 from './ArrowHeader1';
 
 const Conditions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -36,12 +37,12 @@ const Conditions = ({ mode }: { mode?: string }) => {
       <h1 className="text-center">Conditions</h1>
       <ThemeContainer
         className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
-        chamfer="24"
+        chamfer="medium"
         borderColor={accentPrimary}
       >
         <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
-          <div className="flex w-full items-center justify-between pl-4">
-            <h3 className="">Filter options</h3>
+          <div className="flex w-full items-center justify-between">
+            <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
               {(field) => (
                 <SelectField
@@ -71,7 +72,7 @@ const Conditions = ({ mode }: { mode?: string }) => {
         </form>
       </ThemeContainer>
       <ThemeContainer
-        chamfer="24"
+        chamfer="medium"
         className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
         borderColor={accentPrimary}
       >
@@ -79,20 +80,15 @@ const Conditions = ({ mode }: { mode?: string }) => {
           <div className="flex flex-col gap-8">
             <searchForm.Subscribe selector={(state) => state.values.category}>
               {(category) => (
-                <div className="flex items-center gap-4">
-                  <Icon
-                    className="text-primary"
-                    path={mdiTriangleDown}
-                    size={0.5}
-                    rotate={-90}
-                  />
-                  <h2>
-                    {category.length > 0
-                      ? category[0].toUpperCase() + category.slice(1) + ' '
-                      : 'All '}
-                    conditions
-                  </h2>
-                </div>
+                <ArrowHeader2
+                  title={
+                    category.length > 0
+                      ? category[0].toUpperCase() +
+                        category.slice(1) +
+                        ' Conditions'
+                      : 'All Conditions'
+                  }
+                />
               )}
             </searchForm.Subscribe>
             <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">

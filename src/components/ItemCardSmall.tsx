@@ -4,11 +4,13 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 
 const ItemCardSmall = ({
+  className,
   heading,
   children,
 }: {
+  className?: string;
   heading: ReactNode;
-  children: ReactNode;
+  children?: ReactNode;
 }) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
@@ -22,9 +24,11 @@ const ItemCardSmall = ({
   }, [detailRef.current]);
 
   return (
-    <div className="mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-zinc-950">
+    <div
+      className={`mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-zinc-950`}
+    >
       <div
-        className={`bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
+        className={`${className} bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
         onClick={async (e) => {
           e.preventDefault();
           setDetailsOpen(!detailsOpen);

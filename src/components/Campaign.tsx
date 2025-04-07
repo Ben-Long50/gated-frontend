@@ -1,10 +1,23 @@
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
+import Icon from '@mdi/react';
+import { mdiCircle, mdiCrown, mdiTriangleDown } from '@mdi/js';
+import ItemCardSmall from './ItemCardSmall';
+import { format } from 'date-fns';
+import LocationIcon from './icons/LocationIcon';
+import { Session } from 'src/types/campaign';
+import { User } from 'src/types/user';
+import ArrowHeader2 from './ArrowHeader2';
+import CloudinaryImageSmall from './CloudinaryImageSmall';
+import { Character } from 'src/types/character';
+import CloudinaryImage from './CloudinaryImage';
+import CharacterPicture from './CharacterPicture';
+import CharacterCard from './CharacterCard';
 
 const Campaign = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -22,24 +35,89 @@ const Campaign = () => {
 
   return (
     <>
-      <div className="absolute left-0 right-0 top-0 -z-10 flex aspect-[10/3] w-full items-center overflow-hidden">
+      <div className="absolute left-0 right-0 top-0 -z-10 mx-auto flex aspect-[10/3] w-full max-w-9xl items-center overflow-hidden">
         <img src={`${campaign.picture?.imageUrl}`} alt="Campaign cover image" />
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#1a1a1d] to-transparent" />
+        <div className="absolute right-6 top-6 flex flex-col items-center gap-4">
+          <div className="relative">
+            <img
+              className="size-10 shrink-0 rounded-full"
+              src={`${campaign.owner.profilePicture}`}
+              alt="Owner"
+            />
+            <Icon
+              path={mdiCrown}
+              className="text-accent absolute -right-2 -top-2 size-5"
+            />
+          </div>
+
+          <Icon path={mdiCircle} className="text-tertiary size-2" />
+          {campaign.players.map((player: User) => (
+            <img
+              key={player.id}
+              className="size-10 shrink-0 rounded-full"
+              src={player.profilePicture}
+              alt="Profile"
+            />
+          ))}
+          {campaign.pendingPlayers.map((player: User) => (
+            <img
+              key={player.id}
+              className="size-10 shrink-0 rounded-full opacity-50"
+              src={player.profilePicture}
+              alt="Profile"
+            />
+          ))}
+        </div>
       </div>
-      <ThemeContainer
-        className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-        chamfer="16"
-        borderColor={accentPrimary}
-      >
-        <div className="bg-primary px-12 py-3 clip-4">
-          <h1>{campaign.name}</h1>
+      <div className="flex w-full max-w-7xl flex-col items-center gap-8">
+        <h1 className="text-shadow-sm font-zen text-6xl font-normal text-shadow-x-xs text-shadow-y-xs text-shadow-zinc-950">
+          {campaign.name}
+        </h1>
+        <div className="flex items-center gap-4">
+          <LocationIcon className="text-accent size-8" />
+          <h2 className="text-accent text-shadow-sm text-shadow-x-xs text-shadow-y-xs text-shadow-zinc-950">
+            {campaign.location}
+          </h2>
         </div>
-      </ThemeContainer>
-      {campaign.sessions.map((session) => (
-        <div key={session.id}>
-          <h2>{session.name}</h2>
+        <div className="mt-48 grid w-full grid-cols-2 gap-8">
+          <div className="flex flex-col gap-4">
+            <ArrowHeader2 title="Sessions" />
+            {campaign.sessions.map((session: Session) => (
+              <Link
+                className="w-full"
+                key={session.id}
+                to={`sessions/${session.id}`}
+              >
+                <ItemCardSmall
+                  className="hover:bg-tertiary timing pointer-events-none"
+                  heading={
+                    <div className="flex w-full items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <h3>{session.sessionNumber}</h3>
+                        <Icon
+                          path={mdiTriangleDown}
+                          className="text-secondary size-2"
+                          rotate={-90}
+                        />
+                        <h3>{session.name}</h3>
+                      </div>
+
+                      <p>{format(session.createdAt, 'PP')}</p>
+                    </div>
+                  }
+                />
+              </Link>
+            ))}
+          </div>
+          <div className="col-span-2 flex flex-col items-start gap-4">
+            <ArrowHeader2 title="Player Characters" />
+            {campaign.characters.map((character: Character) => (
+              <CharacterCard key={character.id} character={character} />
+            ))}
+          </div>
         </div>
-      ))}
+      </div>
     </>
   );
 };

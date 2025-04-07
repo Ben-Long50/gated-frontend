@@ -30,7 +30,7 @@ const TextAreaField = ({ field, ...props }) => {
   return (
     <div className="flex flex-col">
       <ThemeContainer
-        chamfer="16"
+        chamfer="small"
         className={`mx-auto ${props.className}`}
         borderColor={borderColor}
       >

@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import Loading from '../../components/Loading';
 import { UseMutationResult } from '@tanstack/react-query';
 
 const BtnControl = ({
@@ -10,7 +9,7 @@ const BtnControl = ({
 }: {
   title: string;
   icon: ReactNode;
-  mutation: UseMutationResult;
+  mutation?: UseMutationResult;
   value?: number;
 }) => {
   return (

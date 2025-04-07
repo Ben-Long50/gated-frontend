@@ -24,13 +24,7 @@ import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import Icon from '@mdi/react';
-import {
-  mdiCheckCircle,
-  mdiCircle,
-  mdiCircleOutline,
-  mdiClose,
-  mdiTriangleDown,
-} from '@mdi/js';
+import { mdiCheckCircle, mdiCircle, mdiCircleOutline, mdiClose } from '@mdi/js';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 import clsx from 'clsx';
@@ -47,6 +41,9 @@ import useEquipment from '../hooks/useEquipment';
 import { Item } from 'src/types/item';
 import useItems from '../hooks/useItems';
 import MiscItemCard from './MiscItemCard';
+import ArrowHeader3 from './ArrowHeader3';
+import Divider from './Divider';
+import ArrowHeader2 from './ArrowHeader2';
 
 const Equipment = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -113,7 +110,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
 
   const activeItem = useMemo(() => {
     switch (active?.category) {
-      case 'weapon':
+      case 'weapons':
         return equippedWeapons.filter(
           (weapon: WeaponWithKeywords) => weapon.id === active.id,
         )[0];
@@ -121,11 +118,11 @@ const Equipment = ({ mode }: { mode?: string }) => {
         return equippedArmor.filter(
           (armor: ArmorWithKeywords) => armor.id === active.id,
         )[0];
-      case 'cybernetic':
+      case 'cybernetics':
         return equippedCybernetics.filter(
           (cybernetic: CyberneticWithKeywords) => cybernetic.id === active.id,
         )[0];
-      case 'item':
+      case 'items':
         return equippedItems.filter((item: Item) => item.id === active.id)[0];
       default:
         break;
@@ -149,10 +146,10 @@ const Equipment = ({ mode }: { mode?: string }) => {
       .flat() || [];
 
   const itemObject = {
-    weapons: { list: weapons, category: 'weapon' },
+    weapons: { list: weapons, category: 'weapons' },
     armor: { list: armor, category: 'armor' },
-    cybernetics: { list: cybernetics, category: 'cybernetic' },
-    items: { list: items, category: 'item' },
+    cybernetics: { list: cybernetics, category: 'cybernetics' },
+    items: { list: items, category: 'items' },
   };
 
   const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
@@ -166,7 +163,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
         {character.picture.imageUrl && (
           <ThemeContainer
             className="size mx-auto mb-auto aspect-square w-full max-w-60 rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-            chamfer="24"
+            chamfer="medium"
             borderColor={accentPrimary}
           >
             <img
@@ -219,18 +216,18 @@ const Equipment = ({ mode }: { mode?: string }) => {
       </div>
       {layoutSize !== 'large' &&
         active.id !== null &&
-        (active.category === 'weapon' ? (
+        (active.category === 'weapons' ? (
           <WeaponCard key={active.id} weapon={activeItem} mode="equipment" />
         ) : active.category === 'armor' ? (
           <ArmorCard key={active.id} armor={activeItem} mode="equipment" />
-        ) : active.category === 'cybernetic' ? (
+        ) : active.category === 'cybernetics' ? (
           <CyberneticCard
             key={active.id}
             cybernetic={activeItem}
             mode="equipment"
           />
         ) : (
-          active.category === 'item' && (
+          active.category === 'items' && (
             <MiscItemCard key={active.id} item={activeItem} mode="equipment" />
           )
         ))}
@@ -245,7 +242,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
         >
           {layoutSize === 'large' &&
             active.id !== null &&
-            (active.category === 'weapon' ? (
+            (active.category === 'weapons' ? (
               <WeaponCard
                 key={active.id}
                 weapon={activeItem}
@@ -253,14 +250,14 @@ const Equipment = ({ mode }: { mode?: string }) => {
               />
             ) : active.category === 'armor' ? (
               <ArmorCard key={active.id} armor={activeItem} mode="equipment" />
-            ) : active.category === 'cybernetic' ? (
+            ) : active.category === 'cybernetics' ? (
               <CyberneticCard
                 key={active.id}
                 cybernetic={activeItem}
                 mode="equipment"
               />
             ) : (
-              active.category === 'item' && (
+              active.category === 'items' && (
                 <MiscItemCard
                   key={active.id}
                   item={activeItem}
@@ -271,19 +268,11 @@ const Equipment = ({ mode }: { mode?: string }) => {
         </EquipmentList>
         <ThemeContainer
           className="mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-          chamfer="24"
+          chamfer="medium"
           borderColor={accentPrimary}
         >
           <div className="bg-primary flex h-full flex-col gap-4 p-4 pr-6 clip-6">
-            <div className="flex items-center gap-4">
-              <Icon
-                className="text-primary"
-                path={mdiTriangleDown}
-                size={0.35}
-                rotate={-90}
-              />
-              <h3>Stats</h3>
-            </div>
+            <ArrowHeader3 title="Stats" />
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
                 <SpeedIcon className="size-8" />
@@ -396,16 +385,8 @@ const Equipment = ({ mode }: { mode?: string }) => {
             </div>
             {Object.keys(rollBonuses).length > 0 && (
               <>
-                <hr className="border border-yellow-300 border-opacity-50" />
-                <div className="flex items-center gap-4">
-                  <Icon
-                    className="text-primary"
-                    path={mdiTriangleDown}
-                    size={0.35}
-                    rotate={-90}
-                  />
-                  <h3>Roll Bonuses</h3>
-                </div>
+                <Divider />
+                <ArrowHeader3 title="Roll Bonuses" />
                 {Object.entries(rollBonuses).map(
                   ([action, bonus]: [string, number], index: number) => (
                     <div
@@ -427,16 +408,8 @@ const Equipment = ({ mode }: { mode?: string }) => {
             )}
             {actionList.length > 0 && (
               <>
-                <hr className="border border-yellow-300 border-opacity-50" />
-                <div className="flex items-center gap-4">
-                  <Icon
-                    className="text-primary"
-                    path={mdiTriangleDown}
-                    size={0.35}
-                    rotate={-90}
-                  />
-                  <h3>Unique Actions</h3>
-                </div>
+                <Divider />
+                <ArrowHeader3 title="Unique Actions" />
                 {actionList.map((action: Action) => (
                   <ActionCard key={action?.id} action={action} />
                 ))}
@@ -446,16 +419,8 @@ const Equipment = ({ mode }: { mode?: string }) => {
         </ThemeContainer>
       </div>
       <div className="flex w-full flex-col gap-8">
-        <div className="flex items-center gap-4">
-          <Icon
-            className="text-primary"
-            path={mdiTriangleDown}
-            size={0.5}
-            rotate={-90}
-          />
-          <h2>Inventory</h2>
-          <p className="text-tertiary italic">(Double click to equip)</p>
-        </div>
+        <ArrowHeader2 title="Inventory" />
+        <p className="text-tertiary italic">(Double click to equip)</p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-8">
           {Object.entries(itemObject).map(([key, value]) => {
             return (
@@ -463,19 +428,11 @@ const Equipment = ({ mode }: { mode?: string }) => {
                 <ThemeContainer
                   key={key}
                   className="mb-auto rounded-br-4xl rounded-tl-4xl shadow-lg shadow-zinc-950"
-                  chamfer="24"
+                  chamfer="medium"
                   borderColor={accentPrimary}
                 >
                   <div className="bg-primary flex w-full flex-col gap-2 p-4 clip-6">
-                    <div className="flex items-center gap-4">
-                      <Icon
-                        className="text-primary"
-                        path={mdiTriangleDown}
-                        size={0.35}
-                        rotate={-90}
-                      />
-                      <h3>{key[0].toUpperCase() + key.slice(1)}</h3>
-                    </div>
+                    <ArrowHeader3 title={key[0].toUpperCase() + key.slice(1)} />
                     <div className="grid w-full grid-cols-4 gap-2 sm:grid-cols-[repeat(auto-fill,100px)]">
                       {value.list.map(
                         (

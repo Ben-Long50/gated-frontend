@@ -17,7 +17,7 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
     <ItemCardSmall
       heading={
         <div className="flex w-full items-center justify-between gap-4 pr-2">
-          <h3> {perk.name}</h3>
+          <h3>{perk.name}</h3>
           {mode === 'codex' &&
             ((mode === 'codex' && user?.role === 'ADMIN') ||
               (mode === 'codex' && user?.role === 'SUPERADMIN')) && (

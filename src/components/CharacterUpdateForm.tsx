@@ -6,7 +6,7 @@ import BtnRect from './buttons/BtnRect';
 import AttributeCard from './AttributeCard';
 import TextAreaField from './TextAreaField';
 import { AuthContext } from '../contexts/AuthContext';
-import { useForm } from '@tanstack/react-form';
+import { useForm, ValidationError } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
 import SelectField from './SelectField';
 import StatBar from './StatBar';
@@ -25,6 +25,11 @@ import FormLayout from '../layouts/FormLayout';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import useStats from '../hooks/useStats';
 import { Perk } from 'src/types/perk';
+import InputFieldRadio from './InputFieldRadio';
+import useOwnerCampaignsQuery from '../hooks/useOwnerCampaignsQuery/useOwnerCampaignsQuery';
+import { Campaign } from 'src/types/campaign';
+import ArrowHeader2 from './ArrowHeader2';
+import Divider from './Divider';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -34,11 +39,15 @@ const CharacterUpdateForm = () => {
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
 
+  const { data: campaigns } = useOwnerCampaignsQuery(apiUrl);
+
   const {
     data: character,
     isLoading: characterLoading,
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, characterId);
+
+  const playerCharacter = character.playerCharacter.toString();
 
   const isLoading = characterLoading;
   const isPending = characterPending;
@@ -88,6 +97,8 @@ const CharacterUpdateForm = () => {
 
   const characterUpdateForm = useForm({
     defaultValues: {
+      playerCharacter: playerCharacter || '',
+      campaign: character?.campaign ?? null,
       firstName: character?.firstName ?? '',
       lastName: character?.lastName ?? '',
       level: character?.level ?? '',
@@ -109,6 +120,10 @@ const CharacterUpdateForm = () => {
     },
     onSubmit: async ({ value }) => {
       value.perks = value.perks.map((perk: Perk) => perk.id);
+
+      value.playerCharacter = value.playerCharacter === 'true' ? true : false;
+
+      console.log(value);
 
       const formData = new FormData();
 
@@ -134,6 +149,7 @@ const CharacterUpdateForm = () => {
       });
 
       updateCharacter.mutate(formData);
+      value.playerCharacter = value.playerCharacter.toString();
     },
   });
 
@@ -185,6 +201,68 @@ const CharacterUpdateForm = () => {
       >
         <h1 className="text-center">Update Character</h1>
         <div className="grid gap-4 max-sm:grid-rows-2 sm:grid-cols-2 sm:gap-8">
+          <Divider className="col-span-2" />
+          <ArrowHeader2 className="col-span-2" title="Campaign Information" />
+          <characterUpdateForm.Field
+            name="playerCharacter"
+            validators={{
+              onSubmit: ({ value }) =>
+                !value
+                  ? 'You must choose whether this character is a playable character'
+                  : undefined,
+            }}
+          >
+            {(field) => (
+              <>
+                <InputFieldRadio
+                  className="col-span-2"
+                  label="Playable Character"
+                  field={field}
+                  checked={
+                    field.state.value == 'true' || field.state.value === true
+                  }
+                  value="true"
+                />
+                <InputFieldRadio
+                  className="col-span-2"
+                  label="Non-playable Character"
+                  field={field}
+                  checked={
+                    field.state.value === 'false' || field.state.value === false
+                  }
+                  value="false"
+                />
+                {field.state.meta.errors &&
+                  field.state.meta.errors.map((error: ValidationError) => (
+                    <p
+                      key={error?.toString()}
+                      className="timing text-error col-span-2 mt-1 text-base italic leading-5"
+                      role="alert"
+                    >
+                      {error}
+                    </p>
+                  ))}
+              </>
+            )}
+          </characterUpdateForm.Field>
+          <characterUpdateForm.Field name="campaign">
+            {(field) => (
+              <SelectField
+                className="col-span-2"
+                label="Campaign"
+                field={field}
+              >
+                <option defaultValue=""></option>
+                {campaigns.map((campaign: Campaign) => (
+                  <option key={campaign.id} value={campaign.id}>
+                    {campaign.name}
+                  </option>
+                ))}
+              </SelectField>
+            )}
+          </characterUpdateForm.Field>
+          <hr className="col-span-2 w-full border border-yellow-300 border-opacity-50" />
+          <ArrowHeader2 className="col-span-2" title="Character Information" />
           <characterUpdateForm.Field
             name="firstName"
             validators={{
@@ -222,7 +300,6 @@ const CharacterUpdateForm = () => {
             </characterUpdateForm.Field>
           </div>
         </div>
-
         <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-4">
           <characterUpdateForm.Field name="height">
             {(field) => (
@@ -252,7 +329,7 @@ const CharacterUpdateForm = () => {
         <div className="grid grid-rows-2 gap-8 sm:grid-cols-2 sm:grid-rows-1">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
-            chamfer="24"
+            chamfer="medium"
             borderColor={accentPrimary}
           >
             {!imagePreview ? (
@@ -383,7 +460,7 @@ const CharacterUpdateForm = () => {
             )}
           </characterUpdateForm.Field>
         </div>
-        <h2>Attributes and skills</h2>
+        <ArrowHeader2 title="Attributes and Skills" />
         <div className="flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
           {Object.entries(attributeTree.tree).map(
             ([attribute, { points, skills }]) => (
@@ -398,7 +475,8 @@ const CharacterUpdateForm = () => {
             ),
           )}
         </div>
-        <h2>Available Perks</h2>
+        <ArrowHeader2 title="Available Perks" />
+
         <p className="text-tertiary sm:px-4 lg:px-6">
           (Available perks are only shown if you meet the attribute and skill
           point requirements)

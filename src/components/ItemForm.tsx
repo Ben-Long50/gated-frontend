@@ -302,7 +302,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
         <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 sm:grid-rows-1">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
-            chamfer="24"
+            chamfer="medium"
             borderColor={accentPrimary}
           >
             {!imagePreview ? (

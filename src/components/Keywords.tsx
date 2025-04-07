@@ -40,7 +40,7 @@ const Keywords = ({ mode }: { mode?: string }) => {
       <h1 className="text-center">Keywords</h1>
       <ThemeContainer
         className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
-        chamfer="24"
+        chamfer="medium"
         borderColor={accentPrimary}
       >
         <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
@@ -77,7 +77,7 @@ const Keywords = ({ mode }: { mode?: string }) => {
         </form>
       </ThemeContainer>
       <ThemeContainer
-        chamfer="24"
+        chamfer="medium"
         className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
         borderColor={accentPrimary}
       >

@@ -47,8 +47,11 @@ export default {
       },
       clipPath: {
         2: 'polygon(0.5rem 0px, 100% 0px, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0px 100%, 0px 0.5rem)',
+        3: 'polygon(0.75rem 0px, 100% 0px, 100% calc(100% - 0.75rem), calc(100% - 0.75rem) 100%, 0px 100%, 0px 0.75rem)',
         4: 'polygon(1rem 0px, 100% 0px, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0px 100%, 0px 1rem)',
+        5: 'polygon(1.25rem 0px, 100% 0px, 100% calc(100% - 1.25rem), calc(100% - 1.25rem) 100%, 0px 100%, 0px 1.25rem)',
         6: 'polygon(1.5rem 0px, 100% 0px, 100% calc(100% - 1.5rem), calc(100% - 1.5rem) 100%, 0px 100%, 0px 1.5rem)',
+        7: 'polygon(1.75rem 0px, 100% 0px, 100% calc(100% - 1.75rem), calc(100% - 1.75rem) 100%, 0px 100%, 0px 1.75rem)',
         8: 'polygon(2rem 0px, 100% 0px, 100% calc(100% - 2rem), calc(100% - 2rem) 100%, 0px 100%, 0px 2rem)',
         12: 'polygon(3rem 0px, 100% 0px, 100% calc(100% - 3rem), calc(100% - 3rem) 100%, 0px 100%, 0px 3rem)',
       },

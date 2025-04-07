@@ -14,6 +14,7 @@ import EquipIcon from './icons/EquipIcon';
 import { Modifier } from 'src/types/modifier';
 import ModifierTag from './ModifierTag';
 import MiscItemCard from './MiscItemCard';
+import ArrowHeader2 from './ArrowHeader1';
 
 const Items = ({
   title,
@@ -50,12 +51,12 @@ const Items = ({
       <h1 className="text-center">{title}</h1>
       <ThemeContainer
         className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
-        chamfer="24"
+        chamfer="medium"
         borderColor={accentPrimary}
       >
         <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
           <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
-            <h3 className="pl-4">Filter options</h3>
+            <ArrowHeader2 title="Filter Options" />
           </div>
           <searchForm.Field name="query">
             {(field) => (

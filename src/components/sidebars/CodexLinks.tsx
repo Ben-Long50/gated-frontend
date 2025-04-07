@@ -46,15 +46,13 @@ const CodexLinks = ({
     <>
       <NavLink
         className={({ isActive }) =>
-          isActive
-            ? 'text-accent group flex p-2'
-            : 'text-secondary group flex p-2'
+          isActive ? 'text-accent group flex' : 'text-secondary group flex'
         }
         to="/glam/codex/search"
         end
       >
         <Icon
-          className="timing group-hover:text-accent size-8 shrink-0 text-inherit"
+          className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit"
           path={mdiMagnify}
           rotate={90}
         />
@@ -75,7 +73,9 @@ const CodexLinks = ({
       </NavLink>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<BookIcon className="group-hover:text-accent size-8 shrink-0" />}
+        icon={
+          <BookIcon className="group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2" />
+        }
         title="The Book"
       >
         {bookSections?.map((section) => {
@@ -114,7 +114,7 @@ const CodexLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<WeaponIcon className="size-8 shrink-0" />}
+        icon={<WeaponIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
         title="Weapons"
       >
         <LinkSidebar
@@ -167,7 +167,7 @@ const CodexLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<ArmorIcon className="size-8 shrink-0" />}
+        icon={<ArmorIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
         title="Armor"
       >
         <LinkSidebar
@@ -195,7 +195,7 @@ const CodexLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<CyberIcon className="size-8 shrink-0" />}
+        icon={<CyberIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
         title="Cybernetics"
       >
         <LinkSidebar
@@ -213,7 +213,9 @@ const CodexLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<VehicleIcon className="size-8 shrink-0" />}
+        icon={
+          <VehicleIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+        }
         title="Vehicles"
       >
         <LinkSidebar
@@ -248,7 +250,7 @@ const CodexLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<SackIcon className="size-8 shrink-0" />}
+        icon={<SackIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
         title="Items"
       >
         <LinkSidebar
@@ -256,10 +258,7 @@ const CodexLinks = ({
           path="codex/items"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSublistSidebar
-          title="Reusables"
-          icon={<GadgetIcon className="size-8 shrink-0" />}
-        >
+        <LinkSublistSidebar title="Reusables">
           <LinkSidebar
             title="Gadgets"
             path="codex/items/reusables/gadgets"
@@ -271,10 +270,7 @@ const CodexLinks = ({
             setSidebarVisibility={setSidebarVisibility}
           />
         </LinkSublistSidebar>
-        <LinkSublistSidebar
-          title="Consumables"
-          icon={<PotionIcon className="size-8 shrink-0" />}
-        >
+        <LinkSublistSidebar title="Consumables">
           <LinkSidebar
             title="Chemical therapy"
             path="codex/items/consumables/chemicalTherapy"
@@ -303,7 +299,7 @@ const CodexLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<PerkIcon className="size-8 shrink-0" />}
+        icon={<PerkIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
         title="Perks"
       >
         <LinkSidebar
@@ -321,7 +317,9 @@ const CodexLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<KeywordIcon className="size-8 shrink-0" />}
+        icon={
+          <KeywordIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+        }
         title="Keywords"
       >
         <LinkSidebar
@@ -339,7 +337,7 @@ const CodexLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<ActionIcon className="size-8 shrink-0" />}
+        icon={<ActionIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
         title="Actions"
       >
         <LinkSidebar
@@ -357,7 +355,9 @@ const CodexLinks = ({
       </LinkListSidebar>
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
-        icon={<ConditionIcon className="size-8 shrink-0" />}
+        icon={
+          <ConditionIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+        }
         title="Conditions"
       >
         <LinkSidebar

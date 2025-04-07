@@ -31,7 +31,7 @@ const InputField = ({ field, ...props }) => {
     <div className={`${props.className}`}>
       <ThemeContainer
         className={`${props.className} ml-auto`}
-        chamfer="16"
+        chamfer="small"
         borderColor={borderColor}
       >
         <input

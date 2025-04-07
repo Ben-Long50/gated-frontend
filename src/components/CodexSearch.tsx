@@ -31,6 +31,7 @@ import { Action } from 'src/types/action';
 import ActionCard from './ActionCard';
 import ConditionCard from './ConditionCard';
 import ModCard from './ModCard';
+import ArrowHeader2 from './ArrowHeader1';
 
 const CodexSearch = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -247,12 +248,12 @@ const CodexSearch = () => {
       <h1>Search Codex</h1>
       <ThemeContainer
         className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
-        chamfer="24"
+        chamfer="medium"
         borderColor={accentPrimary}
       >
         <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
-          <div className="flex w-full items-center justify-between pl-4">
-            <h3 className="">Filter options</h3>
+          <div className="flex w-full items-center justify-between">
+            <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="keyword">
               {(field) => (
                 <SelectField

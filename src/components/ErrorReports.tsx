@@ -29,7 +29,7 @@ const ErrorReports = () => {
           <ThemeContainer
             key={report.id}
             className="mb-auto w-full max-w-5xl rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
-            chamfer="24"
+            chamfer="medium"
             borderColor={accentPrimary}
           >
             <div className="bg-secondary flex flex-col gap-4 p-4 clip-6">

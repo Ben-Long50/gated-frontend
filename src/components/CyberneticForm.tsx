@@ -398,7 +398,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
         <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:grid-rows-1 sm:gap-6 lg:gap-8">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
-            chamfer="24"
+            chamfer="medium"
             borderColor={accentPrimary}
           >
             {!imagePreview ? (

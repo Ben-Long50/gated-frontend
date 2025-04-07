@@ -8,7 +8,7 @@ const BtnSidebar = (props) => {
 
   return (
     <ThemeContainer
-      chamfer="16"
+      chamfer="small"
       borderColor={hover ? accentPrimary : 'transparent'}
     >
       <button

@@ -33,7 +33,7 @@ const SignupForm = () => {
 
   return (
     <ThemeContainer
-      chamfer="24"
+      chamfer="medium"
       borderColor={accentPrimary}
       className="mx-auto w-full max-w-2xl rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
       position="mx-auto max-w-xl w-full"

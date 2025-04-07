@@ -183,7 +183,7 @@ const CharacterForm = () => {
         <div className="grid grid-rows-2 gap-8 sm:grid-cols-2 sm:grid-rows-1">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
-            chamfer="24"
+            chamfer="medium"
             borderColor={accentPrimary}
           >
             {!imagePreview ? (

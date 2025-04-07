@@ -12,6 +12,7 @@ import { useForm } from '@tanstack/react-form';
 import SelectField from './SelectField';
 import { Character } from 'src/types/character';
 import { ThemeContext } from '../contexts/ThemeContext';
+import ArrowHeader2 from './ArrowHeader1';
 
 const CharacterList = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -52,12 +53,12 @@ const CharacterList = () => {
           <h1 className="text-center">Characters</h1>
           <ThemeContainer
             className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
-            chamfer="24"
+            chamfer="medium"
             borderColor={accentPrimary}
           >
             <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
               <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:gap-8">
-                <h3 className="pl-4">Active character</h3>
+                <ArrowHeader2 title="Active Character" />
                 <activeForm.Field name="character">
                   {(field) => (
                     <SelectField
