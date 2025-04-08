@@ -47,6 +47,8 @@ const CharacterUpdateForm = () => {
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, characterId);
 
+  console.log(character);
+
   const playerCharacter = character.playerCharacter.toString();
 
   const isLoading = characterLoading;
@@ -98,7 +100,7 @@ const CharacterUpdateForm = () => {
   const characterUpdateForm = useForm({
     defaultValues: {
       playerCharacter: playerCharacter || '',
-      campaign: character?.campaign ?? null,
+      campaign: character?.campaignId ?? null,
       firstName: character?.firstName ?? '',
       lastName: character?.lastName ?? '',
       level: character?.level ?? '',

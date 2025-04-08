@@ -34,7 +34,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
       chamfer="large"
       borderColor={accentPrimary}
     >
-      <div className="bg-secondary grid grid-flow-row gap-8 p-6 clip-8 sm:grid-flow-col sm:grid-cols-[auto_1fr] md:flex-row">
+      <div className="bg-primary grid grid-flow-row gap-8 p-6 clip-8 sm:grid-flow-col sm:grid-cols-[auto_1fr] md:flex-row">
         <ThemeContainer
           className="mx-auto aspect-square w-[280px]"
           chamfer="medium"

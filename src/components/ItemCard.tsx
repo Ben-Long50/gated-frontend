@@ -119,7 +119,7 @@ const ItemCard = ({
         borderColor={accentPrimary}
       >
         <div
-          className="bg-secondary timing relative flex cursor-pointer flex-col p-4 clip-6"
+          className="bg-primary timing relative flex cursor-pointer flex-col p-4 clip-6"
           onClick={async (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -547,7 +547,7 @@ const ItemCard = ({
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Integrated weapons
                   </p>
-                  <div className="bg-secondary flex flex-col gap-4 p-4 clip-4">
+                  <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
                     {item.weapons?.map(
                       (weapon: WeaponWithKeywords, index: number) => {
                         return (
@@ -580,7 +580,7 @@ const ItemCard = ({
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Integrated armor
                   </p>
-                  <div className="bg-secondary flex flex-col gap-4 p-4 clip-4">
+                  <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
                     {item.armor.map(
                       (armor: ArmorWithKeywords, index: number) => {
                         return (
@@ -610,7 +610,7 @@ const ItemCard = ({
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Unique actions
                   </p>
-                  <div className="bg-secondary flex flex-col gap-4 p-4 clip-4">
+                  <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
                     {item.actions?.map((action: Action, index: number) => {
                       return (
                         <>

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
@@ -13,6 +13,7 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ArrowHeader3 from './ArrowHeader3';
 import { Affiliation } from 'src/types/faction';
+import BtnAuth from './buttons/BtnAuth';
 
 const Faction = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -24,6 +25,9 @@ const Faction = () => {
     isLoading,
     isPending,
   } = useFactionQuery(apiUrl, factionId);
+
+  const backgroundRef = useRef<HTMLDivElement>(null);
+  const affiliationRef = useRef<HTMLDivElement>(null);
 
   const affiliations = faction
     ? {
@@ -37,8 +41,6 @@ const Faction = () => {
           ) || [],
       }
     : null;
-
-  console.log(affiliations);
 
   if (isLoading || isPending) return <Loading />;
 
@@ -61,10 +63,29 @@ const Faction = () => {
             <h1>{faction.name}</h1>
           </div>
         </div>
+        <div className="grid grid-cols-2 gap-4 self-start">
+          <BtnAuth
+            className="px-8"
+            onClick={() => {
+              backgroundRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            Background
+          </BtnAuth>
+          <BtnAuth
+            className="px-8"
+            onClick={() => {
+              affiliationRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            Affiliations
+          </BtnAuth>
+        </div>
         <Divider />
         {faction.background?.html && (
           <>
             <div
+              ref={backgroundRef}
               id="quill-display"
               className="ql-editor whitespace-pre-wrap"
               dangerouslySetInnerHTML={{ __html: faction.background.html }}
@@ -72,55 +93,60 @@ const Faction = () => {
             <Divider />
           </>
         )}
-        {affiliations?.factionAffiliations.length > 0 && (
-          <>
-            <ArrowHeader2 title="Faction Affiliations" />
-            {affiliations?.factionAffiliations.map(
-              (affiliation: Affiliation) => (
-                <ThemeContainer
-                  borderColor={accentPrimary}
-                  chamfer="medium"
-                  key={affiliation.id}
-                >
-                  <div className="bg-secondary flex w-full flex-col items-start gap-4 p-4 clip-6">
-                    <ArrowHeader3 title={affiliation.secondaryFaction?.name} />
-                    <AffiliationBar
-                      className="px-4"
-                      value={affiliation.value}
-                    />
-                  </div>
-                </ThemeContainer>
-              ),
-            )}
-          </>
-        )}
-        {affiliations?.characterAffiliations.length > 0 && (
-          <>
-            <ArrowHeader2 title="Character Affiliations" />
-            {affiliations?.characterAffiliations.map(
-              (affiliation: Affiliation) => (
-                <ThemeContainer
-                  borderColor={accentPrimary}
-                  chamfer="medium"
-                  key={affiliation.id}
-                >
-                  <div className="bg-secondary flex w-full flex-col items-start gap-4 p-4 clip-6">
-                    <ArrowHeader3
-                      title={
-                        affiliation.secondaryCharacter?.firstName +
-                        affiliation.secondaryCharacter?.lastName
-                      }
-                    />
-                    <AffiliationBar
-                      className="px-4"
-                      value={affiliation.value}
-                    />
-                  </div>
-                </ThemeContainer>
-              ),
-            )}
-          </>
-        )}
+        <div className="flex flex-col gap-4" ref={affiliationRef}>
+          {affiliations?.factionAffiliations.length > 0 && (
+            <>
+              <ArrowHeader2 title="Faction Affiliations" />
+              {affiliations?.factionAffiliations.map(
+                (affiliation: Affiliation) => (
+                  <ThemeContainer
+                    borderColor={accentPrimary}
+                    chamfer="medium"
+                    key={affiliation.id}
+                  >
+                    <div className="bg-secondary flex w-full flex-col items-start gap-4 p-4 clip-6">
+                      <ArrowHeader3
+                        title={affiliation.secondaryFaction?.name}
+                      />
+                      <AffiliationBar
+                        className="px-4"
+                        value={affiliation.value}
+                      />
+                    </div>
+                  </ThemeContainer>
+                ),
+              )}
+            </>
+          )}
+          {affiliations?.characterAffiliations.length > 0 && (
+            <>
+              <ArrowHeader2 title="Character Affiliations" />
+              {affiliations?.characterAffiliations.map(
+                (affiliation: Affiliation) => (
+                  <ThemeContainer
+                    borderColor={accentPrimary}
+                    chamfer="medium"
+                    key={affiliation.id}
+                  >
+                    <div className="bg-secondary flex w-full flex-col items-start gap-4 p-4 clip-6">
+                      <ArrowHeader3
+                        title={
+                          affiliation.secondaryCharacter?.firstName +
+                          affiliation.secondaryCharacter?.lastName
+                        }
+                      />
+                      <AffiliationBar
+                        className="px-4"
+                        value={affiliation.value}
+                      />
+                    </div>
+                  </ThemeContainer>
+                ),
+              )}
+            </>
+          )}
+        </div>
+
         <Link className="w-full" to={`update`}>
           <BtnRect
             ariaLabel="Update faction information"

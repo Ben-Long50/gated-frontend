@@ -110,7 +110,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
 
   const activeItem = useMemo(() => {
     switch (active?.category) {
-      case 'weapons':
+      case 'weapon':
         return equippedWeapons.filter(
           (weapon: WeaponWithKeywords) => weapon.id === active.id,
         )[0];
@@ -118,11 +118,11 @@ const Equipment = ({ mode }: { mode?: string }) => {
         return equippedArmor.filter(
           (armor: ArmorWithKeywords) => armor.id === active.id,
         )[0];
-      case 'cybernetics':
+      case 'cybernetic':
         return equippedCybernetics.filter(
           (cybernetic: CyberneticWithKeywords) => cybernetic.id === active.id,
         )[0];
-      case 'items':
+      case 'item':
         return equippedItems.filter((item: Item) => item.id === active.id)[0];
       default:
         break;
@@ -146,10 +146,10 @@ const Equipment = ({ mode }: { mode?: string }) => {
       .flat() || [];
 
   const itemObject = {
-    weapons: { list: weapons, category: 'weapons' },
+    weapons: { list: weapons, category: 'weapon' },
     armor: { list: armor, category: 'armor' },
-    cybernetics: { list: cybernetics, category: 'cybernetics' },
-    items: { list: items, category: 'items' },
+    cybernetics: { list: cybernetics, category: 'cybernetic' },
+    items: { list: items, category: 'item' },
   };
 
   const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
@@ -216,18 +216,18 @@ const Equipment = ({ mode }: { mode?: string }) => {
       </div>
       {layoutSize !== 'large' &&
         active.id !== null &&
-        (active.category === 'weapons' ? (
+        (active.category === 'weapon' ? (
           <WeaponCard key={active.id} weapon={activeItem} mode="equipment" />
         ) : active.category === 'armor' ? (
           <ArmorCard key={active.id} armor={activeItem} mode="equipment" />
-        ) : active.category === 'cybernetics' ? (
+        ) : active.category === 'cybernetic' ? (
           <CyberneticCard
             key={active.id}
             cybernetic={activeItem}
             mode="equipment"
           />
         ) : (
-          active.category === 'items' && (
+          active.category === 'item' && (
             <MiscItemCard key={active.id} item={activeItem} mode="equipment" />
           )
         ))}
@@ -242,7 +242,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
         >
           {layoutSize === 'large' &&
             active.id !== null &&
-            (active.category === 'weapons' ? (
+            (active.category === 'weapon' ? (
               <WeaponCard
                 key={active.id}
                 weapon={activeItem}
@@ -250,14 +250,14 @@ const Equipment = ({ mode }: { mode?: string }) => {
               />
             ) : active.category === 'armor' ? (
               <ArmorCard key={active.id} armor={activeItem} mode="equipment" />
-            ) : active.category === 'cybernetics' ? (
+            ) : active.category === 'cybernetic' ? (
               <CyberneticCard
                 key={active.id}
                 cybernetic={activeItem}
                 mode="equipment"
               />
             ) : (
-              active.category === 'items' && (
+              active.category === 'item' && (
                 <MiscItemCard
                   key={active.id}
                   item={activeItem}

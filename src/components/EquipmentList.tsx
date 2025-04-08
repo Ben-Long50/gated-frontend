@@ -34,7 +34,7 @@ const EquipmentList = ({
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const [toolTip, setToolTip] = useState(0);
-  const [tab, setTab] = useState('weapons');
+  const [tab, setTab] = useState('weapon');
 
   useEffect(() => {
     if (toolTip) {
@@ -51,16 +51,16 @@ const EquipmentList = ({
   let itemList;
 
   switch (tab) {
-    case 'weapons':
+    case 'weapon':
       itemList = weapons;
       break;
     case 'armor':
       itemList = armor;
       break;
-    case 'cybernetics':
+    case 'cybernetic':
       itemList = cybernetics;
       break;
-    case 'items':
+    case 'item':
       itemList = items;
       break;
     default:
@@ -76,8 +76,8 @@ const EquipmentList = ({
         <div className="scrollbar-secondary-2 bg-primary grid w-full grid-cols-1 gap-4 p-4 clip-6 sm:max-h-none lg:grid-cols-2">
           <div className="col-span-2 grid grid-flow-col gap-4">
             <BtnAuth
-              active={tab === 'weapons' ? true : false}
-              onClick={() => setTab('weapons')}
+              active={tab === 'weapon' ? true : false}
+              onClick={() => setTab('weapon')}
             >
               Weapons
             </BtnAuth>
@@ -88,14 +88,14 @@ const EquipmentList = ({
               Armor
             </BtnAuth>
             <BtnAuth
-              active={tab === 'cybernetics' ? true : false}
-              onClick={() => setTab('cybernetics')}
+              active={tab === 'cybernetic' ? true : false}
+              onClick={() => setTab('cybernetic')}
             >
               Cybernetics
             </BtnAuth>
             <BtnAuth
-              active={tab === 'items' ? true : false}
-              onClick={() => setTab('items')}
+              active={tab === 'item' ? true : false}
+              onClick={() => setTab('item')}
             >
               Items
             </BtnAuth>
