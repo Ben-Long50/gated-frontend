@@ -1,8 +1,17 @@
 import { useContext, useEffect, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { FieldApi } from '@tanstack/react-form';
 
-const TextAreaField = ({ field, ...props }) => {
+const TextAreaField = ({
+  field,
+  label,
+  className,
+}: {
+  field: FieldApi;
+  label: string;
+  className?: string;
+}) => {
   const [borderColor, setBorderColor] = useState('transparent');
   const [focus, setFocus] = useState(false);
   const { accentPrimary, errorPrimary } = useContext(ThemeContext);
@@ -31,11 +40,11 @@ const TextAreaField = ({ field, ...props }) => {
     <div className="flex flex-col">
       <ThemeContainer
         chamfer="small"
-        className={`mx-auto ${props.className}`}
+        className={`mx-auto shadow-md ${className}`}
         borderColor={borderColor}
       >
         <textarea
-          className={`${props.className} text-secondary timing focus:bg-primary w-full rounded-none ${field.state.value?.length === 0 || field.state.value === null ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
+          className={`${className} text-secondary timing focus:bg-primary w-full rounded-none ${field.state.value?.length === 0 || field.state.value === null ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
           name={field.name}
           id={field.name}
           value={field.state.value}
@@ -54,7 +63,7 @@ const TextAreaField = ({ field, ...props }) => {
           htmlFor={field.name}
           className={` ${field.state.meta.errors.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
         >
-          {props.label}
+          {label}
         </label>
       </ThemeContainer>
       {field.state.meta.errors &&

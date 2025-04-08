@@ -1,7 +1,7 @@
 const Divider = ({ className }: { className?: string }) => {
   return (
     <hr
-      className={`${className} w-full border border-yellow-300 border-opacity-50`}
+      className={`${className} my-4 w-full border border-yellow-300 border-opacity-50`}
     />
   );
 };

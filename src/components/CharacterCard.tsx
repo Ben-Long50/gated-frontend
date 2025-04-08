@@ -3,7 +3,6 @@ import ThemeContainer from './ThemeContainer';
 import StatBar from './StatBar';
 import HealthIcon from './icons/HealthIcon';
 import SanityIcon from './icons/SanityIcon';
-import useAttributeTree from '../hooks/useAttributeTree';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { LayoutContext } from '../contexts/LayoutContext';
 import BtnRect from './buttons/BtnRect';
@@ -35,15 +34,14 @@ const CharacterCard = ({ character }: { character: Character }) => {
       chamfer="large"
       borderColor={accentPrimary}
     >
-      <div className="bg-primary grid grid-cols-[auto_1fr] gap-8 p-6 clip-8 md:flex-row">
+      <div className="bg-secondary grid grid-flow-row gap-8 p-6 clip-8 sm:grid-flow-col sm:grid-cols-[auto_1fr] md:flex-row">
         <ThemeContainer
-          className="aspect-square"
+          className="mx-auto aspect-square w-[280px]"
           chamfer="medium"
           borderColor={accentPrimary}
         >
           <CloudinaryImage
-            className="bg-primary w-[280px]"
-            detailsOpen={true}
+            className="bg-primary"
             url={character.picture?.imageUrl}
             alt={`${character.firstName} ${character.lastName}'s image`}
           />
@@ -180,7 +178,9 @@ const CharacterCard = ({ character }: { character: Character }) => {
                 </div>
               </div>
               <Link className="ml-auto mt-auto self-end" to={`${character.id}`}>
-                <BtnRect>Character sheet</BtnRect>
+                <BtnRect type="button" ariaLabel="Character sheet">
+                  Character sheet
+                </BtnRect>
               </Link>
             </div>
           </div>

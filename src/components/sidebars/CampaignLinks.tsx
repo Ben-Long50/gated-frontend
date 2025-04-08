@@ -1,5 +1,5 @@
 import LinkListSidebar from './LinkListSidebar';
-import LinkSidebar from './LinkSidebar';
+import SubLinkSidebar from './SubLinkSidebar';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import CampaignIcon from '../icons/CampaignIcon';
@@ -22,17 +22,17 @@ const CampaignLinks = ({
         }
         title="Campaigns"
       >
-        <LinkSidebar
+        <SubLinkSidebar
           title="Player campaigns"
           path={`campaigns/player`}
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
+        <SubLinkSidebar
           title="Owner campaigns"
           path={`campaigns/owner`}
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
+        <SubLinkSidebar
           title="Create campaign"
           path={`campaigns/create`}
           setSidebarVisibility={setSidebarVisibility}

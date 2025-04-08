@@ -1,14 +1,18 @@
-import { useContext } from 'react';
+import { ReactNode, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutContext } from '../../contexts/LayoutContext';
 
 const LinkSidebar = ({
   title,
+  icon,
   path,
+  sidebarVisibility,
   setSidebarVisibility,
 }: {
   title: string;
+  icon: ReactNode;
   path: string;
+  sidebarVisibility: boolean;
   setSidebarVisibility: (mode: boolean) => void;
 }) => {
   const { layoutSize } = useContext(LayoutContext);
@@ -16,25 +20,26 @@ const LinkSidebar = ({
   return (
     <NavLink
       className={({ isActive }) =>
-        isActive
-          ? 'text-accent group flex gap-4'
-          : 'text-secondary group flex gap-4'
+        isActive ? 'text-accent group flex' : 'text-secondary group flex'
       }
       to={path}
       end
     >
-      <button
-        className="w-full pl-4 text-left text-inherit"
-        onClick={() => {
-          if (layoutSize !== 'large') {
-            setSidebarVisibility(false);
-          }
-        }}
-      >
-        <div className="timing group-hover:text-accent whitespace-nowrap text-xl tracking-wide text-inherit">
-          {title}
-        </div>
-      </button>
+      {icon}
+      {
+        <button
+          className={`${!sidebarVisibility && 'invisible -translate-x-full opacity-0'} timing w-full pl-4 text-left text-inherit`}
+          onClick={() => {
+            if (layoutSize !== 'large') {
+              setSidebarVisibility(false);
+            }
+          }}
+        >
+          <div className="timing group-hover:text-accent whitespace-nowrap text-xl tracking-wide text-inherit">
+            {title}
+          </div>
+        </button>
+      }
     </NavLink>
   );
 };

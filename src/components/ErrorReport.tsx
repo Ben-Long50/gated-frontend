@@ -17,8 +17,7 @@ const ErrorReport = () => {
   const errorReportForm = useForm({
     defaultValues: {
       title: '',
-      content:
-        'Go ahead and tell me what you did and how you got here... Or just tell me a funny story',
+      content: '',
     },
     onSubmit: async ({ value }) => {
       await createErrorReport.mutate(value);
@@ -26,11 +25,11 @@ const ErrorReport = () => {
   });
 
   return (
-    <div className="flex h-dvh w-dvw items-center">
+    <div className="flex w-full items-center">
       <div className="mx-auto my-auto flex w-full max-w-4xl flex-col items-center justify-center gap-4 p-2 sm:gap-8 sm:p-8">
         <FormLayout>
           <form
-            className="bg-primary flex w-full flex-col gap-4 p-0.5 clip-8 sm:gap-8"
+            className="bg-primary flex w-full flex-col gap-4 p-0.5 sm:gap-8"
             onSubmit={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -63,7 +62,7 @@ const ErrorReport = () => {
               {(field) => (
                 <TextAreaField
                   className="h-60 w-full"
-                  label="Tell your story"
+                  label="Describe the error"
                   field={field}
                 />
               )}
@@ -85,15 +84,6 @@ const ErrorReport = () => {
                 'Submit'
               )}
             </BtnRect>
-            <button
-              className="text-accent self-start hover:underline"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(-1);
-              }}
-            >
-              Back
-            </button>
           </form>
         </FormLayout>
       </div>

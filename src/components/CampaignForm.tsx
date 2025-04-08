@@ -1,5 +1,5 @@
 import { useForm, ValidationError } from '@tanstack/react-form';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
@@ -33,6 +33,12 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
   const createCampaign = useCreateCampaignMutation(apiUrl, setFormMessage);
 
   const campaign = null;
+
+  useEffect(() => {
+    if (campaign) {
+      setImagePreview(campaign.picture?.imageUrl);
+    } else setImagePreview('');
+  }, [campaign, campaignId]);
 
   const {
     data: users,

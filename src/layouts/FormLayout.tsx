@@ -25,14 +25,14 @@ const FormLayout = ({
 }: {
   children: ReactNode;
   itemId?: string;
-  createMutation: MutationType;
+  createMutation?: MutationType;
   modifyMutation?: MutationType;
   deleteMutation?: MutationType;
   handleDelete?: () => void;
-  handleReset: () => void;
-  formMessage: string;
-  deleteMode: boolean;
-  setDeleteMode: (value: boolean) => void;
+  handleReset?: () => void;
+  formMessage?: string;
+  deleteMode?: boolean;
+  setDeleteMode?: (value: boolean) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -72,7 +72,7 @@ const FormLayout = ({
                 <div className="grow">
                   <button
                     className="text-secondary text-left hover:underline"
-                    onClick={() => setDeleteMode(false)}
+                    onClick={() => setDeleteMode && setDeleteMode(false)}
                   >
                     Cancel
                   </button>

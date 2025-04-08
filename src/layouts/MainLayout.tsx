@@ -7,6 +7,7 @@ import Sidebar from '../components/sidebars/Sidebar';
 import CodexLinks from '../components/sidebars/CodexLinks';
 import CharacterLinks from '../components/sidebars/CharacterLinks';
 import CampaignLinks from '../components/sidebars/CampaignLinks';
+import AccountLinks from '../components/sidebars/AccountLinks';
 
 const MainLayout = () => {
   const { theme } = useContext(ThemeContext);
@@ -16,10 +17,13 @@ const MainLayout = () => {
   const [sidebarVisibility, setSidebarVisibility] = useState(false);
   const [navbarHeight, setNavbarHeight] = useState(0);
 
+  const mobile = layoutSize === 'xsmall' || layoutSize === 'small';
+
   return (
     <div className={`${theme} main-layout-large relative min-h-dvh w-dvw`}>
       <Navbar
         setNavbarHeight={setNavbarHeight}
+        sidebarVisibility={sidebarVisibility}
         setSidebarVisibility={setSidebarVisibility}
       />
       <Sidebar
@@ -45,10 +49,16 @@ const MainLayout = () => {
             setSidebarVisibility={setSidebarVisibility}
           />
         )}
+        {pathname.startsWith('/glam/account') && (
+          <AccountLinks
+            sidebarVisibility={sidebarVisibility}
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
       </Sidebar>
       <div
         id="portal-root"
-        className={`timing relative z-10 col-start-1 col-end-3 row-start-2 ml-[68px] flex flex-col items-center overflow-y-auto px-2 py-4 max-xl:col-start-1 max-sm:pt-20 sm:p-8 lg:px-16`}
+        className={`${!mobile && 'ml-[68px]'} timing relative z-10 col-start-1 col-end-3 row-start-2 flex flex-col items-center overflow-y-auto px-2 py-4 max-xl:col-start-1 max-sm:pt-20 sm:p-8 lg:px-16`}
       >
         <Outlet context={{ navbarHeight }} />
       </div>

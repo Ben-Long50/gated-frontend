@@ -6,15 +6,18 @@ import { useState } from 'react';
 const AffiliationBar = ({
   field,
   value,
+  className,
 }: {
   field?: FieldApi;
   value?: number;
+  className?: string;
 }) => {
   const [hoverValue, setHoverValue] = useState<number | null>(value || null);
 
   const affiliationValue = field?.state?.value ?? value;
+
   return (
-    <div className="flex w-full flex-col">
+    <div className={`${className} flex w-full flex-col`}>
       <div className="flex items-center justify-between">
         {Array.from({ length: 11 }).map((_, index) => (
           <div
@@ -34,7 +37,7 @@ const AffiliationBar = ({
           {Array.from({ length: 10 }).map((_, index) => (
             <button
               key={index}
-              className={`${index === 9 && 'rounded-r'} ${index === 0 && 'rounded-l'} relative ${affiliationValue < index - 4 && 'bg-zinc-500'} ${hoverValue !== null && hoverValue >= index && 'bg-opacity-60'} w-full ${hoverValue !== null && hoverValue < index && affiliationValue >= index - 4 && 'bg-zinc-500 bg-opacity-60'} timing`}
+              className={`${index === 9 && 'rounded-r'} ${index === 0 && 'rounded-l'} relative ${affiliationValue < index - 4 && 'bg-zinc-500'} ${hoverValue !== null && hoverValue >= index && field && 'bg-opacity-60'} w-full ${hoverValue !== null && hoverValue < index && affiliationValue >= index - 4 && field && 'bg-zinc-500 bg-opacity-60'} ${!field && 'cursor-default'} timing`}
               onMouseMove={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const isLeftHalf = e.clientX < rect.left + rect.width / 2;
@@ -45,7 +48,7 @@ const AffiliationBar = ({
                 e.preventDefault();
                 const rect = e.currentTarget.getBoundingClientRect();
                 const isLeftHalf = e.clientX < rect.left + rect.width / 2;
-                if (!value) {
+                if (!value && field) {
                   return isLeftHalf
                     ? field.handleChange(index - 5)
                     : field.handleChange(index - 4);
@@ -61,7 +64,7 @@ const AffiliationBar = ({
                   />
                 </div>
               )}
-              {hoverValue === index && (
+              {hoverValue === index && field && (
                 <div className="absolute right-0 top-0 z-10 -translate-y-2 translate-x-1/2">
                   <Icon
                     className="text-accent opacity-50"

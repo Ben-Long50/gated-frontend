@@ -11,10 +11,10 @@ const CloudinaryImage = ({
 }: {
   className: string;
   url: string;
-  width: number;
-  height: number;
+  width?: number;
+  height?: number;
   alt: string;
-  onClick: () => void;
+  onClick?: () => void;
 }) => {
   let responsiveUrl;
 

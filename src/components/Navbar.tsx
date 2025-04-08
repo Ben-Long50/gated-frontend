@@ -12,21 +12,30 @@ import { Link } from 'react-router-dom';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import {
-  mdiBellAlertOutline,
   mdiBellOutline,
   mdiCartOutline,
   mdiMenu,
+  mdiMenuClose,
+  mdiMenuOpen,
 } from '@mdi/js';
-import PyramidIcon from './icons/PyramidIcon';
 import NavMenuMobile from './NavMenuMobile';
 import CharacterIcon from './icons/CharacterIcon';
 import NavMenuDesktop from './NavMenuDesktop';
 import useSignoutMutation from '../hooks/useSignoutMutation/useSignoutMutation';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
+import AccountPicture from './AccountPicture';
 
-const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
+const Navbar = ({
+  setNavbarHeight,
+  sidebarVisibility,
+  setSidebarVisibility,
+}: {
+  setNavbarHeight: (height: number) => void;
+  sidebarVisibility: boolean;
+  setSidebarVisibility: (mode: boolean) => void;
+}) => {
   const { apiUrl, user } = useContext(AuthContext);
-  const { layoutSize } = useContext(LayoutContext);
+  const { mobile } = useContext(LayoutContext);
 
   const [navMenuVisibility, setNavMenuVisibility] = useState(false);
   const [accountMenuVisibility, setAccountMenuVisibility] = useState(false);
@@ -88,55 +97,19 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
     }
   }, [character]);
 
-  return layoutSize === 'xsmall' || layoutSize === 'small' ? (
+  return mobile ? (
     <nav
       ref={navbarRef}
       className={`bg-primary fixed top-0 z-30 col-span-2 flex w-full flex-col items-center justify-start shadow-md shadow-black`}
     >
       <div className="my-2 flex w-full items-center justify-between px-2">
-        <div className="flex items-center gap-4">
-          {character ? (
-            <div className="flex items-center gap-4">
-              <Link
-                className="group flex items-center gap-4"
-                to={`/glam/characters/${character.id}`}
-              >
-                <img
-                  className="size-10 rounded-full"
-                  src={characterImage}
-                  alt={
-                    character.firstName +
-                    ' ' +
-                    character.lastName +
-                    "'s profile picture"
-                  }
-                />
-                <h3 className="timing group-hover:text-accent">
-                  {character.firstName + ' ' + character.lastName}
-                </h3>
-              </Link>
-              {cartLength > 0 && (
-                <Link
-                  to={`/glam/characters/${character.id}/cart`}
-                  className="group my-auto flex items-center"
-                >
-                  <Icon
-                    className="text-secondary group-hover:text-accent timing"
-                    path={mdiCartOutline}
-                    size={1.35}
-                  />
-                  <p className="flex h-5 min-w-5 items-center justify-center rounded-full bg-yellow-300 text-center text-base font-semibold dark:text-gray-950">
-                    {cartLength}
-                  </p>
-                </Link>
-              )}
-            </div>
+        <button onClick={() => setSidebarVisibility(!sidebarVisibility)}>
+          {!sidebarVisibility ? (
+            <Icon className="text-secondary size-10" path={mdiMenuClose} />
           ) : (
-            <Link to="/glam/codex">
-              <PyramidIcon className="size-10" />
-            </Link>
+            <Icon className="text-secondary size-10" path={mdiMenuOpen} />
           )}
-        </div>
+        </button>
         <div className="flex items-center justify-end gap-4">
           <button
             className={`${navMenuVisibility && 'scale-y-150'} timing z-10`}
@@ -237,50 +210,9 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
       ref={navbarRef}
       className="bg-primary sticky top-0 z-30 col-span-2 flex items-center justify-between gap-4 py-2 pl-4 pr-6 shadow-md shadow-black"
     >
-      <div className="items-cente flex gap-8">
-        {character ? (
-          <div className="flex items-center gap-4">
-            <Link
-              className="group flex items-center gap-4"
-              to={`/glam/characters/${character.id}`}
-            >
-              <img
-                className="size-10 rounded-full"
-                src={characterImage}
-                alt={
-                  character.firstName +
-                  ' ' +
-                  character.lastName +
-                  "'s profile picture"
-                }
-              />
-              <h3 className="timing group-hover:text-accent">
-                {character.firstName + ' ' + character.lastName}
-              </h3>
-            </Link>
-            {cartLength > 0 && (
-              <Link
-                to={`/glam/characters/${character.id}/cart`}
-                className="group my-auto flex items-center"
-              >
-                <Icon
-                  className="text-secondary group-hover:text-accent timing"
-                  path={mdiCartOutline}
-                  size={1.35}
-                />
-                <p className="flex h-5 min-w-5 items-center justify-center rounded-full bg-yellow-300 text-center text-base font-semibold dark:text-gray-950">
-                  {cartLength}
-                </p>
-              </Link>
-            )}
-          </div>
-        ) : (
-          <Link to="/glam/codex">
-            <PyramidIcon className="size-10" />
-          </Link>
-        )}
-      </div>
-
+      <Link to="/glam/codex">
+        <h2 className="text-accent -mb-2 pt-0.5 font-kings !text-4xl">Glam</h2>
+      </Link>
       <div className="relative flex items-center justify-items-end gap-10">
         <Link to="campaigns">
           <BtnNavbar className="bg-primary">Campaigns</BtnNavbar>
@@ -291,27 +223,25 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
         <Link to="characters">
           <BtnNavbar className="bg-primary">Characters</BtnNavbar>
         </Link>
-        <Link to="notifications">
+        <Link className="relative" to={`account/${user?.id}/notifications`}>
           <Icon path={mdiBellOutline} className="text-secondary size-8" />
+          <div className="absolute right-0 top-0 flex size-5 items-center justify-center rounded-full bg-yellow-300">
+            <p className="text-sm font-semibold !text-zinc-900">
+              {user?.notifications}
+            </p>
+          </div>
         </Link>
-        <button
+        <Link
+          to={`account/${user?.id}`}
           className="z-10 shrink-0"
           onClick={() => {
             setNavMenuVisibility(false);
             setAccountMenuVisibility(!accountMenuVisibility);
           }}
         >
-          {user?.profilePicture ? (
-            <img
-              className="size-10 shrink-0 rounded-full"
-              src={user?.profilePicture}
-              alt="Profile Picture"
-            />
-          ) : (
-            <CharacterIcon className="size-10" />
-          )}
-        </button>
-        <NavMenuDesktop menuVisibility={accountMenuVisibility}>
+          <AccountPicture user={user} />
+        </Link>
+        {/* <NavMenuDesktop menuVisibility={accountMenuVisibility}>
           {user?.role === 'SUPERADMIN' && (
             <Link className="w-full" to="/glam/error">
               <BtnNavbar
@@ -365,7 +295,7 @@ const Navbar = ({ setNavbarHeight, setSidebarVisibility }) => {
               <p className="hover:text-accent w-full text-left">Sign out</p>
             </div>
           </BtnNavbar>
-        </NavMenuDesktop>
+        </NavMenuDesktop> */}
       </div>
     </nav>
   );

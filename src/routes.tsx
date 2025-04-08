@@ -50,6 +50,9 @@ import CampaignForm from './components/CampaignForm';
 import Campaign from './components/Campaign';
 import Session from './components/Session';
 import Faction from './components/Faction';
+import Notifications from './components/Notifications';
+import Affiliations from './components/Affiliations';
+import FactionForm from './components/FactionForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -69,10 +72,23 @@ const router = createBrowserRouter(
           <Route index element={<ErrorReports />} />
         </Route>
 
+        <Route path="account/:userId">
+          <Route index element={<ErrorReport />} />
+          <Route path="notifications" element={<Notifications />} />
+          <Route path="adminTools" element={<ErrorReport />} />
+          <Route path="errorReport" element={<ErrorReport />} />
+        </Route>
+
         <Route path="campaigns">
           <Route path=":campaignId">
             <Route index element={<Campaign />} />
-            <Route path="factions/:factionId" element={<Faction />} />
+            <Route path="factions/:factionId">
+              <Route index element={<Faction />} />
+              <Route
+                path="update"
+                element={<FactionForm title="Update" mode="update" />}
+              />
+            </Route>
           </Route>
           <Route path=":campaignId/sessions/:sessionId" element={<Session />} />
           <Route path="participant" element={<Campaigns title="Player" />} />
@@ -169,6 +185,7 @@ const router = createBrowserRouter(
             path=":characterId/inventory/vehicles/:vehicleId/modify"
             element={<VehicleForm title="Modify" mode="modify" />}
           />
+          <Route path=":characterId/affiliations" element={<Affiliations />} />
         </Route>
 
         <Route path="codex">

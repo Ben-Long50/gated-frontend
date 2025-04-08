@@ -8,6 +8,8 @@ import { Campaign } from 'src/types/campaign';
 import Icon from '@mdi/react';
 import { mdiTriangleDown } from '@mdi/js';
 import LocationIcon from './icons/LocationIcon';
+import AccountPicture from './AccountPicture';
+import { User } from 'src/types/user';
 
 const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -48,29 +50,18 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
           <div className="grid grid-cols-[1fr_1fr]">
             <div className="flex flex-col gap-4">
               <h3>Players</h3>
-              {campaign.players.map((player) => (
-                <div className="flex items-center gap-4" key={player.id}>
-                  <img
-                    className="size-8 shrink-0 rounded-full"
-                    src={player.profilePicture}
-                    alt="Profile"
-                  />
-                  <p className="!text-green-800">
-                    {player.firstName + ' ' + player.lastName}
-                  </p>
+              {campaign.players.map((player: User) => (
+                <div key={player.id} className="flex items-center gap-4">
+                  <AccountPicture className="opacity-50" user={player} />{' '}
+                  <p>{player.firstName + ' ' + player.lastName}</p>
                 </div>
               ))}
-              {campaign.pendingPlayers.map((player) => (
-                <div
-                  className="flex items-center gap-4 opacity-50"
-                  key={player.id}
-                >
-                  <img
-                    className="size-8 shrink-0 rounded-full"
-                    src={player.profilePicture}
-                    alt="Profile"
-                  />
-                  <p>{player.firstName + ' ' + player.lastName}</p>
+              {campaign.pendingPlayers.map((player: User) => (
+                <div key={player.id} className="flex items-center gap-4">
+                  <AccountPicture className="opacity-50" user={player} />{' '}
+                  <p className="opacity-50">
+                    {player.firstName + ' ' + player.lastName}
+                  </p>
                 </div>
               ))}
             </div>
@@ -78,11 +69,7 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
               <div className="flex flex-col items-end gap-4">
                 <h3>Game Master</h3>
                 <div className="flex items-center gap-4">
-                  <img
-                    className="size-8 shrink-0 rounded-full"
-                    src={campaign.owner.profilePicture}
-                    alt="Profile"
-                  />
+                  <AccountPicture user={campaign.owner} />
                   <p>
                     {campaign.owner.firstName + ' ' + campaign.owner.lastName}
                   </p>

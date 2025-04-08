@@ -14,7 +14,6 @@
     "moduleResolution": "node" /* Resolve modules like Node.js. */,
     "baseUrl": "./" /* Set base path for imports. */,
     "paths": {
-      /* Aliases for module imports. */ "@components/*": ["src/components/*"],
       "@utils/*": ["src/utils/*"]
     },
     "resolveJsonModule": true /* Allow importing .json files. */,

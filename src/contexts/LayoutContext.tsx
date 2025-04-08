@@ -2,9 +2,10 @@ import { createContext, ReactNode, useEffect, useState } from 'react';
 
 interface LayoutSize {
   layoutSize: 'large' | 'medium' | 'small' | 'xsmall';
+  mobile: boolean;
 }
 
-const defaultLayoutSize: LayoutSize = { layoutSize: 'large' };
+const defaultLayoutSize: LayoutSize = { layoutSize: 'large', mobile: false };
 
 export const LayoutContext = createContext<LayoutSize>(defaultLayoutSize);
 
@@ -36,8 +37,10 @@ const LayoutProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
+  const mobile = layoutSize === 'xsmall' || layoutSize === 'small';
+
   return (
-    <LayoutContext.Provider value={{ layoutSize }}>
+    <LayoutContext.Provider value={{ layoutSize, mobile }}>
       {children}
     </LayoutContext.Provider>
   );

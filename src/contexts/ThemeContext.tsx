@@ -7,6 +7,7 @@ interface ThemeContextType {
   accentSecondary: string;
   accentModifier: string;
   errorPrimary: string;
+  rarityColorMap: object;
 }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(
@@ -35,6 +36,14 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const accentModifier = 'rgb(74 222 128)';
   const errorPrimary = 'rgb(239 68 68)';
 
+  const rarityColorMap = {
+    common: 'rgb(156 163 175)',
+    uncommon: 'rgb(34 197 94)',
+    rare: 'rgb(220 38 38)',
+    blackMarket: 'rgb(126 34 206)',
+    artifact: 'rgb(251 191 36)',
+  };
+
   const changeTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     localStorage.setItem('theme', newTheme);
@@ -50,6 +59,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
         accentSecondary,
         accentModifier,
         errorPrimary,
+        rarityColorMap,
       }}
     >
       {children}

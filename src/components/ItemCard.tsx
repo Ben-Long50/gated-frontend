@@ -47,7 +47,7 @@ const ItemCard = ({
   controls?: ReactNode;
   children: ReactNode;
 }) => {
-  const { accentPrimary } = useContext(ThemeContext);
+  const { accentPrimary, rarityColorMap } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -119,7 +119,7 @@ const ItemCard = ({
         borderColor={accentPrimary}
       >
         <div
-          className="bg-primary timing relative flex cursor-pointer flex-col p-4 clip-6"
+          className="bg-secondary timing relative flex cursor-pointer flex-col p-4 clip-6"
           onClick={async (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -339,19 +339,23 @@ const ItemCard = ({
           ) : (
             <div className="relative flex h-full gap-8">
               {item.picture && (
-                <motion.div
-                  className="shrink-0"
-                  initial={{ width: 280 }}
-                  animate={{
-                    width: detailsOpen ? 'clamp(280px, 50%, 400px)' : 280,
-                  }}
-                  transition={{ duration: 0.2 }}
+                <ThemeContainer
+                  borderColor={accentPrimary}
+                  chamfer="medium"
+                  className="relative mb-auto shrink-0 opacity-100"
                 >
+                  <div
+                    className="absolute inset-0 z-10 opacity-50 clip-6"
+                    style={{
+                      backgroundImage: `radial-gradient(circle, transparent 65%, ${rarityColorMap[item.rarity]} 100%)`,
+                    }}
+                  />
                   <CloudinaryImage
+                    className={`${detailsOpen ? 'max-w-[400px]' : 'max-w-[280px]'} timing`}
                     url={item.picture?.imageUrl}
                     alt={item.name + ' ' + 'image'}
                   />
-                </motion.div>
+                </ThemeContainer>
               )}
               <div className="w-full">
                 <div className="grid w-full grow grid-cols-[2fr-1fr] items-start gap-6">
@@ -543,7 +547,7 @@ const ItemCard = ({
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Integrated weapons
                   </p>
-                  <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                  <div className="bg-secondary flex flex-col gap-4 p-4 clip-4">
                     {item.weapons?.map(
                       (weapon: WeaponWithKeywords, index: number) => {
                         return (
@@ -576,7 +580,7 @@ const ItemCard = ({
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Integrated armor
                   </p>
-                  <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                  <div className="bg-secondary flex flex-col gap-4 p-4 clip-4">
                     {item.armor.map(
                       (armor: ArmorWithKeywords, index: number) => {
                         return (
@@ -606,7 +610,7 @@ const ItemCard = ({
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Unique actions
                   </p>
-                  <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                  <div className="bg-secondary flex flex-col gap-4 p-4 clip-4">
                     {item.actions?.map((action: Action, index: number) => {
                       return (
                         <>

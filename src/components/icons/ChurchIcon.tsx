@@ -4,7 +4,7 @@ const ChurchIcon = ({ className }: { className: string }) => {
       className={`${className} timing`}
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
-      viewBox="0 0 110 110"
+      viewBox="5 5 90 90"
     >
       <g strokeWidth="1">
         <path d="m44.09 94.359h11.91c0.41406 0 0.75-0.33594 0.75-0.75s-0.33594-0.75-0.75-0.75h-11.91c-0.41406 0-0.75 0.33594-0.75 0.75s0.33594 0.75 0.75 0.75z" />

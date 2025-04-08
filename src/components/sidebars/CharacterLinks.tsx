@@ -1,6 +1,6 @@
 import CharacterIcon from '../icons/CharacterIcon';
 import LinkListSidebar from './LinkListSidebar';
-import LinkSidebar from './LinkSidebar';
+import SubLinkSidebar from './SubLinkSidebar';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import Loading from '../Loading';
@@ -9,6 +9,8 @@ import InventoryIcon from '../../components/icons/InventoryIcon';
 import EquipmentIcon from '../../components/icons/EquipmentIcon';
 import VehicleIcon from '../../components/icons/VehicleIcon';
 import LinkSublistSidebar from './LinkSublistSidebar';
+import LinkSidebar from './LinkSidebar';
+import AffiliationIcon from '../icons/AffiliationIcon';
 
 const CharacterLinks = ({
   sidebarVisibility,
@@ -36,22 +38,22 @@ const CharacterLinks = ({
         }
         title="Characters"
       >
-        <LinkSidebar
+        <SubLinkSidebar
           title="All characters"
           path="characters"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
+        <SubLinkSidebar
           title="Player characters"
           path="characters/playerCharacters"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
+        <SubLinkSidebar
           title="Non-player characters"
           path="characters/nonPlayerCharacters"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
+        <SubLinkSidebar
           title="Create new character"
           path="characters/create"
           setSidebarVisibility={setSidebarVisibility}
@@ -64,7 +66,7 @@ const CharacterLinks = ({
         }
         title="Equipment"
       >
-        <LinkSidebar
+        <SubLinkSidebar
           title="Equipment"
           path={`characters/${character?.id}/equipment`}
           setSidebarVisibility={setSidebarVisibility}
@@ -77,52 +79,52 @@ const CharacterLinks = ({
         }
         title="Inventory"
       >
-        <LinkSidebar
+        <SubLinkSidebar
           title="Weapons"
           path={`characters/${character?.id}/inventory/weapons`}
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
+        <SubLinkSidebar
           title="Armor"
           path={`characters/${character?.id}/inventory/armor`}
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
+        <SubLinkSidebar
           title="Cybernetics"
           path={`characters/${character?.id}/inventory/cybernetics`}
           setSidebarVisibility={setSidebarVisibility}
         />
 
         <LinkSublistSidebar title="Items">
-          <LinkSidebar
+          <SubLinkSidebar
             title="All Items"
             path={`characters/${character?.id}/inventory/items`}
             setSidebarVisibility={setSidebarVisibility}
           />
           <LinkSublistSidebar title="Reusables">
-            <LinkSidebar
+            <SubLinkSidebar
               title="Gadgets"
               path={`characters/${character?.id}/inventory/items/reusables/gadgets`}
               setSidebarVisibility={setSidebarVisibility}
             />
-            <LinkSidebar
+            <SubLinkSidebar
               title="Anomalies"
               path={`characters/${character?.id}/inventory/items/reusables/anomalies`}
               setSidebarVisibility={setSidebarVisibility}
             />
           </LinkSublistSidebar>
           <LinkSublistSidebar title="Consumables">
-            <LinkSidebar
+            <SubLinkSidebar
               title="Chemical therapy"
               path={`characters/${character?.id}/inventory/items/consumables/chemicalTherapy`}
               setSidebarVisibility={setSidebarVisibility}
             />
-            <LinkSidebar
+            <SubLinkSidebar
               title="Chemical assistance"
               path={`characters/${character?.id}/inventory/items/consumables/chemicalAssistance`}
               setSidebarVisibility={setSidebarVisibility}
             />
-            <LinkSidebar
+            <SubLinkSidebar
               title="Misc. consumables"
               path={`characters/${character?.id}/inventory/items/consumables/misc`}
               setSidebarVisibility={setSidebarVisibility}
@@ -137,22 +139,31 @@ const CharacterLinks = ({
         }
         title="Vehicles"
       >
-        <LinkSidebar
+        <SubLinkSidebar
           title="Vehicles"
           path={`characters/${character?.id}/inventory/vehicles`}
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
+        <SubLinkSidebar
           title="Vehicle weapons"
           path={`characters/${character?.id}/inventory/vehicles/weapons`}
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSidebar
+        <SubLinkSidebar
           title="Vehicle mods"
           path={`characters/${character?.id}/inventory/vehicles/modifications`}
           setSidebarVisibility={setSidebarVisibility}
         />
       </LinkListSidebar>
+      <LinkSidebar
+        path={`characters/${character?.id}/affiliations`}
+        icon={
+          <AffiliationIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+        }
+        title="Affiliations"
+        sidebarVisibility={sidebarVisibility}
+        setSidebarVisibility={setSidebarVisibility}
+      />
     </>
   );
 };

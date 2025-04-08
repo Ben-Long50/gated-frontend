@@ -17,6 +17,9 @@ import CharacterCard from './CharacterCard';
 import Divider from './Divider';
 import NoblebloodIcon from './icons/NoblebloodIcon';
 import FederalIcon from './icons/FederalIcon';
+import ChurchIcon from './icons/ChurchIcon';
+import BtnAuth from './buttons/BtnAuth';
+import AccountPicture from './AccountPicture';
 
 const Campaign = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -36,7 +39,7 @@ const Campaign = () => {
     <>
       <div className="absolute left-0 right-0 top-0 -z-10 mx-auto flex aspect-[10/3] w-full max-w-9xl items-center overflow-hidden">
         <img src={`${campaign.picture?.imageUrl}`} alt="Campaign cover image" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#1a1a1d] to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
         <div className="absolute right-6 top-6 flex flex-col items-center gap-4">
           <div className="relative">
             <img
@@ -52,19 +55,13 @@ const Campaign = () => {
 
           <Icon path={mdiCircle} className="text-tertiary size-2" />
           {campaign.players.map((player: User) => (
-            <img
-              key={player.id}
-              className="size-10 shrink-0 rounded-full"
-              src={player.profilePicture}
-              alt="Profile"
-            />
+            <AccountPicture key={player.id} user={player} />
           ))}
           {campaign.pendingPlayers.map((player: User) => (
-            <img
+            <AccountPicture
               key={player.id}
-              className="size-10 shrink-0 rounded-full opacity-50"
-              src={player.profilePicture}
-              alt="Profile"
+              className="opacity-50"
+              user={player}
             />
           ))}
         </div>
@@ -117,8 +114,8 @@ const Campaign = () => {
                 key={faction.id}
                 to={`factions/${faction.id}`}
               >
-                <div className="timing flex w-full items-center justify-between rounded-lg p-2 ring-yellow-300 ring-opacity-50 hover:ring-2">
-                  <div className="flex items-center gap-4">
+                <BtnAuth className="timing flex w-full items-center justify-between">
+                  <div className="flex items-center gap-4 p-2">
                     {faction.factionType === 'federalReservists' && (
                       <FederalIcon className="text-secondary size-16" />
                     )}
@@ -127,7 +124,7 @@ const Campaign = () => {
                     )}
                     <ArrowHeader2 title={faction.name} />
                   </div>
-                </div>
+                </BtnAuth>
               </Link>
             ))}
           </div>
