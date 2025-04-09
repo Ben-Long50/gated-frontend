@@ -1,7 +1,9 @@
 const ThemeBorder = ({
+  className,
   borderColor,
   chamfer,
 }: {
+  className: string;
   borderColor: string;
   chamfer: string;
 }) => {
@@ -9,7 +11,7 @@ const ThemeBorder = ({
 
   return (
     <div
-      className={`${chamferMap[chamfer]} absolute right-[2px] top-[2px] h-full w-full opacity-50`}
+      className={`${className} ${chamferMap[chamfer]} absolute right-[2px] top-[2px] h-full w-full opacity-50`}
       style={{ backgroundColor: `${borderColor}` }}
     />
   );

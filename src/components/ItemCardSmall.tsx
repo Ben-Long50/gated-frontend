@@ -1,7 +1,9 @@
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
+import ThemeContainer from './ThemeContainer';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const ItemCardSmall = ({
   className,
@@ -12,6 +14,7 @@ const ItemCardSmall = ({
   heading: ReactNode;
   children?: ReactNode;
 }) => {
+  const { accentPrimary } = useContext(ThemeContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailHeight, setDetailHeight] = useState(1000);
 
@@ -24,8 +27,10 @@ const ItemCardSmall = ({
   }, [detailRef.current]);
 
   return (
-    <div
-      className={`mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-black`}
+    <ThemeContainer
+      chamfer="small"
+      borderColor={detailsOpen ? accentPrimary : 'transparent'}
+      className={`timing mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-black`}
     >
       <div
         className={`${className} bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
@@ -66,7 +71,7 @@ const ItemCardSmall = ({
           </div>
         )}
       </div>
-    </div>
+    </ThemeContainer>
   );
 };
 

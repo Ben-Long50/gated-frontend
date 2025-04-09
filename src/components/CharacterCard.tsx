@@ -41,7 +41,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
           borderColor={accentPrimary}
         >
           <CloudinaryImage
-            className="bg-primary"
+            className="bg-primary clip-6"
             url={character.picture?.imageUrl}
             alt={`${character.firstName} ${character.lastName}'s image`}
           />

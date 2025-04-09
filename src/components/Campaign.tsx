@@ -20,6 +20,7 @@ import FederalIcon from './icons/FederalIcon';
 import ChurchIcon from './icons/ChurchIcon';
 import BtnAuth from './buttons/BtnAuth';
 import AccountPicture from './AccountPicture';
+import ThemeContainer from './ThemeContainer';
 
 const Campaign = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -77,57 +78,62 @@ const Campaign = () => {
           </h2>
         </div>
         <div className="mt-40 grid w-full grid-cols-2 gap-8">
-          <div className="flex flex-col gap-4">
-            <ArrowHeader2 title="Sessions" />
-            {campaign.sessions.map((session: Session) => (
-              <Link
-                className="w-full"
-                key={session.id}
-                to={`sessions/${session.id}`}
-              >
-                <ItemCardSmall
-                  className="hover:bg-tertiary timing pointer-events-none"
-                  heading={
-                    <div className="flex w-full items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <h3>{session.sessionNumber}</h3>
-                        <Icon
-                          path={mdiTriangleDown}
-                          className="text-secondary size-2"
-                          rotate={-90}
-                        />
-                        <h3>{session.name}</h3>
-                      </div>
+          <ThemeContainer borderColor={accentPrimary} chamfer="medium">
+            <div className="bg-primary flex flex-col gap-4 p-4 clip-6">
+              <ArrowHeader2 title="Sessions" />
+              {campaign.sessions.map((session: Session) => (
+                <Link
+                  className="w-full"
+                  key={session.id}
+                  to={`sessions/${session.id}`}
+                >
+                  <ItemCardSmall
+                    className="hover:bg-tertiary timing pointer-events-none"
+                    heading={
+                      <div className="flex w-full items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <h3>{session.sessionNumber}</h3>
+                          <Icon
+                            path={mdiTriangleDown}
+                            className="text-secondary size-2"
+                            rotate={-90}
+                          />
+                          <h3>{session.name}</h3>
+                        </div>
 
-                      <p>{format(session.createdAt, 'PP')}</p>
+                        <p>{format(session.createdAt, 'PP')}</p>
+                      </div>
+                    }
+                  />
+                </Link>
+              ))}
+            </div>
+          </ThemeContainer>
+          <ThemeContainer borderColor={accentPrimary} chamfer="medium">
+            <div className="bg-primary flex flex-col gap-4 p-4 clip-6">
+              <ArrowHeader2 title="Factions" />
+              {campaign.factions.map((faction: Faction) => (
+                <Link
+                  className="w-full"
+                  key={faction.id}
+                  to={`factions/${faction.id}`}
+                >
+                  <BtnAuth className="timing flex w-full items-center justify-between">
+                    <div className="flex items-center gap-4 p-2">
+                      {faction.factionType === 'federalReservists' && (
+                        <FederalIcon className="text-secondary size-16" />
+                      )}
+                      {faction.factionType === 'noblebloods' && (
+                        <NoblebloodIcon className="text-secondary size-16" />
+                      )}
+                      <ArrowHeader2 title={faction.name} />
                     </div>
-                  }
-                />
-              </Link>
-            ))}
-          </div>
-          <div className="flex flex-col gap-4">
-            <ArrowHeader2 title="Factions" />
-            {campaign.factions.map((faction: Faction) => (
-              <Link
-                className="w-full"
-                key={faction.id}
-                to={`factions/${faction.id}`}
-              >
-                <BtnAuth className="timing flex w-full items-center justify-between">
-                  <div className="flex items-center gap-4 p-2">
-                    {faction.factionType === 'federalReservists' && (
-                      <FederalIcon className="text-secondary size-16" />
-                    )}
-                    {faction.factionType === 'noblebloods' && (
-                      <NoblebloodIcon className="text-secondary size-16" />
-                    )}
-                    <ArrowHeader2 title={faction.name} />
-                  </div>
-                </BtnAuth>
-              </Link>
-            ))}
-          </div>
+                  </BtnAuth>
+                </Link>
+              ))}
+            </div>
+          </ThemeContainer>
+
           <Divider className="col-span-2" />
           <div className="col-span-2 flex flex-col items-start gap-4">
             <ArrowHeader2 title="Player Characters" />

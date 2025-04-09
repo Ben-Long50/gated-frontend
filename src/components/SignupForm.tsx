@@ -8,6 +8,7 @@ import ThemeContainer from './ThemeContainer';
 import useSignupMutation from '../hooks/useSignupMutation/useSignupMutation';
 import { useForm } from '@tanstack/react-form';
 import Loading from './Loading';
+import ArrowHeader1 from './ArrowHeader1';
 
 const SignupForm = () => {
   const [errors, setErrors] = useState([]);
@@ -35,7 +36,7 @@ const SignupForm = () => {
     <ThemeContainer
       chamfer="medium"
       borderColor={accentPrimary}
-      className="mx-auto w-full max-w-2xl rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
+      className="mx-auto w-full max-w-xl rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
       position="mx-auto max-w-xl w-full"
       as="form"
     >
@@ -47,9 +48,7 @@ const SignupForm = () => {
           signupForm.handleSubmit();
         }}
       >
-        <h1 className="text-accent text-center font-normal">
-          Create credentials
-        </h1>
+        <ArrowHeader1 title="Sign up" />
         <div className="flex flex-col gap-4 md:gap-6">
           <signupForm.Field
             name="firstName"

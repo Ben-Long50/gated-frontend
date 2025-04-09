@@ -18,12 +18,30 @@ const ThemeContainer = ({
     large: 'rounded-tl-5xl rounded-br-5xl',
   };
 
+  const borderRadiusMap = {
+    small: 'rounded-bl-[4px] rounded-tr-[4px]',
+    medium: 'rounded-bl-[6px] rounded-tr-[6px]',
+    large: 'rounded-bl-[8px] rounded-tr-[8px]',
+  };
+
+  const containerRadiusMap = {
+    small: ' rounded-bl-[2px] rounded-tr-[2px]',
+    medium: ' rounded-bl-[4px] rounded-tr-[4px]',
+    large: ' rounded-bl-[6px] rounded-tr-[6px]',
+  };
+
   return (
     <div
-      className={`${className} ${radiusMap[chamfer]} relative shadow-lg shadow-black`}
+      className={`${className} ${radiusMap[chamfer]} relative mb-auto shadow-lg shadow-black`}
     >
-      <ThemeBorder borderColor={borderColor} chamfer={chamfer} />
-      {children}
+      <ThemeBorder
+        className={`${borderRadiusMap[chamfer]} timing`}
+        borderColor={borderColor}
+        chamfer={chamfer}
+      />
+      <div className={`${containerRadiusMap[chamfer]} overflow-hidden`}>
+        {children}
+      </div>
     </div>
   );
 };

@@ -10,7 +10,7 @@ import Loading from './Loading';
 import SelectField from './SelectField';
 import { mdiTriangleDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import ArrowHeader2 from './ArrowHeader1';
+import ArrowHeader2 from './ArrowHeader2';
 
 const Actions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
