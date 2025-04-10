@@ -8,7 +8,7 @@ const RootPortal = ({
   toggleModal,
   children,
 }: {
-  modalOpen: number;
+  modalOpen: boolean;
   toggleModal: () => void;
   children?: ReactNode;
 }) => {

@@ -67,8 +67,6 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
     },
 
     onSubmit: async ({ value }) => {
-      console.log(value);
-
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, value]) => {
@@ -80,7 +78,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
       });
       formData.append('campaignId', JSON.stringify(campaignId || 0));
       if (mode === 'create' || mode === 'update') {
-        // await createCampaign.mutate(formData);
+        await createCampaign.mutate(formData);
       } else if (mode === 'modify') {
         // await modifyArmor.mutate(formData);
       }

@@ -9,7 +9,7 @@ const AuthLayout = () => {
 
   return (
     <div
-      className={`${theme} scrollbar-primary-2 relative flex h-full min-h-dvh w-dvw items-center justify-center gap-8 overflow-y-auto sm:gap-20`}
+      className={`${theme} scrollbar-primary-2 relative flex h-full min-h-dvh w-dvw items-center justify-center overflow-y-auto p-4 sm:p-8`}
       style={{
         backgroundImage: `url('/glam-login-1.jpeg')`,
         backgroundSize: 'cover',
@@ -18,12 +18,12 @@ const AuthLayout = () => {
       }}
     >
       <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
-      <LogoTitle className="absolute bottom-8 left-8" />
+      <LogoTitle className="absolute bottom-4 left-4 sm:bottom-8 sm:left-8" />
       <motion.div
-        className="z-20 col-span-3 flex h-full flex-col items-center justify-center gap-6 overflow-visible border-yellow-300 border-opacity-50 bg-fixed p-4 py-8 sm:col-span-1"
+        className="z-20 flex h-full w-full max-w-[500px] flex-col items-center justify-center gap-6 overflow-visible border-yellow-300 border-opacity-50 bg-fixed sm:col-span-1"
         initial={{ translateY: '50%', opacity: 0 }}
         animate={{ translateY: 0, opacity: 1 }}
-        transition={{ duration: 2, ease: [0, 0.5, 0.2, 1.01] }}
+        transition={{ duration: 1, ease: [0, 0.5, 0.2, 1.01] }}
       >
         <Outlet />
       </motion.div>

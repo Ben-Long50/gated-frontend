@@ -37,8 +37,8 @@ const CloudinaryImage = ({
   }, []);
 
   return (
-    <motion.img
-      className={`${className} cld-responsive text-secondary aspect-square w-full text-xl clip-6`}
+    <img
+      className={`${className} cld-responsive`}
       width={width}
       height={height}
       data-src={responsiveUrl}

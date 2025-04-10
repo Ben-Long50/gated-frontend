@@ -28,6 +28,8 @@ import StopwatchIcon from './icons/StopwatchIcon';
 import { subcategoryMap } from '../types/maps';
 import ModifierTag from './ModifierTag';
 import { Modifier } from 'src/types/modifier';
+import ItemPicture from './ItemPicture';
+import ArrowHeader2 from './ArrowHeader2';
 
 const ItemCard = ({
   item,
@@ -136,15 +138,7 @@ const ItemCard = ({
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-4">
-                        <Icon
-                          className="text-primary"
-                          path={mdiTriangleDown}
-                          size={0.5}
-                          rotate={-90}
-                        />
-                        <h2>{item.name}</h2>
-                      </div>
+                      <ArrowHeader2 title={item.name} />
                       {category === 'weapons' && item.vehicleId && (
                         <h4 className="text-error italic">
                           (Currently equipped)
@@ -245,22 +239,15 @@ const ItemCard = ({
                   }}
                 >
                   {item.picture && (
-                    <motion.div
-                      className="z-20 shrink-0"
-                      initial={{ width: 280 }}
-                      animate={{
-                        width: detailsOpen
-                          ? '100%'
-                          : 'clamp(200px, 50%, 300px)',
-                      }}
-                      transition={{ duration: 0.2 }}
+                    <div
+                      style={{ width: detailsOpen ? 'auto' : imageHeight }}
+                      ref={imageRef}
                     >
-                      <CloudinaryImage
-                        ref={imageRef}
-                        url={item.picture?.imageUrl}
-                        alt={item.name + ' ' + 'image'}
+                      <ItemPicture
+                        className={`${detailsOpen ? 'w-full' : 'w-[clamp(200px,50%,300px)]'} timing`}
+                        item={item}
                       />
-                    </motion.div>
+                    </div>
                   )}
                   <motion.div
                     className={`${item.picture ? 'mx-auto flex-col' : 'flex-row'} flex items-center gap-4 overflow-y-auto`}
@@ -339,37 +326,16 @@ const ItemCard = ({
           ) : (
             <div className="relative flex h-full gap-8">
               {item.picture && (
-                <ThemeContainer
-                  borderColor={accentPrimary}
-                  chamfer="medium"
-                  className="relative mb-auto shrink-0 opacity-100"
-                >
-                  <div
-                    className="absolute inset-0 z-10 opacity-50 clip-6"
-                    style={{
-                      backgroundImage: `radial-gradient(circle, transparent 65%, ${rarityColorMap[item.rarity]} 100%)`,
-                    }}
-                  />
-                  <CloudinaryImage
-                    className={`${detailsOpen ? 'max-w-[400px]' : 'max-w-[280px]'} timing`}
-                    url={item.picture?.imageUrl}
-                    alt={item.name + ' ' + 'image'}
-                  />
-                </ThemeContainer>
+                <ItemPicture
+                  className={`${detailsOpen ? 'max-w-[400px]' : 'max-w-[280px]'} timing`}
+                  item={item}
+                />
               )}
               <div className="w-full">
                 <div className="grid w-full grow grid-cols-[2fr-1fr] items-start gap-6">
                   <div>
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-4">
-                        <Icon
-                          className="text-primary"
-                          path={mdiTriangleDown}
-                          size={0.5}
-                          rotate={-90}
-                        />
-                        <h2>{item.name}</h2>
-                      </div>
+                      <ArrowHeader2 title={item.name} />
                       {category === 'weapons' && item.vehicleId && (
                         <h4 className="text-error italic">
                           (Currently equipped)

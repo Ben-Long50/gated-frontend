@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import useOwnerCampaignsQuery from '../hooks/useOwnerCampaignsQuery/useOwnerCampaignsQuery';
 import Loading from './Loading';
 import CampaignCard from './CampaignCard';
 import { Campaign } from 'src/types/campaign';
+import useCampaignsQuery from '../hooks/useCampaignsQuery/useCampaignsQuery';
 
 const Campaigns = ({ title }: { title: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -11,7 +11,9 @@ const Campaigns = ({ title }: { title: string }) => {
     data: campaigns,
     isLoading,
     isPending,
-  } = useOwnerCampaignsQuery(apiUrl);
+  } = useCampaignsQuery(apiUrl, title);
+
+  console.log(campaigns);
 
   if (isLoading || isPending) return <Loading />;
 

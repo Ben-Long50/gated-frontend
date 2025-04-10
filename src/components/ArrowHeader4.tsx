@@ -11,7 +11,7 @@ const ArrowHeader4 = ({
   return (
     <div className={`${className} flex items-center gap-4`}>
       <Icon
-        className="text-primary"
+        className="text-primary shrink-0"
         path={mdiTriangleDown}
         size={0.375}
         rotate={-90}

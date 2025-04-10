@@ -89,9 +89,14 @@ const router = createBrowserRouter(
                 element={<FactionForm title="Update" mode="update" />}
               />
             </Route>
+            <Route path="characters/:characterId">
+              <Route index element={<CharacterSheet />} />
+              <Route path="update" element={<CharacterUpdateForm />} />
+            </Route>
           </Route>
           <Route path=":campaignId/sessions/:sessionId" element={<Session />} />
-          <Route path="participant" element={<Campaigns title="Player" />} />
+          <Route path="player" element={<Campaigns title="Player" />} />
+          <Route path="pending" element={<Campaigns title="Pending" />} />
           <Route path="owner" element={<Campaigns title="Owner" />} />
           <Route
             path="create"
@@ -101,6 +106,8 @@ const router = createBrowserRouter(
 
         <Route path="characters">
           <Route index element={<CharacterList />} />
+          <Route path="playerCharacters" element={<CharacterList />} />
+          <Route path="nonPlayerCharacters" element={<CharacterList />} />
           <Route path="create" element={<CharacterForm />} />
           <Route path=":characterId" element={<CharacterSheet />} />
           <Route path=":characterId/update" element={<CharacterUpdateForm />} />

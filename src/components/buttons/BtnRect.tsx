@@ -12,7 +12,7 @@ const BtnRect = ({
   className?: string;
   ariaLabel: string;
   type: 'submit' | 'reset' | 'button' | undefined;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent) => void;
   children: ReactNode;
 }) => {
   const [hover, setHover] = useState(false);

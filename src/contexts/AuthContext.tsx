@@ -22,6 +22,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     isPending,
   } = useAccountQuery(apiUrl);
 
+  console.log(user);
+
   useEffect(() => {
     if (
       (isSuccess && pathname === '/signin') ||

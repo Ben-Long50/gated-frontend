@@ -1,8 +1,8 @@
 import handleResponse from '../handleResponse';
 
-const getOwnerCampaigns = async (apiUrl: string) => {
+const getNotifications = async (apiUrl: string) => {
   try {
-    const response = await fetch(`${apiUrl}/campaigns`, {
+    const response = await fetch(`${apiUrl}/notifications`, {
       method: 'GET',
       credentials: 'include',
     });
@@ -11,10 +11,12 @@ const getOwnerCampaigns = async (apiUrl: string) => {
     return data;
   } catch (error) {
     if (error instanceof Error) {
-      console.error(error.message);
+      if (error instanceof Error) {
+        console.error(error.message);
+      }
     }
     throw error;
   }
 };
 
-export default getOwnerCampaigns;
+export default getNotifications;

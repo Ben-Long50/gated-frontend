@@ -26,10 +26,10 @@ import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import useStats from '../hooks/useStats';
 import { Perk } from 'src/types/perk';
 import InputFieldRadio from './InputFieldRadio';
-import useOwnerCampaignsQuery from '../hooks/useOwnerCampaignsQuery/useOwnerCampaignsQuery';
 import { Campaign } from 'src/types/campaign';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
+import useCampaignsQuery from '../hooks/useCampaignsQuery/useCampaignsQuery';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -39,7 +39,7 @@ const CharacterUpdateForm = () => {
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const { data: campaigns } = useOwnerCampaignsQuery(apiUrl);
+  const { data: campaigns } = useCampaignsQuery(apiUrl);
 
   const {
     data: character,
@@ -255,11 +255,13 @@ const CharacterUpdateForm = () => {
                 field={field}
               >
                 <option defaultValue=""></option>
-                {campaigns.map((campaign: Campaign) => (
-                  <option key={campaign.id} value={campaign.id}>
-                    {campaign.name}
-                  </option>
-                ))}
+                {campaigns &&
+                  campaigns.length > 0 &&
+                  campaigns.map((campaign: Campaign) => (
+                    <option key={campaign.id} value={campaign.id}>
+                      {campaign.name}
+                    </option>
+                  ))}
               </SelectField>
             )}
           </characterUpdateForm.Field>

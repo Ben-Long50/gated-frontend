@@ -53,10 +53,10 @@ const SigninForm = () => {
     <ThemeContainer
       chamfer="medium"
       borderColor={accentPrimary}
-      className="mx-auto w-full max-w-xl rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
+      className="mx-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
     >
       <form
-        className="bg-primary flex flex-col gap-6 p-4 clip-6 md:gap-8 md:p-8 lg:min-w-[500px]"
+        className="bg-primary flex w-full flex-col gap-6 p-4 clip-6 md:gap-8 md:p-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();

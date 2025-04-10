@@ -18,7 +18,13 @@ import ArrowHeader1 from './ArrowHeader2';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 
-const CharacterCard = ({ character }: { character: Character }) => {
+const CharacterCard = ({
+  character,
+  path,
+}: {
+  character: Character;
+  path: string;
+}) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
@@ -34,19 +40,17 @@ const CharacterCard = ({ character }: { character: Character }) => {
       chamfer="large"
       borderColor={accentPrimary}
     >
-      <div className="bg-primary grid grid-flow-row gap-8 p-6 clip-8 sm:grid-flow-col sm:grid-cols-[auto_1fr] md:flex-row">
-        <ThemeContainer
-          className="mx-auto aspect-square w-[280px]"
-          chamfer="medium"
-          borderColor={accentPrimary}
-        >
+      <div className="bg-primary relative grid grid-flow-row clip-8 sm:grid-flow-col sm:grid-cols-[1fr_3fr] md:flex-row">
+        <div className="absolute left-0 top-0 h-full w-[425px]">
           <CloudinaryImage
-            className="bg-primary clip-6"
+            className="bg-primary absolute aspect-square w-full"
             url={character.picture?.imageUrl}
             alt={`${character.firstName} ${character.lastName}'s image`}
           />
-        </ThemeContainer>
-        <div className="flex h-full w-full flex-col justify-between gap-4 md:gap-6">
+          <div className="absolute inset-0 h-full w-full bg-gradient-to-l from-zinc-900 to-transparent" />
+        </div>
+
+        <div className="z-10 col-start-2 flex h-full w-full flex-col justify-between gap-4 p-6 md:gap-6">
           <div className="flex w-full items-center justify-between">
             <ArrowHeader1
               title={character.firstName + ' ' + character.lastName}
@@ -177,7 +181,10 @@ const CharacterCard = ({ character }: { character: Character }) => {
                   </p>
                 </div>
               </div>
-              <Link className="ml-auto mt-auto self-end" to={`${character.id}`}>
+              <Link
+                className="ml-auto mt-auto self-end"
+                to={path || `${character.id}`}
+              >
                 <BtnRect type="button" ariaLabel="Character sheet">
                   Character sheet
                 </BtnRect>

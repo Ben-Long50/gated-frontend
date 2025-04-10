@@ -30,7 +30,7 @@ import ArrowHeader3 from './ArrowHeader3';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { apiUrl } = useContext(AuthContext);
+  const { apiUrl, user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
 
   const [storyVisibility, setStoryVisibility] = useState(
@@ -69,7 +69,7 @@ const CharacterSheet = () => {
             chamfer="small"
             borderColor={accentPrimary}
           >
-            <div className="bg-primary flex h-full w-full items-center justify-between gap-4 px-4 py-2 clip-4">
+            <div className="bg-primary flex h-full w-full items-center justify-between gap-4 p-4 clip-4">
               <ArrowHeader1
                 title={character.firstName + ' ' + character.lastName}
               />
@@ -315,11 +315,17 @@ const CharacterSheet = () => {
           </div>
         </div>
       </ThemeContainer>
-      <Link to={`update`}>
-        <BtnRect className="sm:w-1/2 sm:justify-self-end">
-          Update character info
-        </BtnRect>
-      </Link>
+      {user?.id === character.userId && (
+        <Link to={`update`}>
+          <BtnRect
+            type="button"
+            ariaLabel="Update character information"
+            className="sm:w-1/2 sm:justify-self-end"
+          >
+            Update character info
+          </BtnRect>
+        </Link>
+      )}
     </div>
   );
 };

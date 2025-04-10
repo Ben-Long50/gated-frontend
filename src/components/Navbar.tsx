@@ -2,7 +2,6 @@ import {
   useContext,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -11,18 +10,10 @@ import BtnNavbar from './buttons/BtnNavbar';
 import { Link } from 'react-router-dom';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
-import {
-  mdiBellOutline,
-  mdiCartOutline,
-  mdiMenu,
-  mdiMenuClose,
-  mdiMenuOpen,
-} from '@mdi/js';
+import { mdiBellOutline, mdiMenu, mdiMenuClose, mdiMenuOpen } from '@mdi/js';
 import NavMenuMobile from './NavMenuMobile';
 import CharacterIcon from './icons/CharacterIcon';
-import NavMenuDesktop from './NavMenuDesktop';
 import useSignoutMutation from '../hooks/useSignoutMutation/useSignoutMutation';
-import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import AccountPicture from './AccountPicture';
 
 const Navbar = ({
@@ -39,17 +30,6 @@ const Navbar = ({
 
   const [navMenuVisibility, setNavMenuVisibility] = useState(false);
   const [accountMenuVisibility, setAccountMenuVisibility] = useState(false);
-  const [characterImage, setCharacterImage] = useState('');
-
-  const {
-    data: character,
-    isPending,
-    isLoading,
-  } = useActiveCharacterQuery(apiUrl);
-
-  const cartLength = Object.values(character?.characterCart || {})
-    .filter((value) => Array.isArray(value))
-    .flat().length;
 
   const signout = useSignoutMutation(apiUrl);
 
@@ -76,26 +56,6 @@ const Navbar = ({
       setNavbarHeight(rect.height);
     }
   }, [navbarRef]);
-
-  useMemo(() => {
-    if (character?.picture.imageUrl) {
-      const splitUrl = character?.picture.imageUrl.split('upload/');
-
-      setCharacterImage(
-        splitUrl[0].concat('upload/w_40,c_scale/').concat(splitUrl[1]),
-      );
-    }
-  }, [character]);
-
-  useEffect(() => {
-    if (window.cloudinary) {
-      const cl = window.cloudinary.Cloudinary.new({
-        cloud_name: import.meta.env.VITE_CLOUD_NAME,
-      });
-
-      cl.responsive();
-    }
-  }, [character]);
 
   return mobile ? (
     <nav
@@ -211,7 +171,9 @@ const Navbar = ({
       className="bg-primary sticky top-0 z-30 col-span-2 flex items-center justify-between gap-4 py-2 pl-4 pr-6 shadow-md shadow-black"
     >
       <Link to="/glam/codex">
-        <h2 className="text-accent -mb-2 pt-0.5 font-kings !text-4xl">Glam</h2>
+        <h2 className="text-accent text-shadow -mb-2 pt-0.5 font-zen !text-4xl italic text-shadow-x-1 text-shadow-y-1 text-shadow-black">
+          EDO
+        </h2>
       </Link>
       <div className="relative flex items-center justify-items-end gap-10">
         <Link to="campaigns">
@@ -227,7 +189,7 @@ const Navbar = ({
           <Icon path={mdiBellOutline} className="text-secondary size-8" />
           <div className="absolute right-0 top-0 flex size-5 items-center justify-center rounded-full bg-yellow-300">
             <p className="text-sm font-semibold !text-zinc-900">
-              {user?.notifications}
+              {user?._count?.receivedNotifications}
             </p>
           </div>
         </Link>

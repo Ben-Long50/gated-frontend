@@ -4,4 +4,5 @@ export interface User {
   lastName: string;
   profilePicture?: string;
   role: string;
+  _count: { receivedNotifications: number };
 }

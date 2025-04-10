@@ -52,13 +52,13 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
               <h3>Players</h3>
               {campaign.players.map((player: User) => (
                 <div key={player.id} className="flex items-center gap-4">
-                  <AccountPicture className="opacity-50" user={player} />{' '}
+                  <AccountPicture user={player} />
                   <p>{player.firstName + ' ' + player.lastName}</p>
                 </div>
               ))}
               {campaign.pendingPlayers.map((player: User) => (
                 <div key={player.id} className="flex items-center gap-4">
-                  <AccountPicture className="opacity-50" user={player} />{' '}
+                  <AccountPicture className="opacity-50" user={player} />
                   <p className="opacity-50">
                     {player.firstName + ' ' + player.lastName}
                   </p>

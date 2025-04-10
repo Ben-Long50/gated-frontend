@@ -21,9 +21,14 @@ import ChurchIcon from './icons/ChurchIcon';
 import BtnAuth from './buttons/BtnAuth';
 import AccountPicture from './AccountPicture';
 import ThemeContainer from './ThemeContainer';
+import Modal from './Modal';
+import CharacterSheet from './CharacterSheet';
+import { Faction } from 'src/types/faction';
+import BtnRect from './buttons/BtnRect';
+import useJoinCampaignMutation from '../hooks/useJoinCampaignMutation/useJoinCampaignMutation';
 
 const Campaign = () => {
-  const { apiUrl } = useContext(AuthContext);
+  const { apiUrl, user } = useContext(AuthContext);
   const { campaignId } = useParams();
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -32,7 +37,10 @@ const Campaign = () => {
     isLoading,
     isPending,
   } = useCampaignQuery(apiUrl, campaignId);
-  console.log(campaign);
+
+  const joinCampaign = useJoinCampaignMutation(apiUrl, campaignId);
+
+  const pendingIds = campaign?.pendingPlayers.map((player: User) => player.id);
 
   if (isLoading || isPending) return <Loading />;
 
@@ -77,6 +85,18 @@ const Campaign = () => {
             {campaign.location}
           </h2>
         </div>
+        {pendingIds.includes(user.id) && (
+          <BtnRect
+            type="button"
+            ariaLabel="Join campaign"
+            onClick={(e) => {
+              e.preventDefault();
+              joinCampaign.mutate();
+            }}
+          >
+            Join Campaign
+          </BtnRect>
+        )}
         <div className="mt-40 grid w-full grid-cols-2 gap-8">
           <ThemeContainer borderColor={accentPrimary} chamfer="medium">
             <div className="bg-primary flex flex-col gap-4 p-4 clip-6">
@@ -87,24 +107,18 @@ const Campaign = () => {
                   key={session.id}
                   to={`sessions/${session.id}`}
                 >
-                  <ItemCardSmall
-                    className="hover:bg-tertiary timing pointer-events-none"
-                    heading={
-                      <div className="flex w-full items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <h3>{session.sessionNumber}</h3>
-                          <Icon
-                            path={mdiTriangleDown}
-                            className="text-secondary size-2"
-                            rotate={-90}
-                          />
-                          <h3>{session.name}</h3>
-                        </div>
-
-                        <p>{format(session.createdAt, 'PP')}</p>
-                      </div>
-                    }
-                  />
+                  <BtnAuth className="timing flex w-full items-center justify-between !p-4 !px-6">
+                    <div className="flex items-center gap-4">
+                      <h3>{session.sessionNumber}</h3>
+                      <Icon
+                        path={mdiTriangleDown}
+                        className="text-secondary size-2"
+                        rotate={-90}
+                      />
+                      <h3>{session.name}</h3>
+                    </div>
+                    <p>{format(session.createdAt, 'PP')}</p>
+                  </BtnAuth>
                 </Link>
               ))}
             </div>
@@ -135,10 +149,14 @@ const Campaign = () => {
           </ThemeContainer>
 
           <Divider className="col-span-2" />
-          <div className="col-span-2 flex flex-col items-start gap-4">
+          <div className="col-span-2 flex flex-col items-start gap-8">
             <ArrowHeader2 title="Player Characters" />
             {campaign.characters.map((character: Character) => (
-              <CharacterCard key={character.id} character={character} />
+              <CharacterCard
+                key={character.id}
+                character={character}
+                path={`characters/${character.id}`}
+              />
             ))}
           </div>
         </div>

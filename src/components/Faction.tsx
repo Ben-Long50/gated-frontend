@@ -104,7 +104,7 @@ const Faction = () => {
                     chamfer="medium"
                     key={affiliation.id}
                   >
-                    <div className="bg-secondary flex w-full flex-col items-start gap-4 p-4 clip-6">
+                    <div className="bg-primary flex w-full flex-col items-start gap-4 p-4 clip-6">
                       <ArrowHeader3
                         title={affiliation.secondaryFaction?.name}
                       />
@@ -128,7 +128,7 @@ const Faction = () => {
                     chamfer="medium"
                     key={affiliation.id}
                   >
-                    <div className="bg-secondary flex w-full flex-col items-start gap-4 p-4 clip-6">
+                    <div className="bg-primary flex w-full flex-col items-start gap-4 p-4 clip-6">
                       <ArrowHeader3
                         title={
                           affiliation.secondaryCharacter?.firstName +

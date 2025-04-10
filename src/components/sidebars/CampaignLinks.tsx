@@ -28,6 +28,11 @@ const CampaignLinks = ({
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
+          title="Pending campaigns"
+          path={`campaigns/pending`}
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <SubLinkSidebar
           title="Owner campaigns"
           path={`campaigns/owner`}
           setSidebarVisibility={setSidebarVisibility}
