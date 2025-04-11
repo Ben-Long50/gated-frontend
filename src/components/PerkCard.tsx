@@ -8,6 +8,8 @@ import { Modifier } from 'src/types/modifier';
 import { Perk } from 'src/types/perk';
 import ItemCardSmall from './ItemCardSmall';
 import ModifierTag from './ModifierTag';
+import ArrowHeader4 from './ArrowHeader4';
+import Divider from './Divider';
 
 const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -30,46 +32,36 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
     >
       <div className="list-disc">
         {Object.entries(perk.requirements).length === 0 ? (
-          <div className="flex items-center gap-2">
-            <Icon
-              className="text-primary"
-              path={mdiTriangleSmallUp}
-              rotate={90}
-              size={1}
-            />
-            <p>No skill requirements</p>
-          </div>
+          <ArrowHeader4 title="No skill requirements" />
         ) : (
           Object.entries(perk.requirements).map(
             ([attribute, { points, skills }]) => (
               <li key={attribute} className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <p className="text-primary mr-2 text-xl font-semibold">
-                    {attribute.charAt(0).toUpperCase() + attribute.slice(1)}
-                  </p>
-                  <div className="flex gap-2">
-                    {Array.from({ length: points }).map((_, index) => (
-                      <Icon
-                        key={index}
-                        path={mdiSquare}
-                        size={1}
-                        color={accentPrimary}
-                      />
-                    ))}
+                {points > 0 && (
+                  <div className="flex items-center gap-2">
+                    <ArrowHeader4
+                      title={
+                        attribute.charAt(0).toUpperCase() + attribute.slice(1)
+                      }
+                    />
+                    <div className="flex gap-2">
+                      {Array.from({ length: points }).map((_, index) => (
+                        <Icon
+                          key={index}
+                          path={mdiSquare}
+                          size={1}
+                          color={accentPrimary}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
                 {Object.entries(skills).map(([skill, { points }]) => {
                   return (
                     <div key={skill} className="flex items-center gap-2">
-                      <Icon
-                        className="text-primary"
-                        path={mdiTriangleSmallUp}
-                        rotate={90}
-                        size={1}
+                      <ArrowHeader4
+                        title={skill.charAt(0).toUpperCase() + skill.slice(1)}
                       />
-                      <p className="text-secondary mr-2">
-                        {skill.charAt(0).toUpperCase() + skill.slice(1)}
-                      </p>
                       <div className="flex gap-2">
                         {Array.from({ length: points }).map((_, index) => (
                           <Icon

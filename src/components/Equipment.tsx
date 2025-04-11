@@ -44,25 +44,29 @@ import MiscItemCard from './MiscItemCard';
 import ArrowHeader3 from './ArrowHeader3';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
+import BtnRect from './buttons/BtnRect';
+import InventoryModal from './InventoryModal';
 
 const Equipment = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
-  const { characterId } = useParams();
 
   const [active, setActive] = useState<{
     id: null | number;
     category: null | string;
   }>({ id: null, category: null });
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    setModalOpen((prev) => !prev);
+  };
 
   const {
     data: character,
     isLoading: characterLoading,
     isPending: characterPending,
   } = useActiveCharacterQuery(apiUrl);
-
-  const toggleEquipment = useToggleEquipmentMutation(apiUrl);
 
   const editCurrentHealth = useCurrentHealthMutation(apiUrl, character?.id);
 
@@ -145,13 +149,6 @@ const Equipment = ({ mode }: { mode?: string }) => {
       ?.map((cybernetic: CyberneticWithKeywords) => cybernetic.actions)
       .flat() || [];
 
-  const itemObject = {
-    weapons: { list: weapons, category: 'weapon' },
-    armor: { list: armor, category: 'armor' },
-    cybernetics: { list: cybernetics, category: 'cybernetic' },
-    items: { list: items, category: 'item' },
-  };
-
   const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
 
   if (isLoading || isPending) return <Loading />;
@@ -214,34 +211,9 @@ const Equipment = ({ mode }: { mode?: string }) => {
           </StatBar>
         </div>
       </div>
-      {layoutSize !== 'large' &&
-        active.id !== null &&
-        (active.category === 'weapon' ? (
-          <WeaponCard key={active.id} weapon={activeItem} mode="equipment" />
-        ) : active.category === 'armor' ? (
-          <ArmorCard key={active.id} armor={activeItem} mode="equipment" />
-        ) : active.category === 'cybernetic' ? (
-          <CyberneticCard
-            key={active.id}
-            cybernetic={activeItem}
-            mode="equipment"
-          />
-        ) : (
-          active.category === 'item' && (
-            <MiscItemCard key={active.id} item={activeItem} mode="equipment" />
-          )
-        ))}
       <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-[2fr_1fr] xl:grid-cols-[2.5fr_1fr]">
-        <EquipmentList
-          weapons={equippedWeapons}
-          armor={equippedArmor}
-          cybernetics={equippedCybernetics}
-          items={equippedItems}
-          active={active}
-          setActive={setActive}
-        >
-          {layoutSize === 'large' &&
-            active.id !== null &&
+        <div className="flex w-full flex-col gap-8">
+          {active.id !== null &&
             (active.category === 'weapon' ? (
               <WeaponCard
                 key={active.id}
@@ -265,7 +237,37 @@ const Equipment = ({ mode }: { mode?: string }) => {
                 />
               )
             ))}
-        </EquipmentList>
+          <div className="flex items-center justify-between">
+            <ArrowHeader2 title="Equipped Items" />
+            <BtnRect
+              onClick={toggleModal}
+              ariaLabel="Open inventory"
+              type="button"
+            >
+              Open Inventory
+            </BtnRect>
+            <InventoryModal
+              character={character}
+              weapons={weapons}
+              armor={armor}
+              cybernetics={cybernetics}
+              items={items}
+              modalOpen={modalOpen}
+              toggleModal={toggleModal}
+            />
+          </div>
+          <EquipmentList
+            weapons={equippedWeapons}
+            armor={equippedArmor}
+            cybernetics={equippedCybernetics}
+            items={equippedItems}
+            active={active}
+            setActive={setActive}
+            modalOpen={modalOpen}
+            toggleModal={toggleModal}
+          />
+        </div>
+
         <ThemeContainer
           className="mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
           chamfer="medium"
@@ -417,91 +419,6 @@ const Equipment = ({ mode }: { mode?: string }) => {
             )}
           </div>
         </ThemeContainer>
-      </div>
-      <div className="flex w-full flex-col gap-8">
-        <ArrowHeader2 title="Inventory" />
-        <p className="text-tertiary italic">(Double click to equip)</p>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-8">
-          {Object.entries(itemObject).map(([key, value]) => {
-            return (
-              value.list.length > 0 && (
-                <ThemeContainer
-                  key={key}
-                  className="mb-auto rounded-br-4xl rounded-tl-4xl shadow-lg shadow-zinc-950"
-                  chamfer="medium"
-                  borderColor={accentPrimary}
-                >
-                  <div className="bg-primary flex w-full flex-col gap-2 p-4 clip-6">
-                    <ArrowHeader3 title={key[0].toUpperCase() + key.slice(1)} />
-                    <div className="grid w-full grid-cols-4 gap-2 sm:grid-cols-[repeat(auto-fill,100px)]">
-                      {value.list.map(
-                        (
-                          item:
-                            | WeaponWithKeywords
-                            | ArmorWithKeywords
-                            | CyberneticWithKeywords
-                            | Item,
-                        ) => {
-                          const rarityColors = {
-                            common: 'bg-gray-400',
-                            uncommon: 'bg-green-500',
-                            rare: 'bg-red-600',
-                            blackMarket: 'bg-purple-700',
-                            artifact: 'bg-amber-400',
-                          };
-
-                          return (
-                            <div
-                              className={clsx(
-                                rarityColors[item.rarity] || 'bg-tertiary',
-                                'group relative cursor-pointer select-none overflow-hidden rounded-md pl-1',
-                              )}
-                              key={item.id}
-                              onDoubleClick={() => {
-                                if (characterId) {
-                                  toggleEquipment.mutate({
-                                    characterId: character?.id,
-                                    inventoryId:
-                                      character?.characterInventory?.id,
-                                    category: value.category,
-                                    itemId: item.id,
-                                  });
-                                }
-                              }}
-                            >
-                              {item.equipped === true && (
-                                <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
-                                  <Icon
-                                    className="text-tertiary group-hover:text-secondary"
-                                    path={mdiCheckCircle}
-                                    size={3}
-                                  />
-                                </div>
-                              )}
-                              {item.picture?.imageUrl ? (
-                                <img
-                                  className="hover:opacity-80"
-                                  src={item.picture?.imageUrl}
-                                  alt={item.name}
-                                />
-                              ) : (
-                                <div className="bg-tertiary h-full w-full p-1 hover:opacity-80">
-                                  <p className="my-auto text-center text-base">
-                                    {item.name}
-                                  </p>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        },
-                      )}
-                    </div>
-                  </div>
-                </ThemeContainer>
-              )
-            );
-          })}
-        </div>
       </div>
     </div>
   );

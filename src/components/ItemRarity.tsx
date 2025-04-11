@@ -1,3 +1,5 @@
+import { mdiStar } from '@mdi/js';
+import Icon from '@mdi/react';
 import romans from 'romans';
 
 const ItemRarity = ({
@@ -11,7 +13,7 @@ const ItemRarity = ({
 }) => {
   return (
     <div
-      className={`${className} flex flex-wrap items-end justify-end gap-x-4`}
+      className={`${className} flex flex-wrap items-center justify-end gap-x-4`}
     >
       {rarity === 'common' ? (
         <h5 className="text-2xl font-semibold italic tracking-wide text-gray-400">
@@ -36,11 +38,14 @@ const ItemRarity = ({
       ) : (
         <h5 className="text-2xl font-semibold text-gray-500">Unknown</h5>
       )}
-      <span>
-        <h5 className="text-primary font-zen text-2xl italic">
+      <div className="flex">
+        {Array.from({ length: grade }).map((_, index) => (
+          <Icon key={index} path={mdiStar} className="size-6 text-yellow-300" />
+        ))}
+        {/* <h5 className="text-primary font-zen text-2xl italic">
           {romans.romanize(grade)}
-        </h5>
-      </span>
+        </h5> */}
+      </div>
     </div>
   );
 };

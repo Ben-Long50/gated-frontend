@@ -35,13 +35,13 @@ const RootPortal = ({
 
   return createPortal(
     <div
-      className={`backdrop-fade absolute inset-0 z-20 overflow-auto bg-zinc-950 bg-opacity-70 sm:p-4 md:p-8`}
+      className={`backdrop-fade absolute inset-0 z-10 bg-black bg-opacity-80 sm:p-4 md:p-8`}
       onClick={toggleModal}
     >
       {children}
       <button
         aria-label="Close window"
-        className="text-primary absolute right-0 top-0 z-30 p-2"
+        className="text-primary absolute right-4 top-0 z-30 p-2"
         onClick={toggleModal}
       >
         <Icon path={mdiClose} size={1.3} />

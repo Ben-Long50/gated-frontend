@@ -3,6 +3,8 @@ import { ReactNode, useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import LinkSidebar from './LinkSidebar';
 import { LayoutContext } from '../../contexts/LayoutContext';
+import { mdiCartOutline } from '@mdi/js';
+import Icon from '@mdi/react';
 
 const Sidebar = ({
   sidebarVisibility,
@@ -23,6 +25,10 @@ const Sidebar = ({
     isPending,
     isLoading,
   } = useActiveCharacterQuery(apiUrl);
+
+  const cartLength = Object.values(character?.characterCart || {})
+    .filter((value) => Array.isArray(value))
+    .flat().length;
 
   if (isPending || isLoading) return <span></span>;
 
@@ -61,6 +67,25 @@ const Sidebar = ({
               />
             }
             path={`/glam/characters/${character.id}`}
+            sidebarVisibility={sidebarVisibility}
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        )}
+        {cartLength > 0 && (
+          <LinkSidebar
+            title={character.firstName + "'s cart"}
+            icon={
+              <div className="relative">
+                <Icon
+                  className="bg-secondary group-hover:text-accent timing size-12 shrink-0 p-2"
+                  path={mdiCartOutline}
+                />
+                <p className="absolute right-0 top-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-yellow-300 pt-1 text-center text-base font-semibold dark:text-gray-950">
+                  {cartLength}
+                </p>
+              </div>
+            }
+            path={`/glam/characters/${character.id}/cart`}
             sidebarVisibility={sidebarVisibility}
             setSidebarVisibility={setSidebarVisibility}
           />

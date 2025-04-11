@@ -15,8 +15,11 @@ const Modal = ({
   return (
     <>
       <div
-        className={`flex h-full w-full items-center justify-center bg-black bg-opacity-50`}
-        onClick={(e) => e.stopPropagation()}
+        className={`absolute inset-0 z-20 flex items-center justify-center`}
+        onClick={(e) => {
+          e.stopPropagation();
+          toggleModal();
+        }}
       >
         {children}
       </div>
