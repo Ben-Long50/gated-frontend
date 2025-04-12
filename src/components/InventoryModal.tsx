@@ -45,13 +45,15 @@ const InventoryModal = ({
         onClick={(e) => e.stopPropagation()}
       >
         <ThemeContainer
-          className="mx-auto"
+          className="w-full"
           borderColor={accentPrimary}
           chamfer="medium"
         >
-          <div className="bg-primary flex items-center gap-8 p-4 clip-6">
+          <div className="bg-primary flex items-center justify-between gap-8 p-4 clip-6">
             <ArrowHeader2 title="Inventory" />
-            <p className="text-tertiary italic">(Double click to equip)</p>
+            <p className="text-tertiary italic">
+              (Double click to equip / unequip)
+            </p>
           </div>
         </ThemeContainer>
         <ItemMenu
@@ -59,6 +61,7 @@ const InventoryModal = ({
           armor={armor}
           cybernetics={cybernetics}
           items={items}
+          mode="inventory"
         >
           {(item, index, { tab }) => (
             <div

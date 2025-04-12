@@ -1,3 +1,6 @@
+import ArrowHeader4 from './ArrowHeader4';
+import Divider from './Divider';
+
 const Tag = ({
   id,
   label,
@@ -30,8 +33,10 @@ const Tag = ({
       </div>
 
       <div
-        className={`${toolTip === id ? 'visible opacity-100' : 'invisible opacity-0'} bg-secondary timing scrollbar-secondary max-w-1/2 absolute right-0 top-0 z-10 max-h-full min-w-72 overflow-y-auto rounded-md p-3 shadow-md shadow-zinc-950`}
+        className={`${toolTip === id ? 'visible opacity-100' : 'invisible opacity-0'} bg-secondary timing scrollbar-secondary absolute right-0 top-0 z-10 max-h-full min-w-72 max-w-1/2 overflow-y-auto rounded-md p-3 shadow-md shadow-zinc-950`}
       >
+        <ArrowHeader4 title={label} />
+        <Divider />
         <p className="text-secondary text-base">{description}</p>
       </div>
     </>

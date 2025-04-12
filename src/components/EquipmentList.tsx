@@ -37,6 +37,7 @@ const EquipmentList = ({
         armor={armor}
         cybernetics={cybernetics}
         items={items}
+        mode="equipment"
       >
         {(item, index, { tab }) =>
           item.equipped === true && (

@@ -116,7 +116,6 @@ const CharacterUpdateForm = () => {
       weight: character?.weight ?? '',
       age: character?.age ?? '',
       sex: character?.sex ?? '',
-      background: character?.background ?? '',
       attributes: character?.attributes ?? '',
       perks: character?.perks ?? '',
     },
@@ -202,7 +201,7 @@ const CharacterUpdateForm = () => {
         }}
       >
         <h1 className="text-center">Update Character</h1>
-        <div className="grid gap-4 max-sm:grid-rows-2 sm:grid-cols-2 sm:gap-8">
+        <div className="grid gap-4 max-sm:grid-rows-2 sm:grid-cols-[auto_1fr] sm:gap-8">
           <Divider className="col-span-2" />
           <ArrowHeader2 className="col-span-2" title="Campaign Information" />
           <characterUpdateForm.Field
@@ -267,70 +266,6 @@ const CharacterUpdateForm = () => {
           </characterUpdateForm.Field>
           <hr className="col-span-2 w-full border border-yellow-300 border-opacity-50" />
           <ArrowHeader2 className="col-span-2" title="Character Information" />
-          <characterUpdateForm.Field
-            name="firstName"
-            validators={{
-              onChange: ({ value }) =>
-                value.length < 2
-                  ? 'First name must be at least 2 characters long'
-                  : undefined,
-            }}
-          >
-            {(field) => (
-              <InputField className="w-full" label="First name" field={field} />
-            )}
-          </characterUpdateForm.Field>
-          <characterUpdateForm.Field name="lastName">
-            {(field) => (
-              <InputField className="w-full" label="Last name" field={field} />
-            )}
-          </characterUpdateForm.Field>
-          <div className="flex gap-4 sm:gap-8">
-            <characterUpdateForm.Field
-              name="level"
-              validators={{
-                onChange: ({ value }) =>
-                  value < 1 ? 'You cannot be a lower level than 1' : undefined,
-              }}
-            >
-              {(field) => (
-                <InputField type="number" label="Level" field={field} />
-              )}
-            </characterUpdateForm.Field>
-            <characterUpdateForm.Field name="profits">
-              {(field) => (
-                <InputField type="number" label="Profits" field={field} />
-              )}
-            </characterUpdateForm.Field>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-4">
-          <characterUpdateForm.Field name="height">
-            {(field) => (
-              <InputField type="number" label="Height (in)" field={field} />
-            )}
-          </characterUpdateForm.Field>
-          <characterUpdateForm.Field name="weight">
-            {(field) => (
-              <InputField type="number" label="Weight (lbs)" field={field} />
-            )}
-          </characterUpdateForm.Field>
-          <characterUpdateForm.Field name="age">
-            {(field) => (
-              <InputField type="number" label="Age (yrs)" field={field} />
-            )}
-          </characterUpdateForm.Field>
-          <characterUpdateForm.Field name="sex">
-            {(field) => (
-              <SelectField type="select" label="Sex" field={field}>
-                <option defaultValue="" disabled></option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </SelectField>
-            )}
-          </characterUpdateForm.Field>
-        </div>
-        <div className="grid grid-rows-2 gap-8 sm:grid-cols-2 sm:grid-rows-1">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
             chamfer="medium"
@@ -375,24 +310,82 @@ const CharacterUpdateForm = () => {
               </div>
             )}
           </ThemeContainer>
-
-          <characterUpdateForm.Field
-            name="background"
-            validators={{
-              onChange: ({ value }) =>
-                value.length < 2
-                  ? 'Perk description must be at least 2 characters long'
-                  : undefined,
-            }}
-          >
-            {(field) => (
-              <TextAreaField
-                className="h-full w-full"
-                label="Character background "
-                field={field}
-              />
-            )}
-          </characterUpdateForm.Field>
+          <div className="flex flex-col gap-8">
+            <characterUpdateForm.Field
+              name="firstName"
+              validators={{
+                onChange: ({ value }) =>
+                  value.length < 2
+                    ? 'First name must be at least 2 characters long'
+                    : undefined,
+              }}
+            >
+              {(field) => (
+                <InputField
+                  className="w-full"
+                  label="First name"
+                  field={field}
+                />
+              )}
+            </characterUpdateForm.Field>
+            <characterUpdateForm.Field name="lastName">
+              {(field) => (
+                <InputField
+                  className="w-full"
+                  label="Last name"
+                  field={field}
+                />
+              )}
+            </characterUpdateForm.Field>
+            <div className="grid grid-cols-2 gap-4 sm:gap-8">
+              <characterUpdateForm.Field
+                name="level"
+                validators={{
+                  onChange: ({ value }) =>
+                    value < 1
+                      ? 'You cannot be a lower level than 1'
+                      : undefined,
+                }}
+              >
+                {(field) => (
+                  <InputField type="number" label="Level" field={field} />
+                )}
+              </characterUpdateForm.Field>
+              <characterUpdateForm.Field name="profits">
+                {(field) => (
+                  <InputField type="number" label="Profits" field={field} />
+                )}
+              </characterUpdateForm.Field>
+              <characterUpdateForm.Field name="height">
+                {(field) => (
+                  <InputField type="number" label="Height (in)" field={field} />
+                )}
+              </characterUpdateForm.Field>
+              <characterUpdateForm.Field name="weight">
+                {(field) => (
+                  <InputField
+                    type="number"
+                    label="Weight (lbs)"
+                    field={field}
+                  />
+                )}
+              </characterUpdateForm.Field>
+              <characterUpdateForm.Field name="age">
+                {(field) => (
+                  <InputField type="number" label="Age (yrs)" field={field} />
+                )}
+              </characterUpdateForm.Field>
+              <characterUpdateForm.Field name="sex">
+                {(field) => (
+                  <SelectField type="select" label="Sex" field={field}>
+                    <option defaultValue="" disabled></option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </SelectField>
+                )}
+              </characterUpdateForm.Field>
+            </div>
+          </div>
         </div>
         <div
           className={` ${layoutSize !== 'xsmall' && layoutSize !== 'small' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full items-center gap-4`}

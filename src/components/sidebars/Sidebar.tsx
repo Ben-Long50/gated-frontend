@@ -56,7 +56,7 @@ const Sidebar = ({
             title={character.firstName + ' ' + character.lastName}
             icon={
               <img
-                className="bg-secondary z-10 size-12 rounded-full p-1"
+                className="bg-secondary z-10 size-12 shrink-0 rounded-full p-1"
                 src={character.picture.imageUrl}
                 alt={
                   character.firstName +

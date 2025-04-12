@@ -13,12 +13,14 @@ const ItemMenu = ({
   armor,
   cybernetics,
   items,
+  mode,
   children,
 }: {
   weapons: WeaponWithKeywords[];
   armor: ArmorWithKeywords[];
   cybernetics: CyberneticWithKeywords[];
   items: Item[];
+  mode: 'equipment' | 'inventory';
   children: (
     item:
       | WeaponWithKeywords
@@ -83,7 +85,9 @@ const ItemMenu = ({
           </BtnAuth>
         </div>
         <Divider className="col-span-2" />
-        <div className="scrollbar-secondary-2 flex flex-wrap gap-4 overflow-y-auto">
+        <div
+          className={`${mode === 'equipment' ? 'grid grid-cols-2' : 'grid grid-cols-6 grid-rows-3'} scrollbar-secondary-2 gap-4 overflow-y-auto`}
+        >
           {itemList.map((item, index) => children(item, index, { tab }))}
         </div>
       </div>

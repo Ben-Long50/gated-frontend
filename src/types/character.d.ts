@@ -16,7 +16,9 @@ interface Character {
   weight: number;
   age: number;
   sex: string;
-  background: string;
+  backstory: { html: string; nodes: string };
+  firstTaste: { html: string; nodes: string };
+  badMedicine: { html: string; nodes: string };
   attributes: Partial<AttributeTree>;
   firstName: string;
   lastName: string;

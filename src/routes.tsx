@@ -53,6 +53,8 @@ import Faction from './components/Faction';
 import Notifications from './components/Notifications';
 import Affiliations from './components/Affiliations';
 import FactionForm from './components/FactionForm';
+import Resume from './components/Resume';
+import ResumeForm from './components/ResumeForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -109,9 +111,18 @@ const router = createBrowserRouter(
           <Route path="playerCharacters" element={<CharacterList />} />
           <Route path="nonPlayerCharacters" element={<CharacterList />} />
           <Route path="create" element={<CharacterForm />} />
-          <Route path=":characterId" element={<CharacterSheet />} />
-          <Route path=":characterId/update" element={<CharacterUpdateForm />} />
-          <Route path=":characterId/cart" element={<Cart />} />
+          <Route path=":characterId">
+            <Route index element={<CharacterSheet />} />
+            <Route path="update" element={<CharacterUpdateForm />} />
+            <Route path="cart" element={<Cart />} />
+            <Route path="backstory" element={<Resume title="Backstory" />} />
+            <Route path="firstTaste" element={<Resume title="First Taste" />} />
+            <Route
+              path="badMedicine"
+              element={<Resume title="Bad Medicine" />}
+            />
+            <Route path="resume/update" element={<ResumeForm />} />
+          </Route>
           <Route
             path=":characterId/inventory/weapons"
             element={<Inventory category="weapons" />}

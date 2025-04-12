@@ -14,7 +14,6 @@ import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import { Modification, VehicleWithWeapons } from 'src/types/vehicle';
 import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
-import CloudinaryImage from './CloudinaryImage';
 import SubweaponCard from './SubweaponCard';
 import { Action } from 'src/types/action';
 import SubactionCard from './SubactionCard';

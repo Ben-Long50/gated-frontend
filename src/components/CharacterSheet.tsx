@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { mdiCircleOutline } from '@mdi/js';
+import { mdiCircleOutline, mdiTriangleDown } from '@mdi/js';
 import Icon from '@mdi/react';
 import StatBar from './StatBar';
 import PerkCard from './PerkCard';
@@ -27,13 +27,16 @@ import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import ArrowHeader2 from './ArrowHeader2';
 import ArrowHeader1 from './ArrowHeader1';
 import ArrowHeader3 from './ArrowHeader3';
+import AccountPicture from './AccountPicture';
+import Divider from './Divider';
+import BtnAuth from './buttons/BtnAuth';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { apiUrl, user } = useContext(AuthContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const [storyVisibility, setStoryVisibility] = useState(
+  const [infoVisibility, setInfoVisibility] = useState(
     layoutSize === 'xsmall' ? false : true,
   );
 
@@ -44,6 +47,8 @@ const CharacterSheet = () => {
     isLoading: characterLoading,
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, characterId);
+
+  console.log(character);
 
   const isLoading = characterLoading;
   const isPending = characterPending;
@@ -130,21 +135,63 @@ const CharacterSheet = () => {
           className="mb-auto max-h-96 w-full rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
           borderColor={accentPrimary}
         >
-          <div className="bg-primary scrollbar-secondary max-h-96 overflow-y-auto p-4 clip-6">
+          <div className="bg-primary scrollbar-secondary-2 flex max-h-96 flex-col gap-4 overflow-y-auto p-4 clip-6">
             <div className="flex w-full items-center justify-between">
               <ArrowHeader3
                 title={
-                  character.firstName + ' ' + character.lastName + "'s Story"
+                  character.firstName + ' ' + character.lastName + "'s Info"
                 }
               />
               <button
                 className="text-tertiary hover:underline"
-                onClick={() => setStoryVisibility(!storyVisibility)}
+                onClick={() => setInfoVisibility(!infoVisibility)}
               >
-                {storyVisibility ? 'hide' : 'show'}
+                {infoVisibility ? 'hide' : 'show'}
               </button>
             </div>
-            {storyVisibility && <p className="mt-2">{character.background}</p>}
+            {infoVisibility && (
+              <>
+                <div className="grid grid-cols-[auto_auto_1fr] items-center gap-x-8 gap-y-4">
+                  <>
+                    <h4>Character Type</h4>
+                    <Icon path={mdiTriangleDown} size={0.375} rotate={-90} />
+                    {character.playerCharacter ? (
+                      <p>Player Character</p>
+                    ) : (
+                      <p>Non-player Character</p>
+                    )}
+                  </>
+                  {character.campaign ? (
+                    <>
+                      <h4>Campaign</h4>
+                      <Icon path={mdiTriangleDown} size={0.375} rotate={-90} />
+                      <p>{character.campaign.name}</p>
+                    </>
+                  ) : (
+                    <p>No campaign</p>
+                  )}
+                  {character ? (
+                    <>
+                      <h4>Gang</h4>
+                      <Icon path={mdiTriangleDown} size={0.375} rotate={-90} />
+                      <p>{character.gang?.name || 'N/A'}</p>
+                    </>
+                  ) : (
+                    <p>No campaign</p>
+                  )}
+                </div>
+                <Divider />
+                <Link to={`backstory`}>
+                  <BtnAuth>Backstory</BtnAuth>
+                </Link>
+                <Link to={`firstTaste`}>
+                  <BtnAuth>First Taste</BtnAuth>
+                </Link>
+                <Link to={`badMedicine`}>
+                  <BtnAuth>Bad Medicine</BtnAuth>
+                </Link>
+              </>
+            )}
           </div>
         </ThemeContainer>
       </div>
@@ -279,7 +326,6 @@ const CharacterSheet = () => {
             </div>
           </div>
         </ThemeContainer>
-
         <div className="mb-auto flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
           {Object.entries(attributeTree.tree).map(
             ([attribute, { points, skills }]) => (

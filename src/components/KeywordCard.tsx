@@ -45,7 +45,7 @@ const KeywordCard = ({
       }
     >
       <div className="flex">
-        <Tag className="mr-auto" label={keyword.keywordType} />
+        <Tag className="mr-auto" label={keyword.keywordType} toolTip={0} />
       </div>
       <p className="text-secondary">{keyword.description}</p>
     </ItemCardSmall>

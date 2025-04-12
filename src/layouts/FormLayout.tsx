@@ -62,12 +62,14 @@ const FormLayout = ({
         {itemId && (
           <div className="flex flex-col gap-4">
             <div className="flex w-full items-center justify-between gap-8">
-              <button
-                className="text-accent hover:underline"
-                onClick={handleDelete}
-              >
-                Delete
-              </button>
+              {deleteMutation && (
+                <button
+                  className="text-accent hover:underline"
+                  onClick={handleDelete}
+                >
+                  Delete
+                </button>
+              )}
               {deleteMode && (
                 <div className="grow">
                   <button
