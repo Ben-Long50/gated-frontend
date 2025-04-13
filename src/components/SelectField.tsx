@@ -1,8 +1,21 @@
-import { useContext, useEffect, useState } from 'react';
+import { ReactNode, useContext, useEffect, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { FieldApi } from '@tanstack/react-form';
 
-const SelectField = ({ field, ...props }) => {
+const SelectField = ({
+  field,
+  onChange,
+  children,
+  label,
+  className,
+}: {
+  field: FieldApi;
+  onChange?: () => void;
+  children: ReactNode;
+  label: string;
+  className?: string;
+}) => {
   const [borderColor, setBorderColor] = useState('transparent');
   const [focus, setFocus] = useState(false);
   const { accentPrimary, errorPrimary } = useContext(ThemeContext);
@@ -28,14 +41,14 @@ const SelectField = ({ field, ...props }) => {
   }, [focus, field.state]);
 
   return (
-    <div className={`${props.className}`}>
+    <div className={`${className}`}>
       <ThemeContainer
         className="shadow-md"
         chamfer="small"
         borderColor={borderColor}
       >
         <select
-          className={`${props.className} text-secondary timing focus:bg-primary h-[44px] w-full rounded-none lg:h-[48px] ${field.state.value?.length === 0 || !field.state.value ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pr-2 pt-3 outline-none clip-4`}
+          className={`${className} text-secondary timing focus:bg-primary h-[44px] w-full rounded-none lg:h-[48px] ${field.state.value?.length === 0 || !field.state.value ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pr-2 pt-3 outline-none clip-4`}
           name={field.name}
           id={field.name}
           value={field.state.value}
@@ -48,18 +61,18 @@ const SelectField = ({ field, ...props }) => {
           onChange={(e) => {
             field.handleChange(e.target.value);
             handleBorder();
-            if (props.onChange) {
-              props.onChange(e);
+            if (onChange) {
+              onChange(e);
             }
           }}
         >
-          {props.children}
+          {children}
         </select>
         <label
           htmlFor={field.name}
           className={` ${field.state.meta.errors?.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
         >
-          {props.label}
+          {label}
         </label>
       </ThemeContainer>
       {field.state.meta.errors &&

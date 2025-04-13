@@ -1,8 +1,21 @@
 import { useContext, useEffect, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
+import { FieldApi } from '@tanstack/react-form';
 
-const InputField = ({ field, ...props }) => {
+const InputField = ({
+  field,
+  className,
+  type,
+  onChange,
+  label,
+}: {
+  field: FieldApi;
+  className?: string;
+  type?: 'text' | 'number';
+  onChange?: () => void;
+  label: string;
+}) => {
   const [borderColor, setBorderColor] = useState('transparent');
   const [focus, setFocus] = useState(false);
   const { accentPrimary, errorPrimary } = useContext(ThemeContext);
@@ -28,15 +41,15 @@ const InputField = ({ field, ...props }) => {
   }, [focus, field.state]);
 
   return (
-    <div className={`${props.className}`}>
+    <div className={`${className}`}>
       <ThemeContainer
-        className={`${props.className} ml-auto shadow-md`}
+        className={`${className} ml-auto shadow-md`}
         chamfer="small"
         borderColor={borderColor}
       >
         <input
-          className={`${props.className} text-secondary timing focus:bg-primary w-full rounded-none ${field.state.value?.length === 0 || !field.state.value ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 outline-none clip-4`}
-          type={props.type || 'text'}
+          className={`${className} text-secondary timing focus:bg-primary w-full rounded-none ${field.state.value?.length === 0 || !field.state.value ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 outline-none clip-4`}
+          type={type || 'text'}
           name={field.name}
           id={field.name}
           value={field.state.value}
@@ -47,14 +60,14 @@ const InputField = ({ field, ...props }) => {
             setFocus(false);
           }}
           onChange={(e) => {
-            if (props.type === 'number') {
+            if (type === 'number') {
               field.handleChange(Number(e.target.value));
             } else {
               field.handleChange(e.target.value);
             }
             handleBorder();
-            if (props.onChange) {
-              props.onChange();
+            if (onChange) {
+              onChange();
             }
           }}
         />
@@ -62,7 +75,7 @@ const InputField = ({ field, ...props }) => {
           htmlFor={field.name}
           className={` ${field.state.meta.errors.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
         >
-          {props.label}
+          {label}
         </label>
       </ThemeContainer>
       {field.state.meta.errors &&

@@ -55,6 +55,7 @@ import Affiliations from './components/Affiliations';
 import FactionForm from './components/FactionForm';
 import Resume from './components/Resume';
 import ResumeForm from './components/ResumeForm';
+import RollSimulator from './components/RollSimulator';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -104,6 +105,7 @@ const router = createBrowserRouter(
             path="create"
             element={<CampaignForm title="Create" mode="create" />}
           />
+          <Route path="rollSimulator" element={<RollSimulator />} />
         </Route>
 
         <Route path="characters">

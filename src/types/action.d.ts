@@ -1,6 +1,6 @@
 import { Cybernetic } from './cybernetic';
 
-export interface Action {
+interface Action {
   id: number;
   name: string;
   description: string;

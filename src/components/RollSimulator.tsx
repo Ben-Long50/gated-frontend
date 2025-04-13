@@ -1,0 +1,278 @@
+import { useForm } from '@tanstack/react-form';
+import { Action } from 'src/types/action';
+import useActions from '../hooks/useActions';
+import ArrowHeader3 from './ArrowHeader3';
+import SelectField from './SelectField';
+import ThemeContainer from './ThemeContainer';
+import { useContext, useState } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
+import InputFieldRadio from './InputFieldRadio';
+import ArrowHeader4 from './ArrowHeader4';
+import Divider from './Divider';
+import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
+import { AuthContext } from '../contexts/AuthContext';
+import useAttributeTree from '../hooks/useAttributeTree';
+import Loading from './Loading';
+import BtnRect from './buttons/BtnRect';
+import DieIcon from './icons/DieIcon';
+import Icon from '@mdi/react';
+import { mdiArrowDown, mdiTriangleDown } from '@mdi/js';
+import InputFieldCheckbox from './InputFieldCheckbox';
+import Die3Icon from './icons/Die3Icon';
+import Die2Icon from './icons/Die2Icon';
+import Die6Icon from './icons/Die6Icon';
+import InputField from './InputField';
+
+const RollSimulator = ({
+  modalOpen,
+  toggleModal,
+}: {
+  modalOpen?: boolean;
+  toggleModal?: () => void;
+}) => {
+  const { apiUrl } = useContext(AuthContext);
+  const { accentPrimary } = useContext(ThemeContext);
+  const {
+    data: character,
+    isLoading,
+    isPending,
+  } = useActiveCharacterQuery(apiUrl);
+
+  const { filteredActions: actions } = useActions();
+  const { tree, getPoints } = useAttributeTree(character?.attributes);
+
+  const [selectedAction, setSelectedAction] = useState<Action | null>(null);
+
+  const rollForm = useForm({
+    defaultValues: {
+      action: '',
+      attribute: '',
+      skill: '',
+      modifiers: [] as string[],
+      diceCount: null,
+    },
+    onSubmit: ({ value }) => {
+      console.log(value);
+    },
+  });
+
+  const rolls = selectedAction?.roll ? selectedAction?.roll : [];
+
+  if (isLoading || isPending) return <Loading />;
+
+  return (
+    <ThemeContainer
+      className="w-full max-w-5xl"
+      borderColor={accentPrimary}
+      chamfer="medium"
+    >
+      <div className="bg-primary grid w-full grid-cols-2 gap-8 p-4 clip-6">
+        <div className="grid h-full grid-cols-3 place-items-center">
+          <Die3Icon className="text-secondary w-full" />
+          <Die2Icon className="text-secondary w-full" />
+          <Die6Icon className="text-secondary w-full" />
+        </div>
+        <div className="flex flex-col items-start justify-start gap-8">
+          <ArrowHeader3 title="Roll Options" />
+          <rollForm.Field
+            name="action"
+            listeners={{
+              onChange: () => {
+                rollForm.setFieldValue('attribute', '');
+                rollForm.setFieldValue('skill', '');
+              },
+            }}
+          >
+            {(field) => (
+              <SelectField
+                label="Action"
+                className="w-full"
+                field={field}
+                onChange={() => {
+                  setSelectedAction(
+                    actions.find((action) => field.state.value === action.name),
+                  );
+                }}
+              >
+                <option defaultValue=""></option>
+                {actions.map((action) => (
+                  <option key={action.id} value={action.name}>
+                    {action.name}
+                  </option>
+                ))}
+              </SelectField>
+            )}
+          </rollForm.Field>
+          {rolls.length > 0 && (
+            <ThemeContainer
+              className="w-full"
+              borderColor={accentPrimary}
+              chamfer="small"
+            >
+              <p className="!text-accent bg-primary absolute -top-2 left-3.5 z-20 px-1.5 text-base">
+                Attribute
+              </p>
+              <div className="bg-primary relative flex w-full flex-col gap-4 p-4 pt-6 clip-4">
+                <rollForm.Field name="attribute">
+                  {(field) =>
+                    rolls.map((roll, i) => (
+                      <div key={i} className="flex items-center gap-4">
+                        <InputFieldRadio
+                          className="w-full"
+                          field={field}
+                          label={roll.attribute}
+                          value={roll.attribute}
+                          checked={roll.attribute === field.state.value}
+                        ></InputFieldRadio>
+                        <p className="!text-tertiary whitespace-nowrap">
+                          ({getPoints(roll.attribute) + ' dice'})
+                        </p>
+                      </div>
+                    ))
+                  }
+                </rollForm.Field>
+              </div>
+            </ThemeContainer>
+          )}
+          {rolls.length > 0 && (
+            <ThemeContainer
+              className="w-full"
+              borderColor={accentPrimary}
+              chamfer="small"
+            >
+              <p className="!text-accent bg-primary absolute -top-2 left-3.5 z-20 px-1.5 text-base">
+                Skill
+              </p>
+              <div className="bg-primary relative flex w-full flex-col gap-4 p-4 pt-6 clip-4">
+                <rollForm.Field name="skill">
+                  {(field) =>
+                    rolls.map((roll, i) => (
+                      <div key={i} className="flex items-center gap-4">
+                        <InputFieldRadio
+                          className="w-full"
+                          field={field}
+                          label={roll.skill}
+                          value={roll.skill}
+                          checked={roll.skill === field.state.value}
+                        ></InputFieldRadio>
+                        <p className="!text-tertiary whitespace-nowrap">
+                          ({getPoints(roll.attribute, roll.skill) + ' dice'})
+                        </p>
+                      </div>
+                    ))
+                  }
+                </rollForm.Field>
+              </div>
+            </ThemeContainer>
+          )}
+          <ThemeContainer
+            className="w-full"
+            borderColor={accentPrimary}
+            chamfer="small"
+          >
+            <p className="!text-accent bg-primary absolute -top-2 left-3.5 z-20 px-1.5 text-base">
+              Modifiers
+            </p>
+            <div className="bg-primary relative flex w-full flex-col gap-4 p-4 pt-6 clip-4">
+              <rollForm.Field name="modifiers">
+                {(field) => (
+                  <>
+                    <InputFieldCheckbox
+                      checked={(e) =>
+                        field.state.value.includes(e.target.value)
+                      }
+                      field={field}
+                      label="Push-it"
+                      value="push"
+                    />
+                    <InputFieldCheckbox
+                      checked={(e) =>
+                        field.state.value.includes(e.target.value)
+                      }
+                      field={field}
+                      label="Booming"
+                      value="booming"
+                    />
+                    <InputFieldCheckbox
+                      checked={(e) =>
+                        field.state.value.includes(e.target.value)
+                      }
+                      field={field}
+                      label="Dooming"
+                      value="dooming"
+                    />
+                    <InputFieldCheckbox
+                      checked={(e) =>
+                        field.state.value.includes(e.target.value)
+                      }
+                      field={field}
+                      label="Lucky"
+                      value="lucky"
+                    />
+                    <InputFieldCheckbox
+                      checked={(e) =>
+                        field.state.value.includes(e.target.value)
+                      }
+                      field={field}
+                      label="Unlucky"
+                      value="unlucky"
+                    />
+                  </>
+                )}
+              </rollForm.Field>
+            </div>
+          </ThemeContainer>
+          <rollForm.Field name="diceCount">
+            {(field) => (
+              <InputField
+                className="w-full"
+                field={field}
+                type="number"
+                label="Extra Dice"
+              />
+            )}
+          </rollForm.Field>
+          <div className="flex w-full items-center justify-between">
+            <div className="flex items-center gap-4">
+              <rollForm.Subscribe
+                selector={(state) => [
+                  state.values.attribute,
+                  state.values.skill,
+                  state.values.diceCount,
+                ]}
+              >
+                {([attribute, skill, dice]) => (
+                  <>
+                    <DieIcon className="size-10" />
+                    <Icon
+                      className="text-primary"
+                      path={mdiTriangleDown}
+                      size={0.375}
+                      rotate={-90}
+                    />
+                    <h3>
+                      {skill
+                        ? getPoints(attribute) +
+                          getPoints(attribute, skill) +
+                          dice
+                        : getPoints(attribute) + dice}
+                    </h3>
+                  </>
+                )}
+              </rollForm.Subscribe>
+            </div>
+            <BtnRect
+              ariaLabel="Roll dice"
+              type="button"
+              className="min-w-28 self-end"
+            >
+              Roll
+            </BtnRect>
+          </div>
+        </div>
+      </div>
+    </ThemeContainer>
+  );
+};
+
+export default RollSimulator;

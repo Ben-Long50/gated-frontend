@@ -9,7 +9,7 @@ const InputFieldRadio = ({
   checked,
 }: {
   field: FieldApi;
-  className: string;
+  className?: string;
   label: string;
   value: string;
   checked: boolean;
@@ -18,7 +18,7 @@ const InputFieldRadio = ({
     <div className={`${className} flex items-center justify-between gap-8`}>
       <label
         htmlFor={field.name}
-        className={` ${field.state.meta.errors.length > 0 ? 'text-error' : 'text-secondary'} w-full grow cursor-text text-xl`}
+        className={` ${field.state.meta.errors?.length > 0 ? 'text-error' : 'text-secondary'} w-full grow cursor-text text-xl`}
       >
         {label}
       </label>

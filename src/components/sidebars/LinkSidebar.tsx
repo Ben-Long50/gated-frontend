@@ -8,12 +8,14 @@ const LinkSidebar = ({
   path,
   sidebarVisibility,
   setSidebarVisibility,
+  onClick,
 }: {
   title: string;
   icon: ReactNode;
   path: string;
   sidebarVisibility: boolean;
   setSidebarVisibility: (mode: boolean) => void;
+  onClick?: () => void;
 }) => {
   const { layoutSize } = useContext(LayoutContext);
 
@@ -32,6 +34,9 @@ const LinkSidebar = ({
           onClick={() => {
             if (layoutSize !== 'large') {
               setSidebarVisibility(false);
+              if (onClick) {
+                onClick();
+              }
             }
           }}
         >
