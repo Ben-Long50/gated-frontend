@@ -31,7 +31,7 @@ import { Action } from 'src/types/action';
 import ActionCard from './ActionCard';
 import ConditionCard from './ConditionCard';
 import ModCard from './ModCard';
-import ArrowHeader2 from './ArrowHeader1';
+import ArrowHeader2 from './ArrowHeader2';
 
 const CodexSearch = () => {
   const { accentPrimary } = useContext(ThemeContext);

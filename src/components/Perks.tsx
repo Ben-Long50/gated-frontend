@@ -8,7 +8,7 @@ import InputField from './InputField';
 import { LayoutContext } from '../contexts/LayoutContext';
 import SelectField from './SelectField';
 import Loading from './Loading';
-import ArrowHeader2 from './ArrowHeader1';
+import ArrowHeader2 from './ArrowHeader2';
 
 const Perks = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);

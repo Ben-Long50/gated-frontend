@@ -8,9 +8,7 @@ import Loading from './Loading';
 import useConditions from '../hooks/useConditions';
 import ConditionCard from './ConditionCard';
 import SelectField from './SelectField';
-import Icon from '@mdi/react';
-import { mdiTriangleDown } from '@mdi/js';
-import ArrowHeader2 from './ArrowHeader1';
+import ArrowHeader2 from './ArrowHeader2';
 
 const Conditions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);

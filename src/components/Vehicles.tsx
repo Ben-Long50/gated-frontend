@@ -8,7 +8,7 @@ import useVehicles from '../hooks/useVehicles';
 import VehicleCard from './VehicleCard';
 import { VehicleWithWeapons } from '../types/vehicle';
 import { FetchOptions } from 'src/types/fetchOptions';
-import ArrowHeader2 from './ArrowHeader1';
+import ArrowHeader2 from './ArrowHeader2';
 
 const Vehicles = ({
   title,

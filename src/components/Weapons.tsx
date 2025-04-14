@@ -9,7 +9,7 @@ import SelectField from './SelectField';
 import Loading from './Loading';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { FetchOptions } from 'src/types/fetchOptions';
-import ArrowHeader2 from './ArrowHeader1';
+import ArrowHeader2 from './ArrowHeader2';
 
 const Weapons = ({
   title,

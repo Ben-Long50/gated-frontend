@@ -9,7 +9,7 @@ import SelectField from './SelectField';
 import Loading from './Loading';
 import { FetchOptions } from 'src/types/fetchOptions';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import ArrowHeader2 from './ArrowHeader1';
+import ArrowHeader2 from './ArrowHeader2';
 
 const Cybernetics = ({
   title,

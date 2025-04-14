@@ -7,14 +7,8 @@ import Loading from './Loading';
 import { FetchOptions } from 'src/types/fetchOptions';
 import useItems from '../hooks/useItems';
 import { Item } from 'src/types/item';
-import ItemCard from './ItemCard';
-import StatCard from './StatCard';
-import LightningIcon from './icons/LightningIcon';
-import EquipIcon from './icons/EquipIcon';
-import { Modifier } from 'src/types/modifier';
-import ModifierTag from './ModifierTag';
 import MiscItemCard from './MiscItemCard';
-import ArrowHeader2 from './ArrowHeader1';
+import ArrowHeader2 from './ArrowHeader2';
 
 const Items = ({
   title,

@@ -1,20 +1,27 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 const useRoll = () => {
   const [diceArray, setDiceArray] = useState<number[]>([]);
   const [rolling, setRolling] = useState(false);
   const [successes, setSuccesses] = useState(<number | null>null);
 
+  const timeoutRef = useRef<number | null>(null);
+
   const rollDice = (
     diceCount: number,
     onFinish?: (result: number[]) => void,
   ) => {
-    let count = 0;
-    const maxRolls = 12;
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
+    let count = 1;
+    const maxRolls = 18;
 
     setRolling(true);
 
-    const interval = setInterval(() => {
+    const rollOnce = () => {
       const dieArray = Array.from(
         { length: diceCount },
         () => Math.floor(Math.random() * 6) + 1,
@@ -24,13 +31,17 @@ const useRoll = () => {
 
       count++;
       if (count >= maxRolls) {
-        clearInterval(interval);
         setRolling(false);
-        if (onFinish) {
-          onFinish(dieArray);
-        }
+        onFinish?.(dieArray);
+        return;
       }
-    }, 50);
+
+      const delay = count * 10;
+
+      timeoutRef.current = setTimeout(rollOnce, delay);
+    };
+
+    rollOnce();
   };
 
   const calculateSuccesses = (diceCount: number, modifiers: string[]) => {

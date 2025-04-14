@@ -10,6 +10,7 @@ import Loading from './Loading';
 import SelectField from './SelectField';
 import Icon from '@mdi/react';
 import { mdiTriangleDown } from '@mdi/js';
+import ArrowHeader2 from './ArrowHeader2';
 
 const Keywords = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -45,7 +46,7 @@ const Keywords = ({ mode }: { mode?: string }) => {
       >
         <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
           <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
-            <h3 className="pl-4">Filter options</h3>
+            <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
               {(field) => (
                 <SelectField
@@ -84,21 +85,15 @@ const Keywords = ({ mode }: { mode?: string }) => {
         <div className="bg-primary flex w-full flex-col gap-8 p-4 clip-6 sm:p-8">
           <searchForm.Subscribe selector={(state) => state.values.category}>
             {(category) => (
-              <div className="flex items-center gap-4">
-                <Icon
-                  className="text-primary"
-                  path={mdiTriangleDown}
-                  size={0.5}
-                  rotate={-90}
-                />
-                <h2>
-                  {category.length > 0
+              <ArrowHeader2
+                title={
+                  category.length > 0
                     ? category[0].toUpperCase() +
                       category.slice(1) +
-                      ' keywords'
-                    : 'All keywords'}
-                </h2>
-              </div>
+                      ' Keywords'
+                    : 'All Keywords'
+                }
+              />
             )}
           </searchForm.Subscribe>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">

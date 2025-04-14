@@ -2,6 +2,7 @@ import PerkCard from './PerkCard';
 import Icon from '@mdi/react';
 import { mdiTriangleDown } from '@mdi/js';
 import { Perk, PerkTree } from 'src/types/perk';
+import ArrowHeader2 from './ArrowHeader2';
 
 type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -27,16 +28,9 @@ const PerkList = ({
             0,
           ) > 0 && (
             <div key={perkType} className="flex flex-col gap-8">
-              <div className="flex items-center gap-4">
-                <Icon
-                  className="text-primary"
-                  path={mdiTriangleDown}
-                  size={0.5}
-                  rotate={-90}
-                />
-                <h2>{perkType.charAt(0).toUpperCase() + perkType.slice(1)}</h2>
-              </div>
-
+              <ArrowHeader2
+                title={perkType.charAt(0).toUpperCase() + perkType.slice(1)}
+              />
               {Object.entries(skills).map(([skill, perkList]) => {
                 {
                   return (
