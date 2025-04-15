@@ -8,6 +8,7 @@ const InputFieldRadio = ({
   value,
   checked,
   children,
+  onChange,
 }: {
   field: FieldApi;
   className?: string;
@@ -15,6 +16,7 @@ const InputFieldRadio = ({
   value: string;
   checked: boolean;
   children?: ReactNode;
+  onChange?: () => void;
 }) => {
   return (
     <div className={`${className} flex items-center justify-between gap-8`}>
@@ -33,7 +35,11 @@ const InputFieldRadio = ({
         value={value}
         checked={checked}
         onChange={(e) => {
-          field.handleChange(e.target.value);
+          if (onChange) {
+            onChange();
+          } else {
+            field.handleChange(e.target.value);
+          }
         }}
       />
     </div>
