@@ -4,7 +4,7 @@ import useActions from '../hooks/useActions';
 import ArrowHeader3 from './ArrowHeader3';
 import SelectField from './SelectField';
 import ThemeContainer from './ThemeContainer';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputFieldRadio from './InputFieldRadio';
 import Divider from './Divider';
@@ -16,7 +16,6 @@ import BtnRect from './buttons/BtnRect';
 import DieIcon from './icons/DieIcon';
 import Icon from '@mdi/react';
 import {
-  mdiCheckCircle,
   mdiCheckCircleOutline,
   mdiCloseOutline,
   mdiTriangleDown,
@@ -26,12 +25,12 @@ import Die3Icon from './icons/Die3Icon';
 import Die2Icon from './icons/Die2Icon';
 import Die6Icon from './icons/Die6Icon';
 import InputField from './InputField';
-import ArrowHeader2 from './ArrowHeader2';
 import ArrowHeader1 from './ArrowHeader1';
 import Die1Icon from './icons/Die1Icon';
 import Die5Icon from './icons/Die5Icon';
 import Die4Icon from './icons/Die4Icon';
 import useRoll from '../hooks/useRoll';
+import { AttributeName, SkillName } from 'src/types/attributeTree';
 
 const RollSimulator = ({
   modalOpen,
@@ -59,12 +58,14 @@ const RollSimulator = ({
   const rollForm = useForm({
     defaultValues: {
       action: '',
-      attribute: '',
-      skill: '',
+      attribute: '' as AttributeName,
+      skill: '' as SkillName,
       modifiers: [] as string[],
-      diceCount: null,
+      diceCount: null as number | null,
     },
     onSubmit: ({ value }) => {
+      console.log(value);
+
       const diceCount =
         getPoints(value.attribute) +
         getPoints(value.attribute, value.skill) +
@@ -75,9 +76,15 @@ const RollSimulator = ({
     },
   });
 
-  const rolls = selectedAction?.roll ? selectedAction?.roll : [];
-  const rollAttributes = rolls.map((roll) => roll.attribute);
-  const rollSkills = rolls.map((roll) => roll.skill);
+  const rolls = useMemo(() => {
+    return selectedAction?.roll ? selectedAction?.roll : [];
+  }, [selectedAction]);
+  const rollAttributes = useMemo(() => {
+    return rolls.map((roll) => roll.attribute);
+  }, [rolls]) as AttributeName[];
+  const rollSkills = useMemo(() => {
+    return rolls.map((roll) => roll.skill);
+  }, [rolls]) as SkillName[];
 
   useEffect(() => {
     rollForm.setFieldValue('attribute', rollAttributes[0]);
@@ -245,15 +252,7 @@ const RollSimulator = ({
             className="mb-auto flex flex-col items-start justify-start gap-8"
           >
             <ArrowHeader3 title="Roll Options" />
-            <rollForm.Field
-              name="action"
-              listeners={{
-                onChange: () => {
-                  rollForm.setFieldValue('attribute', '');
-                  rollForm.setFieldValue('skill', '');
-                },
-              }}
-            >
+            <rollForm.Field name="action">
               {(field) => (
                 <SelectField
                   label="Action"
