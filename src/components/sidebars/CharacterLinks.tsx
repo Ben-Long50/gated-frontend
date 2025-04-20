@@ -155,15 +155,24 @@ const CharacterLinks = ({
           setSidebarVisibility={setSidebarVisibility}
         />
       </LinkListSidebar>
-      <LinkSidebar
-        path={`characters/${character?.id}/affiliations`}
+      <LinkListSidebar
         icon={
           <AffiliationIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
         }
         title="Affiliations"
         sidebarVisibility={sidebarVisibility}
-        setSidebarVisibility={setSidebarVisibility}
-      />
+      >
+        <SubLinkSidebar
+          title="Existing Affiliations"
+          path={`characters/${character?.id}/affiliations`}
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <SubLinkSidebar
+          title="Create Affiliation"
+          path={`characters/${character?.id}/affiliations/create`}
+          setSidebarVisibility={setSidebarVisibility}
+        />
+      </LinkListSidebar>
     </>
   );
 };

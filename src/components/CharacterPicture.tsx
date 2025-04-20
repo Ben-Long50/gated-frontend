@@ -9,7 +9,7 @@ const CharacterPicture = ({
   className,
 }: {
   character: Character;
-  className: string;
+  className?: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 

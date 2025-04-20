@@ -31,6 +31,7 @@ import Die5Icon from './icons/Die5Icon';
 import Die4Icon from './icons/Die4Icon';
 import useRoll from '../hooks/useRoll';
 import { AttributeName, SkillName } from 'src/types/attributeTree';
+import InputSelectField from './InputSelectField';
 
 const RollSimulator = ({
   modalOpen,
@@ -58,6 +59,7 @@ const RollSimulator = ({
   const rollForm = useForm({
     defaultValues: {
       action: '',
+      rollType: 'recommended' as 'recommended' | 'custom',
       attribute: '' as AttributeName,
       skill: '' as SkillName,
       modifiers: [] as string[],
@@ -254,209 +256,111 @@ const RollSimulator = ({
             <ArrowHeader3 title="Roll Options" />
             <rollForm.Field name="action">
               {(field) => (
-                <SelectField
+                <InputSelectField
+                  options={actions}
                   label="Action"
                   className="w-full"
                   field={field}
-                  onChange={() => {
+                  onChange={(name: string) => {
                     setSelectedAction(
-                      actions.find(
-                        (action) => field.state.value === action.name,
-                      ) || null,
+                      actions.find((action) => name === action.name) || null,
                     );
+                    console.log(name);
                   }}
-                >
-                  <option defaultValue=""></option>
-                  {actions.map((action) => (
-                    <option key={action.id} value={action.name}>
-                      {action.name}
-                    </option>
-                  ))}
-                </SelectField>
+                />
               )}
             </rollForm.Field>
-
             <ThemeContainer
               className="w-full"
               borderColor={accentPrimary}
               chamfer="small"
             >
               <p className="!text-accent bg-primary absolute -top-2 left-3.5 z-20 px-1.5 text-base">
-                Attribute
+                Roll Type
               </p>
-              <div className="bg-primary relative flex w-full flex-col gap-4 p-4 pt-6 clip-4">
-                <rollForm.Field name="attribute">
-                  {(field) => {
-                    const customAttributes = Object.keys(
-                      emptyAttributeTree,
-                    ).filter(
-                      (attribute) => !rollAttributes.includes(attribute),
-                    );
-
-                    return (
-                      <>
-                        {rolls.length > 0 &&
-                          rolls.map((roll, i) => (
-                            <div key={i} className="flex items-center gap-4">
-                              <InputFieldRadio
-                                className="w-full"
-                                field={field}
-                                label={
-                                  roll.attribute[0].toUpperCase() +
-                                  roll.attribute.slice(1)
-                                }
-                                value={roll.attribute}
-                                checked={roll.attribute === field.state.value}
-                              >
-                                <p className="!text-tertiary whitespace-nowrap text-base">
-                                  ({getPoints(roll.attribute) + ' dice'})
-                                </p>
-                              </InputFieldRadio>
-                            </div>
-                          ))}
-                        <div className="flex w-full flex-col gap-4">
-                          <div className="flex items-center gap-4">
-                            <InputFieldRadio
-                              className="w-full"
-                              field={field}
-                              label="Custom"
-                              onChange={() =>
-                                rollForm.setFieldValue(
-                                  'attribute',
-                                  customAttributes[0],
-                                )
-                              }
-                              checked={
-                                !!field.state.value &&
-                                !rollAttributes.includes(field.state.value)
-                              }
-                            >
-                              {customAttributes.includes(field.state.value) && (
-                                <p className="!text-tertiary whitespace-nowrap text-base">
-                                  ({getPoints(field.state.value) + ' dice'})
-                                </p>
-                              )}
-                            </InputFieldRadio>
-                          </div>
-                          {customAttributes.includes(field.state.value) && (
-                            <SelectField label="Attribute" field={field}>
-                              {customAttributes.map((attribute) => (
-                                <option key={attribute} value={attribute}>
-                                  {attribute[0].toUpperCase() +
-                                    attribute.slice(1)}
-                                </option>
-                              ))}
-                            </SelectField>
-                          )}
-                        </div>
-                      </>
-                    );
-                  }}
-                </rollForm.Field>
-              </div>
-            </ThemeContainer>
-            {
-              <ThemeContainer
-                className="w-full"
-                borderColor={accentPrimary}
-                chamfer="small"
+              <rollForm.Field
+                name="rollType"
+                listeners={{
+                  onChange: () => {
+                    rollForm.setFieldValue('attribute', '');
+                    rollForm.setFieldValue('skill', '');
+                  },
+                }}
               >
-                <p className="!text-accent bg-primary absolute -top-2 left-3.5 z-20 px-1.5 text-base">
-                  Skill
-                </p>
-                <div className="bg-primary relative flex w-full flex-col gap-4 p-4 pt-6 clip-4">
+                {(field) => (
+                  <div className="bg-primary flex w-full flex-col gap-4 p-4 px-4 pt-6 clip-4">
+                    <InputFieldRadio
+                      className="w-full"
+                      field={field}
+                      label="Recommended"
+                      value="recommended"
+                      onChange={() => field.handleChange('recommended')}
+                      checked={field.state.value === 'recommended'}
+                    />
+                    <InputFieldRadio
+                      className="w-full"
+                      field={field}
+                      label="Custom"
+                      value="custom"
+                      onChange={() => field.handleChange('custom')}
+                      checked={field.state.value === 'custom'}
+                    />
+                  </div>
+                )}
+              </rollForm.Field>
+            </ThemeContainer>
+            <rollForm.Subscribe selector={(state) => state.values.rollType}>
+              {(rollType) => (
+                <>
+                  <rollForm.Field name="attribute">
+                    {(field) => {
+                      const attributeList =
+                        rollType === 'custom'
+                          ? Object.keys(emptyAttributeTree)
+                          : rollAttributes;
+
+                      return (
+                        <InputSelectField
+                          options={attributeList}
+                          label="Attribute"
+                          field={field}
+                          initialValue={field.state.value}
+                        />
+                      );
+                    }}
+                  </rollForm.Field>
                   <rollForm.Subscribe
                     selector={(state) => state.values.attribute}
                   >
                     {(attribute) => (
                       <rollForm.Field name="skill">
                         {(field) => {
-                          const customSkills = attribute
-                            ? Object.keys(emptyAttributeTree[attribute].skills)
-                            : [];
+                          const skillList =
+                            rollType === 'custom'
+                              ? Object.keys(emptyAttributeTree).includes(
+                                  attribute,
+                                )
+                                ? Object.keys(
+                                    emptyAttributeTree[attribute]?.skills,
+                                  )
+                                : []
+                              : rollSkills;
 
                           return (
-                            <>
-                              {rolls.length > 0 &&
-                                rolls.map((roll, i) => (
-                                  <div
-                                    key={i}
-                                    className="flex items-center gap-4"
-                                  >
-                                    <InputFieldRadio
-                                      className="w-full"
-                                      field={field}
-                                      label={
-                                        roll.skill[0].toUpperCase() +
-                                        roll.skill.slice(1)
-                                      }
-                                      value={roll.skill}
-                                      checked={roll.skill === field.state.value}
-                                    >
-                                      <p className="!text-tertiary whitespace-nowrap text-base">
-                                        (
-                                        {getPoints(roll.attribute, roll.skill) +
-                                          ' dice'}
-                                        )
-                                      </p>
-                                    </InputFieldRadio>
-                                  </div>
-                                ))}
-                              <div className="flex w-full flex-col gap-4">
-                                <div className="flex items-center gap-4">
-                                  <InputFieldRadio
-                                    className="w-full"
-                                    field={field}
-                                    label="Custom"
-                                    onChange={() =>
-                                      rollForm.setFieldValue(
-                                        'skill',
-                                        customSkills[0],
-                                      )
-                                    }
-                                    checked={
-                                      !!field.state.value &&
-                                      !rollSkills.includes(field.state.value)
-                                    }
-                                  >
-                                    {customSkills.includes(field.state.value) &&
-                                      !rollAttributes.includes(attribute) && (
-                                        <p className="!text-tertiary whitespace-nowrap text-base">
-                                          (
-                                          {getPoints(
-                                            attribute,
-                                            field.state.value,
-                                          ) + ' dice'}
-                                          )
-                                        </p>
-                                      )}
-                                  </InputFieldRadio>
-                                </div>
-                                {customSkills.includes(field.state.value) &&
-                                  !rollAttributes.includes(attribute) && (
-                                    <SelectField label="Skill" field={field}>
-                                      {customSkills.map((skill) => (
-                                        <option
-                                          key={skill}
-                                          className="flex w-full justify-between"
-                                          value={skill}
-                                        >
-                                          {skill[0].toUpperCase() +
-                                            skill.slice(1)}
-                                        </option>
-                                      ))}
-                                    </SelectField>
-                                  )}
-                              </div>
-                            </>
+                            <InputSelectField
+                              options={skillList}
+                              label="Skill"
+                              field={field}
+                              initialValue={field.state.value}
+                            />
                           );
                         }}
                       </rollForm.Field>
                     )}
                   </rollForm.Subscribe>
-                </div>
-              </ThemeContainer>
-            }
+                </>
+              )}
+            </rollForm.Subscribe>
             <ThemeContainer
               className="w-full"
               borderColor={accentPrimary}

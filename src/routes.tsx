@@ -56,6 +56,7 @@ import FactionForm from './components/FactionForm';
 import Resume from './components/Resume';
 import ResumeForm from './components/ResumeForm';
 import RollSimulator from './components/RollSimulator';
+import AffiliationForm from './components/AffiliationForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -206,6 +207,10 @@ const router = createBrowserRouter(
             element={<VehicleForm title="Modify" mode="modify" />}
           />
           <Route path=":characterId/affiliations" element={<Affiliations />} />
+          <Route
+            path=":characterId/affiliations/create"
+            element={<AffiliationForm title="Create" mode="create" />}
+          />
         </Route>
 
         <Route path="codex">
