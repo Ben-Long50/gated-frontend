@@ -14,6 +14,7 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import ArrowHeader3 from './ArrowHeader3';
 import { Affiliation } from 'src/types/faction';
 import BtnAuth from './buttons/BtnAuth';
+import AffiliationCard from './AffiliationCard';
 
 const Faction = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -26,18 +27,20 @@ const Faction = () => {
     isPending,
   } = useFactionQuery(apiUrl, factionId);
 
+  console.log(faction);
+
   const backgroundRef = useRef<HTMLDivElement>(null);
   const affiliationRef = useRef<HTMLDivElement>(null);
 
   const affiliations = faction
     ? {
         factionAffiliations:
-          faction.primaryAffiliations.filter(
-            (affiliation: Affiliation) => affiliation.secondaryFaction,
+          faction.affiliations.filter(
+            (affiliation: Affiliation) => affiliation.factions.length > 1,
           ) || [],
         characterAffiliations:
-          faction.primaryAffiliations.filter(
-            (affiliation: Affiliation) => affiliation.secondaryCharacter,
+          faction.affiliations.filter(
+            (affiliation: Affiliation) => affiliation.characters.length > 0,
           ) || [],
       }
     : null;
@@ -46,11 +49,12 @@ const Faction = () => {
 
   return (
     <>
-      <div className="absolute left-0 right-0 top-0 -z-10 mx-auto flex aspect-[10/3] w-full max-w-9xl items-center overflow-hidden">
-        <img src={`${faction.picture?.imageUrl}`} alt="Faction cover image" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
-      </div>
-
+      {faction.picture?.imageUrl && (
+        <div className="absolute left-0 right-0 top-0 -z-10 mx-auto flex aspect-[5/2] w-full max-w-8xl items-center overflow-hidden">
+          <img src={`${faction.picture?.imageUrl}`} alt="Faction cover image" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
+        </div>
+      )}
       <div className="flex w-full max-w-5xl flex-col gap-8">
         <div className="timing flex w-full items-center justify-between">
           <div className="flex w-full items-center justify-center gap-8">
@@ -93,27 +97,18 @@ const Faction = () => {
             <Divider />
           </>
         )}
-        <div className="flex flex-col gap-4" ref={affiliationRef}>
+        <div className="flex flex-col gap-8" ref={affiliationRef}>
           {affiliations?.factionAffiliations.length > 0 && (
             <>
               <ArrowHeader2 title="Faction Affiliations" />
               {affiliations?.factionAffiliations.map(
                 (affiliation: Affiliation) => (
-                  <ThemeContainer
-                    borderColor={accentPrimary}
-                    chamfer="medium"
+                  <AffiliationCard
                     key={affiliation.id}
-                  >
-                    <div className="bg-primary flex w-full flex-col items-start gap-4 p-4 clip-6">
-                      <ArrowHeader3
-                        title={affiliation.secondaryFaction?.name}
-                      />
-                      <AffiliationBar
-                        className="px-4"
-                        value={affiliation.value}
-                      />
-                    </div>
-                  </ThemeContainer>
+                    affiliation={affiliation}
+                    entityType="faction"
+                    primaryEntity={faction}
+                  />
                 ),
               )}
             </>
@@ -123,24 +118,12 @@ const Faction = () => {
               <ArrowHeader2 title="Character Affiliations" />
               {affiliations?.characterAffiliations.map(
                 (affiliation: Affiliation) => (
-                  <ThemeContainer
-                    borderColor={accentPrimary}
-                    chamfer="medium"
+                  <AffiliationCard
                     key={affiliation.id}
-                  >
-                    <div className="bg-primary flex w-full flex-col items-start gap-4 p-4 clip-6">
-                      <ArrowHeader3
-                        title={
-                          affiliation.secondaryCharacter?.firstName +
-                          affiliation.secondaryCharacter?.lastName
-                        }
-                      />
-                      <AffiliationBar
-                        className="px-4"
-                        value={affiliation.value}
-                      />
-                    </div>
-                  </ThemeContainer>
+                    affiliation={affiliation}
+                    entityType="character"
+                    primaryEntity={faction}
+                  />
                 ),
               )}
             </>

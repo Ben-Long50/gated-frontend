@@ -44,7 +44,7 @@ const TextAreaField = ({
         borderColor={borderColor}
       >
         <textarea
-          className={`${className} text-secondary timing focus:bg-primary h-full w-full rounded-none ${field.state.value?.length === 0 || field.state.value === null ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
+          className={`${className} text-secondary timing focus:bg-primary w-full rounded-none ${field.state.value?.length === 0 || field.state.value === null ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
           name={field.name}
           id={field.name}
           value={field.state.value}

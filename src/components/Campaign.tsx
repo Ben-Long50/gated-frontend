@@ -38,6 +38,8 @@ const Campaign = () => {
     isPending,
   } = useCampaignQuery(apiUrl, campaignId);
 
+  console.log(campaign);
+
   const joinCampaign = useJoinCampaignMutation(apiUrl, campaignId);
 
   const pendingIds = campaign?.pendingPlayers.map((player: User) => player.id);

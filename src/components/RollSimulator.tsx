@@ -109,11 +109,11 @@ const RollSimulator = ({
             <div className="col-span-3 flex w-full justify-start gap-8 justify-self-start">
               <img
                 className="z-10 size-16 shrink-0 rounded-full shadow shadow-zinc-950"
-                src={character.picture.imageUrl}
+                src={character?.picture.imageUrl}
                 alt={
-                  character.firstName +
+                  character?.firstName +
                   ' ' +
-                  character.lastName +
+                  character?.lastName +
                   "'s profile picture"
                 }
               />

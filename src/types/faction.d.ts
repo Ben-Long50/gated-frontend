@@ -4,9 +4,9 @@ interface Faction {
   id: number;
   name: string;
   factionType: FactionType;
+  picture: { imageUrl: string; publicId: string };
   background: { html: string; nodes: string };
-  primaryAffiliations: Affiliation[];
-  secondaryAffiliations: Affiliation[];
+  affiliations: Affiliation[];
 }
 
 enum FactionType {
@@ -19,12 +19,6 @@ enum FactionType {
 interface Affiliation {
   id: number;
   value: number;
-  primaryFactionId?: number;
-  primaryFaction?: Faction;
-  secondaryFactionId?: number;
-  secondaryFaction?: Faction;
-  primaryCharacterId?: number;
-  primaryCharacter?: Character;
-  secondaryCharacterId?: number;
-  secondaryCharacter?: Character;
+  factions: Faction[];
+  characters: Character[];
 }

@@ -63,9 +63,9 @@ const InputSelectField = ({
   }, [focus, field.state]);
 
   const optionName = (option) => {
-    if (option.firstName) {
+    if (option?.firstName) {
       return option.firstName + ' ' + option.lastName;
-    } else if (option.name) {
+    } else if (option?.name) {
       return option.name;
     } else return option;
   };
@@ -122,6 +122,8 @@ const InputSelectField = ({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
+                  console.log(field);
+
                   field.handleChange(option);
                   if (onChange) {
                     onChange(optionName(option));

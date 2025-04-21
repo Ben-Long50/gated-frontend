@@ -1,13 +1,13 @@
 import handleResponse from '../handleResponse';
 
-const createAffiliation = async (
+const createFactionAffiliation = async (
   formData: FormData,
-  characterId: string,
+  factionId: string,
   apiUrl: string,
 ) => {
   try {
     const response = await fetch(
-      `${apiUrl}/characters/${characterId}/affiliations/create`,
+      `${apiUrl}/factions/${factionId}/affiliations/create`,
       {
         method: 'POST',
         credentials: 'include',
@@ -24,4 +24,4 @@ const createAffiliation = async (
   }
 };
 
-export default createAffiliation;
+export default createFactionAffiliation;

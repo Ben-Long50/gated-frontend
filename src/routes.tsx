@@ -211,6 +211,10 @@ const router = createBrowserRouter(
             path=":characterId/affiliations/create"
             element={<AffiliationForm title="Create" mode="create" />}
           />
+          <Route
+            path=":characterId/affiliations/:affiliationId/update"
+            element={<AffiliationForm title="Update" mode="update" />}
+          />
         </Route>
 
         <Route path="codex">

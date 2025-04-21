@@ -217,7 +217,7 @@ const CharacterUpdateForm = () => {
               <>
                 <InputFieldRadio
                   className="col-span-2"
-                  label="Playable Character"
+                  label="Player Character"
                   field={field}
                   checked={
                     field.state.value == 'true' || field.state.value === true
@@ -226,7 +226,7 @@ const CharacterUpdateForm = () => {
                 />
                 <InputFieldRadio
                   className="col-span-2"
-                  label="Non-playable Character"
+                  label="Non-player Character"
                   field={field}
                   checked={
                     field.state.value === 'false' || field.state.value === false
