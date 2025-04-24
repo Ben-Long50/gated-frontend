@@ -16,8 +16,8 @@ const useSigninMutation = (
       queryClient.clear();
       navigate('/glam/codex');
     },
-    onError: (error) => {
-      setErrors(error.errors);
+    onError: (error: string[]) => {
+      setErrors(error);
     },
     throwOnError: false,
   });

@@ -61,6 +61,7 @@ import SessionForm from './components/SessionForm';
 import CampaignCharacterList from './components/CampaignCharacterList';
 import Notes from './components/Notes';
 import NotesForm from './components/NotesForm';
+import AccountSettingsForm from './components/AccountSettingsForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -81,10 +82,10 @@ const router = createBrowserRouter(
         </Route>
 
         <Route path="account/:userId">
-          <Route index element={<ErrorReport />} />
+          <Route index element={<AccountSettingsForm />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="preferences" element={<ErrorReport />} />
-          <Route path="adminTools" element={<ErrorReport />} />
+          <Route path="adminTools" element={<ErrorReports />} />
           <Route path="errorReport" element={<ErrorReport />} />
         </Route>
 

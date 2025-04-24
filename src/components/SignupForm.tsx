@@ -20,6 +20,7 @@ const SignupForm = () => {
 
   const signupForm = useForm({
     defaultValues: {
+      username: '',
       firstName: '',
       lastName: '',
       email: '',
@@ -48,6 +49,17 @@ const SignupForm = () => {
       >
         <ArrowHeader1 title="Sign up" />
         <div className="flex flex-col gap-4 md:gap-6">
+          <signupForm.Field
+            name="username"
+            validators={{
+              onChange: ({ value }) =>
+                value.length < 2
+                  ? 'Username must be at least 4 characters long'
+                  : undefined,
+            }}
+          >
+            {(field) => <InputField label="Username" field={field} />}
+          </signupForm.Field>
           <signupForm.Field
             name="firstName"
             validators={{

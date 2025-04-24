@@ -15,6 +15,16 @@ const Notifications = () => {
   } = useNotificationQuery(apiUrl);
 
   if (isLoading || isPending) return <Loading />;
+
+  if (notifications.length === 0) {
+    return (
+      <div className="flex w-full max-w-5xl flex-col items-center justify-start gap-8">
+        <h1>Notificatons</h1>
+        <h3>You're all caught up</h3>
+      </div>
+    );
+  }
+
   return (
     <div className="flex w-full max-w-5xl flex-col items-center justify-start gap-8">
       <h1>Notificatons</h1>

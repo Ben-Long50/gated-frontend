@@ -8,6 +8,8 @@ import InputField from './InputField';
 import useCreateErrorReportMutation from '../hooks/useCreateErrorReportMutation/useCreateErrorReportMutation';
 import TextAreaField from './TextAreaField';
 import Loading from './Loading';
+import Divider from './Divider';
+import ArrowHeader2 from './ArrowHeader2';
 
 const ErrorReport = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -26,7 +28,7 @@ const ErrorReport = () => {
 
   return (
     <div className="flex w-full items-center">
-      <div className="mx-auto my-auto flex w-full max-w-4xl flex-col items-center justify-center gap-4 p-2 sm:gap-8 sm:p-8">
+      <div className="mx-auto my-auto flex w-full max-w-5xl flex-col items-center justify-center gap-4 sm:gap-8">
         <FormLayout>
           <form
             className="bg-primary flex w-full flex-col gap-4 p-0.5 sm:gap-8"
@@ -37,6 +39,8 @@ const ErrorReport = () => {
             }}
           >
             <h1 className="text-center">Error Report</h1>
+            <Divider />
+            <ArrowHeader2 title="Report Information" />
             <errorReportForm.Field
               name="title"
               validators={{

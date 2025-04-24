@@ -12,8 +12,8 @@ const useSignupMutation = (
       return await signup(formData, apiUrl);
     },
     onSuccess: () => navigate('/signin'),
-    onError: (error) => {
-      setErrors(error.errors);
+    onError: (error: string[]) => {
+      setErrors(error);
     },
     throwOnError: false,
   });

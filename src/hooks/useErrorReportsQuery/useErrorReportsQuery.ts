@@ -5,6 +5,7 @@ const useErrorReportsQuery = (apiUrl: string) => {
   return useQuery({
     queryKey: ['errorReports'],
     queryFn: async () => await getErrorReports(apiUrl),
+    throwOnError: true,
   });
 };
 

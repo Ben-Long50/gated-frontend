@@ -3,14 +3,18 @@ import { AuthContext } from '../../contexts/AuthContext';
 import LinkSidebar from './LinkSidebar';
 import Icon from '@mdi/react';
 import {
+  mdiAccountLockOpenOutline,
   mdiAccountOutline,
   mdiAccountTieOutline,
   mdiAccountWrenchOutline,
   mdiAlertCircleOutline,
   mdiBellOutline,
+  mdiLockOpenOutline,
   mdiLogout,
 } from '@mdi/js';
 import useSignoutMutation from '../../hooks/useSignoutMutation/useSignoutMutation';
+import LinkListSidebar from './LinkListSidebar';
+import ConditionIcon from '../icons/ConditionIcon';
 
 const AccountLinks = ({
   sidebarVisibility,
@@ -62,8 +66,8 @@ const AccountLinks = ({
         setSidebarVisibility={setSidebarVisibility}
       />
       {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-        <LinkSidebar
-          path={`account/${user?.id}/adminTools`}
+        <LinkListSidebar
+          sidebarVisibility={sidebarVisibility}
           icon={
             <Icon
               path={mdiAccountTieOutline}
@@ -71,9 +75,29 @@ const AccountLinks = ({
             />
           }
           title="Admin Tools"
-          sidebarVisibility={sidebarVisibility}
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        >
+          <LinkSidebar
+            path={`account/${user?.id}/adminTools`}
+            title="Error Reports"
+            icon={
+              <ConditionIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+            }
+            sidebarVisibility={sidebarVisibility}
+            setSidebarVisibility={setSidebarVisibility}
+          />
+          <LinkSidebar
+            path={`account/${user?.id}/adminTools`}
+            title="User Account Permissions"
+            icon={
+              <Icon
+                path={mdiLockOpenOutline}
+                className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit"
+              />
+            }
+            sidebarVisibility={sidebarVisibility}
+            setSidebarVisibility={setSidebarVisibility}
+          />
+        </LinkListSidebar>
       )}
       <LinkSidebar
         path={`account/${user?.id}/errorReport`}

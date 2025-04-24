@@ -12,7 +12,7 @@ const InputField = ({
 }: {
   field: FieldApi;
   className?: string;
-  type?: 'text' | 'number';
+  type?: 'text' | 'number' | 'email' | 'password';
   onChange?: () => void;
   label: string;
 }) => {
