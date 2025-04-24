@@ -109,6 +109,7 @@ const router = createBrowserRouter(
               <Route path=":characterId">
                 <Route index element={<CharacterSheet />} />
                 <Route path="equipment" element={<Equipment />} />
+                <Route path="resume" element={<Resume />} />
               </Route>
               <Route path="update" element={<CharacterUpdateForm />} />
             </Route>
