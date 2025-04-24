@@ -28,11 +28,11 @@ const ErrorReports = () => {
         return (
           <ThemeContainer
             key={report.id}
-            className="mb-auto w-full max-w-5xl rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
+            className="mb-auto w-full max-w-5xl"
             chamfer="medium"
             borderColor={accentPrimary}
           >
-            <div className="bg-secondary flex flex-col gap-4 p-4 clip-6">
+            <div className="flex flex-col gap-4 p-4">
               <div className="flex w-full items-end justify-between">
                 <h3 className="pl-4">{report.title}</h3>
                 <p>{report.user.firstName + ' ' + report.user.lastName}</p>

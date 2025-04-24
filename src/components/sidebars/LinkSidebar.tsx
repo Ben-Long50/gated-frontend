@@ -17,7 +17,7 @@ const LinkSidebar = ({
   setSidebarVisibility: (mode: boolean) => void;
   onClick?: () => void;
 }) => {
-  const { layoutSize } = useContext(LayoutContext);
+  const { mobile } = useContext(LayoutContext);
 
   return (
     <NavLink
@@ -32,11 +32,11 @@ const LinkSidebar = ({
         <button
           className={`${!sidebarVisibility && 'invisible -translate-x-full opacity-0'} timing w-full pl-4 text-left text-inherit`}
           onClick={() => {
-            if (layoutSize !== 'large') {
+            if (mobile) {
               setSidebarVisibility(false);
-              if (onClick) {
-                onClick();
-              }
+            }
+            if (onClick) {
+              onClick();
             }
           }}
         >

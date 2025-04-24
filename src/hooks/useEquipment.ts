@@ -7,12 +7,13 @@ import { Armor } from 'src/types/armor';
 import { Weapon } from 'src/types/weapon';
 import { Item } from 'src/types/item';
 
-const useEquipment = (inventory: CharacterInventory) => {
+const useEquipment = (inventory: Partial<CharacterInventory>) => {
   const { filteredWeapons: equippedWeapons } = useWeapons({
     itemList: inventory?.weapons?.filter(
       (weapon: Weapon) => weapon.equipped === true,
     ),
   });
+
   const { filteredArmor: equippedArmor } = useArmor({
     itemList: inventory?.armor?.filter(
       (armor: Armor) => armor.equipped === true,

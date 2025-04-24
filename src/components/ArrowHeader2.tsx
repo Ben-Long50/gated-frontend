@@ -20,7 +20,7 @@ const ArrowHeader2 = ({
         size={0.5}
         rotate={reverse ? 90 : -90}
       />
-      <h2>{title}</h2>
+      <h2 className="z-10">{title}</h2>
     </div>
   );
 };

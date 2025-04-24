@@ -7,6 +7,7 @@ import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
 import InputFieldBasic from './InputFieldBasic';
 import Divider from './Divider';
+import { Character } from 'src/types/character';
 
 const InputSelectField = ({
   field,
@@ -16,10 +17,10 @@ const InputSelectField = ({
   options,
 }: {
   field?: FieldApi;
-  onChange?: (name: string) => void;
+  onChange?: () => void;
   label: string;
   className?: string;
-  options: Action[] | string[];
+  options: Character[] | Action[] | string[];
   initialValue?: string;
 }) => {
   const [borderColor, setBorderColor] = useState('transparent');
@@ -27,8 +28,8 @@ const InputSelectField = ({
   const { accentPrimary, errorPrimary } = useContext(ThemeContext);
   const [query, setQuery] = useState('');
 
-  const searchRef = useRef(null);
-  const selectRef = useRef(null);
+  const searchRef = useRef<HTMLInputElement | null>(null);
+  const selectRef = useRef<HTMLDivElement | null>(null);
 
   const handleBorder = () => {
     if (
@@ -47,8 +48,8 @@ const InputSelectField = ({
   };
 
   useEffect(() => {
-    const minimizeSelect = (e) => {
-      if (selectRef && !selectRef.current.contains(e.target)) {
+    const minimizeSelect = (e: MouseEvent) => {
+      if (selectRef.current && !selectRef.current.contains(e.target)) {
         setFocus(false);
       }
     };
@@ -63,21 +64,30 @@ const InputSelectField = ({
   }, [focus, field.state]);
 
   const optionName = (option) => {
+    if (!option) return;
     if (option?.firstName) {
       return option.firstName + ' ' + option.lastName;
     } else if (option?.name) {
-      return option.name;
-    } else return option;
+      return option.name
+        ? option.name[0].toUpperCase() + option.name.slice(1)
+        : option.name;
+    } else if (typeof option === 'string') {
+      return option[0].toUpperCase() + option.slice(1);
+    } else return;
   };
 
-  const filteredOptions = options.filter((option) =>
-    optionName(option).toLowerCase().includes(query.toLowerCase()),
-  );
+  const filteredOptions =
+    options?.filter((option) => {
+      return optionName(option).toLowerCase().includes(query.toLowerCase());
+    }) || [];
 
   return (
-    <div ref={selectRef} className={`${className} flex w-full items-center`}>
+    <div
+      ref={selectRef}
+      className={`${className} relative ${focus ? 'z-50' : 'z-10'} timing flex w-full items-center`}
+    >
       <ThemeContainer
-        className="grow shadow-md"
+        className="grow"
         chamfer="small"
         borderColor={borderColor}
       >
@@ -90,9 +100,8 @@ const InputSelectField = ({
           onFocus={() => {
             setFocus(true);
           }}
-          onChange={(e) => {
+          onChange={() => {
             handleBorder();
-            // field.handleChange(e.target.value);
           }}
           readOnly
         />
@@ -103,7 +112,7 @@ const InputSelectField = ({
           {label}
         </label>
         <div
-          className={`${focus ? 'max-h-96 py-3' : 'max-h-0'} bg-secondary timing absolute left-0 top-full z-30 flex w-full translate-y-2 flex-col items-start overflow-hidden rounded-md px-3 shadow-lg shadow-zinc-950`}
+          className={`${focus ? 'max-h-96 py-3' : 'max-h-0'} bg-secondary timing absolute left-0 top-full flex w-full translate-y-2 flex-col items-start overflow-hidden rounded-md px-3 shadow-lg shadow-zinc-950`}
         >
           <InputFieldBasic
             className="w-full"
@@ -122,11 +131,9 @@ const InputSelectField = ({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  console.log(field);
-
                   field.handleChange(option);
                   if (onChange) {
-                    onChange(optionName(option));
+                    onChange();
                   }
                   setFocus(false);
                   if (searchRef.current) {

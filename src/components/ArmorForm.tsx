@@ -22,6 +22,8 @@ import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
 import SubactionForm from './SubactionForm';
 import { ArmorStats } from 'src/types/armor';
 import useModifyArmorMutation from '../hooks/useModifyArmorMutation/useModifyArmorMutation';
+import ArrowHeader2 from './ArrowHeader2';
+import Divider from './Divider';
 
 const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -142,12 +144,11 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   });
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // Get the selected file
+    const selectedFile = e.target.files[0];
 
     if (selectedFile) {
       armorForm.setFieldValue('picture', selectedFile);
 
-      // Create a URL for the selected file to preview
       const fileUrl = URL.createObjectURL(selectedFile);
       setImagePreview(fileUrl);
     }
@@ -180,6 +181,8 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
         <div className="flex items-center justify-center gap-4">
           <h1>{title} Armor</h1>
         </div>
+        <Divider />
+        <ArrowHeader2 title="Armor Information" />
         <div className="flex w-full gap-4 lg:gap-8">
           <armorForm.Field
             name="name"
@@ -240,15 +243,16 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
             )}
           </armorForm.Field>
         </div>
-        <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 sm:grid-rows-1">
+        <div className="flex flex-col gap-8 sm:flex-row">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
             chamfer="medium"
             borderColor={accentPrimary}
+            overflowHidden={true}
           >
             {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center clip-6">
-                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
+              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
+                <div className="flex h-full w-full flex-col items-center justify-center gap-2 pb-6 pt-5 clip-6">
                   <Icon
                     className="text-tertiary"
                     path={mdiImagePlus}
@@ -267,7 +271,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
                 />
               </label>
             ) : (
-              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
+              <div className="relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black">
                 <img
                   className="fade-in-bottom"
                   src={imagePreview}
@@ -297,11 +301,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
             }}
           >
             {(field) => (
-              <TextAreaField
-                className="h-40 w-full sm:h-full"
-                label="Armor description"
-                field={field}
-              />
+              <TextAreaField label="Armor description" field={field} />
             )}
           </armorForm.Field>
         </div>
@@ -359,10 +359,10 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
             </armorForm.Field>
           </div>
         </div>
-        <hr className="border-yellow-300 border-opacity-50" />
+        <Divider />
         <SubactionForm form={armorForm} />
-        <hr className="border-yellow-300 border-opacity-50" />
-        <h2>Armor keywords</h2>
+        <Divider />
+        <ArrowHeader2 title="Armor Keywords" />
         <searchForm.Field name="query">
           {(field) => (
             <InputField
@@ -377,7 +377,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
 
         <armorForm.Field name="keywords">
           {(field) => (
-            <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto pr-2 md:grid md:grid-cols-2">
+            <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto px-0.5 pr-2 md:grid md:grid-cols-2">
               {keywords.filteredKeywords.map((keyword) => {
                 const activeKeyword = field.state.value.find(
                   (item: { keywordId: number; value?: number }) =>

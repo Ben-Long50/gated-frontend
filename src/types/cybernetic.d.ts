@@ -14,7 +14,7 @@ export interface Cybernetic {
   description: string;
   cyberneticType: string;
   cyber: number;
-  stats: Partial<CyberneticStats>;
+  stats: CyberneticStats;
   price: number;
   equipped: boolean;
   body: string[];
@@ -34,7 +34,7 @@ export interface CyberneticWithKeywords {
   description: string;
   cyberneticType: string;
   cyber: number;
-  stats: Partial<CyberneticStats>;
+  stats: CyberneticStats;
   price: number;
   equipped: boolean;
   body: string[];

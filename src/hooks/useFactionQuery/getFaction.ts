@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const getFaction = async (apiUrl: string, factionId: string) => {
+const getFaction = async (apiUrl: string, factionId: number) => {
   try {
     const response = await fetch(`${apiUrl}/factions/${factionId}`, {
       method: 'GET',

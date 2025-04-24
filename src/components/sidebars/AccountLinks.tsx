@@ -10,6 +10,7 @@ import {
   mdiBellOutline,
   mdiLogout,
 } from '@mdi/js';
+import useSignoutMutation from '../../hooks/useSignoutMutation/useSignoutMutation';
 
 const AccountLinks = ({
   sidebarVisibility,
@@ -19,6 +20,8 @@ const AccountLinks = ({
   setSidebarVisibility: (mode: boolean) => void;
 }) => {
   const { apiUrl, user } = useContext(AuthContext);
+
+  const signout = useSignoutMutation(apiUrl);
 
   return (
     <>
@@ -85,7 +88,7 @@ const AccountLinks = ({
         setSidebarVisibility={setSidebarVisibility}
       />
       <LinkSidebar
-        path={`/signin`}
+        path=""
         icon={
           <Icon
             path={mdiLogout}
@@ -95,6 +98,7 @@ const AccountLinks = ({
         title="Sign Out"
         sidebarVisibility={sidebarVisibility}
         setSidebarVisibility={setSidebarVisibility}
+        onClick={() => signout.mutate()}
       />
     </>
   );

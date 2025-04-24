@@ -2,8 +2,8 @@ import handleResponse from '../handleResponse';
 
 const getSession = async (
   apiUrl: string,
-  campaignId: string,
-  sessionId: string,
+  campaignId: number,
+  sessionId: number,
 ) => {
   try {
     const response = await fetch(

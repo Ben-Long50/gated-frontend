@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const getCampaign = async (apiUrl: string, campaignId: string) => {
+const getCampaign = async (apiUrl: string, campaignId: number) => {
   try {
     const response = await fetch(`${apiUrl}/campaigns/${campaignId}`, {
       method: 'GET',

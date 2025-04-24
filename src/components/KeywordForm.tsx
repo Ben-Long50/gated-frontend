@@ -12,6 +12,8 @@ import { useParams } from 'react-router-dom';
 import useDeleteKeywordMutation from '../hooks/useDeleteKeywordMutation/useDeleteKeywordMutation';
 import useKeywords from '../hooks/useKeywords';
 import { Keyword } from 'src/types/keyword';
+import Divider from './Divider';
+import ArrowHeader2 from './ArrowHeader2';
 
 const KeywordForm = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -81,6 +83,8 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
         <h1 className="text-center">
           {keyword ? 'Update Keyword' : 'Create Keyword'}
         </h1>
+        <Divider />
+        <ArrowHeader2 title="Keyword Information" />
         <keywordForm.Field
           name="name"
           validators={{

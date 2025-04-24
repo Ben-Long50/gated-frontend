@@ -11,7 +11,8 @@ import useEditCyberneticPowerMutation from '../hooks/cyberneticStatHooks/useEdit
 import useRefreshCyberneticPowerMutation from '../hooks/cyberneticStatHooks/useRefreshCyberneticPowerMutation/useRefreshCyberneticPowerMutation';
 import BtnControl from './buttons/BtnControl';
 import PowerIcon from './icons/PowerIcon';
-import BodyIcon from './icons/BodyIcon';
+import StatBar from './StatBar';
+import { useParams } from 'react-router-dom';
 
 const CyberneticControls = ({
   cyberneticId,
@@ -21,9 +22,18 @@ const CyberneticControls = ({
   stats: CyberneticStats;
 }) => {
   const { apiUrl } = useContext(AuthContext);
+  const { characterId } = useParams();
 
-  const editCurrentPower = useEditCyberneticPowerMutation(apiUrl, cyberneticId);
-  const refreshPower = useRefreshCyberneticPowerMutation(apiUrl, cyberneticId);
+  const editCurrentPower = useEditCyberneticPowerMutation(
+    apiUrl,
+    cyberneticId,
+    Number(characterId),
+  );
+  const refreshPower = useRefreshCyberneticPowerMutation(
+    apiUrl,
+    cyberneticId,
+    Number(characterId),
+  );
 
   return (
     <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
@@ -68,27 +78,65 @@ const CyberneticCard = ({
         />
       }
     >
-      {cybernetic.stats.cyber && (
-        <StatCard label="CBR" stat={cybernetic.stats.cyber}>
+      <CyberneticStatBars stats={cybernetic.stats} mode={mode} />
+      {cybernetic.weapons?.length > 0 && (
+        <div className="col-span-4 flex w-full items-center justify-between">
+          <h4 className="text-accent">Integrated Weapons</h4>
+          <p>{cybernetic.weapons.length}</p>
+        </div>
+      )}
+      {cybernetic.armor?.length > 0 && (
+        <div className="col-span-4 flex w-full items-center justify-between">
+          <h4 className="text-accent">Integrated Armor</h4>
+          <p>{cybernetic.armor.length}</p>
+        </div>
+      )}
+      {cybernetic.actions?.length > 0 && (
+        <div className="col-span-4 flex w-full items-center justify-between">
+          <h4 className="text-accent">Unique Actions</h4>
+          <p>{cybernetic.actions.length}</p>
+        </div>
+      )}
+    </ItemCard>
+  );
+};
+
+export const CyberneticStatBars = ({
+  stats,
+  mode,
+}: {
+  stats: CyberneticStats;
+  mode?: string;
+}) => {
+  return (
+    <>
+      {stats.cyber && (
+        <StatBar title="CBR" current={stats.cyber} color="rgb(52 211 153)">
           <CyberIcon className="size-8" />
-        </StatCard>
+        </StatBar>
       )}
       {mode === 'equipment'
-        ? cybernetic.stats.power &&
-          cybernetic.stats.currentPower !== null && (
-            <StatCard
-              label="PWR"
-              stat={`${cybernetic.stats.currentPower} / ${cybernetic.stats.power}`}
+        ? stats.power &&
+          stats.currentPower !== undefined && (
+            <StatBar
+              title="PWR"
+              total={stats.power}
+              current={stats.currentPower}
+              color="rgb(107, 255, 124)"
             >
               <LightningIcon className="size-8" />
-            </StatCard>
+            </StatBar>
           )
-        : cybernetic.stats.power && (
-            <StatCard label="PWR" stat={cybernetic.stats.power}>
+        : stats.power && (
+            <StatBar
+              title="PWR"
+              current={stats.power}
+              color="rgb(107, 255, 124)"
+            >
               <LightningIcon className="size-8" />
-            </StatCard>
+            </StatBar>
           )}
-    </ItemCard>
+    </>
   );
 };
 

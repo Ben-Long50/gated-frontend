@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { LayoutContext } from '../contexts/LayoutContext';
 import BtnRect from './buttons/BtnRect';
 import { Link } from 'react-router-dom';
 import { Campaign } from 'src/types/campaign';
@@ -13,23 +12,15 @@ import { User } from 'src/types/user';
 
 const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
 
   return (
     <ThemeContainer
-      className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
+      className="w-full"
       chamfer="large"
       borderColor={accentPrimary}
+      bgImageUrl={campaign.picture?.imageUrl}
     >
-      <div
-        className="bg-primary flex flex-col items-center gap-8 p-6 clip-8 md:flex-row"
-        style={{
-          backgroundImage: `url(${campaign.picture?.imageUrl})`,
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
-        }}
-      >
-        <div className="absolute inset-0 bg-black opacity-60"></div>
+      <div className="flex flex-col items-center gap-8 p-6 md:flex-row">
         <div className="z-10 flex h-full w-full flex-col justify-between gap-4 md:gap-6">
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-4">

@@ -14,6 +14,8 @@ import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useReloadMutation from '../hooks/weaponStatHooks/useReloadAmmoMutation/useReloadAmmoMutation';
 import useRefreshMutation from '../hooks/weaponStatHooks/useRefreshAmmoMutation/useRefreshAmmoMutation';
+import StatBar from './StatBar';
+import { useParams } from 'react-router-dom';
 
 const WeaponControls = ({
   stats,
@@ -23,10 +25,15 @@ const WeaponControls = ({
   weaponId: number;
 }) => {
   const { apiUrl } = useContext(AuthContext);
+  const { characterId } = useParams();
 
-  const editCurrentAmmo = useEditAmmoMutation(apiUrl, weaponId);
-  const reloadAmmo = useReloadMutation(apiUrl, weaponId);
-  const refreshAmmo = useRefreshMutation(apiUrl, weaponId);
+  const editCurrentAmmo = useEditAmmoMutation(
+    apiUrl,
+    weaponId,
+    Number(characterId),
+  );
+  const reloadAmmo = useReloadMutation(apiUrl, weaponId, Number(characterId));
+  const refreshAmmo = useRefreshMutation(apiUrl, weaponId, Number(characterId));
 
   return (
     <div className="col-span-2 flex w-full flex-col items-center justify-start gap-2 sm:gap-4">
@@ -80,62 +87,73 @@ const WeaponCard = ({
       mode={mode}
       controls={<WeaponControls stats={weapon.stats} weaponId={weapon.id} />}
     >
-      {weapon.stats.damage && (
-        <StatCard label="DMG" stat={weapon.stats.damage}>
+      <WeaponStatBars stats={weapon.stats} mode={mode} />
+    </ItemCard>
+  );
+};
+
+export const WeaponStatBars = ({
+  stats,
+  mode,
+}: {
+  stats: WeaponStats;
+  mode?: string;
+}) => {
+  return (
+    <>
+      {stats.damage && (
+        <StatBar title="DMG" current={stats.damage} color="rgb(252, 91, 50)">
           <DamageIcon className="size-8" />
-        </StatCard>
+        </StatBar>
       )}
-      {weapon.stats.salvo && (
-        <StatCard label="SLV" stat={weapon.stats.salvo}>
+      {stats.salvo && (
+        <StatBar title="SLV" current={stats.salvo} color="rgb(219, 123, 33)">
           <SalvoIcon className="size-8" />
-        </StatCard>
+        </StatBar>
       )}
-      {weapon.stats.flurry && (
-        <StatCard label="FLR" stat={weapon.stats.flurry}>
+      {stats.flurry && (
+        <StatBar title="FLR" current={stats.flurry} color="rgb(219, 123, 33)">
           <FlurryIcon className="size-8" />
-        </StatCard>
+        </StatBar>
       )}
-      {weapon.stats.range && (
-        <StatCard label="RNG" stat={weapon.stats.range}>
+      {stats.range && (
+        <StatBar
+          title="RNG"
+          current={stats.range}
+          divider={5}
+          color="rgb(33, 194, 219)"
+        >
           <RangeIcon className="size-8" />
-        </StatCard>
+        </StatBar>
       )}
-      {weapon.stats.weight && (
-        <StatCard label="WGT" stat={weapon.stats.weight}>
+      {stats.weight && (
+        <StatBar title="WGT" current={stats.weight} color="rgb(251 191 36)">
           <EquipIcon className="size-8" />
-        </StatCard>
+        </StatBar>
       )}
       {mode === 'equipment'
-        ? weapon.stats.currentAmmoCount !== null &&
-          weapon.stats.magCapacity && (
-            <StatCard
-              label="MAG"
-              stat={`${weapon.stats.currentAmmoCount}
-             / 
-            ${
-              weapon.stats.currentMagCount
-                ? weapon.stats.currentMagCount * weapon.stats.magCapacity
-                : 'X'
-            }`}
+        ? stats.currentAmmoCount !== undefined &&
+          stats.magCapacity && (
+            <StatBar
+              title="MAG"
+              total={stats.magCapacity}
+              current={stats.currentAmmoCount}
+              color="rgb(107, 255, 124)"
             >
               <MagCapacityIcon className="size-8" />
-            </StatCard>
+            </StatBar>
           )
-        : weapon.stats.magCapacity && (
-            <StatCard
-              label="MAG"
-              stat={
-                weapon.stats.magCapacity +
-                ' / ' +
-                (weapon.stats.magCount
-                  ? weapon.stats.magCapacity * (weapon.stats.magCount - 1)
-                  : 'X')
-              }
+        : stats.magCapacity && (
+            <StatBar
+              title="MAG"
+              total={stats.magCapacity}
+              current={stats.magCapacity}
+              color="rgb(107, 255, 124)"
             >
               <MagCapacityIcon className="size-8" />
-            </StatCard>
+            </StatBar>
           )}
-    </ItemCard>
+    </>
   );
 };
 

@@ -53,11 +53,11 @@ const FormLayout = ({
 
   return (
     <ThemeContainer
-      className="mb-auto w-full max-w-5xl rounded-br-5xl rounded-tl-5xl shadow-xl shadow-slate-950"
+      className="mb-auto w-full max-w-5xl"
       chamfer="large"
       borderColor={accentPrimary}
     >
-      <div className="bg-primary flex w-full min-w-96 flex-col gap-8 p-4 clip-8 sm:p-8">
+      <div className="flex w-full min-w-96 flex-col gap-8 p-4 sm:p-8">
         {children}
         {itemId && (
           <div className="flex flex-col gap-4">

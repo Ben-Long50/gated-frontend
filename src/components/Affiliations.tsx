@@ -4,11 +4,10 @@ import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import { Affiliation } from 'src/types/faction';
-import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import ArrowHeader3 from './ArrowHeader3';
-import AffiliationBar from './AffiliationBar';
 import AffiliationCard from './AffiliationCard';
+import { Link } from 'react-router-dom';
+import BtnRect from './buttons/BtnRect';
 
 const Affiliations = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -37,6 +36,23 @@ const Affiliations = () => {
     : null;
 
   if (isLoading || isPending) return <Loading />;
+
+  if (!character.campaign) {
+    return (
+      <div className="flex max-w-5xl flex-col items-center gap-8">
+        <h1 className="w-full text-center">Affiliations</h1>
+        <h3 className="text-center">
+          Your active character is not associated with a campaign. Update your
+          character information with a campaign to access affiliations.
+        </h3>
+        <Link to={`/glam/characters/${character.id}`}>
+          <BtnRect type="button" ariaLabel="Character sheet">
+            Character Sheet
+          </BtnRect>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-start gap-8">

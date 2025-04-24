@@ -4,6 +4,7 @@ import refreshCyberneticPower from './refreshCyberneticPower';
 const useRefreshCyberneticPowerMutation = (
   apiUrl: string,
   cyberneticId: number,
+  characterId: number,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -16,7 +17,7 @@ const useRefreshCyberneticPowerMutation = (
         exact: false,
       });
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
+        queryKey: ['character', characterId],
         exact: false,
       });
     },

@@ -66,6 +66,7 @@ const useRoll = () => {
 
   return {
     diceArray,
+    setDiceArray,
     rolling,
     calculateSuccesses,
     successes,

@@ -22,6 +22,8 @@ import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
 import SubactionForm from './SubactionForm';
 import { WeaponStats } from 'src/types/weapon';
 import useModifyWeaponMutation from '../hooks/useModifyWeaponMutation/useModifyWeaponMutation';
+import ArrowHeader2 from './ArrowHeader2';
+import Divider from './Divider';
 
 const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -193,6 +195,8 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         <div className="flex items-center justify-center gap-4">
           <h1>{title} Weapon</h1>
         </div>
+        <Divider />
+        <ArrowHeader2 title="Weapon Information" />
         <div className="flex w-full gap-4 lg:gap-8">
           <weaponForm.Field
             name="name"
@@ -263,14 +267,15 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
             )}
           </weaponForm.Field>
         </div>
-        <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 sm:grid-rows-1">
+        <div className="flex flex-col gap-8 sm:flex-row">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
             chamfer="medium"
             borderColor={accentPrimary}
+            overflowHidden={true}
           >
             {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center clip-6">
+              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
                 <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
                   <Icon
                     className="text-tertiary"
@@ -320,11 +325,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
             }}
           >
             {(field) => (
-              <TextAreaField
-                className="h-40 w-full sm:h-full"
-                label="Weapon description"
-                field={field}
-              />
+              <TextAreaField label="Weapon description" field={field} />
             )}
           </weaponForm.Field>
         </div>
@@ -402,10 +403,10 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
             </weaponForm.Field>
           </div>
         </div>
-        <hr className="border-yellow-300 border-opacity-50" />
+        <Divider />
         <SubactionForm form={weaponForm} />
-        <hr className="border-yellow-300 border-opacity-50" />
-        <h2>Weapon keywords</h2>
+        <Divider />
+        <ArrowHeader2 title="Weapon Keywords" />
         <searchForm.Field name="query">
           {(field) => (
             <InputField
@@ -420,7 +421,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         </searchForm.Field>
         <weaponForm.Field name="keywords">
           {(field) => (
-            <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto pr-2 md:grid md:grid-cols-2">
+            <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto px-0.5 pr-2 md:grid md:grid-cols-2">
               {keywords.filteredKeywords.map((keyword) => {
                 const activeKeyword = field.state.value.find(
                   (item: { keywordId: number; value?: number }) =>

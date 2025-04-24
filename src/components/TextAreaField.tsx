@@ -37,14 +37,14 @@ const TextAreaField = ({
   }, [focus, field.state]);
 
   return (
-    <div className="flex flex-col">
+    <div className="h-full grow">
       <ThemeContainer
         chamfer="small"
-        className={`mx-auto shadow-md ${className}`}
+        className={`mx-auto flex h-[300px] w-full flex-col`}
         borderColor={borderColor}
       >
         <textarea
-          className={`${className} text-secondary timing focus:bg-primary w-full rounded-none ${field.state.value?.length === 0 || field.state.value === null ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
+          className={`${className} text-secondary timing focus:bg-primary h-[300px] w-full grow rounded-none ${field.state.value?.length === 0 || field.state.value === null ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pt-3 text-xl outline-none clip-4`}
           name={field.name}
           id={field.name}
           value={field.state.value}

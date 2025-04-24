@@ -30,10 +30,11 @@ const ItemCardSmall = ({
     <ThemeContainer
       chamfer="small"
       borderColor={detailsOpen ? accentPrimary : 'transparent'}
-      className={`timing mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-black`}
+      className={`timing mb-auto w-full`}
+      overflowHidden={true}
     >
       <div
-        className={`${className} bg-secondary mb-auto w-full cursor-pointer p-4 clip-4`}
+        className={`${className} bg-secondary mb-auto w-full cursor-pointer p-4`}
         onClick={async (e) => {
           e.preventDefault();
           setDetailsOpen(!detailsOpen);

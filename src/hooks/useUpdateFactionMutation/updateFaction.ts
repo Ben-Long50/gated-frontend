@@ -2,8 +2,8 @@ import handleResponse from '../handleResponse';
 
 const updateFaction = async (
   formData: FormData,
-  campaignId: string,
-  factionId: string,
+  campaignId: number,
+  factionId: number,
   apiUrl: string,
 ) => {
   try {

@@ -69,19 +69,15 @@ const BookManage = () => {
   return (
     <div className="flex w-full max-w-5xl flex-col gap-8">
       <h1 className="text-center">Manage Book</h1>
-      <ThemeContainer
-        className="rounded-5xl shadow-xl shadow-zinc-950"
-        chamfer="large"
-        borderColor={accentPrimary}
-      >
-        <div className="bg-primary flex flex-col gap-4 p-4 clip-8 sm:p-6 lg:p-8">
+      <ThemeContainer chamfer="large" borderColor={accentPrimary}>
+        <div className="flex flex-col gap-4 p-4 sm:p-8">
           {bookSections?.map((section) => {
             return (
               <div
-                className={`bg-secondary mb-auto flex w-full cursor-pointer flex-col gap-4 p-4 clip-6`}
+                className={`mb-auto flex w-full cursor-pointer flex-col gap-4`}
                 key={section.id}
               >
-                <div className="flex w-full justify-between px-4">
+                <div className="flex w-full justify-between">
                   <h3>
                     {section.title[0].toUpperCase() + section.title.slice(1)}
                   </h3>

@@ -7,18 +7,23 @@ import RangeIcon from './icons/RangeIcon';
 import MagCapacityIcon from './icons/MagCapacityIcon';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import StatCard from './StatCard';
+import StatBar from './StatBar';
+import EquipIcon from './icons/EquipIcon';
+import { WeaponStatBars } from './WeaponCard';
 
 const SubweaponCard = ({
   vehicleId,
   weapon,
   toolTip,
   setToolTip,
+  mode,
 }: {
   vehicleId?: number;
   weapon: WeaponWithKeywords;
   quantity: number;
   toolTip: number;
   setToolTip: (prevState: number) => void;
+  mode?: string;
 }) => {
   return (
     <div className="flex h-full w-full grow flex-col items-start justify-between gap-4">
@@ -47,41 +52,8 @@ const SubweaponCard = ({
           );
         })}
       </div>
-      <div className="timing col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-4">
-        {weapon.stats.damage && (
-          <StatCard label="DMG" stat={weapon.stats.damage}>
-            <DamageIcon className="size-8" />
-          </StatCard>
-        )}
-        {weapon.stats.salvo && (
-          <StatCard label="SLV" stat={weapon.stats.salvo}>
-            <SalvoIcon className="size-8" />
-          </StatCard>
-        )}
-        {weapon.stats.flurry && (
-          <StatCard label="FLR" stat={weapon.stats.flurry}>
-            <FlurryIcon className="size-8" />
-          </StatCard>
-        )}
-        {weapon.stats.range && (
-          <StatCard label="RNG" stat={weapon.stats.range}>
-            <RangeIcon className="size-8" />
-          </StatCard>
-        )}
-        {weapon.stats.magCapacity && (
-          <StatCard
-            label="MAG"
-            stat={
-              weapon.stats.magCapacity +
-              ' / ' +
-              (weapon.stats.magCount
-                ? weapon.stats.magCapacity * (weapon.stats.magCount - 1)
-                : 'X')
-            }
-          >
-            <MagCapacityIcon className="size-8" />
-          </StatCard>
-        )}
+      <div className="timing col-span-2 grid h-full w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-4 gap-y-2">
+        <WeaponStatBars stats={weapon.stats} mode={mode} />
       </div>
     </div>
   );

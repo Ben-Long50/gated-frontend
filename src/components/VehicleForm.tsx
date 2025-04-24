@@ -23,6 +23,8 @@ import SelectField from './SelectField';
 import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import useModifyVehicleMutation from '../hooks/useModifyVehicleMutation/useModifyVehicleMutation';
+import Divider from './Divider';
+import ArrowHeader2 from './ArrowHeader2';
 
 const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -44,7 +46,9 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
     includedKeywords: ['Vehicle'],
   });
 
-  const equippedWeapons = useWeapons({ itemList: vehicle?.weapons });
+  console.log(vehicleWeapons);
+
+  const equippedWeapons = useWeapons({ itemList: vehicle?.weapons || [] });
 
   const modifications = useModifications({
     itemList: title === 'Modify' && character?.characterInventory.modifications,
@@ -186,12 +190,11 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
   });
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // Get the selected file
+    const selectedFile = e.target.files[0];
 
     if (selectedFile) {
       vehicleForm.setFieldValue('picture', selectedFile);
 
-      // Create a URL for the selected file to preview
       const fileUrl = URL.createObjectURL(selectedFile);
       setImagePreview(fileUrl);
     }
@@ -229,6 +232,8 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
         <div className="flex items-center justify-center gap-4">
           <h1>{title} Vehicle</h1>
         </div>
+        <Divider />
+        <ArrowHeader2 title="Vehicle Information" />
         <div className="flex w-full gap-4 lg:gap-8">
           <vehicleForm.Field
             name="name"
@@ -295,14 +300,15 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
             )}
           </vehicleForm.Field>
         </div>
-        <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 sm:grid-rows-1">
+        <div className="flex flex-col gap-8 sm:flex-row">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
             chamfer="medium"
             borderColor={accentPrimary}
+            overflowHidden={true}
           >
             {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center clip-6">
+              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
                 <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
                   <Icon
                     className="text-tertiary"
@@ -352,11 +358,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
             }}
           >
             {(field) => (
-              <TextAreaField
-                className="h-40 w-full sm:h-full"
-                label="Vehicle description"
-                field={field}
-              />
+              <TextAreaField label="Vehicle description" field={field} />
             )}
           </vehicleForm.Field>
         </div>
@@ -454,13 +456,17 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
             </vehicleForm.Field>
           </div>
         </div>
-        <hr className="border-yellow-300 border-opacity-50" />
+        <Divider />
         <div className="relative flex flex-col" onClick={() => setToolTip('')}>
           <div
-            className={`${weaponDetailsOpen && 'pb-4'} timing flex cursor-pointer items-center justify-between`}
+            className={`timing mb-4 flex cursor-pointer items-center justify-between`}
             onClick={() => setWeaponDetailsOpen(!weaponDetailsOpen)}
           >
-            <h3>Mount weapons</h3>
+            <div className="flex items-center gap-8">
+              <ArrowHeader2 title="Mount Weapons" />
+              <p className="text-tertiary italic">(Click to expand)</p>
+            </div>
+
             <div className="flex items-center gap-8">
               <vehicleForm.Subscribe selector={(state) => state.values.weapons}>
                 {(weapons) => <h3 className="text-accent">{weapons.length}</h3>}
@@ -477,8 +483,13 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
             </div>
           </div>
           <div
-            className={`${weaponDetailsOpen ? 'max-h-[1000px]' : 'max-h-0'} timing flex flex-col gap-4 overflow-hidden`}
+            className={`${weaponDetailsOpen ? 'max-h-[1000px]' : 'max-h-0'} timing flex flex-col gap-4 overflow-y-auto`}
           >
+            <p className="border-l border-gray-400 pl-4">
+              Select vehicle weapons from the list below to mount to your
+              vehicle. You can only select up the number of weapons slots your
+              vehicle has. This value is denoted by the WPN stat.
+            </p>
             <vehicleForm.Field name="weapons">
               {(field) => (
                 <>
@@ -525,7 +536,6 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
                       },
                     )}
                   </div>
-                  <hr className="border-yellow-300 border-opacity-50" />
                   <form className="bg-primary flex w-full flex-col gap-4 p-0.5 pt-2">
                     <searchForm.Field name="query">
                       {(field) => (
@@ -549,37 +559,40 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
                         );
 
                         return (
-                          <div
-                            className="flex items-center gap-8"
-                            key={weapon.id}
-                          >
-                            <SubweaponCard
-                              vehicleId={vehicle?.id}
-                              weapon={weapon}
-                              toolTip={toolTip}
-                              setToolTip={setToolTip}
-                            />
+                          <>
+                            <div
+                              className="flex items-center gap-8"
+                              key={weapon.id}
+                            >
+                              <SubweaponCard
+                                vehicleId={vehicle?.id}
+                                weapon={weapon}
+                                toolTip={toolTip}
+                                setToolTip={setToolTip}
+                              />
 
-                            <input
-                              type="checkbox"
-                              className="size-6"
-                              checked={!!activeWeapon}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  field.handleChange([
-                                    ...field.state.value,
-                                    weapon.id,
-                                  ]);
-                                } else {
-                                  field.handleChange(
-                                    field.state.value.filter(
-                                      (item: number) => item !== weapon.id,
-                                    ),
-                                  );
-                                }
-                              }}
-                            />
-                          </div>
+                              <input
+                                type="checkbox"
+                                className="size-6"
+                                checked={!!activeWeapon}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    field.handleChange([
+                                      ...field.state.value,
+                                      weapon.id,
+                                    ]);
+                                  } else {
+                                    field.handleChange(
+                                      field.state.value.filter(
+                                        (item: number) => item !== weapon.id,
+                                      ),
+                                    );
+                                  }
+                                }}
+                              />
+                            </div>
+                            <Divider />
+                          </>
                         );
                       },
                     )}
@@ -589,7 +602,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
             </vehicleForm.Field>
           </div>
         </div>
-        <hr className="border-yellow-300 border-opacity-50" />
+        {/* <Divider />
         <div className="flex flex-col">
           <div
             className={`${modDetailsOpen && 'pb-8'} timing flex cursor-pointer items-center justify-between`}
@@ -658,7 +671,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
               }
             </vehicleForm.Field>
           </div>
-        </div>
+        </div> */}
         <vehicleForm.Subscribe selector={(state) => state.errorMap}>
           {(errorMap) =>
             errorMap.onSubmit ? (

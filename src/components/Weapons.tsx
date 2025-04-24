@@ -10,6 +10,7 @@ import Loading from './Loading';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { FetchOptions } from 'src/types/fetchOptions';
 import ArrowHeader2 from './ArrowHeader2';
+import InputSelectField from './InputSelectField';
 
 const Weapons = ({
   title,
@@ -30,6 +31,7 @@ const Weapons = ({
       query: '',
     },
     onSubmit: ({ value }) => {
+      weapons.filterByCategory(value.category);
       weapons.filterByQuery(value.query);
     },
   });
@@ -47,44 +49,51 @@ const Weapons = ({
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
       <h1 className="text-center">{title}</h1>
       <ThemeContainer
-        className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
+        className={`ml-auto w-full`}
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
-          <div className="flex w-full items-center justify-between">
+        <form className="flex flex-col gap-4 p-4">
+          <div className="grid w-full grid-cols-2 items-center justify-between">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
               {(field) => (
-                <SelectField
+                <InputSelectField
                   field={field}
+                  className=""
+                  label="Keyword"
+                  options={weapons.filteredKeywords}
                   onChange={() => {
                     weapons.filterByCategory(field.state.value);
                   }}
-                >
-                  <option value="">All keywords</option>
-                  {weapons.filteredKeywords?.map((keyword) => {
-                    return (
-                      <option key={keyword} value={keyword}>
-                        {keyword}
-                      </option>
-                    );
-                  })}
-                </SelectField>
+                ></InputSelectField>
               )}
             </searchForm.Field>
           </div>
-          <searchForm.Field name="query">
-            {(field) => (
-              <InputField
-                label="Search weapons"
-                field={field}
-                onChange={() => {
-                  searchForm.handleSubmit();
-                }}
-              />
-            )}
-          </searchForm.Field>
+          <div className="flex items-end gap-4">
+            <searchForm.Field name="query">
+              {(field) => (
+                <InputField
+                  className="w-full"
+                  label="Search weapons"
+                  field={field}
+                  onChange={() => {
+                    searchForm.handleSubmit();
+                  }}
+                />
+              )}
+            </searchForm.Field>
+            <button
+              className="text-accent z-10 hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                searchForm.reset();
+                searchForm.handleSubmit();
+              }}
+            >
+              Reset Filters
+            </button>
+          </div>
         </form>
       </ThemeContainer>
       {weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {

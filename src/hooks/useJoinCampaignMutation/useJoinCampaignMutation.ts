@@ -1,11 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import joinCampaign from './joinCampaign';
 
-const useJoinCampaignMutation = (apiUrl: string, campaignId: string) => {
+const useJoinCampaignMutation = (apiUrl: string, campaignId?: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: () => {
+      if (!campaignId) {
+        throw new Error('Campaign id required to join campaign');
+      }
       return joinCampaign(apiUrl, campaignId);
     },
     onSuccess: () => {

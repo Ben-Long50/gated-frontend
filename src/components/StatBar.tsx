@@ -13,14 +13,16 @@ const StatBar = ({
   title,
   total,
   current,
+  divider,
   color,
   mode,
   children,
   mutation,
 }: {
   title: string;
-  total: number;
+  total?: number;
   current: number;
+  divider?: number;
   color: string;
   mode?: string;
   children: ReactNode;
@@ -30,13 +32,17 @@ const StatBar = ({
 
   return (
     <>
-      {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
-        <h3 className="text-xl font-semibold tracking-widest">{title}</h3>
-      )}
+      <h4>{title}</h4>
       {children}
       <div className="flex flex-wrap items-center gap-2 justify-self-start max-sm:gap-1">
         {Array.from({
-          length: total > current ? total : current,
+          length: divider
+            ? total > current
+              ? total / divider
+              : current / divider
+            : total > current
+              ? total
+              : current,
         }).map((_, index) =>
           index < current ? (
             layoutSize === 'small' || layoutSize === 'xsmall' ? (
@@ -101,8 +107,8 @@ const StatBar = ({
         <div
           className={`text-tertiary flex items-center gap-2 justify-self-end whitespace-nowrap text-xl`}
         >
-          <p className={`${current > total && 'text-error'}`}>{current}</p>/
-          <p>{total}</p>
+          <p className={`${current > total && 'text-error'}`}>{current}</p>
+          {total && <p>/ {total}</p>}
           {mode === 'adjustable' && (
             <div className="flex flex-col">
               <button

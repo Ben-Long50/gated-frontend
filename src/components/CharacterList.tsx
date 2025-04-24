@@ -45,23 +45,26 @@ const CharacterList = () => {
             You haven't created any characters yet. Try it out
           </h1>
           <Link to="create">
-            <BtnRect>Character creator</BtnRect>
+            <BtnRect ariaLabel="Create character" type="button">
+              Character creator
+            </BtnRect>
           </Link>
         </div>
       ) : (
         <>
           <h1 className="text-center">Characters</h1>
           <ThemeContainer
-            className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
+            className={`ml-auto w-full`}
             chamfer="medium"
             borderColor={accentPrimary}
           >
-            <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
+            <form className="flex w-full flex-col gap-4 p-4">
               <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:gap-8">
                 <ArrowHeader2 title="Active Character" />
                 <activeForm.Field name="character">
                   {(field) => (
                     <SelectField
+                      label="Active Character"
                       field={field}
                       onChange={() => {
                         activeForm.handleSubmit();
@@ -82,7 +85,7 @@ const CharacterList = () => {
         </>
       )}
       <div className="grid w-full grid-flow-row gap-10">
-        {characters?.map((character) => {
+        {characters?.map((character: Character) => {
           return <CharacterCard key={character.id} character={character} />;
         })}
       </div>

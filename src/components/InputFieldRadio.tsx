@@ -13,7 +13,7 @@ const InputFieldRadio = ({
   field: FieldApi;
   className?: string;
   label: string;
-  value: string;
+  value?: string;
   checked: boolean;
   children?: ReactNode;
   onChange?: () => void;

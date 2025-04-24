@@ -3,7 +3,7 @@ import useAccountQuery from '../hooks/useAccountQuery/useAccountQuery';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loading from '../components/Loading';
 
-export const AuthContext = createContext({ apiUrl: '', user: null });
+export const AuthContext = createContext({ apiUrl: '', user: undefined });
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
@@ -21,8 +21,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     isLoading,
     isPending,
   } = useAccountQuery(apiUrl);
-
-  console.log(user);
 
   useEffect(() => {
     if (

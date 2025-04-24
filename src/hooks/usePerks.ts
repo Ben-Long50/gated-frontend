@@ -127,6 +127,18 @@ const usePerks = (attributeTree?: AttributeTree) => {
       ),
   );
 
+  function flattenPerkTree(tree: Partial<PerkTree>): Perk[] {
+    const result: Perk[] = [];
+
+    for (const category of Object.values(tree)) {
+      for (const subArray of Object.values(category)) {
+        result.push(...subArray);
+      }
+    }
+
+    return result;
+  }
+
   const filterPerks = (query: string) => {
     setQuery(query);
   };
@@ -151,6 +163,7 @@ const usePerks = (attributeTree?: AttributeTree) => {
     filterPerks,
     filterByAttribute,
     filterBySkill,
+    flattenPerkTree,
     resetPerks,
     isLoading,
     isPending,

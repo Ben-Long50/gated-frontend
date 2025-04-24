@@ -155,14 +155,6 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
     setAttributeTree(emptyAttributeTree);
   };
 
-  const stats = {
-    health: 10 + attributeTree.violence.skills.threshold.points * 2,
-    sanity: 5 + attributeTree.esoterica.skills.mysticism.points * 2,
-    speed: 4 + attributeTree.violence.skills.assault.points * 2,
-    cyber: 4 + attributeTree.cybernetica.skills.chromebits.points * 2,
-    equip: 10 + attributeTree.violence.skills.threshold.points * 2,
-  };
-
   return {
     tree: attributeTree,
     emptyAttributeTree,
@@ -174,7 +166,6 @@ const useAttributeTree = (partialTree?: Partial<AttributeTree>) => {
     destructureTree,
     structureTree,
     resetTree,
-    stats,
   };
 };
 

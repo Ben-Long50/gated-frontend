@@ -17,9 +17,11 @@ import Icon from '@mdi/react';
 import useCreateCampaignMutation from '../hooks/useCreateCampaignMutation/useCreateCampaignMutation';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import ArrowHeader3 from './ArrowHeader3';
+import ArrowHeader2 from './ArrowHeader2';
 import AffiliationBar from './AffiliationBar';
 import Divider from './Divider';
+import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
+import useDeleteCampaignMutation from '../hooks/useDeleteCampaignMutation/useDeleteCampaignMutation';
 
 const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -32,7 +34,17 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const createCampaign = useCreateCampaignMutation(apiUrl, setFormMessage);
 
-  const campaign = null;
+  const deleteCampaign = useDeleteCampaignMutation(
+    apiUrl,
+    Number(campaignId),
+    setFormMessage,
+  );
+
+  const {
+    data: campaign,
+    isLoading,
+    isPending,
+  } = useCampaignQuery(apiUrl, Number(campaignId));
 
   useEffect(() => {
     if (campaign) {
@@ -52,6 +64,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const campaignForm = useForm({
     defaultValues: {
+      id: campaignId || 0,
       name: campaign?.name || '',
       location: campaign?.location || '',
       picture: campaign?.picture || '',
@@ -62,7 +75,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
           { factionType: '', name: '' },
         ] as { factionType: string; name: string }[]),
       affiliation: 0,
-      briefing: campaign?.briefing || ({} as { html: string; nodes: string }),
+      briefing: {} as { html: string; nodes: string },
       players: campaign?.players || ([] as User[]),
     },
 
@@ -76,14 +89,19 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      formData.append('campaignId', JSON.stringify(campaignId || 0));
       if (mode === 'create' || mode === 'update') {
         await createCampaign.mutate(formData);
-      } else if (mode === 'modify') {
-        // await modifyArmor.mutate(formData);
       }
     },
   });
+
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteCampaign.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -96,10 +114,15 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
     }
   };
 
+  if (isLoading || isPending) return <Loading />;
+
   return (
     <FormLayout
       itemId={campaignId}
       createMutation={createCampaign}
+      modifyMutation={createCampaign}
+      deleteMutation={deleteCampaign}
+      handleDelete={handleDelete}
       handleReset={handleReset}
       formMessage={formMessage}
       deleteMode={deleteMode}
@@ -117,7 +140,9 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
         <div className="flex items-center justify-center gap-4">
           <h1>{title} Campaign</h1>
         </div>
-        <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
+        <Divider />
+        <ArrowHeader2 title="Campaign Information" />
+        <p className="ml-4 border-l border-gray-400 px-4">
           Welcome to campaign creation! This page should only be filled out if
           you intend to act as the game master for an upcoming game. If that's
           the case then continue on and craft the perfect cybermystic,
@@ -125,7 +150,6 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
           information you provide will act as the backbone for your campaign's
           narrative.
         </p>
-        <ArrowHeader3 title="Basic Campaign Information" />
         <campaignForm.Field
           name="name"
           validators={{
@@ -156,9 +180,10 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
           className="mx-auto w-full"
           chamfer="medium"
           borderColor={accentPrimary}
+          overflowHidden={true}
         >
           {!imagePreview ? (
-            <label className="bg-secondary flex aspect-[5/2] w-full cursor-pointer flex-col items-center justify-center clip-6">
+            <label className="bg-secondary flex aspect-[5/2] w-full cursor-pointer flex-col items-center justify-center">
               <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
                 <Icon className="text-tertiary" path={mdiImagePlus} size={3} />
                 <p className="text-tertiary font-semibold">
@@ -192,8 +217,9 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             </div>
           )}
         </ThemeContainer>
-        <ArrowHeader3 title="Campaign Factions" />
-        <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
+        <Divider />
+        <ArrowHeader2 title="Campaign Factions" />
+        <p className="ml-4 border-l border-gray-400 px-4">
           Decide which warring factions (The Powers that Be) of GatED will be
           present in your campaign. It is strongly recommended that a standard
           campaign include 2 major factions vying for power of the game's city.
@@ -255,7 +281,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                   </div>
                 );
               })}
-              <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
+              {/* <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
                 <button
                   className="text-accent self-end hover:underline"
                   onClick={(e) => {
@@ -267,63 +293,72 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                 >
                   Add a faction
                 </button>
-              </div>
+              </div> */}
             </div>
           )}
         </campaignForm.Field>
-        <ArrowHeader3 title="Starting Faction Affiliation" />
-        <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
-          On the scale shown below, choose the starting relationship between
-          your two major factions. This chosen relationship will help guide the
-          campaign narrative and give insight into the benefits and consequences
-          of potential alliances or rivalries for the players taking part in the
-          campaign.
-        </p>
-        <campaignForm.Field name="affiliation">
-          {(field) => <AffiliationBar field={field} />}
-        </campaignForm.Field>
+        {!campaignId && (
+          <>
+            <Divider />
+            <ArrowHeader2 title="Starting Faction Affiliation" />
+            <p className="ml-4 border-l border-gray-400 px-4">
+              On the scale shown below, choose the starting relationship between
+              your two major factions. This chosen relationship will help guide
+              the campaign narrative and give insight into the benefits and
+              consequences of potential alliances or rivalries for the players
+              taking part in the campaign.
+            </p>
+            <campaignForm.Field name="affiliation">
+              {(field) => <AffiliationBar field={field} />}
+            </campaignForm.Field>
+
+            <div className="flex flex-col gap-8">
+              <Divider />
+              <ArrowHeader2 title="Session 0 Briefing" />
+              <p className="ml-4 border-l border-gray-400 px-4">
+                Craft a backstory for your upcoming campaign. This backstory
+                will serve as the first taste of the world for your campaign
+                participants and act as a starting point for the campaign's
+                overarching narrative. The text entered below will be shown to
+                your campaign's participants as a "Session 0" introduction
+                briefing. Remember, your story should integrate the factions
+                chosen above, weaving their influence throughout as much of the
+                storytelling as possible. The world of GatED is a dark and
+                brutal place; danger, betrayal and action can be found around
+                every corner of the city streets.
+              </p>
+              <campaignForm.Field
+                name="briefing"
+                validators={{
+                  onChange: ({ value }) =>
+                    value.html.length < 20
+                      ? 'Section content has not met the minimum length requirement'
+                      : undefined,
+                }}
+              >
+                {(field) => (
+                  <>
+                    <LexicalEditor field={field} />
+                    {field.state.meta.errors &&
+                      field.state.meta.errors.map((error, index) => (
+                        <p
+                          key={index}
+                          className="timing text-error text-base italic leading-5"
+                          role="alert"
+                        >
+                          {error}
+                        </p>
+                      ))}
+                  </>
+                )}
+              </campaignForm.Field>
+            </div>
+          </>
+        )}
         <div className="flex flex-col gap-8">
-          <ArrowHeader3 title="Campaign Briefing" />
-          <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
-            Craft a backstory for your upcoming campaign. This backstory will
-            serve as the first taste of the world for your campaign participants
-            and act as a starting point for the campaign's overarching
-            narrative. The text entered below will be shown to your campaign's
-            participants as a "Session 0" introduction briefing. Remember, your
-            story should integrate the factions chosen above, weaving their
-            influence throughout as much of the storytelling as possible. The
-            world of GatED is a dark and brutal place; danger, betrayal and
-            action can be found around every corner of the city streets.
-          </p>
-          <campaignForm.Field
-            name="briefing"
-            validators={{
-              onChange: ({ value }) =>
-                value.html.length < 20
-                  ? 'Section content has not met the minimum length requirement'
-                  : undefined,
-            }}
-          >
-            {(field) => (
-              <>
-                <LexicalEditor field={field} />
-                {field.state.meta.errors &&
-                  field.state.meta.errors.map((error, index) => (
-                    <p
-                      key={index}
-                      className="timing text-error text-base italic leading-5"
-                      role="alert"
-                    >
-                      {error}
-                    </p>
-                  ))}
-              </>
-            )}
-          </campaignForm.Field>
-        </div>
-        <div className="flex flex-col gap-8">
-          <ArrowHeader3 title="Invite Players" />
-          <p className="ml-4 border-l border-zinc-200 border-opacity-50 px-4">
+          <Divider />
+          <ArrowHeader2 title="Invite Players" />
+          <p className="ml-4 border-l border-gray-400 px-4">
             Search for the names of the friends you want to invite to this
             campaign and check the box next to their names. When the campaign is
             created, invitations to join the campaign will be sent to those
@@ -342,8 +377,8 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             name="players"
             validators={{
               onChange: ({ value }) =>
-                value.length < 2
-                  ? 'You must invite at least 2 players to create a campaign'
+                value.length < 1
+                  ? 'You must invite at least 1 player to create a campaign'
                   : undefined,
             }}
           >
@@ -363,7 +398,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                       </p>
                     ))}
                   {field.state.value.length > 0 && (
-                    <ArrowHeader3 title="Selected Players" />
+                    <ArrowHeader2 title="Selected Players" />
                   )}
 
                   {playerArray.map((user: User) => (
@@ -469,7 +504,11 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             }}
           </campaignForm.Field>
         </div>
-        <BtnRect type="submit" className="group w-full">
+        <BtnRect
+          ariaLabel={`${title} campaign`}
+          type="submit"
+          className="group w-full"
+        >
           {createCampaign.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"

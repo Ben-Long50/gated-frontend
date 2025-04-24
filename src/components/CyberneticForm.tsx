@@ -27,6 +27,8 @@ import { Armor } from 'src/types/armor';
 import { Action } from 'src/types/action';
 import SubactionForm from './SubactionForm';
 import useModifyCyberneticMutation from '../hooks/useModifyCyberneticMutation/useModifyCyberneticMutation';
+import Divider from './Divider';
+import ArrowHeader2 from './ArrowHeader2';
 
 const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -268,6 +270,8 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
         <div className="flex items-center justify-center gap-4">
           <h1>{title} Cybernetic</h1>
         </div>
+        <Divider />
+        <ArrowHeader2 title="Cybernetic Information" />
         <div className="flex w-full gap-4 sm:gap-6 lg:gap-8">
           <cyberneticForm.Field
             name="name"
@@ -395,14 +399,15 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
             )}
           </cyberneticForm.Field>
         </div>
-        <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:grid-rows-1 sm:gap-6 lg:gap-8">
+        <div className="flex flex-col gap-8 sm:flex-row">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
             chamfer="medium"
             borderColor={accentPrimary}
+            overflowHidden={true}
           >
             {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center clip-6">
+              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
                 <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
                   <Icon
                     className="text-tertiary"
@@ -452,11 +457,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
             }}
           >
             {(field) => (
-              <TextAreaField
-                className="h-40 w-full sm:h-full"
-                label="Cybernetic description"
-                field={field}
-              />
+              <TextAreaField label="Cybernetic description" field={field} />
             )}
           </cyberneticForm.Field>
         </div>
@@ -528,12 +529,12 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
               )}
               {cyberneticType === 'offensive' && (
                 <>
-                  <hr className="border-yellow-300 border-opacity-50" />
+                  <Divider />
                   <cyberneticForm.Field name="weapons" mode="array">
                     {(field) => (
                       <>
                         {field.state.value.length > 0 && (
-                          <h2 className="text-left">Integrated weapons</h2>
+                          <ArrowHeader2 title="Integrated Weapons" />
                         )}
                         {field.state.value.map((_, i) => (
                           <div className="flex flex-col gap-8" key={i}>
@@ -774,12 +775,12 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
               )}
               {cyberneticType === 'defensive' && (
                 <>
-                  <hr className="border-yellow-300 border-opacity-50" />
+                  <Divider />
                   <cyberneticForm.Field name="armor" mode="array">
                     {(field) => (
                       <>
                         {field.state.value.length > 0 && (
-                          <h2 className="text-left">Integrated Armor</h2>
+                          <ArrowHeader2 title="Integrated Armor" />
                         )}
                         {field.state.value.map((_, i) => (
                           <div className="flex flex-col gap-8" key={i}>
@@ -983,15 +984,15 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
                 cyberneticType === 'defensive' ||
                 cyberneticType === 'function') && (
                 <>
-                  <hr className="border-yellow-300 border-opacity-50" />
+                  <Divider />
                   <SubactionForm form={cyberneticForm} />
                 </>
               )}
-              <hr className="border-yellow-300 border-opacity-50" />
+              <Divider />
             </>
           )}
         </cyberneticForm.Subscribe>
-        <h2>Cybernetic keywords</h2>
+        <ArrowHeader2 title="Cybernetic Keywords" />
         <cyberneticForm.Field name="keywords">
           {(field) => (
             <div className="flex flex-col gap-4 md:grid md:grid-cols-2">

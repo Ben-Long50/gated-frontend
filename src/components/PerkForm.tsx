@@ -15,6 +15,8 @@ import usePerks from '../hooks/usePerks';
 import { Perk } from 'src/types/perk';
 import { Modifier } from 'src/types/modifier';
 import ModifierField from './ModifierField';
+import Divider from './Divider';
+import ArrowHeader2 from './ArrowHeader2';
 
 const PerkForm = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -104,6 +106,8 @@ const PerkForm = ({ mode }: { mode?: string }) => {
         }}
       >
         <h1 className="text-center">{perk ? 'Update Perk' : 'Create Perk'}</h1>
+        <Divider />
+        <ArrowHeader2 title="Perk Information" />
         <perkForm.Field
           name="name"
           validators={{
@@ -135,7 +139,8 @@ const PerkForm = ({ mode }: { mode?: string }) => {
         <perkForm.Field name="modifiers">
           {(field) => <ModifierField form={perkForm} field={field} />}
         </perkForm.Field>
-        <h2>Requirements</h2>
+        <Divider />
+        <ArrowHeader2 title="Perk Requirements" />
         <div className="flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
           {Object.entries(attributeTree.tree).map(
             ([attribute, { points, skills }]) => (
@@ -150,7 +155,7 @@ const PerkForm = ({ mode }: { mode?: string }) => {
             ),
           )}
         </div>
-        <BtnRect type="submit" className="group w-full">
+        <BtnRect ariaLabel="Create perk" type="submit" className="group w-full">
           {createPerk.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"

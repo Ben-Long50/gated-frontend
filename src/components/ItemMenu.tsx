@@ -57,7 +57,7 @@ const ItemMenu = ({
 
   return (
     <ThemeContainer borderColor={accentPrimary} chamfer="medium">
-      <div className="scrollbar-secondary-2 bg-primary flex max-h-75dvh w-full flex-col gap-4 p-4 clip-6">
+      <div className="scrollbar-secondary-2 flex max-h-75dvh w-full flex-col gap-4 p-4">
         <div className="col-span-2 grid grid-flow-col gap-4">
           <BtnAuth
             active={tab === 'weapon' ? true : false}

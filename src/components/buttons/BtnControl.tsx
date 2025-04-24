@@ -18,10 +18,12 @@ const BtnControl = ({
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (value) {
-          mutation.mutate(value);
-        } else {
-          mutation.mutate(undefined);
+        if (mutation) {
+          if (value) {
+            mutation.mutate(value);
+          } else {
+            mutation.mutate(undefined);
+          }
         }
       }}
     >

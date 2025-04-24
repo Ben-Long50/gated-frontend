@@ -34,7 +34,7 @@ const NotificationCard = ({ notification }: { notification: Notification }) => {
       chamfer="medium"
       borderColor={accentPrimary}
     >
-      <div className="bg-primary flex w-full flex-col gap-4 p-4 clip-6 sm:p-6">
+      <div className="flex w-full flex-col gap-4 p-4 sm:p-6">
         <div className="flex w-full items-start justify-between">
           <div className="flex items-center justify-start">
             <ArrowHeader2 title="" />

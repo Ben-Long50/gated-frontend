@@ -2,7 +2,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createCharacter from './createCharacter';
 import { useNavigate } from 'react-router-dom';
 
-const useCreateCharacterMutation = (apiUrl: string) => {
+const useCreateCharacterMutation = (
+  apiUrl: string,
+  setFormMessage: (message: string) => void,
+) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
@@ -10,11 +13,15 @@ const useCreateCharacterMutation = (apiUrl: string) => {
       return createCharacter(formData, apiUrl);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      setFormMessage('Successfully created character');
+      return queryClient.invalidateQueries({
         queryKey: ['characters'],
         exact: false,
       });
-      navigate('/glam/characters');
+      // navigate('/glam/characters');
+    },
+    onError: (error) => {
+      setFormMessage(error.message);
     },
     throwOnError: false,
   });

@@ -28,26 +28,29 @@ const useCurrentHealthMutation = (apiUrl: string, characterId: number) => {
     },
 
     onMutate: (value) => {
-      queryClient.cancelQueries({ queryKey: ['activeCharacter'] });
+      queryClient.cancelQueries({ queryKey: ['character', characterId] });
 
       const prevCharacterData: Character | undefined = queryClient.getQueryData(
-        ['activeCharacter'],
+        ['character', characterId],
       );
 
-      queryClient.setQueryData(['activeCharacter'], (prev: Character) => ({
-        ...prev,
-        stats: {
-          ...prev.stats,
-          currentHealth: prev.stats.currentHealth + value,
-        },
-      }));
+      queryClient.setQueryData(
+        ['character', characterId],
+        (prev: Character) => ({
+          ...prev,
+          stats: {
+            ...prev.stats,
+            currentHealth: prev.stats.currentHealth + value,
+          },
+        }),
+      );
 
       return { prevCharacterData };
     },
 
     onSuccess: () => {
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
+        queryKey: ['character', characterId],
         exact: false,
       });
     },

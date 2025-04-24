@@ -6,40 +6,43 @@ const ThemeContainer = ({
   borderColor,
   chamfer,
   children,
+  bgImageUrl,
+  overflowHidden,
 }: {
   className?: string;
   borderColor: string;
   chamfer: string;
   children: ReactNode;
+  bgImageUrl?: string;
+  overflowHidden?: boolean;
 }) => {
   const radiusMap = {
-    small: 'rounded-tl-4xl rounded-br-4xl',
-    medium: 'rounded-tl-5xl rounded-br-5xl',
-    large: 'rounded-tl-5xl rounded-br-5xl',
+    small:
+      'rounded-tl-4xl rounded-br-4xl rounded-br-5xl rounded-tl-5xl shadow-md shadow-zinc-950',
+    medium:
+      'rounded-tl-5xl rounded-br-5xl rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950',
+    large:
+      'rounded-tl-5xl rounded-br-5xl rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950',
   };
 
-  const borderRadiusMap = {
-    small: 'rounded-bl-[4px] rounded-tr-[4px]',
-    medium: 'rounded-bl-[6px] rounded-tr-[6px]',
-    large: 'rounded-bl-[8px] rounded-tr-[8px]',
-  };
-
-  const containerRadiusMap = {
-    small: ' rounded-bl-[2px] rounded-tr-[2px]',
-    medium: ' rounded-bl-[4px] rounded-tr-[4px]',
-    large: ' rounded-bl-[6px] rounded-tr-[6px]',
+  const chamferMapBg = {
+    small: 'clip-4 rounded-bl-[2px] rounded-tr-[2px]',
+    medium: 'clip-6 rounded-bl-[4px] rounded-tr-[4px]',
+    large: 'clip-8 rounded-bl-[6px] rounded-tr-[6px]',
   };
 
   return (
     <div
-      className={`${className} ${radiusMap[chamfer]} relative mb-auto shadow-lg shadow-black`}
+      className={`${className} ${radiusMap[chamfer]} relative shadow-lg shadow-black`}
     >
       <ThemeBorder
-        className={`${borderRadiusMap[chamfer]} timing`}
         borderColor={borderColor}
+        bgImageUrl={bgImageUrl}
         chamfer={chamfer}
       />
-      <div className={`${containerRadiusMap[chamfer]} overflow-hidden`}>
+      <div
+        className={`${!!overflowHidden && `overflow-hidden ${chamferMapBg[chamfer]}`} relative`}
+      >
         {children}
       </div>
     </div>

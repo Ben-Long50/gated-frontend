@@ -3,7 +3,11 @@ import { useRef } from 'react';
 import { Character } from 'src/types/character';
 import refreshItemPower from './refreshItemPower';
 
-const useRefreshItemPowerMutation = (apiUrl: string, itemId: number) => {
+const useRefreshItemPowerMutation = (
+  apiUrl: string,
+  itemId: number,
+  characterId: number,
+) => {
   const queryClient = useQueryClient();
   const timeoutRef = useRef(0);
 
@@ -22,36 +26,39 @@ const useRefreshItemPowerMutation = (apiUrl: string, itemId: number) => {
     },
 
     onMutate: () => {
-      queryClient.cancelQueries({ queryKey: ['activeCharacter'] });
+      queryClient.cancelQueries({ queryKey: ['character', characterId] });
 
       const prevCharacterData: Character | undefined = queryClient.getQueryData(
-        ['activeCharacter'],
+        ['character', characterId],
       );
 
-      queryClient.setQueryData(['activeCharacter'], (prev: Character) => ({
-        ...prev,
-        characterInventory: {
-          ...prev.characterInventory,
-          items: prev.characterInventory.items.map((item) =>
-            item.id === itemId
-              ? {
-                  ...item,
-                  stats: {
-                    ...item.stats,
-                    currentPower: item.stats.power,
-                  },
-                }
-              : item,
-          ),
-        },
-      }));
+      queryClient.setQueryData(
+        ['character', characterId],
+        (prev: Character) => ({
+          ...prev,
+          characterInventory: {
+            ...prev.characterInventory,
+            items: prev.characterInventory.items.map((item) =>
+              item.id === itemId
+                ? {
+                    ...item,
+                    stats: {
+                      ...item.stats,
+                      currentPower: item.stats.power,
+                    },
+                  }
+                : item,
+            ),
+          },
+        }),
+      );
 
       return { prevCharacterData };
     },
 
     onSuccess: () => {
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
+        queryKey: ['character', characterId],
         exact: false,
       });
     },

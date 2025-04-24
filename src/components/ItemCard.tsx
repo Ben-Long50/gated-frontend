@@ -116,11 +116,11 @@ const ItemCard = ({
     >
       <ThemeContainer
         chamfer="medium"
-        className="w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
+        className="w-full"
         borderColor={accentPrimary}
       >
         <div
-          className="bg-primary timing relative flex cursor-pointer flex-col p-4 clip-6"
+          className="timing relative flex cursor-pointer flex-col p-4"
           onClick={async (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -249,7 +249,7 @@ const ItemCard = ({
                     </div>
                   )}
                   <motion.div
-                    className={`${item.picture ? 'mx-auto flex-col' : 'flex-row'} flex items-center gap-4 overflow-y-auto`}
+                    className={`${item.picture ? 'w-full flex-col' : 'flex-row'} flex grow items-center gap-4`}
                     style={{
                       height: item.picture ? imageHeight : 'auto',
                     }}
@@ -262,7 +262,7 @@ const ItemCard = ({
                     transition={{ duration: 0.2 }}
                   >
                     <div
-                      className={`${item.picture ? 'flex max-w-min flex-col' : 'grid w-full grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center justify-start'} scrollbar-secondary-2 w-full shrink-0 gap-2`}
+                      className={`${item.picture ? 'grid grid-cols-[auto_auto_1fr_auto]' : 'grid w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center justify-start'} scrollbar-secondary-2 w-full shrink-0 gap-2`}
                     >
                       {children}
                     </div>
@@ -282,7 +282,7 @@ const ItemCard = ({
               <div className="overflow-hidden">
                 <motion.div
                   ref={detailRef}
-                  className="flex flex-col gap-4 pr-8 pt-6"
+                  className="flex flex-col gap-4 pt-6"
                   initial={{ marginTop: -detailHeight - 4 }}
                   animate={{
                     marginTop: detailsOpen ? 0 : -detailHeight - 4,
@@ -291,7 +291,7 @@ const ItemCard = ({
                 >
                   {item.picture && (
                     <div className="flex w-full items-center gap-4">
-                      <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-2 sm:gap-4">
+                      <div className="grid w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-4">
                         {children}
                       </div>
 
@@ -444,13 +444,13 @@ const ItemCard = ({
                       )}
                     </div>
                   )}
-                  <div className="col-span-2 flex w-full flex-wrap items-center gap-4">
-                    <div className="grid h-full grow grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-4">
+                  <div className="col-span-2 flex w-full flex-col flex-wrap items-center gap-4">
+                    <div className="grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-4 gap-y-2">
                       {children}
                     </div>
 
                     {item.modifiers && item.modifiers?.length > 0 && (
-                      <div className="flex items-center gap-2 sm:gap-4">
+                      <div className="flex w-full items-center justify-start gap-2 sm:gap-4">
                         {item.modifiers?.map(
                           (modifier: Modifier, index: number) => (
                             <ModifierTag key={index} modifier={modifier} />
@@ -512,7 +512,7 @@ const ItemCard = ({
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Integrated weapons
                   </p>
-                  <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                  <div className="flex flex-col gap-4 p-4">
                     {item.weapons?.map(
                       (weapon: WeaponWithKeywords, index: number) => {
                         return (
@@ -545,7 +545,7 @@ const ItemCard = ({
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Integrated armor
                   </p>
-                  <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                  <div className="flex flex-col gap-4 p-4">
                     {item.armor.map(
                       (armor: ArmorWithKeywords, index: number) => {
                         return (
@@ -575,7 +575,7 @@ const ItemCard = ({
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Unique actions
                   </p>
-                  <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                  <div className="flex flex-col gap-4 p-4">
                     {item.actions?.map((action: Action, index: number) => {
                       return (
                         <>
@@ -597,7 +597,7 @@ const ItemCard = ({
                   <p className="text-accent absolute -top-3 left-5 z-20 text-base">
                     Modifications
                   </p>
-                  <div className="bg-primary flex flex-col gap-4 p-4 clip-4">
+                  <div className="flex flex-col gap-4 p-4">
                     {item.modifications?.map(
                       (modification: Modification, index: number) => {
                         return (

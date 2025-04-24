@@ -14,7 +14,7 @@ const useUpdateCharacterMutation = (
       return updateCharacter(formData, apiUrl, characterId);
     },
     onSuccess: () => {
-      navigate(`/glam/characters`);
+      navigate(-1);
       queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],
         exact: false,

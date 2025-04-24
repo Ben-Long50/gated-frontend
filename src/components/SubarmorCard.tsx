@@ -5,15 +5,18 @@ import WardIcon from './icons/WardIcon';
 import BlockIcon from './icons/BlockIcon';
 import StatCard from './StatCard';
 import { ArmorWithKeywords } from 'src/types/armor';
+import { ArmorStatBars } from './ArmorCard';
 
 const SubarmorCard = ({
   armor,
   toolTip,
   setToolTip,
+  mode,
 }: {
   armor: ArmorWithKeywords;
   toolTip: number;
   setToolTip: (prevState: number) => void;
+  mode?: string;
 }) => {
   return (
     <div className="flex h-full grow flex-col items-start justify-between gap-4">
@@ -35,22 +38,8 @@ const SubarmorCard = ({
           );
         })}
       </div>
-      <div className="timing col-span-2 grid h-full w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] place-items-center gap-4">
-        {armor.stats.armor && (
-          <StatCard label="AV" stat={armor.stats.armor}>
-            <ArmorIcon className="size-8" />
-          </StatCard>
-        )}
-        {armor.stats.ward && (
-          <StatCard label="WV" stat={armor.stats.ward}>
-            <WardIcon className="size-8" />
-          </StatCard>
-        )}
-        {armor.stats.block && (
-          <StatCard label="BP" stat={armor.stats.block}>
-            <BlockIcon className="size-8" />
-          </StatCard>
-        )}
+      <div className="timing grid h-full w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-4 gap-y-2">
+        <ArmorStatBars stats={armor.stats} mode={mode} />
       </div>
     </div>
   );

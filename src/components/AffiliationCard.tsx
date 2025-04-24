@@ -13,10 +13,12 @@ const AffiliationCard = ({
   affiliation,
   primaryEntity,
   entityType,
+  path,
 }: {
   affiliation: Affiliation;
   primaryEntity: Faction | Character;
   entityType: 'faction' | 'character';
+  path?: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { mobile } = useContext(LayoutContext);
@@ -42,13 +44,13 @@ const AffiliationCard = ({
       chamfer="medium"
       key={affiliation.id}
     >
-      <div className="bg-primary flex w-full flex-col items-start gap-4 p-4 clip-6">
+      <div className="flex w-full flex-col items-start gap-4 p-4">
         <div className="grid w-full grid-cols-[1fr_auto_1fr] items-center gap-8">
           <div className="flex items-center gap-4">
-            {!mobile && (
+            {!mobile && primaryEntity.picture?.imageUrl && (
               <img
                 className="size-16 rounded-full object-cover shadow shadow-black"
-                src={primaryEntity.picture.imageUrl}
+                src={primaryEntity.picture?.imageUrl}
                 alt={
                   primaryEntity.firstName
                     ? primaryEntity.firstName +
@@ -77,10 +79,10 @@ const AffiliationCard = ({
                 title={otherFaction.name}
                 reverse={true}
               />
-              {!mobile && (
+              {!mobile && otherFaction.picture?.imageUrl && (
                 <img
                   className="size-16 rounded-full object-cover shadow shadow-black"
-                  src={otherFaction.picture.imageUrl}
+                  src={otherFaction.picture?.imageUrl}
                   alt={otherFaction.name + "'s picture"}
                 />
               )}
@@ -93,7 +95,7 @@ const AffiliationCard = ({
                 title={otherCharacter.firstName + ' ' + otherCharacter.lastName}
                 reverse={true}
               />
-              {!mobile && (
+              {!mobile && otherCharacter.picture?.imageUrl && (
                 <img
                   className="size-16 rounded-full object-cover shadow shadow-black"
                   src={otherCharacter.picture.imageUrl}
@@ -112,7 +114,13 @@ const AffiliationCard = ({
           className={`${!mobile && 'px-4'}`}
           value={affiliation.value}
         />
-        <Link to={`${affiliation.id}/update`}>
+        <Link
+          to={
+            path
+              ? `${path}/${affiliation.id}/update`
+              : `${affiliation.id}/update`
+          }
+        >
           <button className="text-accent hover:underline">
             Update Affiliation
           </button>

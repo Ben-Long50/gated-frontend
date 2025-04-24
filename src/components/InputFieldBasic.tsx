@@ -28,7 +28,7 @@ const InputFieldBasic = (props) => {
   return (
     <div className={`${props.className}`}>
       <ThemeContainer
-        className={`${props.className} ml-auto shadow-md`}
+        className={`${props.className} ml-auto`}
         chamfer="small"
         borderColor={borderColor}
       >

@@ -57,6 +57,8 @@ import Resume from './components/Resume';
 import ResumeForm from './components/ResumeForm';
 import RollSimulator from './components/RollSimulator';
 import AffiliationForm from './components/AffiliationForm';
+import SessionForm from './components/SessionForm';
+import CampaignCharacterList from './components/CampaignCharacterList';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -79,6 +81,7 @@ const router = createBrowserRouter(
         <Route path="account/:userId">
           <Route index element={<ErrorReport />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="preferences" element={<ErrorReport />} />
           <Route path="adminTools" element={<ErrorReport />} />
           <Route path="errorReport" element={<ErrorReport />} />
         </Route>
@@ -86,19 +89,51 @@ const router = createBrowserRouter(
         <Route path="campaigns">
           <Route path=":campaignId">
             <Route index element={<Campaign />} />
+            <Route
+              path="update"
+              element={<CampaignForm title="Update" mode="update" />}
+            />
             <Route path="factions/:factionId">
               <Route index element={<Faction />} />
               <Route
                 path="update"
                 element={<FactionForm title="Update" mode="update" />}
               />
+              <Route
+                path="affiliations/:affiliationId/update"
+                element={<AffiliationForm title="Update" mode="update" />}
+              />
             </Route>
-            <Route path="characters/:characterId">
-              <Route index element={<CharacterSheet />} />
+            <Route path="characters">
+              <Route index element={<CampaignCharacterList />} />
+              <Route path=":characterId">
+                <Route index element={<CharacterSheet />} />
+                <Route path="equipment" element={<Equipment />} />
+              </Route>
               <Route path="update" element={<CharacterUpdateForm />} />
             </Route>
+            <Route path="sessions">
+              <Route path=":sessionId">
+                <Route index element={<Session />} />
+                <Route
+                  path="update"
+                  element={<SessionForm title="Update" mode="update" />}
+                />
+                <Route path="characters/:characterId">
+                  <Route index element={<CharacterSheet />} />
+                  <Route path="update" element={<CharacterUpdateForm />} />
+                  <Route path="cart" element={<Cart />} />
+                  <Route path="resume" element={<Resume />} />
+                  <Route path="resume/update" element={<ResumeForm />} />
+                </Route>
+              </Route>
+              <Route
+                path="create"
+                element={<SessionForm title="Create" mode="create" />}
+              />
+            </Route>
+            <Route path="rollSimulator" element={<RollSimulator />} />
           </Route>
-          <Route path=":campaignId/sessions/:sessionId" element={<Session />} />
           <Route path="player" element={<Campaigns title="Player" />} />
           <Route path="pending" element={<Campaigns title="Pending" />} />
           <Route path="owner" element={<Campaigns title="Owner" />} />
@@ -118,12 +153,7 @@ const router = createBrowserRouter(
             <Route index element={<CharacterSheet />} />
             <Route path="update" element={<CharacterUpdateForm />} />
             <Route path="cart" element={<Cart />} />
-            <Route path="backstory" element={<Resume title="Backstory" />} />
-            <Route path="firstTaste" element={<Resume title="First Taste" />} />
-            <Route
-              path="badMedicine"
-              element={<Resume title="Bad Medicine" />}
-            />
+            <Route path="resume" element={<Resume />} />
             <Route path="resume/update" element={<ResumeForm />} />
           </Route>
           <Route

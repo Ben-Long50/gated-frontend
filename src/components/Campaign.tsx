@@ -6,7 +6,6 @@ import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import { ThemeContext } from '../contexts/ThemeContext';
 import Icon from '@mdi/react';
 import { mdiCircle, mdiCrown, mdiTriangleDown } from '@mdi/js';
-import ItemCardSmall from './ItemCardSmall';
 import { format } from 'date-fns';
 import LocationIcon from './icons/LocationIcon';
 import { Session } from 'src/types/campaign';
@@ -17,12 +16,9 @@ import CharacterCard from './CharacterCard';
 import Divider from './Divider';
 import NoblebloodIcon from './icons/NoblebloodIcon';
 import FederalIcon from './icons/FederalIcon';
-import ChurchIcon from './icons/ChurchIcon';
 import BtnAuth from './buttons/BtnAuth';
 import AccountPicture from './AccountPicture';
 import ThemeContainer from './ThemeContainer';
-import Modal from './Modal';
-import CharacterSheet from './CharacterSheet';
 import { Faction } from 'src/types/faction';
 import BtnRect from './buttons/BtnRect';
 import useJoinCampaignMutation from '../hooks/useJoinCampaignMutation/useJoinCampaignMutation';
@@ -36,9 +32,18 @@ const Campaign = () => {
     data: campaign,
     isLoading,
     isPending,
-  } = useCampaignQuery(apiUrl, campaignId);
+    isError,
+  } = useCampaignQuery(apiUrl, Number(campaignId));
 
-  console.log(campaign);
+  const playerCharacters =
+    campaign?.characters.filter(
+      (character: Character) => character.playerCharacter === true,
+    ) || [];
+
+  const nonPlayerCharacters =
+    campaign?.characters.filter(
+      (character: Character) => character.playerCharacter === false,
+    ) || [];
 
   const joinCampaign = useJoinCampaignMutation(apiUrl, campaignId);
 
@@ -46,10 +51,18 @@ const Campaign = () => {
 
   if (isLoading || isPending) return <Loading />;
 
+  if (isError) {
+    throw new Error('Failed to load campaign info');
+  }
+
   return (
     <>
       <div className="absolute left-0 right-0 top-0 -z-10 mx-auto flex aspect-[10/3] w-full max-w-9xl items-center overflow-hidden">
-        <img src={`${campaign.picture?.imageUrl}`} alt="Campaign cover image" />
+        <img
+          className="w-full"
+          src={`${campaign.picture?.imageUrl}`}
+          alt="Campaign cover image"
+        />
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
         <div className="absolute right-6 top-6 flex flex-col items-center gap-4">
           <div className="relative">
@@ -78,16 +91,16 @@ const Campaign = () => {
         </div>
       </div>
       <div className="flex w-full max-w-7xl flex-col items-center gap-8">
-        <h1 className="text-shadow-sm text-center font-zen text-6xl font-normal text-shadow-x-xs text-shadow-y-xs text-shadow-zinc-950">
+        <h1 className="text-shadow text-center font-zen text-5xl text-shadow-x-2 text-shadow-y-2 text-shadow-black">
           {campaign.name}
         </h1>
         <div className="flex items-center gap-4">
           <LocationIcon className="text-accent size-8" />
-          <h2 className="text-accent text-shadow-sm text-shadow-x-xs text-shadow-y-xs text-shadow-zinc-950">
+          <h2 className="text-accent text-shadow text-shadow-x-2 text-shadow-y-2 text-shadow-zinc-950">
             {campaign.location}
           </h2>
         </div>
-        {pendingIds.includes(user.id) && (
+        {pendingIds?.includes(user.id) && (
           <BtnRect
             type="button"
             ariaLabel="Join campaign"
@@ -101,7 +114,7 @@ const Campaign = () => {
         )}
         <div className="mt-40 grid w-full grid-cols-2 gap-8">
           <ThemeContainer borderColor={accentPrimary} chamfer="medium">
-            <div className="bg-primary flex flex-col gap-4 p-4 clip-6">
+            <div className="flex flex-col gap-4 p-4">
               <ArrowHeader2 title="Sessions" />
               {campaign.sessions.map((session: Session) => (
                 <Link
@@ -126,7 +139,7 @@ const Campaign = () => {
             </div>
           </ThemeContainer>
           <ThemeContainer borderColor={accentPrimary} chamfer="medium">
-            <div className="bg-primary flex flex-col gap-4 p-4 clip-6">
+            <div className="flex flex-col gap-4 p-4">
               <ArrowHeader2 title="Factions" />
               {campaign.factions.map((faction: Faction) => (
                 <Link
@@ -134,13 +147,14 @@ const Campaign = () => {
                   key={faction.id}
                   to={`factions/${faction.id}`}
                 >
-                  <BtnAuth className="timing flex w-full items-center justify-between">
-                    <div className="flex items-center gap-4 p-2">
-                      {faction.factionType === 'federalReservists' && (
-                        <FederalIcon className="text-secondary size-16" />
-                      )}
-                      {faction.factionType === 'noblebloods' && (
-                        <NoblebloodIcon className="text-secondary size-16" />
+                  <BtnAuth className="timing flex w-full items-center justify-between p-4">
+                    <div className="flex items-center gap-4">
+                      {faction.picture?.imageUrl && (
+                        <img
+                          className="size-16 rounded-full object-cover shadow shadow-black"
+                          src={faction.picture?.imageUrl}
+                          alt={faction.name + "'s picture"}
+                        />
                       )}
                       <ArrowHeader2 title={faction.name} />
                     </div>
@@ -152,15 +166,40 @@ const Campaign = () => {
 
           <Divider className="col-span-2" />
           <div className="col-span-2 flex flex-col items-start gap-8">
-            <ArrowHeader2 title="Player Characters" />
-            {campaign.characters.map((character: Character) => (
-              <CharacterCard
-                key={character.id}
-                character={character}
-                path={`characters/${character.id}`}
-              />
-            ))}
+            {playerCharacters.length > 0 && (
+              <>
+                <ArrowHeader2 title="Player Characters" />
+                {playerCharacters.map((character: Character) => (
+                  <CharacterCard
+                    key={character.id}
+                    character={character}
+                    path={`characters`}
+                  />
+                ))}
+              </>
+            )}
+            {playerCharacters.length > 0 && (
+              <>
+                <ArrowHeader2 title="Non-player Characters" />
+                {nonPlayerCharacters.map((character: Character) => (
+                  <CharacterCard
+                    key={character.id}
+                    character={character}
+                    path={`characters`}
+                  />
+                ))}
+              </>
+            )}
           </div>
+          <Link className="col-start-2" to={`update`}>
+            <BtnRect
+              className="w-full"
+              type="button"
+              ariaLabel="Update campaign"
+            >
+              Update Campaign
+            </BtnRect>
+          </Link>
         </div>
       </div>
     </>

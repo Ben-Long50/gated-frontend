@@ -3,8 +3,8 @@ import updateFaction from './updateFaction';
 
 const useUpdateFactionMutation = (
   apiUrl: string,
-  campaignId: string,
-  factionId: string,
+  campaignId: number,
+  factionId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();

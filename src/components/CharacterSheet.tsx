@@ -27,18 +27,15 @@ import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import ArrowHeader2 from './ArrowHeader2';
 import ArrowHeader1 from './ArrowHeader1';
 import ArrowHeader3 from './ArrowHeader3';
-import AccountPicture from './AccountPicture';
 import Divider from './Divider';
 import BtnAuth from './buttons/BtnAuth';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { apiUrl, user } = useContext(AuthContext);
-  const { layoutSize } = useContext(LayoutContext);
+  const { layoutSize, mobile } = useContext(LayoutContext);
 
-  const [infoVisibility, setInfoVisibility] = useState(
-    layoutSize === 'xsmall' ? false : true,
-  );
+  const [infoVisibility, setInfoVisibility] = useState(mobile ? false : true);
 
   const { characterId } = useParams();
 
@@ -46,9 +43,8 @@ const CharacterSheet = () => {
     data: character,
     isLoading: characterLoading,
     isPending: characterPending,
+    isError: characterError,
   } = useCharacterQuery(apiUrl, characterId);
-
-  console.log(character);
 
   const isLoading = characterLoading;
   const isPending = characterPending;
@@ -65,16 +61,20 @@ const CharacterSheet = () => {
     return <Loading />;
   }
 
+  if (characterError) {
+    throw new Error('Could not find character');
+  }
+
   return (
     <div className="text-primary flex w-full max-w-5xl flex-col gap-10">
       <div className="flex flex-col items-center justify-between gap-8 lg:flex-row">
         <div className="flex w-full gap-4">
           <ThemeContainer
-            className="w-full grow rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
+            className="w-full grow"
             chamfer="small"
             borderColor={accentPrimary}
           >
-            <div className="bg-primary flex h-full w-full items-center justify-between gap-4 p-4 clip-4">
+            <div className="flex h-full w-full items-center justify-between gap-4 p-4">
               <ArrowHeader1
                 title={character.firstName + ' ' + character.lastName}
               />
@@ -118,9 +118,10 @@ const CharacterSheet = () => {
       <div className="flex flex-col gap-8 sm:flex-row">
         {character.picture.imageUrl && (
           <ThemeContainer
-            className="size mx-auto aspect-square w-full max-w-96 rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
+            className="size mx-auto aspect-square w-full max-w-96"
             chamfer="medium"
             borderColor={accentPrimary}
+            overflowHidden={true}
           >
             <img
               className="clip-6"
@@ -132,10 +133,10 @@ const CharacterSheet = () => {
 
         <ThemeContainer
           chamfer="medium"
-          className="mb-auto max-h-96 w-full rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
+          className="mb-auto max-h-96 w-full"
           borderColor={accentPrimary}
         >
-          <div className="bg-primary scrollbar-secondary-2 flex max-h-96 flex-col gap-4 overflow-y-auto p-4 clip-6">
+          <div className="scrollbar-secondary-2 flex max-h-96 flex-col gap-4 overflow-y-auto p-4">
             <div className="flex w-full items-center justify-between">
               <ArrowHeader3
                 title={
@@ -161,11 +162,11 @@ const CharacterSheet = () => {
                       <p>Non-player Character</p>
                     )}
                   </>
-                  {character.campaign ? (
+                  {character ? (
                     <>
                       <h4>Campaign</h4>
                       <Icon path={mdiTriangleDown} size={0.375} rotate={-90} />
-                      <p>{character.campaign.name}</p>
+                      <p>{character.campaign?.name || 'N/A'}</p>
                     </>
                   ) : (
                     <p>No campaign</p>
@@ -181,13 +182,13 @@ const CharacterSheet = () => {
                   )}
                 </div>
                 <Divider />
-                <Link to={`backstory`}>
+                <Link to={`resume?state=Backstory`}>
                   <BtnAuth>Backstory</BtnAuth>
                 </Link>
-                <Link to={`firstTaste`}>
+                <Link to={`resume?state=First Taste`}>
                   <BtnAuth>First Taste</BtnAuth>
                 </Link>
-                <Link to={`badMedicine`}>
+                <Link to={`resume?state=Bad Medicine`}>
                   <BtnAuth>Bad Medicine</BtnAuth>
                 </Link>
               </>
@@ -232,12 +233,8 @@ const CharacterSheet = () => {
         </StatBar>
       </div>
       <div className="flex flex-col gap-8">
-        <ThemeContainer
-          className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-          chamfer="medium"
-          borderColor={accentPrimary}
-        >
-          <div className="bg-primary flex flex-wrap justify-center gap-8 px-8 py-4 clip-6 lg:justify-between lg:pl-10">
+        <ThemeContainer chamfer="medium" borderColor={accentPrimary}>
+          <div className="flex flex-wrap justify-center gap-8 px-8 py-4 lg:justify-between lg:pl-10">
             <div className="flex flex-wrap justify-around gap-6">
               <div className="flex flex-col items-center justify-between gap-2">
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
@@ -331,11 +328,10 @@ const CharacterSheet = () => {
             ([attribute, { points, skills }]) => (
               <ThemeContainer
                 key={attribute}
-                className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
                 chamfer="medium"
                 borderColor={accentPrimary}
               >
-                <div className="bg-primary p-6 clip-6">
+                <div className="p-6">
                   <AttributeCard
                     attribute={attribute}
                     points={points}
@@ -347,12 +343,8 @@ const CharacterSheet = () => {
           )}
         </div>
       </div>
-      <ThemeContainer
-        className="rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
-        chamfer="medium"
-        borderColor={accentPrimary}
-      >
-        <div className="bg-primary p-4 clip-6">
+      <ThemeContainer chamfer="medium" borderColor={accentPrimary}>
+        <div className="p-4">
           <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
             <ArrowHeader2 className="col-span-2" title="Perks" />
             {character.perks.map((perk) => {

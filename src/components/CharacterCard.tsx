@@ -17,13 +17,15 @@ import { Character } from 'src/types/character';
 import ArrowHeader1 from './ArrowHeader2';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
+import CharacterIcon from './icons/CharacterIcon';
+import EquipmentIcon from './icons/EquipmentIcon';
 
 const CharacterCard = ({
   character,
   path,
 }: {
   character: Character;
-  path: string;
+  path?: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
@@ -39,8 +41,9 @@ const CharacterCard = ({
       className="w-full"
       chamfer="large"
       borderColor={accentPrimary}
+      overflowHidden={true}
     >
-      <div className="bg-primary relative grid grid-flow-row clip-8 sm:grid-flow-col sm:grid-cols-[1fr_3fr] md:flex-row">
+      <div className="relative grid grid-flow-row sm:grid-flow-col sm:grid-cols-[1fr_3fr] md:flex-row">
         <div className="absolute left-0 top-0 h-full w-[425px]">
           <CloudinaryImage
             className="bg-primary absolute aspect-square w-full"
@@ -82,10 +85,7 @@ const CharacterCard = ({
           </div>
           <div className="flex flex-wrap justify-between gap-6">
             <div className="flex items-center gap-6">
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={'evasion'}
-              >
+              <div className="flex flex-col items-center justify-between gap-2">
                 {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Speed
@@ -98,10 +98,7 @@ const CharacterCard = ({
                   </p>
                 </div>
               </div>
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={'evasion'}
-              >
+              <div className="flex flex-col items-center justify-between gap-2">
                 {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Evasion
@@ -114,10 +111,7 @@ const CharacterCard = ({
                   </p>
                 </div>
               </div>
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={'armor'}
-              >
+              <div className="flex flex-col items-center justify-between gap-2">
                 {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Armor
@@ -130,10 +124,7 @@ const CharacterCard = ({
                   </p>
                 </div>
               </div>
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={'ward'}
-              >
+              <div className="flex flex-col items-center justify-between gap-2">
                 {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Ward
@@ -149,10 +140,7 @@ const CharacterCard = ({
             </div>
 
             <div className="flex items-end justify-end gap-6">
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={'ward'}
-              >
+              <div className="flex flex-col items-center justify-between gap-2">
                 {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Injuries
@@ -165,13 +153,10 @@ const CharacterCard = ({
                   </p>
                 </div>
               </div>
-              <div
-                className="flex flex-col items-center justify-between gap-2"
-                key={'ward'}
-              >
+              <div className="flex flex-col items-center justify-between gap-2">
                 {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
-                    insanities
+                    Insanities
                   </h3>
                 )}
                 <div className="flex items-center justify-center gap-2">
@@ -181,14 +166,34 @@ const CharacterCard = ({
                   </p>
                 </div>
               </div>
-              <Link
-                className="ml-auto mt-auto self-end"
-                to={path || `${character.id}`}
-              >
-                <BtnRect type="button" ariaLabel="Character sheet">
-                  Character sheet
-                </BtnRect>
-              </Link>
+              <div className="flex items-center gap-4">
+                <Link
+                  className="ml-auto mt-auto self-end"
+                  to={path ? `${path}/${character.id}` : `${character.id}`}
+                >
+                  <button
+                    type="button"
+                    className="hover:bg-tertiary timing group rounded-full bg-yellow-300 p-2 shadow-md shadow-black hover:ring-1 hover:ring-inset hover:ring-yellow-300"
+                  >
+                    <CharacterIcon className="group-hover:text-accent size-8 shrink-0 text-zinc-950" />
+                  </button>
+                </Link>
+                <Link
+                  className="ml-auto mt-auto self-end"
+                  to={
+                    path
+                      ? `${path}/${character.id}/equipment`
+                      : `${character.id}/equipment`
+                  }
+                >
+                  <button
+                    type="button"
+                    className="hover:bg-tertiary timing group rounded-full bg-yellow-300 p-2 shadow-md shadow-black hover:ring-1 hover:ring-inset hover:ring-yellow-300"
+                  >
+                    <EquipmentIcon className="group-hover:text-accent size-8 shrink-0 text-zinc-950" />
+                  </button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

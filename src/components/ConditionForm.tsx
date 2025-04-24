@@ -12,6 +12,8 @@ import FormLayout from '../layouts/FormLayout';
 import SelectField from './SelectField';
 import useConditions from '../hooks/useConditions';
 import { Condition } from 'src/types/condition';
+import ArrowHeader2 from './ArrowHeader2';
+import Divider from './Divider';
 
 const ConditionForm = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -81,6 +83,8 @@ const ConditionForm = ({ mode }: { mode?: string }) => {
         <h1 className="text-center">
           {condition ? 'Update Condition' : 'Create Condition'}
         </h1>
+        <Divider />
+        <ArrowHeader2 title="Condition Information" />
         <conditionForm.Field
           name="name"
           validators={{

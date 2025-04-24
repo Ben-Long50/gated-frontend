@@ -1,30 +1,25 @@
 import PerkCard from './PerkCard';
-import Icon from '@mdi/react';
-import { mdiTriangleDown } from '@mdi/js';
 import { Perk, PerkTree } from 'src/types/perk';
 import ArrowHeader2 from './ArrowHeader2';
-
-type SetState<T> = React.Dispatch<React.SetStateAction<T>>;
+import { FieldApi } from '@tanstack/react-form';
 
 const PerkList = ({
+  field,
   perkTree,
-  checkedPerks,
-  setCheckedPerks,
   className,
   mode,
 }: {
+  field?: FieldApi;
   perkTree: Partial<PerkTree>;
-  checkedPerks?: Perk[];
-  setCheckedPerks?: SetState<Perk[]>;
   className?: string;
   mode?: string;
 }) => {
   return (
-    <div className={`${className} bg-primary z-20 flex w-full flex-col gap-8`}>
+    <div className={`${className} z-20 flex w-full flex-col gap-8 px-0.5`}>
       {Object.entries(perkTree).map(([perkType, skills]) => {
         return (
           Object.entries(skills).reduce(
-            (accumulator, [skill, perkList]) => accumulator + perkList.length,
+            (accumulator, [_, perkList]) => accumulator + perkList.length,
             0,
           ) > 0 && (
             <div key={perkType} className="flex flex-col gap-8">
@@ -54,19 +49,21 @@ const PerkList = ({
                                   <input
                                     className="size-6"
                                     type="checkbox"
-                                    checked={checkedPerks
-                                      ?.map((perk) => perk.id)
-                                      .includes(perk.id)}
+                                    checked={field.state.value.includes(
+                                      perk.id,
+                                    )}
                                     onChange={() => {
-                                      if (!checkedPerks?.includes(perk)) {
-                                        setCheckedPerks([
-                                          ...checkedPerks,
-                                          perk,
+                                      if (
+                                        !field.state.value?.includes(perk.id)
+                                      ) {
+                                        field.handleChange([
+                                          ...field.state.value,
+                                          perk.id,
                                         ]);
                                       } else {
-                                        setCheckedPerks((prevPerks: Perk[]) =>
-                                          prevPerks.filter(
-                                            (prev) => prev.id !== perk.id,
+                                        field.handleChange(
+                                          field.state.value.filter(
+                                            (id: number) => id !== perk.id,
                                           ),
                                         );
                                       }

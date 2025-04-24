@@ -9,9 +9,7 @@ import NoblebloodIcon from './icons/NoblebloodIcon';
 import FederalIcon from './icons/FederalIcon';
 import BtnRect from './buttons/BtnRect';
 import Divider from './Divider';
-import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import ArrowHeader3 from './ArrowHeader3';
 import { Affiliation } from 'src/types/faction';
 import BtnAuth from './buttons/BtnAuth';
 import AffiliationCard from './AffiliationCard';
@@ -25,9 +23,7 @@ const Faction = () => {
     data: faction,
     isLoading,
     isPending,
-  } = useFactionQuery(apiUrl, factionId);
-
-  console.log(faction);
+  } = useFactionQuery(apiUrl, Number(factionId));
 
   const backgroundRef = useRef<HTMLDivElement>(null);
   const affiliationRef = useRef<HTMLDivElement>(null);
@@ -57,15 +53,9 @@ const Faction = () => {
       )}
       <div className="flex w-full max-w-5xl flex-col gap-8">
         <div className="timing flex w-full items-center justify-between">
-          <div className="flex w-full items-center justify-center gap-8">
-            {faction.factionType === 'federalReservists' && (
-              <FederalIcon className="text-secondary size-14" />
-            )}
-            {faction.factionType === 'noblebloods' && (
-              <NoblebloodIcon className="text-secondary size-14" />
-            )}
-            <h1>{faction.name}</h1>
-          </div>
+          <h1 className="text-shadow w-full text-center font-zen text-5xl text-shadow-blur-0 text-shadow-x-2 text-shadow-y-2 text-shadow-black">
+            {faction.name}
+          </h1>
         </div>
         <div className="grid grid-cols-2 gap-4 self-start">
           <BtnAuth
@@ -123,6 +113,7 @@ const Faction = () => {
                     affiliation={affiliation}
                     entityType="character"
                     primaryEntity={faction}
+                    path="affiliations"
                   />
                 ),
               )}

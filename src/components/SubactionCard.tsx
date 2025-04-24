@@ -22,7 +22,7 @@ const SubactionCard = ({ action }: { action: Action }) => {
         <p className="text-tertiary italic">
           ({action.actionType[0].toUpperCase() + action.actionType.slice(1)})
         </p>
-        {action.duration && (
+        {action.duration?.unit && (
           <div className="ml-auto flex items-center gap-4">
             <StopwatchIcon className="size-7" />
             <p>{action.duration?.value}</p>

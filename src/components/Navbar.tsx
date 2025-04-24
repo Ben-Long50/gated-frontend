@@ -187,11 +187,13 @@ const Navbar = ({
         </Link>
         <Link className="relative" to={`account/${user?.id}/notifications`}>
           <Icon path={mdiBellOutline} className="text-secondary size-8" />
-          <div className="absolute right-0 top-0 flex size-5 items-center justify-center rounded-full bg-yellow-300">
-            <p className="text-sm font-semibold !text-zinc-900">
-              {user?._count?.receivedNotifications}
-            </p>
-          </div>
+          {user?._count.receivedNotifications > 0 && (
+            <div className="absolute right-0 top-0 flex size-5 items-center justify-center rounded-full bg-yellow-300">
+              <p className="text-sm font-semibold !text-zinc-900">
+                {user?._count?.receivedNotifications}
+              </p>
+            </div>
+          )}
         </Link>
         <Link
           to={`account/${user?.id}`}
@@ -203,61 +205,6 @@ const Navbar = ({
         >
           <AccountPicture user={user} />
         </Link>
-        {/* <NavMenuDesktop menuVisibility={accountMenuVisibility}>
-          {user?.role === 'SUPERADMIN' && (
-            <Link className="w-full" to="/glam/error">
-              <BtnNavbar
-                className="timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
-                onClick={() => {
-                  setAccountMenuVisibility(false);
-                }}
-              >
-                <div className="hover:text-accent flex w-full items-center gap-2 text-left">
-                  <p className="hover:text-accent">Error reports</p>
-                </div>
-              </BtnNavbar>
-            </Link>
-          )}
-          {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-            <Link className="w-full" to="/glam/codex/patchNotes/create">
-              <BtnNavbar
-                className="timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
-                onClick={() => {
-                  setAccountMenuVisibility(false);
-                }}
-              >
-                <p className="hover:text-accent w-full text-left">
-                  Create patch note
-                </p>
-              </BtnNavbar>
-            </Link>
-          )}
-
-          <Link className="w-full" to="/error/report">
-            <BtnNavbar
-              className="timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
-              onClick={() => {
-                setAccountMenuVisibility(false);
-              }}
-            >
-              <div className="hover:text-accent flex w-full items-center gap-2 text-left">
-                <p className="hover:text-accent">Error report</p>
-                <p className="text-tertiary text-sm"> (do not abuse)</p>
-              </div>
-            </BtnNavbar>
-          </Link>
-          <BtnNavbar
-            className="timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
-            onClick={() => {
-              setAccountMenuVisibility(false);
-              signout.mutate();
-            }}
-          >
-            <div className="flex w-full items-center gap-2">
-              <p className="hover:text-accent w-full text-left">Sign out</p>
-            </div>
-          </BtnNavbar>
-        </NavMenuDesktop> */}
       </div>
     </nav>
   );

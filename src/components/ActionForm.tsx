@@ -15,6 +15,8 @@ import Loading from './Loading';
 import useDeleteActionMutation from '../hooks/useDeleteActionMutation/useDeleteActionMutation';
 import useActions from '../hooks/useActions';
 import { Action } from 'src/types/action';
+import Divider from './Divider';
+import ArrowHeader2 from './ArrowHeader2';
 
 const ActionForm = ({ mode }: { mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -116,6 +118,8 @@ const ActionForm = ({ mode }: { mode?: string }) => {
         <h1 className="text-center">
           {action ? 'Update Action' : 'Create Action'}
         </h1>
+        <Divider />
+        <ArrowHeader2 title="Action Information" />
         <actionForm.Field
           name="name"
           validators={{

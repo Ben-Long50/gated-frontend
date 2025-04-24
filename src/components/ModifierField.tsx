@@ -5,6 +5,7 @@ import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import useActions from '../hooks/useActions';
 import usePerks from '../hooks/usePerks';
+import ArrowHeader2 from './ArrowHeader2';
 
 const ModifierField = ({ form }) => {
   const types: ModifierType[] = ['roll', 'stat'];

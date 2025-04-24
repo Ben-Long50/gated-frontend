@@ -31,7 +31,7 @@ const InputField = ({
       setBorderColor(accentPrimary);
     } else if (field.state.meta.errors.length > 0) {
       setBorderColor(errorPrimary);
-    } else if (field.state.value) {
+    } else if (field.state.value || field.state.value === 0) {
       setBorderColor(accentPrimary);
     }
   };
@@ -43,7 +43,7 @@ const InputField = ({
   return (
     <div className={`${className}`}>
       <ThemeContainer
-        className={`${className} ml-auto shadow-md`}
+        className={`${className} ml-auto`}
         chamfer="small"
         borderColor={borderColor}
       >

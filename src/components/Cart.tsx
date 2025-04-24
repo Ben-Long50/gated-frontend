@@ -118,11 +118,11 @@ const Cart = () => {
         {character.firstName + ' ' + character.lastName + "'s"} Cart
       </h1>
       <ThemeContainer
-        className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
+        className={`ml-auto w-full`}
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <div className="bg-primary flex w-full flex-col gap-4 p-4 clip-6 sm:px-8">
+        <div className="flex w-full flex-col gap-4 p-4 sm:px-8">
           <div className="flex w-full items-center justify-between gap-8">
             <h3>Available profits</h3>
             <h3 className="ml-auto">{character.profits}p</h3>

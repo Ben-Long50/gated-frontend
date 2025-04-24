@@ -1,7 +1,7 @@
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { ArmorWithKeywords } from 'src/types/armor';
-import { Modifier, StatModifier } from 'src/types/modifier';
+import { Modifier } from 'src/types/modifier';
 import useAttributeTree from './useAttributeTree';
 import { AttributeTree } from 'src/types/attributeTree';
 import { Perk } from 'src/types/perk';
@@ -11,9 +11,9 @@ import { CharacterInventory } from 'src/types/character';
 import { Item } from 'src/types/item';
 
 const useStats = (
-  inventory: CharacterInventory,
+  inventory: Partial<CharacterInventory>,
   attributTree: Partial<AttributeTree>,
-  perks: Perk[],
+  perks?: Perk[],
 ) => {
   const tree = useAttributeTree(attributTree);
 

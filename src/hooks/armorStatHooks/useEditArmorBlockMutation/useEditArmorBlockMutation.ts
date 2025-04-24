@@ -3,7 +3,11 @@ import editArmorBlock from './editArmorBlock';
 import { useRef } from 'react';
 import { Character } from 'src/types/character';
 
-const useEditArmorBlockMutation = (apiUrl: string, armorId: number) => {
+const useEditArmorBlockMutation = (
+  apiUrl: string,
+  armorId: number,
+  characterId: number,
+) => {
   const queryClient = useQueryClient();
   const updateBuffer = useRef(0);
   const timeoutRef = useRef(0);
@@ -28,38 +32,41 @@ const useEditArmorBlockMutation = (apiUrl: string, armorId: number) => {
     },
 
     onMutate: (value) => {
-      queryClient.cancelQueries({ queryKey: ['activeCharacter'] });
+      queryClient.cancelQueries({ queryKey: ['character', characterId] });
 
       const prevCharacterData: Character | undefined = queryClient.getQueryData(
-        ['activeCharacter'],
+        ['character', characterId],
       );
 
-      queryClient.setQueryData(['activeCharacter'], (prev: Character) => ({
-        ...prev,
-        characterInventory: {
-          ...prev.characterInventory,
-          armor: prev.characterInventory.armor.map((item) =>
-            item.id === armorId
-              ? {
-                  ...item,
-                  stats: {
-                    ...item.stats,
-                    currentBlock: item.stats.currentBlock
-                      ? item.stats.currentBlock + value
-                      : value,
-                  },
-                }
-              : item,
-          ),
-        },
-      }));
+      queryClient.setQueryData(
+        ['character', characterId],
+        (prev: Character) => ({
+          ...prev,
+          characterInventory: {
+            ...prev.characterInventory,
+            armor: prev.characterInventory.armor.map((item) =>
+              item.id === armorId
+                ? {
+                    ...item,
+                    stats: {
+                      ...item.stats,
+                      currentBlock: item.stats.currentBlock
+                        ? item.stats.currentBlock + value
+                        : value,
+                    },
+                  }
+                : item,
+            ),
+          },
+        }),
+      );
 
       return { prevCharacterData };
     },
 
     onSuccess: () => {
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
+        queryKey: ['character', characterId],
         exact: false,
       });
     },

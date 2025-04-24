@@ -1,6 +1,5 @@
 import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import Loading from './Loading';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -17,17 +16,15 @@ import useCybernetics from '../hooks/useCybernetics';
 import { ArmorWithKeywords } from 'src/types/armor';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import { useParams } from 'react-router-dom';
-import useToggleEquipmentMutation from '../hooks/useEquipmentToggleMutation/useEquipmentToggleMutation';
 import useStats from '../hooks/useStats';
 import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import Icon from '@mdi/react';
-import { mdiCheckCircle, mdiCircle, mdiCircleOutline, mdiClose } from '@mdi/js';
+import { mdiCircle, mdiCircleOutline, mdiClose } from '@mdi/js';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
-import clsx from 'clsx';
 import EquipmentList from './EquipmentList';
 import ActionCard from './ActionCard';
 import { Action } from 'src/types/action';
@@ -46,11 +43,13 @@ import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
 import InventoryModal from './InventoryModal';
+import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 
 const Equipment = ({ mode }: { mode?: string }) => {
-  const { apiUrl } = useContext(AuthContext);
+  const { apiUrl, user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
+  const { characterId } = useParams();
 
   const [active, setActive] = useState<{
     id: null | number;
@@ -66,11 +65,17 @@ const Equipment = ({ mode }: { mode?: string }) => {
     data: character,
     isLoading: characterLoading,
     isPending: characterPending,
-  } = useActiveCharacterQuery(apiUrl);
+  } = useCharacterQuery(apiUrl, characterId);
 
-  const editCurrentHealth = useCurrentHealthMutation(apiUrl, character?.id);
+  const editCurrentHealth = useCurrentHealthMutation(
+    apiUrl,
+    Number(characterId),
+  );
 
-  const editCurrentSanity = useCurrentSanityMutation(apiUrl, character?.id);
+  const editCurrentSanity = useCurrentSanityMutation(
+    apiUrl,
+    Number(characterId),
+  );
 
   const handleCurrentHealth = (value: number) => {
     if (character?.stats.currentHealth <= 0) return;
@@ -159,7 +164,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
       <div className="flex w-full flex-col justify-between gap-8 lg:flex-row">
         {character.picture.imageUrl && (
           <ThemeContainer
-            className="size mx-auto mb-auto aspect-square w-full max-w-60 rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
+            className="size mx-auto mb-auto aspect-square w-full max-w-60"
             chamfer="medium"
             borderColor={accentPrimary}
           >
@@ -179,7 +184,11 @@ const Equipment = ({ mode }: { mode?: string }) => {
             total={stats.maxHealth}
             color="rgb(248 113 113)"
             mode="adjustable"
-            mutation={(value: number) => handleCurrentHealth(value)}
+            mutation={
+              character?.userId === user?.id
+                ? (value: number) => handleCurrentHealth(value)
+                : undefined
+            }
           >
             <HealthIcon className="size-8" />
           </StatBar>
@@ -189,7 +198,11 @@ const Equipment = ({ mode }: { mode?: string }) => {
             total={stats.maxSanity}
             color="rgb(96 165 250)"
             mode="adjustable"
-            mutation={(value: number) => handleCurrentSanity(value)}
+            mutation={
+              character?.userId === user?.id
+                ? (value: number) => handleCurrentSanity(value)
+                : undefined
+            }
           >
             <SanityIcon className="size-8" />
           </StatBar>
@@ -269,11 +282,11 @@ const Equipment = ({ mode }: { mode?: string }) => {
         </div>
 
         <ThemeContainer
-          className="mb-auto w-full rounded-br-4xl rounded-tl-4xl shadow-lg shadow-slate-950"
+          className="mb-auto w-full"
           chamfer="medium"
           borderColor={accentPrimary}
         >
-          <div className="bg-primary flex h-full flex-col gap-4 p-4 pr-6 clip-6">
+          <div className="flex h-full flex-col gap-4 p-4 pr-6">
             <ArrowHeader3 title="Stats" />
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">

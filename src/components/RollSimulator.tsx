@@ -32,6 +32,9 @@ import Die4Icon from './icons/Die4Icon';
 import useRoll from '../hooks/useRoll';
 import { AttributeName, SkillName } from 'src/types/attributeTree';
 import InputSelectField from './InputSelectField';
+import { useParams } from 'react-router-dom';
+import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
+import { Character } from 'src/types/character';
 
 const RollSimulator = ({
   modalOpen,
@@ -40,28 +43,41 @@ const RollSimulator = ({
   modalOpen?: boolean;
   toggleModal?: () => void;
 }) => {
-  const { apiUrl } = useContext(AuthContext);
+  const { apiUrl, user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const { campaignId } = useParams();
+
+  const {
+    data: campaign,
+    isLoading: campaignLoading,
+    isPending: campaignPending,
+  } = useCampaignQuery(apiUrl, campaignId);
+
   const {
     data: character,
-    isLoading,
-    isPending,
+    isLoading: characterLoading,
+    isPending: characterPending,
   } = useActiveCharacterQuery(apiUrl);
 
-  const { filteredActions: actions } = useActions();
-  const { emptyAttributeTree, getPoints } = useAttributeTree(
-    character?.attributes,
+  const [selectedCharacter, setSelectedCharacter] = useState(
+    user.id === campaign?.ownerId ? undefined : character,
   );
-  const { diceArray, rolling, calculateSuccesses, successes } = useRoll();
 
-  const [selectedAction, setSelectedAction] = useState<Action | null>(null);
+  const { filteredActions: actions } = useActions();
+
+  const { emptyAttributeTree, getPoints } = useAttributeTree(
+    selectedCharacter?.attributes,
+  );
+  const { diceArray, setDiceArray, rolling, calculateSuccesses, successes } =
+    useRoll();
 
   const rollForm = useForm({
     defaultValues: {
+      character: user.id === campaign?.ownerId ? '' : character,
       action: '',
       rollType: 'recommended' as 'recommended' | 'custom',
-      attribute: '' as AttributeName,
-      skill: '' as SkillName,
+      attribute: '' as AttributeName | '',
+      skill: '' as SkillName | '',
       modifiers: [] as string[],
       diceCount: null as number | null,
     },
@@ -78,22 +94,13 @@ const RollSimulator = ({
     },
   });
 
-  const rolls = useMemo(() => {
-    return selectedAction?.roll ? selectedAction?.roll : [];
-  }, [selectedAction]);
-  const rollAttributes = useMemo(() => {
-    return rolls.map((roll) => roll.attribute);
-  }, [rolls]) as AttributeName[];
-  const rollSkills = useMemo(() => {
-    return rolls.map((roll) => roll.skill);
-  }, [rolls]) as SkillName[];
-
-  useEffect(() => {
-    rollForm.setFieldValue('attribute', rollAttributes[0]);
-    rollForm.setFieldValue('skill', rollSkills[0]);
-  }, [rollAttributes, rollSkills]);
-
-  if (isLoading || isPending) return <Loading />;
+  if (
+    campaignLoading ||
+    campaignPending ||
+    characterLoading ||
+    characterPending
+  )
+    return <Loading />;
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-8">
@@ -104,26 +111,58 @@ const RollSimulator = ({
         borderColor={accentPrimary}
         chamfer="medium"
       >
-        <div className="bg-primary grid w-full grid-cols-2 gap-8 p-4 clip-6">
+        <div className="grid w-full grid-cols-2 gap-8 p-4">
           <div className="flex flex-col">
-            <div className="col-span-3 flex w-full justify-start gap-8 justify-self-start">
-              <img
-                className="z-10 size-16 shrink-0 rounded-full shadow shadow-zinc-950"
-                src={character?.picture.imageUrl}
-                alt={
-                  character?.firstName +
-                  ' ' +
-                  character?.lastName +
-                  "'s profile picture"
-                }
-              />
-              <ArrowHeader1
-                title={character.firstName + ' ' + character.lastName}
-              />
+            <div className="col-span-3">
+              <rollForm.Field
+                name="character"
+                listeners={{
+                  onChange: ({ value }) => {
+                    rollForm.setFieldValue('action', '');
+                    rollForm.setFieldValue('rollType', 'recommended');
+                    rollForm.setFieldValue('modifiers', []);
+                    setSelectedCharacter(value);
+                    setDiceArray([]);
+                  },
+                }}
+              >
+                {(field) => (
+                  <div className="flex w-full flex-col gap-4">
+                    {user.id === campaign?.ownerId && (
+                      <InputSelectField
+                        field={field}
+                        options={campaign?.characters}
+                        label="Character to Roll"
+                      />
+                    )}
+                    {field.state.value && (
+                      <div className="flex w-full items-center justify-start gap-4">
+                        <img
+                          className="z-10 size-16 shrink-0 rounded-full shadow shadow-zinc-950"
+                          src={field.state.value?.picture.imageUrl}
+                          alt={
+                            field.state.value?.firstName +
+                            ' ' +
+                            field.state.value?.lastName +
+                            "'s profile picture"
+                          }
+                        />
+                        <ArrowHeader1
+                          title={
+                            field.state.value.firstName +
+                            ' ' +
+                            field.state.value.lastName
+                          }
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </rollForm.Field>
             </div>
             <Divider />
             <div className="grid grid-cols-3 place-items-start">
-              {diceArray.map((number: number) => {
+              {diceArray.map((number: number, index) => {
                 const modifiers = rollForm.getFieldValue('modifiers');
                 const lucky =
                   modifiers.includes('lucky') && !modifiers.includes('unlucky');
@@ -133,7 +172,7 @@ const RollSimulator = ({
                 switch (number) {
                   case 1:
                     return (
-                      <div className="relative h-full w-full">
+                      <div key={index} className="relative h-full w-full">
                         <Die1Icon className="text-primary" />
                         {!rolling &&
                           rollForm
@@ -148,16 +187,13 @@ const RollSimulator = ({
                           )}
                       </div>
                     );
-                    break;
                   case 2:
-                    return <Die2Icon className="text-primary" />;
-                    break;
+                    return <Die2Icon key={index} className="text-primary" />;
                   case 3:
-                    return <Die3Icon className="text-primary" />;
-                    break;
+                    return <Die3Icon key={index} className="text-primary" />;
                   case 4:
                     return (
-                      <div className="relative h-full w-full">
+                      <div key={index} className="relative h-full w-full">
                         <Die4Icon className="text-primary" />
                         {!rolling && lucky && (
                           <div className="absolute inset-3 flex items-center justify-center">
@@ -169,10 +205,9 @@ const RollSimulator = ({
                         )}
                       </div>
                     );
-                    break;
                   case 5:
                     return (
-                      <div className="relative h-full w-full">
+                      <div key={index} className="relative h-full w-full">
                         <Die5Icon className="text-primary" />
                         {!rolling && !unlucky && (
                           <div className="absolute inset-3 flex items-center justify-center">
@@ -184,10 +219,9 @@ const RollSimulator = ({
                         )}
                       </div>
                     );
-                    break;
                   case 6:
                     return (
-                      <div className="relative h-full w-full">
+                      <div key={index} className="relative h-full w-full">
                         <Die6Icon className="text-primary" />
                         {!rolling &&
                           (!modifiers.includes('booming') ? (
@@ -211,10 +245,8 @@ const RollSimulator = ({
                           ))}
                       </div>
                     );
-                    break;
                   default:
                     return;
-                    break;
                 }
               })}
             </div>
@@ -254,19 +286,34 @@ const RollSimulator = ({
             className="mb-auto flex flex-col items-start justify-start gap-8"
           >
             <ArrowHeader3 title="Roll Options" />
-            <rollForm.Field name="action">
+            <rollForm.Field
+              name="action"
+              listeners={{
+                onChange: ({ value }) => {
+                  const rollType = rollForm.getFieldValue('rollType');
+
+                  if (rollType === 'recommended') {
+                    rollForm.setFieldValue(
+                      'attribute',
+                      value.roll?.length > 0 ? value.roll[0].attribute : '',
+                    );
+                    rollForm.setFieldValue(
+                      'skill',
+                      value.roll?.length > 0 ? value.roll[0].skill : '',
+                    );
+                  } else {
+                    rollForm.setFieldValue('attribute', '');
+                    rollForm.setFieldValue('skill', '');
+                  }
+                },
+              }}
+            >
               {(field) => (
                 <InputSelectField
                   options={actions}
                   label="Action"
                   className="w-full"
                   field={field}
-                  onChange={(name: string) => {
-                    setSelectedAction(
-                      actions.find((action) => name === action.name) || null,
-                    );
-                    console.log(name);
-                  }}
                 />
               )}
             </rollForm.Field>
@@ -281,14 +328,31 @@ const RollSimulator = ({
               <rollForm.Field
                 name="rollType"
                 listeners={{
-                  onChange: () => {
-                    rollForm.setFieldValue('attribute', '');
-                    rollForm.setFieldValue('skill', '');
+                  onChange: ({ value }) => {
+                    const selectedAction = rollForm.getFieldValue('action');
+
+                    if (value === 'recommended') {
+                      rollForm.setFieldValue(
+                        'attribute',
+                        selectedAction && selectedAction.roll?.length > 0
+                          ? selectedAction.roll[0].attribute
+                          : '',
+                      );
+                      rollForm.setFieldValue(
+                        'skill',
+                        selectedAction && selectedAction.roll?.length > 0
+                          ? selectedAction.roll[0].skill
+                          : '',
+                      );
+                    } else {
+                      rollForm.setFieldValue('attribute', '');
+                      rollForm.setFieldValue('skill', '');
+                    }
                   },
                 }}
               >
                 {(field) => (
-                  <div className="bg-primary flex w-full flex-col gap-4 p-4 px-4 pt-6 clip-4">
+                  <div className="flex w-full flex-col gap-4 p-4 px-4 pt-6">
                     <InputFieldRadio
                       className="w-full"
                       field={field}
@@ -309,15 +373,22 @@ const RollSimulator = ({
                 )}
               </rollForm.Field>
             </ThemeContainer>
-            <rollForm.Subscribe selector={(state) => state.values.rollType}>
-              {(rollType) => (
+            <rollForm.Subscribe
+              selector={(state) => [state.values.action, state.values.rollType]}
+            >
+              {([action, rollType]) => (
                 <>
                   <rollForm.Field name="attribute">
                     {(field) => {
                       const attributeList =
                         rollType === 'custom'
                           ? Object.keys(emptyAttributeTree)
-                          : rollAttributes;
+                          : action?.roll
+                            ? action.roll?.map(
+                                (r: { attribute: string; skill: string }) =>
+                                  r.attribute,
+                              )
+                            : [];
 
                       return (
                         <InputSelectField
@@ -344,7 +415,12 @@ const RollSimulator = ({
                                     emptyAttributeTree[attribute]?.skills,
                                   )
                                 : []
-                              : rollSkills;
+                              : action?.roll
+                                ? action.roll?.map(
+                                    (r: { attribute: string; skill: string }) =>
+                                      r.skill,
+                                  )
+                                : [];
 
                           return (
                             <InputSelectField
@@ -369,7 +445,7 @@ const RollSimulator = ({
               <p className="!text-accent bg-primary absolute -top-2 left-3.5 z-20 px-1.5 text-base">
                 Modifiers
               </p>
-              <div className="bg-primary relative flex w-full flex-col gap-4 p-4 pt-6 clip-4">
+              <div className="relative flex w-full flex-col gap-4 p-4 pt-6">
                 <rollForm.Field name="modifiers">
                   {(field) => {
                     const modifiers = [

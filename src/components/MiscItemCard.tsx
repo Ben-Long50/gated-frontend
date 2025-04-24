@@ -1,19 +1,18 @@
 import EquipIcon from './icons/EquipIcon';
 import ItemCard from './ItemCard';
-import StatCard from './StatCard';
 import LightningIcon from './icons/LightningIcon';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnControl from './buttons/BtnControl';
 import PowerIcon from './icons/PowerIcon';
-import { Modifier } from 'src/types/modifier';
-import ModifierTag from './ModifierTag';
 import { Item, ItemStats } from 'src/types/item';
 import StackIcon from './icons/StackIcon';
 import useEditItemPowerMutation from '../hooks/itemStatHooks/useEditItemPowerMutation/useEditItemPowerMutation';
 import useEditItemStacksMutation from '../hooks/itemStatHooks/useEditItemStacksMutation/useEditItemStacksMutation';
 import useRefreshItemPowerMutation from '../hooks/itemStatHooks/useRefreshItemPowerMutation/useRefreshItemPowerMutation';
 import useRefreshItemStacksMutation from '../hooks/itemStatHooks/useRefreshItemStacksMutation/useRefreshItemStacksMutation';
+import StatBar from './StatBar';
+import { useParams } from 'react-router-dom';
 
 const ItemControls = ({
   itemId,
@@ -23,11 +22,28 @@ const ItemControls = ({
   stats: ItemStats;
 }) => {
   const { apiUrl } = useContext(AuthContext);
+  const { characterId } = useParams();
 
-  const editCurrentPower = useEditItemPowerMutation(apiUrl, itemId);
-  const editCurrentStacks = useEditItemStacksMutation(apiUrl, itemId);
-  const refreshPower = useRefreshItemPowerMutation(apiUrl, itemId);
-  const refreshStacks = useRefreshItemStacksMutation(apiUrl, itemId);
+  const editCurrentPower = useEditItemPowerMutation(
+    apiUrl,
+    itemId,
+    Number(characterId),
+  );
+  const editCurrentStacks = useEditItemStacksMutation(
+    apiUrl,
+    itemId,
+    Number(characterId),
+  );
+  const refreshPower = useRefreshItemPowerMutation(
+    apiUrl,
+    itemId,
+    Number(characterId),
+  );
+  const refreshStacks = useRefreshItemStacksMutation(
+    apiUrl,
+    itemId,
+    Number(characterId),
+  );
 
   return (
     <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
@@ -75,46 +91,57 @@ const MiscItemCard = ({ item, mode }: { item: Item; mode: string }) => {
       mode={mode}
       controls={<ItemControls itemId={item.id} stats={item.stats} />}
     >
+      <MiscItemStatBars stats={item.stats} mode={mode} />
+    </ItemCard>
+  );
+};
+
+export const MiscItemStatBars = ({
+  stats,
+  mode,
+}: {
+  stats: ItemStats;
+  mode?: string;
+}) => {
+  return (
+    <>
       {mode === 'equipment'
-        ? item.stats.power &&
-          item.stats.currentPower !== null && (
-            <StatCard
-              label="PWR"
-              stat={`${item.stats.currentPower} / ${item.stats.power}`}
+        ? stats.power &&
+          stats.currentPower !== undefined && (
+            <StatBar
+              title="PWR"
+              total={stats.power}
+              current={stats.currentPower}
+              color="rgb(107, 255, 124)"
             >
               <LightningIcon className="size-8" />
-            </StatCard>
+            </StatBar>
           )
-        : item.stats.power && (
-            <StatCard label="PWR" stat={item.stats.power}>
+        : stats.power && (
+            <StatBar
+              title="PWR"
+              current={stats.power}
+              color="rgb(107, 255, 124)"
+            >
               <LightningIcon className="size-8" />
-            </StatCard>
+            </StatBar>
           )}
-      {item.stats.weight && (
-        <StatCard
-          label="WGT"
-          stat={
-            item.stats.currentStacks
-              ? item.stats.currentStacks * item.stats.weight
-              : item.stats.weight
-          }
-        >
+      {stats.weight && (
+        <StatBar title="WGT" current={stats.weight} color="rgb(251 191 36)">
           <EquipIcon className="size-8" />
-        </StatCard>
+        </StatBar>
       )}
-      {item.stats.currentStacks ? (
-        <StatCard
-          label="STACKS"
-          stat={
-            item.stats.maxStacks
-              ? `${item.stats.currentStacks} / ${item.stats.maxStacks}`
-              : item.stats.currentStacks
-          }
+      {stats.currentStacks ? (
+        <StatBar
+          title="STACKS"
+          total={stats.maxStacks ? stats.maxStacks : undefined}
+          current={stats.currentStacks}
+          color="rgb(33, 194, 219)"
         >
           <StackIcon className="size-8" />
-        </StatCard>
+        </StatBar>
       ) : null}
-    </ItemCard>
+    </>
   );
 };
 

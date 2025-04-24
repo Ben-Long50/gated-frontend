@@ -4,8 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 const useDeleteAffiliationMutation = (
   apiUrl: string,
-  affiliationId: string,
+  affiliationId: number,
   setFormMessage: (message: string) => void,
+  factionId?: number,
+  characterId?: number,
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -18,8 +20,11 @@ const useDeleteAffiliationMutation = (
       queryClient.invalidateQueries({
         queryKey: ['affiliation', affiliationId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ['faction', factionId],
+      });
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
+        queryKey: ['character', characterId],
       });
     },
     onError: (error) => {

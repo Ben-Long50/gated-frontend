@@ -16,7 +16,7 @@ const CharacterPicture = ({
   return (
     <div className="grid grid-cols-[1fr_auto_1fr]">
       <ThemeContainer
-        className="col-span-1 col-start-2 rounded-br-5xl rounded-tl-5xl shadow-lg shadow-slate-950"
+        className="col-span-1 col-start-2"
         chamfer="medium"
         borderColor={accentPrimary}
       >

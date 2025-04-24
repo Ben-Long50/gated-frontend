@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toggleEquipment from './toggleEquipment';
 import { Character } from 'src/types/character';
 
-const useToggleEquipmentMutation = (apiUrl: string) => {
+const useToggleEquipmentMutation = (apiUrl: string, characterId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -16,10 +16,10 @@ const useToggleEquipmentMutation = (apiUrl: string) => {
     },
 
     onMutate: async (mutationInfo) => {
-      await queryClient.cancelQueries({ queryKey: ['activeCharacter'] });
+      await queryClient.cancelQueries({ queryKey: ['character', characterId] });
 
       const prevCharacterData: Character | undefined = queryClient.getQueryData(
-        ['activeCharacter'],
+        ['character', characterId],
       );
 
       const updateInventory = () => {
@@ -71,16 +71,19 @@ const useToggleEquipmentMutation = (apiUrl: string) => {
       const newInventory = updateInventory();
 
       // Optimistically update to the new value
-      queryClient.setQueryData(['activeCharacter'], (prev: Character) => ({
-        ...prev,
-        characterInventory: newInventory,
-      }));
+      queryClient.setQueryData(
+        ['character', characterId],
+        (prev: Character) => ({
+          ...prev,
+          characterInventory: newInventory,
+        }),
+      );
       // Return a context object with the snapshotted value
       return { prevCharacterData };
     },
     onSuccess: () => {
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
+        queryKey: ['character', characterId],
         exact: false,
       });
     },

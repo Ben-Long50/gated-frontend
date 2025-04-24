@@ -47,11 +47,11 @@ const Cybernetics = ({
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
       <h1 className="text-center">{title}</h1>
       <ThemeContainer
-        className={`ml-auto w-full rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950`}
+        className={`ml-auto w-full`}
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <form className="bg-primary flex w-full flex-col gap-4 p-4 clip-6">
+        <form className="flex w-full flex-col gap-4 p-4">
           <div className="flex w-full items-center justify-between">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">

@@ -36,7 +36,10 @@ const InventoryModal = ({
   const { accentPrimary, rarityColorMap } = useContext(ThemeContext);
   const { characterId } = useParams();
 
-  const toggleEquipment = useToggleEquipmentMutation(apiUrl);
+  const toggleEquipment = useToggleEquipmentMutation(
+    apiUrl,
+    Number(characterId),
+  );
 
   return (
     <Modal modalOpen={modalOpen} toggleModal={toggleModal}>
@@ -49,7 +52,7 @@ const InventoryModal = ({
           borderColor={accentPrimary}
           chamfer="medium"
         >
-          <div className="bg-primary flex items-center justify-between gap-8 p-4 clip-6">
+          <div className="flex items-center justify-between gap-8 p-4">
             <ArrowHeader2 title="Inventory" />
             <p className="text-tertiary italic">
               (Double click to equip / unequip)

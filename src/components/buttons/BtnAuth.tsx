@@ -18,7 +18,6 @@ const BtnAuth = ({
 
   return (
     <ThemeContainer
-      className="shadow-md"
       borderColor={active ? accentPrimary : borderColor}
       chamfer="small"
     >

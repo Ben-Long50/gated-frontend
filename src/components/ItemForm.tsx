@@ -20,6 +20,8 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { ItemStats } from 'src/types/item';
 import useModifyItemMutation from '../hooks/useModifyItemMutation/useModifyItemMutation';
+import Divider from './Divider';
+import ArrowHeader2 from './ArrowHeader2';
 
 const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -164,6 +166,8 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
         <div className="flex items-center justify-center gap-4">
           <h1>{title} Item</h1>
         </div>
+        <Divider />
+        <ArrowHeader2 title="Item Information" />
         <div className="flex w-full gap-4 lg:gap-8">
           <itemForm.Field
             name="name"
@@ -299,14 +303,15 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
             )}
           </itemForm.Field>
         </div>
-        <div className="flex flex-col gap-8 sm:grid sm:grid-cols-2 sm:grid-rows-1">
+        <div className="flex flex-col gap-8 sm:flex-row">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
             chamfer="medium"
             borderColor={accentPrimary}
+            overflowHidden={true}
           >
             {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center clip-6">
+              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
                 <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
                   <Icon
                     className="text-tertiary"
@@ -356,11 +361,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
             }}
           >
             {(field) => (
-              <TextAreaField
-                className="h-40 w-full sm:h-full"
-                label="Item description"
-                field={field}
-              />
+              <TextAreaField label="Item description" field={field} />
             )}
           </itemForm.Field>
         </div>
@@ -420,12 +421,16 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
             )}
           </itemForm.Subscribe>
         </div>
-        <hr className="border-yellow-300 border-opacity-50" />
+        <Divider />
         <SubactionForm form={itemForm} />
-        <hr className="border-yellow-300 border-opacity-50" />
+        <Divider />
         <ModifierField form={itemForm} />
-        <hr className="border-yellow-300 border-opacity-50" />
-        <BtnRect type="submit" className="group w-full">
+        <Divider />
+        <BtnRect
+          ariaLabel={`${title} item`}
+          type="submit"
+          className="group w-full"
+        >
           {createItem.isPending || modifyItem.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"

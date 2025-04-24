@@ -10,6 +10,8 @@ const useCurrentSanityMutation = (apiUrl: string, characterId: number) => {
 
   return useMutation({
     mutationFn: (value: number) => {
+      console.log(1);
+
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
@@ -28,27 +30,29 @@ const useCurrentSanityMutation = (apiUrl: string, characterId: number) => {
     },
 
     onMutate: (value) => {
-      queryClient.cancelQueries({ queryKey: ['activeCharacter'] });
+      queryClient.cancelQueries({ queryKey: ['character', characterId] });
 
       const prevCharacterData: Character | undefined = queryClient.getQueryData(
-        ['activeCharacter'],
+        ['character', characterId],
       );
 
-      queryClient.setQueryData(['activeCharacter'], (prev: Character) => ({
-        ...prev,
-        stats: {
-          ...prev.stats,
-          currentSanity: prev.stats.currentSanity + value,
-        },
-      }));
+      queryClient.setQueryData(
+        ['character', characterId],
+        (prev: Character) => ({
+          ...prev,
+          stats: {
+            ...prev.stats,
+            currentSanity: prev.stats.currentSanity + value,
+          },
+        }),
+      );
 
       return { prevCharacterData };
     },
 
     onSuccess: () => {
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
-        exact: false,
+        queryKey: ['character', characterId],
       });
     },
     throwOnError: false,

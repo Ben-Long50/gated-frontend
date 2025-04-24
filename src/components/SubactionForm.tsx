@@ -5,6 +5,7 @@ import SelectField from './SelectField';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
+import ArrowHeader2 from './ArrowHeader2';
 
 const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
   const attributeTree = useAttributeTree();
@@ -28,7 +29,7 @@ const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
       {(field) => (
         <>
           {field.state.value.length > 0 && (
-            <h2 className="text-left">Unique actions</h2>
+            <ArrowHeader2 title="Unique Actions" />
           )}
           {field.state.value.map((_, i) => {
             return (

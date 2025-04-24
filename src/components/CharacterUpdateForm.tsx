@@ -4,7 +4,6 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import BtnRect from './buttons/BtnRect';
 import AttributeCard from './AttributeCard';
-import TextAreaField from './TextAreaField';
 import { AuthContext } from '../contexts/AuthContext';
 import { useForm, ValidationError } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
@@ -13,7 +12,12 @@ import StatBar from './StatBar';
 import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';
 import Icon from '@mdi/react';
-import { mdiAlertOutline, mdiCloseBox, mdiImagePlus } from '@mdi/js';
+import {
+  mdiAlertOutline,
+  mdiCircleOutline,
+  mdiCloseBox,
+  mdiImagePlus,
+} from '@mdi/js';
 import HealthIcon from './icons/HealthIcon';
 import { LayoutContext } from '../contexts/LayoutContext';
 import SanityIcon from './icons/SanityIcon';
@@ -26,20 +30,28 @@ import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import useStats from '../hooks/useStats';
 import { Perk } from 'src/types/perk';
 import InputFieldRadio from './InputFieldRadio';
-import { Campaign } from 'src/types/campaign';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import useCampaignsQuery from '../hooks/useCampaignsQuery/useCampaignsQuery';
+import InputSelectField from './InputSelectField';
+import ArrowHeader3 from './ArrowHeader3';
+import { AttributeName, SkillName } from 'src/types/attributeTree';
+import InjuryIcon from './icons/InjuryIcon';
+import InsanityIcon from './icons/InsanityIcon';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
+  const { layoutSize, mobile } = useContext(LayoutContext);
   const { characterId } = useParams();
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const { data: campaigns } = useCampaignsQuery(apiUrl);
+  const {
+    data: campaigns,
+    isLoading: campaignsLoading,
+    isPending: campaignsPending,
+  } = useCampaignsQuery(apiUrl);
 
   const {
     data: character,
@@ -47,14 +59,8 @@ const CharacterUpdateForm = () => {
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, characterId);
 
-  console.log(character);
-
-  const playerCharacter = character.playerCharacter.toString();
-
-  const isLoading = characterLoading;
-  const isPending = characterPending;
-
-  const [checkedPerks, setCheckedPerks] = useState(character?.perks);
+  const isLoading = characterLoading || campaignsLoading;
+  const isPending = characterPending || campaignsPending;
 
   const [imagePreview, setImagePreview] = useState(character?.picture.imageUrl);
 
@@ -88,8 +94,8 @@ const CharacterUpdateForm = () => {
 
   const searchForm = useForm({
     defaultValues: {
-      attribute: '',
-      skill: '',
+      attribute: '' as AttributeName | 'general',
+      skill: '' as SkillName,
       query: '',
     },
     onSubmit: ({ value }) => {
@@ -99,8 +105,8 @@ const CharacterUpdateForm = () => {
 
   const characterUpdateForm = useForm({
     defaultValues: {
-      playerCharacter: playerCharacter || '',
-      campaign: character?.campaignId ?? null,
+      playerCharacter: character?.playerCharacter ?? '',
+      campaignId: character?.campaign ?? null,
       firstName: character?.firstName ?? '',
       lastName: character?.lastName ?? '',
       level: character?.level ?? '',
@@ -117,25 +123,14 @@ const CharacterUpdateForm = () => {
       age: character?.age ?? '',
       sex: character?.sex ?? '',
       attributes: character?.attributes ?? '',
-      perks: character?.perks ?? '',
+      perks: character?.perks.map((perk: Perk) => perk.id) ?? ([] as number[]),
     },
     onSubmit: async ({ value }) => {
-      value.perks = value.perks.map((perk: Perk) => perk.id);
-
-      value.playerCharacter = value.playerCharacter === 'true' ? true : false;
+      value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
 
       console.log(value);
 
       const formData = new FormData();
-
-      if (value.stats.currentHealth == 0) {
-        value.stats.injuries++;
-        value.stats.currentHealth = attributeTree.stats.health;
-      }
-      if (value.stats.currentSanity == 0) {
-        value.stats.insanities++;
-        value.stats.currentSanity = attributeTree.stats.sanity;
-      }
 
       Object.entries(value).forEach(([key, val]) => {
         if (key === 'picture') {
@@ -148,9 +143,7 @@ const CharacterUpdateForm = () => {
           formData.append(key, JSON.stringify(val));
         }
       });
-
       updateCharacter.mutate(formData);
-      value.playerCharacter = value.playerCharacter.toString();
     },
   });
 
@@ -160,10 +153,6 @@ const CharacterUpdateForm = () => {
       attributeTree.destructureTree(),
     );
   }, [attributeTree, characterUpdateForm]);
-
-  useEffect(() => {
-    characterUpdateForm.setFieldValue('perks', checkedPerks);
-  }, [checkedPerks, characterUpdateForm]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0]; // Get the selected file
@@ -201,78 +190,64 @@ const CharacterUpdateForm = () => {
         }}
       >
         <h1 className="text-center">Update Character</h1>
-        <div className="grid gap-4 max-sm:grid-rows-2 sm:grid-cols-[auto_1fr] sm:gap-8">
-          <Divider className="col-span-2" />
-          <ArrowHeader2 className="col-span-2" title="Campaign Information" />
-          <characterUpdateForm.Field
-            name="playerCharacter"
-            validators={{
-              onSubmit: ({ value }) =>
-                !value
-                  ? 'You must choose whether this character is a playable character'
-                  : undefined,
-            }}
-          >
-            {(field) => (
-              <>
-                <InputFieldRadio
-                  className="col-span-2"
-                  label="Player Character"
-                  field={field}
-                  checked={
-                    field.state.value == 'true' || field.state.value === true
-                  }
-                  value="true"
-                />
-                <InputFieldRadio
-                  className="col-span-2"
-                  label="Non-player Character"
-                  field={field}
-                  checked={
-                    field.state.value === 'false' || field.state.value === false
-                  }
-                  value="false"
-                />
-                {field.state.meta.errors &&
-                  field.state.meta.errors.map((error: ValidationError) => (
-                    <p
-                      key={error?.toString()}
-                      className="timing text-error col-span-2 mt-1 text-base italic leading-5"
-                      role="alert"
-                    >
-                      {error}
-                    </p>
-                  ))}
-              </>
-            )}
-          </characterUpdateForm.Field>
-          <characterUpdateForm.Field name="campaign">
-            {(field) => (
-              <SelectField
-                className="col-span-2"
-                label="Campaign"
+        <Divider />
+        <ArrowHeader2 title="Campaign Information" />
+        <characterUpdateForm.Field
+          name="playerCharacter"
+          validators={{
+            onSubmit: ({ value }) =>
+              typeof value !== 'boolean'
+                ? 'You must choose whether this character is a playable character'
+                : undefined,
+          }}
+        >
+          {(field) => (
+            <>
+              <InputFieldRadio
+                label="Player Character"
                 field={field}
-              >
-                <option defaultValue=""></option>
-                {campaigns &&
-                  campaigns.length > 0 &&
-                  campaigns.map((campaign: Campaign) => (
-                    <option key={campaign.id} value={campaign.id}>
-                      {campaign.name}
-                    </option>
-                  ))}
-              </SelectField>
-            )}
-          </characterUpdateForm.Field>
-          <hr className="col-span-2 w-full border border-yellow-300 border-opacity-50" />
-          <ArrowHeader2 className="col-span-2" title="Character Information" />
+                checked={field.state.value === true}
+                onChange={() => field.handleChange(true)}
+              />
+              <InputFieldRadio
+                label="Non-player Character"
+                field={field}
+                checked={field.state.value === false}
+                onChange={() => field.handleChange(false)}
+              />
+              {field.state.meta.errors &&
+                field.state.meta.errors.map((error: ValidationError) => (
+                  <p
+                    key={error?.toString()}
+                    className="timing text-error col-span-2 mt-1 text-base italic leading-5"
+                    role="alert"
+                  >
+                    {error}
+                  </p>
+                ))}
+            </>
+          )}
+        </characterUpdateForm.Field>
+        <characterUpdateForm.Field name="campaignId">
+          {(field) => (
+            <InputSelectField
+              className="w-full"
+              field={field}
+              label="Campaign"
+              options={campaigns}
+            />
+          )}
+        </characterUpdateForm.Field>
+        <Divider />
+        <ArrowHeader2 title="Character Information" />
+        <div className="flex w-full flex-col gap-8 sm:flex-row">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
             chamfer="medium"
             borderColor={accentPrimary}
           >
             {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center clip-6">
+              <label className="flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
                 <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
                   <Icon
                     className="text-tertiary"
@@ -310,7 +285,7 @@ const CharacterUpdateForm = () => {
               </div>
             )}
           </ThemeContainer>
-          <div className="flex flex-col gap-8">
+          <div className="flex w-full flex-col gap-8 max-sm:col-span-2">
             <characterUpdateForm.Field
               name="firstName"
               validators={{
@@ -394,7 +369,7 @@ const CharacterUpdateForm = () => {
             name="stats.currentHealth"
             validators={{
               onChange: ({ value }) => {
-                if (value > attributeTree.stats.health) {
+                if (value > stats.maxHealth) {
                   return 'Cannot exceed max health';
                 } else if (value < 0) {
                   return 'Health cannot be lower than 0';
@@ -427,7 +402,7 @@ const CharacterUpdateForm = () => {
             name="stats.currentSanity"
             validators={{
               onChange: ({ value }) => {
-                if (value > attributeTree.stats.sanity) {
+                if (value > stats.maxSanity) {
                   return 'Cannot exceed max sanity';
                 } else if (value < 0) {
                   return 'Sanity cannot be lower than 0';
@@ -456,6 +431,84 @@ const CharacterUpdateForm = () => {
               </>
             )}
           </characterUpdateForm.Field>
+          <characterUpdateForm.Field
+            name="stats.injuries"
+            validators={{
+              onChange: ({ value }) => {
+                if (value > stats.permanentInjuries) {
+                  return 'Cannot exceed max injuries';
+                } else if (value < 0) {
+                  return 'Injuries cannot be lower than 0';
+                }
+                return undefined;
+              },
+            }}
+          >
+            {(field) => (
+              <>
+                {!mobile && <h4>Injuries</h4>}
+                <div className="col-span-2 flex grow items-center gap-2">
+                  {Array.from({ length: field.state.value }).map((_, index) => (
+                    <InjuryIcon key={index} className="size-8" />
+                  ))}
+                  {Array.from({
+                    length: stats.permanentInjuries - field.state.value,
+                  }).map((_, index) => (
+                    <Icon
+                      path={mdiCircleOutline}
+                      key={index}
+                      className="text-tertiary size-8 p-1"
+                    />
+                  ))}
+                </div>
+                <InputField
+                  className="w-28"
+                  field={field}
+                  label="Injuries"
+                  type="number"
+                />
+              </>
+            )}
+          </characterUpdateForm.Field>
+          <characterUpdateForm.Field
+            name="stats.insanities"
+            validators={{
+              onChange: ({ value }) => {
+                if (value > stats.permanentInsanities) {
+                  return 'Cannot exceed max insanities';
+                } else if (value < 0) {
+                  return 'Insanities cannot be lower than 0';
+                }
+                return undefined;
+              },
+            }}
+          >
+            {(field) => (
+              <>
+                {!mobile && <h4>Insanities</h4>}
+                <div className="col-span-2 flex grow items-center gap-2">
+                  {Array.from({ length: field.state.value }).map((_, index) => (
+                    <InsanityIcon key={index} className="size-8" />
+                  ))}
+                  {Array.from({
+                    length: stats.permanentInsanities - field.state.value,
+                  }).map((_, index) => (
+                    <Icon
+                      path={mdiCircleOutline}
+                      key={index}
+                      className="text-tertiary size-8 p-1"
+                    />
+                  ))}
+                </div>
+                <InputField
+                  className="w-28"
+                  field={field}
+                  label="Injuries"
+                  type="number"
+                />
+              </>
+            )}
+          </characterUpdateForm.Field>
         </div>
         <ArrowHeader2 title="Attributes and Skills" />
         <div className="flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
@@ -472,31 +525,38 @@ const CharacterUpdateForm = () => {
             ),
           )}
         </div>
+        <Divider />
         <ArrowHeader2 title="Available Perks" />
-
-        <p className="text-tertiary sm:px-4 lg:px-6">
-          (Available perks are only shown if you meet the attribute and skill
-          point requirements)
+        <p className="text-tertiary border-l border-gray-400 pl-4">
+          Available perks are only shown if you meet the attribute and skill
+          point requirements
         </p>
         <div className="flex w-full flex-col gap-4">
-          <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
-            <h3 className="col-span-2 pl-4 sm:col-span-1">Filter options</h3>
-            <searchForm.Field name="attribute">
+          <div className="grid w-full items-center gap-4 max-sm:grid-cols-1 max-sm:grid-rows-[auto_1fr_1fr_auto] sm:grid-cols-[auto_1fr_1fr_auto] sm:gap-8">
+            <ArrowHeader3 title="Filter Options" />
+            <searchForm.Field
+              name="attribute"
+              listeners={{
+                onChange: () => {
+                  searchForm.setFieldValue('skill', '');
+                  perks.filterBySkill('');
+                },
+              }}
+            >
               {(field) => (
-                <SelectField
+                <InputSelectField
+                  className="w-full"
                   field={field}
-                  onChange={() => {
-                    perks.filterByAttribute(field.state.value);
-                    perks.filterBySkill('');
-                  }}
-                >
-                  <option value="">All attributes</option>
-                  <option value="general">General</option>
-                  <option value="cybernetica">Cybernetica</option>
-                  <option value="esoterica">Esoterica</option>
-                  <option value="peace">Peace</option>
-                  <option value="violence">Violence</option>
-                </SelectField>
+                  label="Attribute"
+                  options={[
+                    'general',
+                    'cybernetica',
+                    'esoterica',
+                    'peace',
+                    'violence',
+                  ]}
+                  onChange={() => perks.filterByAttribute(field.state.value)}
+                />
               )}
             </searchForm.Field>
             <searchForm.Subscribe
@@ -505,31 +565,37 @@ const CharacterUpdateForm = () => {
               {([selectedAttribute]) => (
                 <searchForm.Field name="skill">
                   {(field) => (
-                    <SelectField
+                    <InputSelectField
                       field={field}
-                      onChange={() => {
-                        perks.filterBySkill(field.state.value);
-                      }}
-                    >
-                      <option value=""></option>
-                      {Object.entries(perks.emptyTree).map(
-                        ([attribute, skills]) => {
-                          if (attribute === selectedAttribute) {
-                            return Object.entries(skills).map(([skill]) => {
-                              return (
-                                <option key={skill} value={skill}>
-                                  {skill[0].toUpperCase() + skill.slice(1)}
-                                </option>
-                              );
-                            });
-                          }
-                        },
-                      )}
-                    </SelectField>
+                      label="Skill"
+                      options={
+                        selectedAttribute && selectedAttribute !== 'general'
+                          ? Object.keys(
+                              attributeTree.emptyAttributeTree[
+                                selectedAttribute
+                              ].skills,
+                            )
+                          : []
+                      }
+                      onChange={() => perks.filterBySkill(field.state.value)}
+                    />
                   )}
                 </searchForm.Field>
               )}
             </searchForm.Subscribe>
+            <button
+              type="button"
+              className="text-accent hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                searchForm.setFieldValue('skill', '');
+                perks.filterBySkill('');
+                searchForm.setFieldValue('attribute', '');
+                perks.filterByAttribute('');
+              }}
+            >
+              Reset
+            </button>
           </div>
           <searchForm.Field name="query">
             {(field) => (
@@ -543,15 +609,23 @@ const CharacterUpdateForm = () => {
             )}
           </searchForm.Field>
         </div>
-        <PerkList
-          className="scrollbar-primary-2 max-h-[500px] overflow-y-auto py-4 pr-4"
-          perkTree={perks.filteredPerkTree}
-          mode="form"
-          checkedPerks={checkedPerks}
-          setCheckedPerks={setCheckedPerks}
-        />
+        <characterUpdateForm.Field name="perks">
+          {(field) => (
+            <PerkList
+              field={field}
+              className="scrollbar-primary-2 max-h-[500px] overflow-y-auto py-4 pr-4"
+              perkTree={perks.filteredPerkTree}
+              mode="form"
+            />
+          )}
+        </characterUpdateForm.Field>
+
         <div className="flex flex-col gap-4 sm:gap-8">
-          <BtnRect type="submit" className="group w-full">
+          <BtnRect
+            ariaLabel="Update character"
+            type="submit"
+            className="group w-full"
+          >
             {updateCharacter.isPending ? (
               <Loading
                 className="group-hover:text-yellow-300 dark:text-gray-900"

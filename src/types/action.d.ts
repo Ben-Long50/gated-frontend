@@ -1,3 +1,4 @@
+import { AttributeName, SkillName } from './attributeTree';
 import { Cybernetic } from './cybernetic';
 
 interface Action {
@@ -18,8 +19,8 @@ interface ActionCost {
 }
 
 interface ActionRoll {
-  attribute: string;
-  skill: string;
+  attribute: AttributeName;
+  skill: SkillName;
 }
 
 enum ActionType {

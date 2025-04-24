@@ -11,13 +11,11 @@ import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Icon from '@mdi/react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import ArrowHeader3 from './ArrowHeader3';
-import AffiliationBar from './AffiliationBar';
 import Divider from './Divider';
 import useFactionQuery from '../hooks/useFactionQuery/useFactionQuery';
-import { Affiliation } from 'src/types/faction';
 import ArrowHeader2 from './ArrowHeader2';
 import useUpdateFactionMutation from '../hooks/useUpdateFactionMutation/useUpdateFactionMutation';
+import useDeleteFactionMutation from '../hooks/useDeleteFactionMutation/useDeleteFactionMutation';
 
 const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -29,8 +27,8 @@ const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const updateFaction = useUpdateFactionMutation(
     apiUrl,
-    campaignId,
-    factionId,
+    Number(campaignId),
+    Number(factionId),
     setFormMessage,
   );
 
@@ -38,7 +36,14 @@ const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
     data: faction,
     isLoading,
     isPending,
-  } = useFactionQuery(apiUrl, factionId);
+  } = useFactionQuery(apiUrl, Number(factionId));
+
+  const deleteFaction = useDeleteFactionMutation(
+    apiUrl,
+    Number(campaignId),
+    Number(factionId),
+    setFormMessage,
+  );
 
   useEffect(() => {
     if (faction) {
@@ -56,7 +61,6 @@ const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
       picture: faction?.picture || '',
       background:
         faction?.background || ({} as { html: string; nodes: string }),
-      affiliations: faction?.primaryAffiliations || ([] as Affiliation[]),
     },
 
     onSubmit: async ({ value }) => {
@@ -72,11 +76,17 @@ const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
       formData.append('factionId', JSON.stringify(factionId || 0));
       if (mode === 'create' || mode === 'update') {
         await updateFaction.mutate(formData);
-      } else if (mode === 'modify') {
-        // await modifyArmor.mutate(formData);
       }
     },
   });
+
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteFaction.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -96,6 +106,8 @@ const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
       itemId={factionId}
       handleReset={handleReset}
       modifyMutation={updateFaction}
+      deleteMutation={deleteFaction}
+      handleDelete={handleDelete}
       formMessage={formMessage}
       deleteMode={deleteMode}
       setDeleteMode={setDeleteMode}
@@ -133,7 +145,7 @@ const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
           borderColor={accentPrimary}
         >
           {!imagePreview ? (
-            <label className="bg-secondary flex aspect-[5/2] w-full cursor-pointer flex-col items-center justify-center clip-6">
+            <label className="flex aspect-[5/2] w-full cursor-pointer flex-col items-center justify-center">
               <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
                 <Icon className="text-tertiary" path={mdiImagePlus} size={3} />
                 <p className="text-tertiary font-semibold">
@@ -192,33 +204,6 @@ const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
                   </p>
                 ))}
             </>
-          )}
-        </factionForm.Field>
-        <Divider />
-        <ArrowHeader2 title="Affiliations" />
-        <factionForm.Field name="affiliations" mode="array">
-          {(field) => (
-            <div>
-              {field.state.value.map((affiliation: Affiliation, i: number) => (
-                <factionForm.Field key={i} name={`affiliations[${i}].value`}>
-                  {(subfield) => {
-                    const secondaryName =
-                      affiliation.secondaryFaction.name ||
-                      affiliation.secondaryCharacter.firstName +
-                        affiliation.secondaryCharacter.lastName;
-                    return (
-                      <div className="flex flex-col items-start gap-4">
-                        <ArrowHeader3 title={secondaryName} />
-                        <AffiliationBar
-                          field={subfield}
-                          value={affiliation.value}
-                        />
-                      </div>
-                    );
-                  }}
-                </factionForm.Field>
-              ))}
-            </div>
           )}
         </factionForm.Field>
         <BtnRect

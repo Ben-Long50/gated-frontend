@@ -15,6 +15,8 @@ import useRefreshArmorBlockMutation from '../hooks/armorStatHooks/useRefreshArmo
 import BtnControl from './buttons/BtnControl';
 import HullIcon from './icons/HullIcon';
 import PowerIcon from './icons/PowerIcon';
+import StatBar from './StatBar';
+import { useParams } from 'react-router-dom';
 
 const ArmorControls = ({
   armorId,
@@ -24,11 +26,28 @@ const ArmorControls = ({
   stats: ArmorStats;
 }) => {
   const { apiUrl } = useContext(AuthContext);
+  const { characterId } = useParams();
 
-  const editCurrentPower = useEditArmorPowerMutation(apiUrl, armorId);
-  const editCurrentBlock = useEditArmorBlockMutation(apiUrl, armorId);
-  const refreshPower = useRefreshArmorPowerMutation(apiUrl, armorId);
-  const refreshBlock = useRefreshArmorBlockMutation(apiUrl, armorId);
+  const editCurrentPower = useEditArmorPowerMutation(
+    apiUrl,
+    armorId,
+    Number(characterId),
+  );
+  const editCurrentBlock = useEditArmorBlockMutation(
+    apiUrl,
+    armorId,
+    Number(characterId),
+  );
+  const refreshPower = useRefreshArmorPowerMutation(
+    apiUrl,
+    armorId,
+    Number(characterId),
+  );
+  const refreshBlock = useRefreshArmorBlockMutation(
+    apiUrl,
+    armorId,
+    Number(characterId),
+  );
 
   return (
     <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
@@ -80,52 +99,74 @@ const ArmorCard = ({
       mode={mode}
       controls={<ArmorControls armorId={armor.id} stats={armor.stats} />}
     >
-      {armor.stats.armor && (
-        <StatCard label="AV" stat={armor.stats.armor}>
-          <ArmorIcon className="size-8" />
-        </StatCard>
-      )}
-      {armor.stats.ward && (
-        <StatCard label="WV" stat={armor.stats.ward}>
-          <WardIcon className="size-8" />
-        </StatCard>
-      )}
-      {mode === 'equipment'
-        ? armor.stats.block &&
-          armor.stats.currentBlock !== null && (
-            <StatCard
-              label="BP"
-              stat={`${armor.stats.currentBlock} / ${armor.stats.block}`}
-            >
-              <BlockIcon className="size-8" />
-            </StatCard>
-          )
-        : armor.stats.block && (
-            <StatCard label="BP" stat={armor.stats.block}>
-              <BlockIcon className="size-8" />
-            </StatCard>
-          )}
-      {mode === 'equipment'
-        ? armor.stats.power &&
-          armor.stats.currentPower !== null && (
-            <StatCard
-              label="PWR"
-              stat={`${armor.stats.currentPower} / ${armor.stats.power}`}
-            >
-              <LightningIcon className="size-8" />
-            </StatCard>
-          )
-        : armor.stats.power && (
-            <StatCard label="PWR" stat={armor.stats.power}>
-              <LightningIcon className="size-8" />
-            </StatCard>
-          )}
-      {armor.stats.weight && (
-        <StatCard label="WGT" stat={armor.stats.weight}>
-          <EquipIcon className="size-8" />
-        </StatCard>
-      )}
+      <ArmorStatBars stats={armor.stats} mode={mode} />
     </ItemCard>
+  );
+};
+
+export const ArmorStatBars = ({
+  stats,
+  mode,
+}: {
+  stats: ArmorStats;
+  mode?: string;
+}) => {
+  return (
+    <>
+      {stats.armor && (
+        <StatBar title="AV" current={stats.armor} color="rgb(219, 123, 33)">
+          <ArmorIcon className="size-8" />
+        </StatBar>
+      )}
+      {stats.ward && (
+        <StatBar title="WV" current={stats.ward} color="rgb(137, 39, 217)">
+          <WardIcon className="size-8" />
+        </StatBar>
+      )}
+      {mode === 'equipment'
+        ? stats.block &&
+          stats.currentBlock !== undefined && (
+            <StatBar
+              title="BP"
+              total={stats.block}
+              current={stats.currentBlock}
+              color="rgb(33, 194, 219)"
+            >
+              <BlockIcon className="size-8" />
+            </StatBar>
+          )
+        : stats.block && (
+            <StatBar title="BP" current={stats.block} color="rgb(33, 194, 219)">
+              <BlockIcon className="size-8" />
+            </StatBar>
+          )}
+      {mode === 'equipment'
+        ? stats.power &&
+          stats.currentPower !== undefined && (
+            <StatBar
+              title="PWR"
+              total={stats.power}
+              current={stats.currentPower}
+              color="rgb(107, 255, 124)"
+            >
+              <LightningIcon className="size-8" />
+            </StatBar>
+          )
+        : stats.power && (
+            <StatBar
+              title="PWR"
+              current={stats.power}
+              color="rgb(107, 255, 124)"
+            >
+              <LightningIcon className="size-8" />
+            </StatBar>
+          )}
+      {stats.weight && (
+        <StatBar title="WGT" current={stats.weight} color="rgb(251 191 36)">
+          <EquipIcon className="size-8" />
+        </StatBar>
+      )}
+    </>
   );
 };
 

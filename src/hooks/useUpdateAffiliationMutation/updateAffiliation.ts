@@ -2,7 +2,7 @@ import handleResponse from '../handleResponse';
 
 const updateAffiliation = async (
   value: number,
-  affiliationId: string,
+  affiliationId: number,
   apiUrl: string,
 ) => {
   try {
