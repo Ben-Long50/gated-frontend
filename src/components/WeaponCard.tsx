@@ -6,7 +6,6 @@ import EquipIcon from './icons/EquipIcon';
 import MagCapacityIcon from './icons/MagCapacityIcon';
 import ItemCard from './ItemCard';
 import { WeaponStats, WeaponWithKeywords } from 'src/types/weapon';
-import StatCard from './StatCard';
 import BtnControl from './buttons/BtnControl';
 import SpareAmmoIcon from './icons/SpareAmmoIcon';
 import useEditAmmoMutation from '../hooks/weaponStatHooks/useEditAmmoMutation/useEditAmmoMutation';
@@ -16,6 +15,7 @@ import useReloadMutation from '../hooks/weaponStatHooks/useReloadAmmoMutation/us
 import useRefreshMutation from '../hooks/weaponStatHooks/useRefreshAmmoMutation/useRefreshAmmoMutation';
 import StatBar from './StatBar';
 import { useParams } from 'react-router-dom';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const WeaponControls = ({
   stats,
@@ -99,20 +99,22 @@ export const WeaponStatBars = ({
   stats: WeaponStats;
   mode?: string;
 }) => {
+  const { statColorMap } = useContext(ThemeContext);
+
   return (
     <>
       {stats.damage && (
-        <StatBar title="DMG" current={stats.damage} color="rgb(252, 91, 50)">
+        <StatBar title="DMG" current={stats.damage} color={statColorMap['DMG']}>
           <DamageIcon className="size-8" />
         </StatBar>
       )}
       {stats.salvo && (
-        <StatBar title="SLV" current={stats.salvo} color="rgb(219, 123, 33)">
+        <StatBar title="SLV" current={stats.salvo} color={statColorMap['SLV']}>
           <SalvoIcon className="size-8" />
         </StatBar>
       )}
       {stats.flurry && (
-        <StatBar title="FLR" current={stats.flurry} color="rgb(219, 123, 33)">
+        <StatBar title="FLR" current={stats.flurry} color={statColorMap['FLR']}>
           <FlurryIcon className="size-8" />
         </StatBar>
       )}
@@ -121,13 +123,13 @@ export const WeaponStatBars = ({
           title="RNG"
           current={stats.range}
           divider={5}
-          color="rgb(33, 194, 219)"
+          color={statColorMap['RNG']}
         >
           <RangeIcon className="size-8" />
         </StatBar>
       )}
       {stats.weight && (
-        <StatBar title="WGT" current={stats.weight} color="rgb(251 191 36)">
+        <StatBar title="WGT" current={stats.weight} color={statColorMap['WGT']}>
           <EquipIcon className="size-8" />
         </StatBar>
       )}
@@ -139,7 +141,7 @@ export const WeaponStatBars = ({
               total={stats.magCapacity}
               current={stats.currentAmmoCount}
               reserve={stats.currentMagCount * stats.magCapacity}
-              color="rgb(107, 255, 124)"
+              color={statColorMap['MAG']}
             >
               <MagCapacityIcon className="size-8" />
             </StatBar>
@@ -150,7 +152,7 @@ export const WeaponStatBars = ({
               total={stats.magCapacity}
               current={stats.magCapacity}
               reserve={(stats.magCount - 1) * stats.magCapacity}
-              color="rgb(107, 255, 124)"
+              color={statColorMap['MAG']}
             >
               <MagCapacityIcon className="size-8" />
             </StatBar>

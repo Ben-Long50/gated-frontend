@@ -8,10 +8,14 @@ import WyrmShellIcon from './icons/WyrmShellIcon';
 import { mdiTriangleDown } from '@mdi/js';
 import { Action } from 'src/types/action';
 import LightningIcon from './icons/LightningIcon';
-import StatCard from './StatCard';
 import StopwatchIcon from './icons/StopwatchIcon';
+import StatBar from './StatBar';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const SubactionCard = ({ action }: { action: Action }) => {
+  const { statColorMap } = useContext(ThemeContext);
+
   return (
     <div
       key={action.name}
@@ -55,31 +59,63 @@ const SubactionCard = ({ action }: { action: Action }) => {
       {action?.costs?.length > 0 && (
         <div className="flex w-full flex-col justify-start gap-2">
           <p className="text-accent text-base tracking-widest">Costs</p>
-          <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(100px,max-content))] items-center justify-start gap-4">
+          <div className="grid w-full grid-cols-[auto_auto_1fr_auto] items-center gap-x-4 gap-y-2 border-x-2 border-gray-400 border-opacity-50 px-4">
             {action?.costs.map((cost) => {
+              let title;
+              let color;
+
+              switch (cost.stat) {
+                case 'health':
+                  title = 'Health';
+                  color = statColorMap['Health'];
+                  break;
+                case 'sanity':
+                  title = 'Sanity';
+                  color = statColorMap['Sanity'];
+                  break;
+                case 'actionPoints':
+                  title = 'AP';
+                  color = statColorMap['AP'];
+                  break;
+                case 'reactionPoints':
+                  title = 'RP';
+                  color = statColorMap['RP'];
+                  break;
+                case 'power':
+                  title = 'PWR';
+                  color = statColorMap['PWR'];
+                  break;
+                case 'wyrmShells':
+                  title = 'Wyrm Shells';
+                  color = statColorMap['wyrmShells'];
+                  break;
+                default:
+                  title = '';
+                  color = '';
+                  break;
+              }
               return (
-                <StatCard key={cost.stat} stat={cost.value}>
-                  <div className="flex items-center gap-2">
-                    {cost.stat === 'health' && (
-                      <HealthIcon className="size-8" />
-                    )}
-                    {cost.stat === 'sanity' && (
-                      <SanityIcon className="size-8" />
-                    )}
-                    {cost.stat === 'actionPoints' && (
-                      <ActionIcon className="size-8" />
-                    )}
-                    {cost.stat === 'reactionPoints' && (
-                      <ReactionIcon className="size-8" />
-                    )}
-                    {cost.stat === 'power' && (
-                      <LightningIcon className="size-8" />
-                    )}
-                    {cost.stat === 'wyrmShells' && (
-                      <WyrmShellIcon className="size-8" />
-                    )}
-                  </div>
-                </StatCard>
+                <StatBar
+                  key={cost.stat}
+                  current={cost.value}
+                  title={title}
+                  color={color}
+                >
+                  {cost.stat === 'health' && <HealthIcon className="size-8" />}
+                  {cost.stat === 'sanity' && <SanityIcon className="size-8" />}
+                  {cost.stat === 'actionPoints' && (
+                    <ActionIcon className="size-8" />
+                  )}
+                  {cost.stat === 'reactionPoints' && (
+                    <ReactionIcon className="size-8" />
+                  )}
+                  {cost.stat === 'power' && (
+                    <LightningIcon className="size-8" />
+                  )}
+                  {cost.stat === 'wyrmShells' && (
+                    <WyrmShellIcon className="size-8" />
+                  )}
+                </StatBar>
               );
             })}
           </div>

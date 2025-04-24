@@ -13,6 +13,7 @@ import useRefreshItemPowerMutation from '../hooks/itemStatHooks/useRefreshItemPo
 import useRefreshItemStacksMutation from '../hooks/itemStatHooks/useRefreshItemStacksMutation/useRefreshItemStacksMutation';
 import StatBar from './StatBar';
 import { useParams } from 'react-router-dom';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const ItemControls = ({
   itemId,
@@ -103,6 +104,8 @@ export const MiscItemStatBars = ({
   stats: ItemStats;
   mode?: string;
 }) => {
+  const { statColorMap } = useContext(ThemeContext);
+
   return (
     <>
       {mode === 'equipment'
@@ -112,7 +115,7 @@ export const MiscItemStatBars = ({
               title="PWR"
               total={stats.power}
               current={stats.currentPower}
-              color="rgb(107, 255, 124)"
+              color={statColorMap['PWR']}
             >
               <LightningIcon className="size-8" />
             </StatBar>
@@ -121,13 +124,13 @@ export const MiscItemStatBars = ({
             <StatBar
               title="PWR"
               current={stats.power}
-              color="rgb(107, 255, 124)"
+              color={statColorMap['PWR']}
             >
               <LightningIcon className="size-8" />
             </StatBar>
           )}
       {stats.weight && (
-        <StatBar title="WGT" current={stats.weight} color="rgb(251 191 36)">
+        <StatBar title="WGT" current={stats.weight} color={statColorMap['WGT']}>
           <EquipIcon className="size-8" />
         </StatBar>
       )}
@@ -136,7 +139,7 @@ export const MiscItemStatBars = ({
           title="STACKS"
           total={stats.maxStacks ? stats.maxStacks : undefined}
           current={stats.currentStacks}
-          color="rgb(33, 194, 219)"
+          color={statColorMap['STACKS']}
         >
           <StackIcon className="size-8" />
         </StatBar>

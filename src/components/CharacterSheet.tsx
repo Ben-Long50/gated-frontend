@@ -31,7 +31,7 @@ import Divider from './Divider';
 import BtnAuth from './buttons/BtnAuth';
 
 const CharacterSheet = () => {
-  const { accentPrimary } = useContext(ThemeContext);
+  const { accentPrimary, statColorMap } = useContext(ThemeContext);
   const { apiUrl, user } = useContext(AuthContext);
   const { layoutSize, mobile } = useContext(LayoutContext);
 
@@ -203,7 +203,7 @@ const CharacterSheet = () => {
           title="Health"
           current={character.stats.currentHealth}
           total={stats.maxHealth}
-          color="rgb(248 113 113)"
+          color={statColorMap['Health']}
         >
           <HealthIcon className="size-8" />
         </StatBar>
@@ -211,7 +211,7 @@ const CharacterSheet = () => {
           title="Sanity"
           current={character.stats.currentSanity}
           total={stats.maxSanity}
-          color="rgb(96 165 250)"
+          color={statColorMap['Sanity']}
         >
           <SanityIcon className="size-8" />
         </StatBar>
@@ -219,7 +219,7 @@ const CharacterSheet = () => {
           title="Cyber"
           current={stats.cyber}
           total={stats.maxCyber}
-          color="rgb(52 211 153)"
+          color={statColorMap['Cyber']}
         >
           <CyberIcon className="size-8" />
         </StatBar>
@@ -227,7 +227,7 @@ const CharacterSheet = () => {
           title="Equip"
           current={stats.weight}
           total={stats.maxWeight}
-          color="rgb(251 191 36)"
+          color={statColorMap['Equip']}
         >
           <EquipIcon className="size-8" />
         </StatBar>

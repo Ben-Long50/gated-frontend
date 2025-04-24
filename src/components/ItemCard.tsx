@@ -29,6 +29,7 @@ import ModifierTag from './ModifierTag';
 import { Modifier } from 'src/types/modifier';
 import ItemPicture from './ItemPicture';
 import ArrowHeader2 from './ArrowHeader2';
+import Divider from './Divider';
 
 const ItemCard = ({
   item,
@@ -331,7 +332,7 @@ const ItemCard = ({
                 />
               )}
               <div className="w-full">
-                <div className="grid w-full grow grid-cols-[2fr-1fr] items-start gap-6">
+                <div className="grid w-full grow grid-cols-[2fr-1fr] items-start gap-x-8 gap-y-4">
                   <div>
                     <div className="flex items-center gap-4">
                       <ArrowHeader2 title={item.name} />
@@ -444,8 +445,8 @@ const ItemCard = ({
                       )}
                     </div>
                   )}
-                  <div className="col-span-2 flex w-full flex-col flex-wrap items-center gap-4">
-                    <div className="grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-4 gap-y-2">
+                  <div className="col-span-2 flex w-full flex-col flex-wrap items-center gap-4 pr-5">
+                    <div className="grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-4 gap-y-2 border-x-2 border-gray-400 border-opacity-50 px-4">
                       {children}
                     </div>
 
@@ -464,10 +465,10 @@ const ItemCard = ({
                   <div className="overflow-hidden">
                     <motion.p
                       ref={detailRef}
-                      className="text-secondary flex flex-col gap-4 pr-8"
-                      initial={{ marginTop: -detailHeight - 4 }}
+                      className="text-secondary flex flex-col gap-4 pr-5"
+                      initial={{ marginTop: -detailHeight - 8 }}
                       animate={{
-                        marginTop: detailsOpen ? 24 : -detailHeight - 4,
+                        marginTop: detailsOpen ? 24 : -detailHeight - 8,
                       }}
                       transition={{ duration: 0.2 }}
                     >
@@ -488,7 +489,7 @@ const ItemCard = ({
               </div>
             </div>
           )}
-          <div className={`overflow-hidden`}>
+          <div className={`overflow-hidden pr-5`}>
             <motion.div
               ref={integrationRef}
               className="flex flex-col gap-5 p-0.5"
@@ -527,7 +528,7 @@ const ItemCard = ({
                               setToolTip={setToolTip}
                             />
                             {index < item.weapons?.length - 1 && (
-                              <hr className="w-full border-yellow-300 border-opacity-50" />
+                              <Divider key={weapon.id} />
                             )}
                           </div>
                         );
@@ -557,7 +558,7 @@ const ItemCard = ({
                               setToolTip={setToolTip}
                             />
                             {index < item.armor.length - 1 && (
-                              <hr className="w-full border-yellow-300 border-opacity-50" />
+                              <Divider key={armor.id} />
                             )}
                           </>
                         );
@@ -581,10 +582,7 @@ const ItemCard = ({
                         <>
                           <SubactionCard key={action.id} action={action} />
                           {index < item.actions.length - 1 && (
-                            <hr
-                              key={index}
-                              className="w-full border-yellow-300 border-opacity-50"
-                            />
+                            <Divider key={action.id} />
                           )}
                         </>
                       );
@@ -617,13 +615,18 @@ const ItemCard = ({
                 </ThemeContainer>
               )}
               {mode === 'inventory' && (
-                <Link className="w-1/3 self-start" to={`${item.id}/modify`}>
-                  <BtnRect>Modify</BtnRect>
+                <Link className="w-1/3 self-end" to={`${item.id}/modify`}>
+                  <BtnRect
+                    ariaLabel="Navigate to modify weapon form"
+                    type="button"
+                  >
+                    Modify
+                  </BtnRect>
                 </Link>
               )}
             </motion.div>
           </div>
-          <span className="absolute bottom-0 right-5 transition duration-300">
+          <span className="absolute bottom-5 right-1 transition duration-300">
             <Icon
               path={mdiChevronDown}
               size={1.1}

@@ -4,7 +4,6 @@ import BlockIcon from './icons/BlockIcon';
 import EquipIcon from './icons/EquipIcon';
 import ItemCard from './ItemCard';
 import { ArmorStats, ArmorWithKeywords } from 'src/types/armor';
-import StatCard from './StatCard';
 import LightningIcon from './icons/LightningIcon';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
@@ -17,6 +16,7 @@ import HullIcon from './icons/HullIcon';
 import PowerIcon from './icons/PowerIcon';
 import StatBar from './StatBar';
 import { useParams } from 'react-router-dom';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const ArmorControls = ({
   armorId,
@@ -111,15 +111,16 @@ export const ArmorStatBars = ({
   stats: ArmorStats;
   mode?: string;
 }) => {
+  const { statColorMap } = useContext(ThemeContext);
   return (
     <>
       {stats.armor && (
-        <StatBar title="AV" current={stats.armor} color="rgb(219, 123, 33)">
+        <StatBar title="AV" current={stats.armor} color={statColorMap['AV']}>
           <ArmorIcon className="size-8" />
         </StatBar>
       )}
       {stats.ward && (
-        <StatBar title="WV" current={stats.ward} color="rgb(137, 39, 217)">
+        <StatBar title="WV" current={stats.ward} color={statColorMap['WV']}>
           <WardIcon className="size-8" />
         </StatBar>
       )}
@@ -130,13 +131,17 @@ export const ArmorStatBars = ({
               title="BP"
               total={stats.block}
               current={stats.currentBlock}
-              color="rgb(33, 194, 219)"
+              color={statColorMap['BP']}
             >
               <BlockIcon className="size-8" />
             </StatBar>
           )
         : stats.block && (
-            <StatBar title="BP" current={stats.block} color="rgb(33, 194, 219)">
+            <StatBar
+              title="BP"
+              current={stats.block}
+              color={statColorMap['BP']}
+            >
               <BlockIcon className="size-8" />
             </StatBar>
           )}
@@ -147,7 +152,7 @@ export const ArmorStatBars = ({
               title="PWR"
               total={stats.power}
               current={stats.currentPower}
-              color="rgb(107, 255, 124)"
+              color={statColorMap['PWR']}
             >
               <LightningIcon className="size-8" />
             </StatBar>
@@ -156,13 +161,13 @@ export const ArmorStatBars = ({
             <StatBar
               title="PWR"
               current={stats.power}
-              color="rgb(107, 255, 124)"
+              color={statColorMap['PWR']}
             >
               <LightningIcon className="size-8" />
             </StatBar>
           )}
       {stats.weight && (
-        <StatBar title="WGT" current={stats.weight} color="rgb(251 191 36)">
+        <StatBar title="WGT" current={stats.weight} color={statColorMap['WGT']}>
           <EquipIcon className="size-8" />
         </StatBar>
       )}

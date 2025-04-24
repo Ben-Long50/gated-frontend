@@ -8,6 +8,7 @@ interface ThemeContextType {
   accentModifier: string;
   errorPrimary: string;
   rarityColorMap: object;
+  statColorMap: object;
 }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(
@@ -44,6 +45,36 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
     artifact: 'rgb(251 191 36)',
   };
 
+  const statColorMap = {
+    Health: 'rgb(248 113 113)',
+    Sanity: 'rgb(96 165 250)',
+    Cyber: 'rgb(52 211 153)',
+    Equip: 'rgb(251 191 36)',
+    DMG: 'rgb(252, 91, 50)',
+    SLV: 'rgb(219, 123, 33)',
+    FLR: 'rgb(219, 123, 33)',
+    RNG: 'rgb(33, 194, 219)',
+    WGT: 'rgb(251 191 36)',
+    MAG: 'rgb(107, 255, 124)',
+    AV: 'rgb(219, 123, 33)',
+    WV: 'rgb(137, 39, 217)',
+    BP: 'rgb(33, 194, 219)',
+    PWR: 'rgb(107, 255, 124)',
+    CBR: 'rgb(52 211 153)',
+    SZE: 'rgb(251 191 36)',
+    SPD: 'rgb(33, 194, 219)',
+    AGL: 'rgb(107, 255, 124)',
+    HULL: 'rgb(248 113 113)',
+    CRG: 'rgb(39, 217, 167)',
+    HGR: 'rgb(219, 123, 33)',
+    PASS: 'rgb(137, 39, 217)',
+    WPN: 'rgb(252, 91, 50)',
+    STACKS: 'rgb(33, 194, 219)',
+    AP: 'rgb(252, 91, 50)',
+    RP: 'rgb(219, 123, 33)',
+    wyrmShells: 'rgb(33, 194, 219)',
+  };
+
   const changeTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     localStorage.setItem('theme', newTheme);
@@ -60,6 +91,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
         accentModifier,
         errorPrimary,
         rarityColorMap,
+        statColorMap,
       }}
     >
       {children}

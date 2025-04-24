@@ -1,14 +1,6 @@
 import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
-import DamageIcon from './icons/DamageIcon';
-import SalvoIcon from './icons/SalvoIcon';
-import FlurryIcon from './icons/FlurryIcon';
-import RangeIcon from './icons/RangeIcon';
-import MagCapacityIcon from './icons/MagCapacityIcon';
 import { WeaponWithKeywords } from 'src/types/weapon';
-import StatCard from './StatCard';
-import StatBar from './StatBar';
-import EquipIcon from './icons/EquipIcon';
 import { WeaponStatBars } from './WeaponCard';
 
 const SubweaponCard = ({
@@ -20,7 +12,7 @@ const SubweaponCard = ({
 }: {
   vehicleId?: number;
   weapon: WeaponWithKeywords;
-  quantity: number;
+  quantity?: number;
   toolTip: number;
   setToolTip: (prevState: number) => void;
   mode?: string;
@@ -52,7 +44,7 @@ const SubweaponCard = ({
           );
         })}
       </div>
-      <div className="timing col-span-2 grid h-full w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-4 gap-y-2">
+      <div className="timing col-span-2 grid h-full w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-4 gap-y-2 border-x-2 border-gray-400 border-opacity-50 px-4">
         <WeaponStatBars stats={weapon.stats} mode={mode} />
       </div>
     </div>

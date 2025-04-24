@@ -10,6 +10,8 @@ import HangarIcon from './icons/HangarIcon';
 import ItemCard from './ItemCard';
 import { VehicleStats, VehicleWithWeapons } from 'src/types/vehicle';
 import StatBar from './StatBar';
+import { useContext } from 'react';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const VehicleCard = ({
   vehicle,
@@ -32,10 +34,12 @@ export const VehicleStatBars = ({
   stats: VehicleStats;
   mode?: string;
 }) => {
+  const { statColorMap } = useContext(ThemeContext);
+
   return (
     <>
       {stats.size && (
-        <StatBar title="SZE" current={stats.size} color="rgb(251 191 36)">
+        <StatBar title="SZE" current={stats.size} color={statColorMap['SZE']}>
           <SizeIcon className="size-8" />
         </StatBar>
       )}
@@ -44,13 +48,17 @@ export const VehicleStatBars = ({
           title="SPD"
           current={stats.speed}
           divider={10}
-          color="rgb(33, 194, 219)"
+          color={statColorMap['SPD']}
         >
           <VehicleSpeedIcon className="size-8" />
         </StatBar>
       )}
       {stats.agility && (
-        <StatBar title="AGL" current={stats.agility} color="rgb(107, 255, 124)">
+        <StatBar
+          title="AGL"
+          current={stats.agility}
+          color={statColorMap['AGL']}
+        >
           <AgilityIcon className="size-8" />
         </StatBar>
       )}
@@ -59,33 +67,33 @@ export const VehicleStatBars = ({
           title="HULL"
           current={stats.hull}
           divider={2}
-          color="rgb(248 113 113)"
+          color={statColorMap['HULL']}
         >
           <HullIcon className="size-8" />
         </StatBar>
       )}
       {stats.armor && (
-        <StatBar title="AV" current={stats.armor} color="rgb(219, 123, 33)">
+        <StatBar title="AV" current={stats.armor} color={statColorMap['AV']}>
           <ArmorIcon className="size-8" />
         </StatBar>
       )}
       {stats.cargo && (
-        <StatBar title="CRG" current={stats.cargo} color="rgb(39, 217, 167)">
+        <StatBar title="CRG" current={stats.cargo} color={statColorMap['CRG']}>
           <CargoIcon className="size-8" />
         </StatBar>
       )}
       {stats.hangar && (
-        <StatBar title="HGR" current={stats.hangar} color="rgb(219, 123, 33)">
+        <StatBar title="HGR" current={stats.hangar} color={statColorMap['HGR']}>
           <HangarIcon className="size-8" />
         </StatBar>
       )}
       {stats.pass && (
-        <StatBar title="PASS" current={stats.pass} color="rgb(137, 39, 217)">
+        <StatBar title="PASS" current={stats.pass} color={statColorMap['PASS']}>
           <PassIcon className="size-8" />
         </StatBar>
       )}
       {stats.weapon && (
-        <StatBar title="WPN" current={stats.weapon} color="rgb(252, 91, 50)">
+        <StatBar title="WPN" current={stats.weapon} color={statColorMap['WPN']}>
           <VehicleWeaponIcon className="size-8" />
         </StatBar>
       )}

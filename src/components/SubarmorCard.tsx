@@ -38,7 +38,7 @@ const SubarmorCard = ({
           );
         })}
       </div>
-      <div className="timing grid h-full w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-4 gap-y-2">
+      <div className="timing grid h-full w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-4 gap-y-2 border-x-2 border-gray-400 border-opacity-50 px-4">
         <ArmorStatBars stats={armor.stats} mode={mode} />
       </div>
     </div>
