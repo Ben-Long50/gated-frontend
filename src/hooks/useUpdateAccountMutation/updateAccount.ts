@@ -3,7 +3,7 @@ import handleResponse from '../handleResponse';
 
 const updateAccount = async (apiUrl: string, formData: User) => {
   try {
-    const response = await fetch(`${apiUrl}/account`, {
+    const response = await fetch(`${apiUrl}/users`, {
       method: 'PUT',
       credentials: 'include',
       headers: {

@@ -5,6 +5,7 @@ import { User } from 'src/types/user';
 const useUpdateAccountMutation = (
   apiUrl: string,
   setFormMessage: (message: string) => void,
+  setErrors: (errors: string[]) => void,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -17,8 +18,8 @@ const useUpdateAccountMutation = (
         queryKey: ['account'],
       });
     },
-    onError: (error) => {
-      setFormMessage(error.message);
+    onError: (error: string[]) => {
+      setErrors(error);
     },
     throwOnError: false,
   });

@@ -13,10 +13,15 @@ import useUpdateAccountMutation from '../hooks/useUpdateAccountMutation/useUpdat
 const AccountSettingsForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
+  const [errors, setErrors] = useState<string[]>([]);
 
   const { data: account, isLoading, isPending } = useAccountQuery(apiUrl);
 
-  const updateAccount = useUpdateAccountMutation(apiUrl, setFormMessage);
+  const updateAccount = useUpdateAccountMutation(
+    apiUrl,
+    setFormMessage,
+    setErrors,
+  );
 
   const handleReset = async () => {
     accountForm.reset();
@@ -31,6 +36,7 @@ const AccountSettingsForm = () => {
       password: '',
     },
     onSubmit: async ({ value }) => {
+      setErrors([]);
       await updateAccount.mutate(value);
     },
   });
@@ -115,7 +121,7 @@ const AccountSettingsForm = () => {
           name="password"
           validators={{
             onChange: ({ value }) =>
-              value.length < 2
+              value.length < 8
                 ? 'Enter your password to change your account information securely'
                 : undefined,
           }}
@@ -143,6 +149,16 @@ const AccountSettingsForm = () => {
             'Update Account'
           )}
         </BtnRect>
+        {errors?.length > 0 && (
+          <div className="flex flex-col gap-3 self-start">
+            <span className="text-primary">Error updating account:</span>
+            {errors.map((error, index) => (
+              <p key={index} className="text-error">
+                {error}
+              </p>
+            ))}
+          </div>
+        )}
       </form>
     </FormLayout>
   );
