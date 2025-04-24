@@ -30,9 +30,9 @@ const Weapons = ({
       category: '',
       query: '',
     },
-    onSubmit: ({ value }) => {
-      weapons.filterByCategory(value.category);
-      weapons.filterByQuery(value.query);
+    onSubmit: () => {
+      weapons.filterByCategory('');
+      weapons.filterByQuery('');
     },
   });
 
@@ -62,7 +62,7 @@ const Weapons = ({
                   field={field}
                   className=""
                   label="Keyword"
-                  options={weapons.filteredKeywords}
+                  options={weapons.filteredKeywords || []}
                   onChange={() => {
                     weapons.filterByCategory(field.state.value);
                   }}
@@ -78,7 +78,7 @@ const Weapons = ({
                   label="Search weapons"
                   field={field}
                   onChange={() => {
-                    searchForm.handleSubmit();
+                    weapons.filterByQuery(field.state.value);
                   }}
                 />
               )}

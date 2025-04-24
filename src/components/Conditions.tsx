@@ -3,16 +3,14 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
-import { LayoutContext } from '../contexts/LayoutContext';
 import Loading from './Loading';
 import useConditions from '../hooks/useConditions';
 import ConditionCard from './ConditionCard';
-import SelectField from './SelectField';
 import ArrowHeader2 from './ArrowHeader2';
+import InputSelectField from './InputSelectField';
 
 const Conditions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
 
   const conditions = useConditions();
 
@@ -21,8 +19,9 @@ const Conditions = ({ mode }: { mode?: string }) => {
       query: '',
       category: '',
     },
-    onSubmit: ({ value }) => {
-      conditions.filterByQuery(value.query);
+    onSubmit: () => {
+      conditions.filterByQuery('');
+      conditions.filterByCategory('');
     },
   });
 
@@ -39,34 +38,46 @@ const Conditions = ({ mode }: { mode?: string }) => {
         borderColor={accentPrimary}
       >
         <form className="flex w-full flex-col gap-4 p-4">
-          <div className="flex w-full items-center justify-between">
+          <div className="grid w-full grid-cols-2 gap-4 sm:gap-8">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
               {(field) => (
-                <SelectField
+                <InputSelectField
                   field={field}
+                  label="Condition Type"
+                  options={['', 'character', 'item']}
+                  initialValue=""
                   onChange={() => {
                     conditions.filterByCategory(field.state.value);
                   }}
-                >
-                  <option value="">All conditions</option>
-                  <option value="character">Character conditions</option>
-                  <option value="item">Item conditions</option>
-                </SelectField>
+                />
               )}
             </searchForm.Field>
           </div>
-          <searchForm.Field name="query">
-            {(field) => (
-              <InputField
-                label="Search conditions"
-                field={field}
-                onChange={() => {
-                  searchForm.handleSubmit();
-                }}
-              />
-            )}
-          </searchForm.Field>
+          <div className="flex items-end gap-4">
+            <searchForm.Field name="query">
+              {(field) => (
+                <InputField
+                  className="w-full"
+                  label="Search conditions"
+                  field={field}
+                  onChange={() => {
+                    conditions.filterByQuery(field.state.value);
+                  }}
+                />
+              )}
+            </searchForm.Field>
+            <button
+              className="text-accent z-10 hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                searchForm.reset();
+                searchForm.handleSubmit();
+              }}
+            >
+              Reset Filters
+            </button>
+          </div>
         </form>
       </ThemeContainer>
       <ThemeContainer

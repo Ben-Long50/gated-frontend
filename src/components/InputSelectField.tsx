@@ -8,6 +8,7 @@ import Icon from '@mdi/react';
 import InputFieldBasic from './InputFieldBasic';
 import Divider from './Divider';
 import { Character } from 'src/types/character';
+import { Keyword } from 'src/types/keyword';
 
 const InputSelectField = ({
   field,
@@ -20,7 +21,7 @@ const InputSelectField = ({
   onChange?: () => void;
   label: string;
   className?: string;
-  options: Character[] | Action[] | string[];
+  options: Character[] | Action[] | Keyword[] | string[];
   initialValue?: string;
 }) => {
   const [borderColor, setBorderColor] = useState('transparent');
@@ -72,13 +73,17 @@ const InputSelectField = ({
         ? option.name[0].toUpperCase() + option.name.slice(1)
         : option.name;
     } else if (typeof option === 'string') {
-      return option[0].toUpperCase() + option.slice(1);
+      return option.length > 0
+        ? option[0].toUpperCase() + option.slice(1)
+        : option;
     } else return;
   };
 
   const filteredOptions =
     options?.filter((option) => {
-      return optionName(option).toLowerCase().includes(query.toLowerCase());
+      return option.length > 0
+        ? optionName(option).toLowerCase().includes(query.toLowerCase())
+        : option;
     }) || [];
 
   return (

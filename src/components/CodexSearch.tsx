@@ -32,6 +32,7 @@ import ActionCard from './ActionCard';
 import ConditionCard from './ConditionCard';
 import ModCard from './ModCard';
 import ArrowHeader2 from './ArrowHeader2';
+import InputSelectField from './InputSelectField';
 
 const CodexSearch = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -252,35 +253,20 @@ const CodexSearch = () => {
         borderColor={accentPrimary}
       >
         <form className="flex w-full flex-col gap-4 p-4">
-          <div className="flex w-full items-center justify-between">
+          <div className="grid w-full grid-cols-2 gap-4 sm:gap-8">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="keyword">
               {(field) => (
-                <SelectField
+                <InputSelectField
                   field={field}
-                  onChange={(e) => {
-                    if (e.target.value === '') {
-                      setCategory(field.state.value);
-                      setNameQuery(null);
-                      setDescriptionQuery(null);
-                    } else {
-                      setCategory(field.state.value);
-                      setNameQuery('');
-                      setDescriptionQuery('');
-                    }
+                  label="Keyword"
+                  options={keywordList}
+                  onChange={() => {
+                    setCategory(field.state.value);
+                    setNameQuery('');
+                    setDescriptionQuery('');
                   }}
-                >
-                  <option key="default" value="">
-                    All keywords
-                  </option>
-                  {keywordList?.map((keyword) => {
-                    return (
-                      <option key={keyword} value={keyword}>
-                        {keyword}
-                      </option>
-                    );
-                  })}
-                </SelectField>
+                />
               )}
             </searchForm.Field>
           </div>
@@ -295,17 +281,32 @@ const CodexSearch = () => {
               />
             )}
           </searchForm.Field>
-          <searchForm.Field name="descriptionQuery">
-            {(field) => (
-              <InputField
-                label="Search by description"
-                field={field}
-                onChange={() => {
-                  filterByDescriptionQuery(field.state.value);
-                }}
-              />
-            )}
-          </searchForm.Field>
+          <div className="flex items-end gap-4">
+            <searchForm.Field name="descriptionQuery">
+              {(field) => (
+                <InputField
+                  className="w-full"
+                  label="Search by description"
+                  field={field}
+                  onChange={() => {
+                    filterByDescriptionQuery(field.state.value);
+                  }}
+                />
+              )}
+            </searchForm.Field>
+            <button
+              className="text-accent z-10 hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                searchForm.reset();
+                setCategory('');
+                setNameQuery(null);
+                setDescriptionQuery(null);
+              }}
+            >
+              Reset Filters
+            </button>
+          </div>
         </form>
       </ThemeContainer>
 

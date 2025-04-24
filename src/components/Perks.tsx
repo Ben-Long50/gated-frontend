@@ -5,25 +5,26 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { useForm } from '@tanstack/react-form';
 import InputField from './InputField';
-import { LayoutContext } from '../contexts/LayoutContext';
-import SelectField from './SelectField';
 import Loading from './Loading';
 import ArrowHeader2 from './ArrowHeader2';
+import InputSelectField from './InputSelectField';
+import { AttributeName, SkillName } from 'src/types/attributeTree';
 
 const Perks = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
 
   const perks = usePerks();
 
   const searchForm = useForm({
     defaultValues: {
-      attribute: '',
-      skill: '',
+      attribute: '' as AttributeName,
+      skill: '' as SkillName,
       query: '',
     },
-    onSubmit: ({ value }) => {
-      perks.filterPerks(value.query);
+    onSubmit: () => {
+      perks.filterPerks('');
+      perks.filterByAttribute('');
+      perks.filterBySkill('');
     },
   });
 
@@ -44,20 +45,23 @@ const Perks = ({ mode }: { mode?: string }) => {
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="attribute">
               {(field) => (
-                <SelectField
+                <InputSelectField
                   field={field}
+                  label="Attribute"
+                  options={[
+                    '',
+                    'general',
+                    'cybernetica',
+                    'esoterica',
+                    'peace',
+                    'violence',
+                  ]}
+                  initialValue=""
                   onChange={() => {
                     perks.filterByAttribute(field.state.value);
                     perks.filterBySkill('');
                   }}
-                >
-                  <option value="">All attributes</option>
-                  <option value="general">General</option>
-                  <option value="cybernetica">Cybernetica</option>
-                  <option value="esoterica">Esoterica</option>
-                  <option value="peace">Peace</option>
-                  <option value="violence">Violence</option>
-                </SelectField>
+                />
               )}
             </searchForm.Field>
             <searchForm.Subscribe
@@ -66,43 +70,48 @@ const Perks = ({ mode }: { mode?: string }) => {
               {([selectedAttribute]) => (
                 <searchForm.Field name="skill">
                   {(field) => (
-                    <SelectField
+                    <InputSelectField
                       field={field}
+                      label="Skill"
+                      initialValue=""
+                      options={
+                        selectedAttribute
+                          ? Object.keys(perks.emptyTree[selectedAttribute])
+                          : []
+                      }
                       onChange={() => {
                         perks.filterBySkill(field.state.value);
                       }}
-                    >
-                      <option value=""></option>
-                      {Object.entries(perks.emptyTree).map(
-                        ([attribute, skills]) => {
-                          if (attribute === selectedAttribute) {
-                            return Object.entries(skills).map(([skill]) => {
-                              return (
-                                <option key={skill} value={skill}>
-                                  {skill[0].toUpperCase() + skill.slice(1)}
-                                </option>
-                              );
-                            });
-                          }
-                        },
-                      )}
-                    </SelectField>
+                    />
                   )}
                 </searchForm.Field>
               )}
             </searchForm.Subscribe>
           </div>
-          <searchForm.Field name="query">
-            {(field) => (
-              <InputField
-                label="Search perks"
-                field={field}
-                onChange={() => {
-                  searchForm.handleSubmit();
-                }}
-              />
-            )}
-          </searchForm.Field>
+          <div className="flex items-end gap-4">
+            <searchForm.Field name="query">
+              {(field) => (
+                <InputField
+                  label="Search perks"
+                  className="w-full"
+                  field={field}
+                  onChange={() => {
+                    perks.filterPerks(field.state.value);
+                  }}
+                />
+              )}
+            </searchForm.Field>
+            <button
+              className="text-accent z-10 hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                searchForm.reset();
+                searchForm.handleSubmit();
+              }}
+            >
+              Reset Filters
+            </button>
+          </div>
         </form>
       </ThemeContainer>
       <ThemeContainer

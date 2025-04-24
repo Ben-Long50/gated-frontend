@@ -30,9 +30,9 @@ const Armor = ({
       category: '',
       query: '',
     },
-    onSubmit: ({ value }) => {
-      armor.filterByCategory(value.category);
-      armor.filterByQuery(value.query);
+    onSubmit: () => {
+      armor.filterByCategory('');
+      armor.filterByQuery('');
     },
   });
 
@@ -62,7 +62,7 @@ const Armor = ({
                   field={field}
                   className=""
                   label="Keyword"
-                  options={armor.filteredKeywords}
+                  options={armor.filteredKeywords || []}
                   onChange={() => {
                     armor.filterByCategory(field.state.value);
                   }}
@@ -78,7 +78,7 @@ const Armor = ({
                   label="Search weapons"
                   field={field}
                   onChange={() => {
-                    searchForm.handleSubmit();
+                    armor.filterByQuery(field.state.value);
                   }}
                 />
               )}

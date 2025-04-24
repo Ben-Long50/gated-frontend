@@ -13,6 +13,7 @@ const StatBar = ({
   title,
   total,
   current,
+  reserve,
   divider,
   color,
   mode,
@@ -21,6 +22,7 @@ const StatBar = ({
 }: {
   title: string;
   total?: number;
+  reserve?: number;
   current: number;
   divider?: number;
   color: string;
@@ -108,7 +110,11 @@ const StatBar = ({
           className={`text-tertiary flex items-center gap-2 justify-self-end whitespace-nowrap text-xl`}
         >
           <p className={`${current > total && 'text-error'}`}>{current}</p>
-          {total && <p>/ {total}</p>}
+          {typeof reserve === 'number' ? (
+            <p>/ {reserve}</p>
+          ) : (
+            total && <p>/ {total}</p>
+          )}
           {mode === 'adjustable' && (
             <div className="flex flex-col">
               <button

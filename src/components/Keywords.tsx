@@ -5,16 +5,12 @@ import KeywordCard from './KeywordCard';
 import useKeywords from '../hooks/useKeywords';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
-import { LayoutContext } from '../contexts/LayoutContext';
 import Loading from './Loading';
-import SelectField from './SelectField';
-import Icon from '@mdi/react';
-import { mdiTriangleDown } from '@mdi/js';
 import ArrowHeader2 from './ArrowHeader2';
+import InputSelectField from './InputSelectField';
 
 const Keywords = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
 
   const keywords = useKeywords();
 
@@ -23,12 +19,9 @@ const Keywords = ({ mode }: { mode?: string }) => {
       query: '',
       category: '',
     },
-    onSubmit: ({ value }) => {
-      if (value.query === '') {
-        keywords.resetList();
-      } else {
-        keywords.filterByQuery(value.query);
-      }
+    onSubmit: () => {
+      keywords.filterByQuery('');
+      keywords.filterByCategory('');
     },
   });
 
@@ -45,36 +38,45 @@ const Keywords = ({ mode }: { mode?: string }) => {
         borderColor={accentPrimary}
       >
         <form className="flex w-full flex-col gap-4 p-4">
-          <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
+          <div className="grid w-full grid-cols-2 gap-4 sm:gap-8">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
               {(field) => (
-                <SelectField
-                  className="col-span-2 sm:col-start-3"
+                <InputSelectField
+                  label="Keyword Type"
+                  options={['', 'weapon', 'armor', 'cybernetic']}
                   field={field}
                   onChange={() => {
                     keywords.filterByCategory(field.state.value);
                   }}
-                >
-                  <option value="">All keywords</option>
-                  <option value="weapon">Weapon keywords</option>
-                  <option value="armor">Armor keywords</option>
-                  <option value="cybernetic">Cybernetic keywords</option>
-                </SelectField>
+                />
               )}
             </searchForm.Field>
           </div>
-          <searchForm.Field name="query">
-            {(field) => (
-              <InputField
-                label="Search keywords"
-                field={field}
-                onChange={() => {
-                  searchForm.handleSubmit();
-                }}
-              />
-            )}
-          </searchForm.Field>
+          <div className="flex items-end gap-4">
+            <searchForm.Field name="query">
+              {(field) => (
+                <InputField
+                  className="w-full"
+                  label="Search keywords"
+                  field={field}
+                  onChange={() => {
+                    keywords.filterByQuery(field.state.value);
+                  }}
+                />
+              )}
+            </searchForm.Field>
+            <button
+              className="text-accent z-10 hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                searchForm.reset();
+                searchForm.handleSubmit();
+              }}
+            >
+              Reset Filters
+            </button>
+          </div>
         </form>
       </ThemeContainer>
       <ThemeContainer

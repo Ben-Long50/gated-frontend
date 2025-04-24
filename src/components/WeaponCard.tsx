@@ -138,6 +138,7 @@ export const WeaponStatBars = ({
               title="MAG"
               total={stats.magCapacity}
               current={stats.currentAmmoCount}
+              reserve={stats.currentMagCount * stats.magCapacity}
               color="rgb(107, 255, 124)"
             >
               <MagCapacityIcon className="size-8" />
@@ -148,6 +149,7 @@ export const WeaponStatBars = ({
               title="MAG"
               total={stats.magCapacity}
               current={stats.magCapacity}
+              reserve={(stats.magCount - 1) * stats.magCapacity}
               color="rgb(107, 255, 124)"
             >
               <MagCapacityIcon className="size-8" />

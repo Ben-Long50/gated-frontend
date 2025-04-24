@@ -623,7 +623,7 @@ const ItemCard = ({
               )}
             </motion.div>
           </div>
-          <span className="bg-tertiary absolute bottom-4 right-4 rounded-full p-1 shadow-md shadow-zinc-950 transition duration-300">
+          <span className="absolute bottom-0 right-5 transition duration-300">
             <Icon
               path={mdiChevronDown}
               size={1.1}

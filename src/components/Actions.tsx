@@ -3,18 +3,14 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
-import { LayoutContext } from '../contexts/LayoutContext';
 import useActions from '../hooks/useActions';
 import ActionCard from './ActionCard';
 import Loading from './Loading';
-import SelectField from './SelectField';
-import { mdiTriangleDown } from '@mdi/js';
-import Icon from '@mdi/react';
 import ArrowHeader2 from './ArrowHeader2';
+import InputSelectField from './InputSelectField';
 
 const Actions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
 
   const actions = useActions();
 
@@ -24,8 +20,10 @@ const Actions = ({ mode }: { mode?: string }) => {
       category: '',
       subCategory: '',
     },
-    onSubmit: ({ value }) => {
-      actions.filterByQuery(value.query);
+    onSubmit: () => {
+      actions.filterByQuery('');
+      actions.filterByCategory('');
+      actions.filterBySubCategory('');
     },
   });
 
@@ -46,49 +44,57 @@ const Actions = ({ mode }: { mode?: string }) => {
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
               {(field) => (
-                <SelectField
+                <InputSelectField
                   className="w-full"
+                  label="Action Type"
+                  options={['', 'action', 'extendedAction', 'reaction']}
+                  initialValue=""
                   field={field}
                   onChange={() => {
                     actions.filterByCategory(field.state.value);
                   }}
-                >
-                  <option value="">All actions</option>
-                  <option value="action">Actions</option>
-                  <option value="extendedAction">Extended Actions</option>
-                  <option value="reaction">Reactions</option>
-                </SelectField>
+                />
               )}
             </searchForm.Field>
             <searchForm.Field name="subCategory">
               {(field) => (
-                <SelectField
+                <InputSelectField
                   className="w-full"
+                  label="Action Subtype"
+                  options={['', 'attack', 'movement', 'upkeep', 'unique']}
+                  initialValue=""
                   field={field}
                   onChange={() => {
                     actions.filterBySubCategory(field.state.value);
                   }}
-                >
-                  <option value="">All action types</option>
-                  <option value="attack">Attack</option>
-                  <option value="movement">Movement</option>
-                  <option value="upkeep">Upkeep</option>
-                  <option value="unique">Unique</option>
-                </SelectField>
+                />
               )}
             </searchForm.Field>
           </div>
-          <searchForm.Field name="query">
-            {(field) => (
-              <InputField
-                label="Search actions"
-                field={field}
-                onChange={() => {
-                  searchForm.handleSubmit();
-                }}
-              />
-            )}
-          </searchForm.Field>
+          <div className="flex items-end gap-4">
+            <searchForm.Field name="query">
+              {(field) => (
+                <InputField
+                  className="w-full"
+                  label="Search actions"
+                  field={field}
+                  onChange={() => {
+                    actions.filterByQuery(field.state.value);
+                  }}
+                />
+              )}
+            </searchForm.Field>
+            <button
+              className="text-accent z-10 hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                searchForm.reset();
+                searchForm.handleSubmit();
+              }}
+            >
+              Reset Filters
+            </button>
+          </div>
         </form>
       </ThemeContainer>
       <ThemeContainer
