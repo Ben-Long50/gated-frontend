@@ -9,9 +9,14 @@ import AccountPicture from './AccountPicture';
 import ArrowHeader2 from './ArrowHeader2';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
+import useDeleteNotificationMutation from '../hooks/useDeleteNotificationMutation/useDeleteNotificationMutation';
+import { AuthContext } from '../contexts/AuthContext';
 
 const NotificationCard = ({ notification }: { notification: Notification }) => {
+  const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+
+  const deleteNotification = useDeleteNotificationMutation(apiUrl);
 
   let notificationMessage;
 
@@ -50,7 +55,11 @@ const NotificationCard = ({ notification }: { notification: Notification }) => {
             <p className="whitespace-nowrap">
               {format(notification.createdAt, 'PP')}
             </p>
-            <button aria-label="Delete notification" className="-mr-4 -mt-4">
+            <button
+              aria-label="Delete notification"
+              className="-mr-4 -mt-4"
+              onClick={() => deleteNotification.mutate(notification.id)}
+            >
               <Icon
                 className="text-tertiary hover:text-accent timing size-8"
                 path={mdiClose}

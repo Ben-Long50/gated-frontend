@@ -359,7 +359,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
           <Divider />
           <ArrowHeader2 title="Invite Players" />
           <p className="ml-4 border-l border-gray-400 px-4">
-            Search for the names of the friends you want to invite to this
+            Search for the usernames of the friends you want to invite to this
             campaign and check the box next to their names. When the campaign is
             created, invitations to join the campaign will be sent to those
             friends. Until each of the chosen friends have accepted the
@@ -410,15 +410,9 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                               <img
                                 className="size-10 rounded-full"
                                 src={user.profilePicture}
-                                alt={
-                                  user.firstName +
-                                  ' ' +
-                                  user.lastName +
-                                  "'s" +
-                                  ' profile picture'
-                                }
+                                alt={user.username + "'s" + ' profile picture'}
                               />
-                              <h3>{user.firstName + ' ' + user.lastName}</h3>
+                              <h3>{user.username}</h3>
                             </div>
                           </div>
                         }
@@ -447,7 +441,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                   {usersLoading || usersPending ? (
                     <Loading />
                   ) : (
-                    users.map((user: User) => {
+                    users?.map((user: User) => {
                       const status = playerArray.some(
                         (player: User) => player.id === user.id,
                       );
@@ -461,16 +455,10 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                                     className="size-10 rounded-full"
                                     src={user.profilePicture}
                                     alt={
-                                      user.firstName +
-                                      ' ' +
-                                      user.lastName +
-                                      "'s" +
-                                      ' profile picture'
+                                      user.username + "'s" + ' profile picture'
                                     }
                                   />
-                                  <h3>
-                                    {user.firstName + ' ' + user.lastName}
-                                  </h3>
+                                  <h3>{user.username}</h3>
                                 </div>
                               </div>
                             }
