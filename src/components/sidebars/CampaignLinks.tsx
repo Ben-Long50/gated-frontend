@@ -27,7 +27,7 @@ const CampaignLinks = ({
     data: campaign,
     isLoading,
     isPending,
-  } = useCampaignQuery(apiUrl, campaignId);
+  } = useCampaignQuery(apiUrl, Number(campaignId));
 
   const toggleModal = () => {
     setModalOpen((prev) => !prev);
@@ -46,27 +46,21 @@ const CampaignLinks = ({
             }
             title="Campaigns"
           >
-            {user._count.playerCampaigns > 0 && (
-              <SubLinkSidebar
-                title="Player campaigns"
-                path={`campaigns/player`}
-                setSidebarVisibility={setSidebarVisibility}
-              />
-            )}
-            {user._count.pendingCampaigns > 0 && (
-              <SubLinkSidebar
-                title="Pending campaigns"
-                path={`campaigns/pending`}
-                setSidebarVisibility={setSidebarVisibility}
-              />
-            )}
-            {user._count.ownerCampaigns > 0 && (
-              <SubLinkSidebar
-                title="Owner campaigns"
-                path={`campaigns/owner`}
-                setSidebarVisibility={setSidebarVisibility}
-              />
-            )}
+            <SubLinkSidebar
+              title="Player campaigns"
+              path={`campaigns/player`}
+              setSidebarVisibility={setSidebarVisibility}
+            />
+            <SubLinkSidebar
+              title="Pending campaigns"
+              path={`campaigns/pending`}
+              setSidebarVisibility={setSidebarVisibility}
+            />
+            <SubLinkSidebar
+              title="Owner campaigns"
+              path={`campaigns/owner`}
+              setSidebarVisibility={setSidebarVisibility}
+            />
             <SubLinkSidebar
               title="Create campaign"
               path={`campaigns/create`}
