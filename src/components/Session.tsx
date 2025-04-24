@@ -8,6 +8,7 @@ import { Character } from 'src/types/character';
 import ArrowHeader3 from './ArrowHeader3';
 import Divider from './Divider';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
+import BtnRect from './buttons/BtnRect';
 
 const Session = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -40,7 +41,7 @@ const Session = () => {
   }
 
   if (isError) {
-    throw new Error('Cannot find session');
+    throw new Error('Failed to find session');
   }
 
   return (
@@ -68,18 +69,28 @@ const Session = () => {
       <Divider />
       {sessionPlayerCharacters.length > 0 &&
         sessionPlayerCharacters.map((character: Character) => (
-          <Link key={character.id} to={`characters/${character.id}`}>
-            <div className="flex items-center gap-4">
-              <img
-                className="size-14 rounded-full shadow-md shadow-black"
-                src={character.picture.imageUrl}
-                alt=""
-              />
-              <ArrowHeader3
-                title={character.firstName + ' ' + character.lastName}
-              />
-            </div>
-          </Link>
+          <div
+            key={character.id}
+            className="flex w-full items-center justify-between"
+          >
+            <Link to={`characters/${character.id}`}>
+              <div className="flex items-center gap-4">
+                <img
+                  className="size-14 rounded-full shadow-md shadow-black"
+                  src={character.picture.imageUrl}
+                  alt={`${character.firstName} ${character.lastName}'s picture`}
+                />
+                <ArrowHeader3
+                  title={character.firstName + ' ' + character.lastName}
+                />
+              </div>
+            </Link>
+            <Link key={character.id} to={`characters/${character.id}/notes`}>
+              <BtnRect ariaLabel="Navigate to notes" type="button">
+                Notes
+              </BtnRect>
+            </Link>
+          </div>
         ))}
       <Divider />
       <div

@@ -44,7 +44,7 @@ const CharacterSheet = () => {
     isLoading: characterLoading,
     isPending: characterPending,
     isError: characterError,
-  } = useCharacterQuery(apiUrl, characterId);
+  } = useCharacterQuery(apiUrl, Number(characterId));
 
   const isLoading = characterLoading;
   const isPending = characterPending;

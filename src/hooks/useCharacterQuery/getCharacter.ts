@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const getCharacter = async (apiUrl: string, characterId?: string) => {
+const getCharacter = async (apiUrl: string, characterId: number) => {
   try {
     const response = await fetch(`${apiUrl}/characters/${characterId}`, {
       method: 'GET',

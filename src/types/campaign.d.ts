@@ -29,3 +29,12 @@ interface Session {
   briefing: { html: string; nodes: string };
   characters: Character[];
 }
+
+interface Notes {
+  id: number;
+  sessionId: number;
+  session?: Partial<Session>;
+  characterId: number;
+  character?: Partial<Character>;
+  content: { html: string; nodes: string };
+}

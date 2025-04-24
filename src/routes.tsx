@@ -59,6 +59,8 @@ import RollSimulator from './components/RollSimulator';
 import AffiliationForm from './components/AffiliationForm';
 import SessionForm from './components/SessionForm';
 import CampaignCharacterList from './components/CampaignCharacterList';
+import Notes from './components/Notes';
+import NotesForm from './components/NotesForm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -126,6 +128,17 @@ const router = createBrowserRouter(
                   <Route path="cart" element={<Cart />} />
                   <Route path="resume" element={<Resume />} />
                   <Route path="resume/update" element={<ResumeForm />} />
+                  <Route path="notes">
+                    <Route index element={<Notes />} />
+                    <Route
+                      path="create"
+                      element={<NotesForm title="Create" mode="create" />}
+                    />
+                    <Route
+                      path="update"
+                      element={<NotesForm title="Update" mode="update" />}
+                    />
+                  </Route>
                 </Route>
               </Route>
               <Route
