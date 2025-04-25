@@ -67,42 +67,48 @@ const InventoryModal = ({
           mode="inventory"
         >
           {(item, index, { tab }) => (
-            <div
-              className="group relative cursor-pointer select-none overflow-hidden rounded-bl rounded-tr pl-1 clip-4"
-              style={{ backgroundColor: rarityColorMap[item.rarity] }}
-              key={index}
-              onDoubleClick={() => {
-                if (characterId) {
-                  toggleEquipment.mutate({
-                    characterId: character?.id,
-                    inventoryId: character?.characterInventory?.id,
-                    category: tab,
-                    itemId: item.id,
-                  });
-                }
-              }}
+            <ThemeContainer
+              chamfer="small"
+              borderColor="transparent"
+              overflowHidden={true}
             >
-              {item.equipped === true && (
-                <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
-                  <Icon
-                    className="text-tertiary group-hover:text-secondary"
-                    path={mdiCheckCircle}
-                    size={3}
+              <div
+                className="group relative h-full cursor-pointer select-none overflow-hidden rounded-bl rounded-tr pl-1"
+                style={{ backgroundColor: rarityColorMap[item.rarity] }}
+                key={index}
+                onDoubleClick={() => {
+                  if (characterId) {
+                    toggleEquipment.mutate({
+                      characterId: character?.id,
+                      inventoryId: character?.characterInventory?.id,
+                      category: tab,
+                      itemId: item.id,
+                    });
+                  }
+                }}
+              >
+                {item.equipped === true && (
+                  <div className="absolute inset-0 flex h-full items-center justify-center bg-slate-950 bg-opacity-65">
+                    <Icon
+                      className="text-tertiary group-hover:text-secondary h-full"
+                      path={mdiCheckCircle}
+                      size={3}
+                    />
+                  </div>
+                )}
+                {item.picture?.imageUrl ? (
+                  <img
+                    className="aspect-square h-full hover:opacity-80"
+                    src={item.picture?.imageUrl}
+                    alt={item.name}
                   />
-                </div>
-              )}
-              {item.picture?.imageUrl ? (
-                <img
-                  className="h-32 hover:opacity-80"
-                  src={item.picture?.imageUrl}
-                  alt={item.name}
-                />
-              ) : (
-                <div className="bg-tertiary h-full w-full p-1 hover:opacity-80">
-                  <p className="my-auto text-center text-base">{item.name}</p>
-                </div>
-              )}
-            </div>
+                ) : (
+                  <div className="bg-tertiary aspect-square h-full p-1 hover:opacity-80">
+                    <p className="my-auto text-center text-base">{item.name}</p>
+                  </div>
+                )}
+              </div>
+            </ThemeContainer>
           )}
         </ItemMenu>
       </div>

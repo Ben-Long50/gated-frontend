@@ -1,18 +1,13 @@
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { mdiCircleOutline, mdiTriangleDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import StatBar from './StatBar';
 import PerkCard from './PerkCard';
 import AttributeCard from './AttributeCard';
 import useAttributeTree from '../hooks/useAttributeTree';
 import { LayoutContext } from '../contexts/LayoutContext';
-import HealthIcon from './icons/HealthIcon';
-import SanityIcon from './icons/SanityIcon';
-import CyberIcon from './icons/CyberIcon';
-import EquipIcon from './icons/EquipIcon';
 import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
@@ -29,13 +24,16 @@ import ArrowHeader1 from './ArrowHeader1';
 import ArrowHeader3 from './ArrowHeader3';
 import Divider from './Divider';
 import BtnAuth from './buttons/BtnAuth';
+import StatBars from './StatBars';
 
 const CharacterSheet = () => {
-  const { accentPrimary, statColorMap } = useContext(ThemeContext);
+  const { accentPrimary } = useContext(ThemeContext);
   const { apiUrl, user } = useContext(AuthContext);
-  const { layoutSize, mobile } = useContext(LayoutContext);
+  const { mobile } = useContext(LayoutContext);
 
   const [infoVisibility, setInfoVisibility] = useState(mobile ? false : true);
+
+  const cardRef = useRef(null);
 
   const { characterId } = useParams();
 
@@ -197,40 +195,18 @@ const CharacterSheet = () => {
         </ThemeContainer>
       </div>
       <div
-        className={` ${layoutSize !== 'xsmall' && layoutSize !== 'small' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full gap-4`}
+        ref={cardRef}
+        className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
       >
-        <StatBar
-          title="Health"
-          current={character.stats.currentHealth}
-          total={stats.maxHealth}
-          color={statColorMap['Health']}
-        >
-          <HealthIcon className="size-8" />
-        </StatBar>
-        <StatBar
-          title="Sanity"
-          current={character.stats.currentSanity}
-          total={stats.maxSanity}
-          color={statColorMap['Sanity']}
-        >
-          <SanityIcon className="size-8" />
-        </StatBar>
-        <StatBar
-          title="Cyber"
-          current={stats.cyber}
-          total={stats.maxCyber}
-          color={statColorMap['Cyber']}
-        >
-          <CyberIcon className="size-8" />
-        </StatBar>
-        <StatBar
-          title="Equip"
-          current={stats.weight}
-          total={stats.maxWeight}
-          color={statColorMap['Equip']}
-        >
-          <EquipIcon className="size-8" />
-        </StatBar>
+        <StatBars
+          cardWidth={cardRef.current?.offsetWidth}
+          stats={{
+            ...character.stats,
+            cyber: stats.cyber,
+            weight: stats.weight,
+            maxWeight: stats.maxWeight,
+          }}
+        />
       </div>
       <div className="flex flex-col gap-8">
         <ThemeContainer chamfer="medium" borderColor={accentPrimary}>

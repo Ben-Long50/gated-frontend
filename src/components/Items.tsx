@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
@@ -7,8 +7,11 @@ import Loading from './Loading';
 import { FetchOptions } from 'src/types/fetchOptions';
 import useItems from '../hooks/useItems';
 import { Item } from 'src/types/item';
-import MiscItemCard from './MiscItemCard';
+import MiscItemCard, { MiscItemCardMobile } from './MiscItemCard';
 import ArrowHeader2 from './ArrowHeader2';
+import { LayoutContext } from '../contexts/LayoutContext';
+import Icon from '@mdi/react';
+import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 
 const Items = ({
   title,
@@ -19,7 +22,12 @@ const Items = ({
   fetchOptions?: FetchOptions;
   mode: string;
 }) => {
+  const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
+
+  const [cardType, setCardType] = useState<'small' | 'large'>(() =>
+    mobile ? 'small' : 'large',
+  );
 
   const items = useItems(fetchOptions);
 
@@ -41,7 +49,7 @@ const Items = ({
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-8">
+    <div className="flex w-full max-w-6xl flex-col items-center gap-8">
       <h1 className="text-center">{title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
@@ -52,23 +60,71 @@ const Items = ({
           <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
             <ArrowHeader2 title="Filter Options" />
           </div>
-          <searchForm.Field name="query">
-            {(field) => (
-              <InputField
-                label="Search items"
-                field={field}
-                onChange={() => {
-                  searchForm.handleSubmit();
-                }}
-              />
+          <div className="flex w-full items-center gap-4">
+            <searchForm.Field name="query">
+              {(field) => (
+                <InputField
+                  className="w-full"
+                  label="Search items"
+                  field={field}
+                  onChange={() => {
+                    searchForm.handleSubmit();
+                  }}
+                />
+              )}
+            </searchForm.Field>
+            {!mobile && (
+              <>
+                <button
+                  className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-0.5 shadow-md shadow-black hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCardType('large');
+                  }}
+                >
+                  <Icon
+                    path={mdiCropSquare}
+                    className={`${cardType === 'large' && 'text-accent'} text-secondary group-hover:text-accent timing`}
+                  />
+                </button>
+                <button
+                  className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-2 shadow-md shadow-black hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCardType('small');
+                  }}
+                >
+                  <Icon
+                    path={mdiGrid}
+                    className={`${cardType === 'small' && 'text-accent'} text-secondary group-hover:text-accent timing`}
+                  />
+                </button>
+              </>
             )}
-          </searchForm.Field>
+            <button
+              className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-1.5 shadow-md shadow-black hover:underline"
+              onClick={(e) => {
+                e.preventDefault();
+                searchForm.reset();
+                searchForm.handleSubmit();
+              }}
+            >
+              <Icon
+                path={mdiSync}
+                className="text-secondary group-hover:text-accent timing"
+              />
+            </button>
+          </div>
         </form>
       </ThemeContainer>
-      {items.filteredItems?.length > 0 && (
-        <div className="flex flex-col gap-8">
+      {cardType === 'large' ? (
+        items.filteredItems?.map((item: Item) => {
+          return <MiscItemCard key={item.id} item={item} mode={mode} />;
+        })
+      ) : (
+        <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
           {items.filteredItems?.map((item: Item) => {
-            return <MiscItemCard key={item.id} item={item} mode={mode} />;
+            return <MiscItemCardMobile key={item.id} item={item} mode={mode} />;
           })}
         </div>
       )}

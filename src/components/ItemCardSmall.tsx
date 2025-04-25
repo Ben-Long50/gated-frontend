@@ -1,15 +1,17 @@
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import { ReactNode, useContext, useEffect, useRef, useState } from 'react';
+import { ReactNode, Ref, useContext, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 
 const ItemCardSmall = ({
+  cardRef,
   className,
   heading,
   children,
 }: {
+  cardRef?: Ref;
   className?: string;
   heading: ReactNode;
   children?: ReactNode;
@@ -34,6 +36,7 @@ const ItemCardSmall = ({
       overflowHidden={true}
     >
       <div
+        ref={cardRef}
         className={`${className} bg-secondary mb-auto w-full cursor-pointer p-4`}
         onClick={async (e) => {
           e.preventDefault();

@@ -12,7 +12,7 @@ const ArrowHeader3 = ({
 }) => {
   return (
     <div
-      className={`${className} ${reverse && 'flex-row-reverse'} flex items-center gap-4`}
+      className={`${className} text-left ${reverse && 'flex-row-reverse'} flex items-center gap-4`}
     >
       <Icon
         className="text-primary shrink-0"

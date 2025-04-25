@@ -3,17 +3,18 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
+import WeaponCard, { WeaponCardMobile } from './WeaponCard';
+import useWeapons from '../hooks/useWeapons';
 import Loading from './Loading';
-import useVehicles from '../hooks/useVehicles';
-import VehicleCard, { VehicleCardMobile } from './VehicleCard';
-import { VehicleWithWeapons } from '../types/vehicle';
+import { WeaponWithKeywords } from 'src/types/weapon';
 import { FetchOptions } from 'src/types/fetchOptions';
 import ArrowHeader2 from './ArrowHeader2';
-import { LayoutContext } from '../contexts/LayoutContext';
+import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
+import { LayoutContext } from '../contexts/LayoutContext';
 
-const Vehicles = ({
+const ItemListOptions = ({
   title,
   fetchOptions,
   mode,
@@ -22,25 +23,32 @@ const Vehicles = ({
   fetchOptions?: FetchOptions;
   mode: string;
 }) => {
-  const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const { mobile } = useContext(LayoutContext);
 
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
   );
 
-  const vehicles = useVehicles(fetchOptions);
+  const weapons = useWeapons(fetchOptions);
 
   const searchForm = useForm({
     defaultValues: {
+      category: '',
       query: '',
     },
-    onSubmit: ({ value }) => {
-      vehicles.filterByQuery(value.query);
+    onSubmit: () => {
+      weapons.filterByCategory('');
+      weapons.filterByQuery('');
     },
   });
 
-  if (vehicles.isLoading || vehicles.isPending) {
+  if (
+    weapons.isLoading ||
+    weapons.isPending ||
+    weapons.keywordsLoading ||
+    weapons.keywordsPending
+  ) {
     return <Loading />;
   }
 
@@ -52,19 +60,32 @@ const Vehicles = ({
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <form className="flex w-full flex-col gap-4 p-4">
-          <div className="flex w-full items-center justify-between">
+        <form className="flex flex-col gap-4 p-4">
+          <div className="grid w-full grid-cols-2 items-center justify-between">
             <ArrowHeader2 title="Filter Options" />
+            <searchForm.Field name="category">
+              {(field) => (
+                <InputSelectField
+                  field={field}
+                  className=""
+                  label="Keyword"
+                  options={weapons.filteredKeywords || []}
+                  onChange={() => {
+                    weapons.filterByCategory(field.state.value);
+                  }}
+                ></InputSelectField>
+              )}
+            </searchForm.Field>
           </div>
-          <div className="flex w-full items-center gap-4">
+          <div className="flex items-center gap-4">
             <searchForm.Field name="query">
               {(field) => (
                 <InputField
                   className="w-full"
-                  label="Search vehicles"
+                  label="Search weapons"
                   field={field}
                   onChange={() => {
-                    searchForm.handleSubmit();
+                    weapons.filterByQuery(field.state.value);
                   }}
                 />
               )}
@@ -113,20 +134,15 @@ const Vehicles = ({
           </div>
         </form>
       </ThemeContainer>
-
       {cardType === 'large' ? (
-        vehicles.filteredVehicles.map((vehicle: VehicleWithWeapons) => {
-          return <VehicleCard key={vehicle.id} vehicle={vehicle} mode={mode} />;
+        weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
+          return <WeaponCard key={weapon.id} weapon={weapon} mode={mode} />;
         })
       ) : (
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-          {vehicles.filteredVehicles.map((vehicle: VehicleWithWeapons) => {
+          {weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
             return (
-              <VehicleCardMobile
-                key={vehicle.id}
-                vehicle={vehicle}
-                mode={mode}
-              />
+              <WeaponCardMobile key={weapon.id} weapon={weapon} mode={mode} />
             );
           })}
         </div>
@@ -135,4 +151,4 @@ const Vehicles = ({
   );
 };
 
-export default Vehicles;
+export default Weapons;

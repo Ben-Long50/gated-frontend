@@ -1,16 +1,18 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
-import CyberneticCard from './CyberneticCard';
+import CyberneticCard, { CyberneticCardMobile } from './CyberneticCard';
 import useCybernetics from '../hooks/useCybernetics';
-import SelectField from './SelectField';
 import Loading from './Loading';
 import { FetchOptions } from 'src/types/fetchOptions';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
+import { LayoutContext } from '../contexts/LayoutContext';
+import Icon from '@mdi/react';
+import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 
 const Cybernetics = ({
   title,
@@ -21,7 +23,12 @@ const Cybernetics = ({
   fetchOptions?: FetchOptions;
   mode: string;
 }) => {
+  const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
+
+  const [cardType, setCardType] = useState<'small' | 'large'>(() =>
+    mobile ? 'small' : 'large',
+  );
 
   const cybernetics = useCybernetics(fetchOptions);
 
@@ -46,7 +53,7 @@ const Cybernetics = ({
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
+    <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
       <h1 className="text-center">{title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
@@ -77,7 +84,7 @@ const Cybernetics = ({
               )}
             </searchForm.Field>
           </div>
-          <div className="flex items-end gap-4">
+          <div className="flex items-center gap-4">
             <searchForm.Field name="query">
               {(field) => (
                 <InputField
@@ -90,29 +97,77 @@ const Cybernetics = ({
                 />
               )}
             </searchForm.Field>
+            {!mobile && (
+              <>
+                <button
+                  className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-0.5 shadow-md shadow-black hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCardType('large');
+                  }}
+                >
+                  <Icon
+                    path={mdiCropSquare}
+                    className={`${cardType === 'large' && 'text-accent'} text-secondary group-hover:text-accent timing`}
+                  />
+                </button>
+                <button
+                  className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-2 shadow-md shadow-black hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCardType('small');
+                  }}
+                >
+                  <Icon
+                    path={mdiGrid}
+                    className={`${cardType === 'small' && 'text-accent'} text-secondary group-hover:text-accent timing`}
+                  />
+                </button>
+              </>
+            )}
             <button
-              className="text-accent z-10 hover:underline"
+              className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-1.5 shadow-md shadow-black hover:underline"
               onClick={(e) => {
                 e.preventDefault();
                 searchForm.reset();
                 searchForm.handleSubmit();
               }}
             >
-              Reset Filters
+              <Icon
+                path={mdiSync}
+                className="text-secondary group-hover:text-accent timing"
+              />
             </button>
           </div>
         </form>
       </ThemeContainer>
-      {cybernetics.filteredCybernetics.map(
-        (cybernetic: CyberneticWithKeywords) => {
-          return (
-            <CyberneticCard
-              key={cybernetic.id}
-              cybernetic={cybernetic}
-              mode={mode}
-            />
-          );
-        },
+
+      {cardType === 'large' ? (
+        cybernetics.filteredCybernetics.map(
+          (cybernetic: CyberneticWithKeywords) => {
+            return (
+              <CyberneticCard
+                key={cybernetic.id}
+                cybernetic={cybernetic}
+                mode={mode}
+              />
+            );
+          },
+        )
+      ) : (
+        <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
+          {cybernetics.filteredCybernetics.map(
+            (cybernetic: CyberneticWithKeywords) => {
+              return (
+                <CyberneticCardMobile
+                  key={cybernetic.id}
+                  cybernetic={cybernetic}
+                  mode={mode}
+                />
+              );
+            },
+          )}
+        </div>
       )}
     </div>
   );

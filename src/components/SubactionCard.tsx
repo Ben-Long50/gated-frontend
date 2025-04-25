@@ -13,7 +13,13 @@ import StatBar from './StatBar';
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 
-const SubactionCard = ({ action }: { action: Action }) => {
+const SubactionCard = ({
+  action,
+  cardWidth,
+}: {
+  action: Action;
+  cardWidth: number;
+}) => {
   const { statColorMap } = useContext(ThemeContext);
 
   return (
@@ -59,7 +65,9 @@ const SubactionCard = ({ action }: { action: Action }) => {
       {action?.costs?.length > 0 && (
         <div className="flex w-full flex-col justify-start gap-2">
           <p className="text-accent text-base tracking-widest">Costs</p>
-          <div className="grid w-full grid-cols-[auto_auto_1fr_auto] items-center gap-x-4 gap-y-2 border-x-2 border-gray-400 border-opacity-50 px-4">
+          <div
+            className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
+          >
             {action?.costs.map((cost) => {
               let title;
               let color;
@@ -100,6 +108,7 @@ const SubactionCard = ({ action }: { action: Action }) => {
                   current={cost.value}
                   title={title}
                   color={color}
+                  cardWidth={cardWidth}
                 >
                   {cost.stat === 'health' && <HealthIcon className="size-8" />}
                   {cost.stat === 'sanity' && <SanityIcon className="size-8" />}

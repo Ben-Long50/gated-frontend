@@ -9,7 +9,7 @@ const useUpdateAccountMutation = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData: User) => {
+    mutationFn: (formData: Partial<User>) => {
       return updateFaction(apiUrl, formData);
     },
     onSuccess: () => {

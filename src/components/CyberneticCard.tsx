@@ -1,10 +1,7 @@
 import CyberIcon from './icons/CyberIcon';
-import { Modifier } from 'src/types/modifier';
 import ItemCard from './ItemCard';
 import { CyberneticStats, CyberneticWithKeywords } from 'src/types/cybernetic';
-import StatCard from './StatCard';
 import LightningIcon from './icons/LightningIcon';
-import ModifierTag from './ModifierTag';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useEditCyberneticPowerMutation from '../hooks/cyberneticStatHooks/useEditCyberneticPowerMutation/useEditCyberneticPowerMutation';
@@ -13,6 +10,8 @@ import BtnControl from './buttons/BtnControl';
 import PowerIcon from './icons/PowerIcon';
 import StatBar from './StatBar';
 import { useParams } from 'react-router-dom';
+import StatBars from './StatBars';
+import ItemCardMobile from './ItemCardMobile';
 
 const CyberneticControls = ({
   cyberneticId,
@@ -78,7 +77,7 @@ const CyberneticCard = ({
         />
       }
     >
-      <CyberneticStatBars stats={cybernetic.stats} mode={mode} />
+      <StatBars stats={cybernetic.stats} mode={mode} />
       {cybernetic.weapons?.length > 0 && (
         <div className="col-span-4 flex w-full items-center justify-between">
           <h4 className="text-accent">Integrated Weapons</h4>
@@ -101,42 +100,45 @@ const CyberneticCard = ({
   );
 };
 
-export const CyberneticStatBars = ({
-  stats,
+export const CyberneticCardMobile = ({
+  cybernetic,
   mode,
 }: {
-  stats: CyberneticStats;
-  mode?: string;
+  cybernetic: CyberneticWithKeywords;
+  mode: string;
 }) => {
   return (
-    <>
-      {stats.cyber && (
-        <StatBar title="CBR" current={stats.cyber} color="rgb(52 211 153)">
-          <CyberIcon className="size-8" />
-        </StatBar>
+    <ItemCardMobile
+      item={cybernetic}
+      category="cybernetics"
+      mode={mode}
+      controls={
+        <CyberneticControls
+          cyberneticId={cybernetic.id}
+          stats={cybernetic.stats}
+        />
+      }
+    >
+      <StatBars stats={cybernetic.stats} mode={mode} />
+      {cybernetic.weapons?.length > 0 && (
+        <div className="col-span-4 flex w-full items-center justify-between">
+          <h4 className="text-accent">Integrated Weapons</h4>
+          <p>{cybernetic.weapons.length}</p>
+        </div>
       )}
-      {mode === 'equipment'
-        ? stats.power &&
-          stats.currentPower !== undefined && (
-            <StatBar
-              title="PWR"
-              total={stats.power}
-              current={stats.currentPower}
-              color="rgb(107, 255, 124)"
-            >
-              <LightningIcon className="size-8" />
-            </StatBar>
-          )
-        : stats.power && (
-            <StatBar
-              title="PWR"
-              current={stats.power}
-              color="rgb(107, 255, 124)"
-            >
-              <LightningIcon className="size-8" />
-            </StatBar>
-          )}
-    </>
+      {cybernetic.armor?.length > 0 && (
+        <div className="col-span-4 flex w-full items-center justify-between">
+          <h4 className="text-accent">Integrated Armor</h4>
+          <p>{cybernetic.armor.length}</p>
+        </div>
+      )}
+      {cybernetic.actions?.length > 0 && (
+        <div className="col-span-4 flex w-full items-center justify-between">
+          <h4 className="text-accent">Unique Actions</h4>
+          <p>{cybernetic.actions.length}</p>
+        </div>
+      )}
+    </ItemCardMobile>
   );
 };
 

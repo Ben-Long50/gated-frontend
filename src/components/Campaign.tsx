@@ -22,9 +22,12 @@ import ThemeContainer from './ThemeContainer';
 import { Faction } from 'src/types/faction';
 import BtnRect from './buttons/BtnRect';
 import useJoinCampaignMutation from '../hooks/useJoinCampaignMutation/useJoinCampaignMutation';
+import { LayoutContext } from '../contexts/LayoutContext';
+import ArrowHeader3 from './ArrowHeader3';
 
 const Campaign = () => {
   const { apiUrl, user } = useContext(AuthContext);
+  const { mobile } = useContext(LayoutContext);
   const { campaignId } = useParams();
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -57,9 +60,9 @@ const Campaign = () => {
 
   return (
     <>
-      <div className="absolute left-0 right-0 top-0 -z-10 mx-auto flex aspect-[10/3] w-full max-w-9xl items-center overflow-hidden">
+      <div className="absolute top-0 -z-10 mx-auto flex aspect-[10/3] min-h-[500px] max-w-9xl justify-center overflow-hidden">
         <img
-          className="w-full"
+          className="w-full object-cover object-center"
           src={`${campaign.picture?.imageUrl}`}
           alt="Campaign cover image"
         />
@@ -112,7 +115,9 @@ const Campaign = () => {
             Join Campaign
           </BtnRect>
         )}
-        <div className="mt-40 grid w-full grid-cols-2 gap-8">
+        <div
+          className={`${mobile ? 'flex flex-col gap-4' : 'mt-40 grid grid-cols-2 gap-8'} w-full`}
+        >
           <ThemeContainer borderColor={accentPrimary} chamfer="medium">
             <div className="flex flex-col gap-4 p-4">
               <ArrowHeader2 title="Sessions" />
@@ -122,17 +127,11 @@ const Campaign = () => {
                   key={session.id}
                   to={`sessions/${session.id}`}
                 >
-                  <BtnAuth className="timing flex w-full items-center justify-between !p-4 !px-6">
-                    <div className="flex items-center gap-4">
-                      <h3>{session.sessionNumber}</h3>
-                      <Icon
-                        path={mdiTriangleDown}
-                        className="text-secondary size-2"
-                        rotate={-90}
-                      />
-                      <h3>{session.name}</h3>
-                    </div>
-                    <p>{format(session.createdAt, 'PP')}</p>
+                  <BtnAuth className="timing flex w-full items-center justify-between gap-4 !p-4 !px-6">
+                    <ArrowHeader3 title={session.name} />
+                    <p className="text-right">
+                      {format(session.createdAt, 'PP')}
+                    </p>
                   </BtnAuth>
                 </Link>
               ))}

@@ -13,7 +13,7 @@ const ItemRarity = ({
 }) => {
   return (
     <div
-      className={`${className} flex flex-wrap items-center justify-end gap-x-4`}
+      className={`${className} flex flex-wrap items-center justify-start gap-x-4`}
     >
       {rarity === 'common' ? (
         <h5 className="text-2xl font-semibold italic tracking-wide text-gray-400">

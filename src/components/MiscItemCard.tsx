@@ -14,6 +14,8 @@ import useRefreshItemStacksMutation from '../hooks/itemStatHooks/useRefreshItemS
 import StatBar from './StatBar';
 import { useParams } from 'react-router-dom';
 import { ThemeContext } from '../contexts/ThemeContext';
+import StatBars from './StatBars';
+import ItemCardMobile from './ItemCardMobile';
 
 const ItemControls = ({
   itemId,
@@ -92,59 +94,27 @@ const MiscItemCard = ({ item, mode }: { item: Item; mode: string }) => {
       mode={mode}
       controls={<ItemControls itemId={item.id} stats={item.stats} />}
     >
-      <MiscItemStatBars stats={item.stats} mode={mode} />
+      <StatBars stats={item.stats} mode={mode} />
     </ItemCard>
   );
 };
 
-export const MiscItemStatBars = ({
-  stats,
+export const MiscItemCardMobile = ({
+  item,
   mode,
 }: {
-  stats: ItemStats;
-  mode?: string;
+  item: Item;
+  mode: string;
 }) => {
-  const { statColorMap } = useContext(ThemeContext);
-
   return (
-    <>
-      {mode === 'equipment'
-        ? stats.power &&
-          stats.currentPower !== undefined && (
-            <StatBar
-              title="PWR"
-              total={stats.power}
-              current={stats.currentPower}
-              color={statColorMap['PWR']}
-            >
-              <LightningIcon className="size-8" />
-            </StatBar>
-          )
-        : stats.power && (
-            <StatBar
-              title="PWR"
-              current={stats.power}
-              color={statColorMap['PWR']}
-            >
-              <LightningIcon className="size-8" />
-            </StatBar>
-          )}
-      {stats.weight && (
-        <StatBar title="WGT" current={stats.weight} color={statColorMap['WGT']}>
-          <EquipIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.currentStacks ? (
-        <StatBar
-          title="STACKS"
-          total={stats.maxStacks ? stats.maxStacks : undefined}
-          current={stats.currentStacks}
-          color={statColorMap['STACKS']}
-        >
-          <StackIcon className="size-8" />
-        </StatBar>
-      ) : null}
-    </>
+    <ItemCardMobile
+      item={item}
+      category="items"
+      mode={mode}
+      controls={<ItemControls itemId={item.id} stats={item.stats} />}
+    >
+      <StatBars stats={item.stats} mode={mode} />
+    </ItemCardMobile>
   );
 };
 

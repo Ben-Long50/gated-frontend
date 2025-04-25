@@ -1,11 +1,10 @@
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import ThemeContainer from './ThemeContainer';
 import StatBar from './StatBar';
 import HealthIcon from './icons/HealthIcon';
 import SanityIcon from './icons/SanityIcon';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { LayoutContext } from '../contexts/LayoutContext';
-import BtnRect from './buttons/BtnRect';
 import { Link } from 'react-router-dom';
 import WardIcon from './icons/WardIcon';
 import ArmorIcon from './icons/ArmorIcon';
@@ -19,6 +18,7 @@ import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 import CharacterIcon from './icons/CharacterIcon';
 import EquipmentIcon from './icons/EquipmentIcon';
+import StatBars from './StatBars';
 
 const CharacterCard = ({
   character,
@@ -28,7 +28,9 @@ const CharacterCard = ({
   path?: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
+  const { mobile } = useContext(LayoutContext);
+
+  const cardRef = useRef(null);
 
   const { stats } = useStats(
     character?.characterInventory,
@@ -43,13 +45,19 @@ const CharacterCard = ({
       borderColor={accentPrimary}
       overflowHidden={true}
     >
-      <div className="relative grid grid-flow-row sm:grid-flow-col sm:grid-cols-[1fr_3fr] md:flex-row">
+      <div
+        ref={cardRef}
+        className="relative grid grid-flow-row sm:grid-flow-col sm:grid-cols-[1fr_3fr] md:flex-row"
+      >
         <div className="absolute left-0 top-0 h-full w-[425px]">
           <CloudinaryImage
             className="bg-primary absolute aspect-square w-full"
             url={character.picture?.imageUrl}
             alt={`${character.firstName} ${character.lastName}'s image`}
           />
+          {mobile && (
+            <div className="absolute inset-0 z-10 bg-zinc-900 bg-opacity-60" />
+          )}
           <div className="absolute inset-0 h-full w-full bg-gradient-to-l from-zinc-900 to-transparent" />
         </div>
 
@@ -64,29 +72,21 @@ const CharacterCard = ({
             </p>
           </div>
           <div
-            className={` ${layoutSize !== 'small' && layoutSize !== 'xsmall' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full gap-4`}
+            className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
           >
-            <StatBar
-              title="Health"
-              current={character.stats.currentHealth}
-              total={stats.maxHealth}
-              color="rgb(248 113 113)"
-            >
-              <HealthIcon className="size-8" />
-            </StatBar>
-            <StatBar
-              title="Sanity"
-              current={character.stats.currentSanity}
-              total={stats.maxSanity}
-              color="rgb(96 165 250)"
-            >
-              <SanityIcon className="size-8" />
-            </StatBar>
+            <StatBars
+              stats={{
+                maxHealth: stats.maxHealth,
+                maxSanity: stats.maxSanity,
+                ...character.stats,
+              }}
+              cardWidth={cardRef.current?.offsetWidth}
+            />
           </div>
           <div className="flex flex-wrap justify-between gap-6">
-            <div className="flex items-center gap-6">
+            <div className="flex w-full items-center justify-center gap-6">
               <div className="flex flex-col items-center justify-between gap-2">
-                {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
+                {!mobile && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Speed
                   </h3>
@@ -99,7 +99,7 @@ const CharacterCard = ({
                 </div>
               </div>
               <div className="flex flex-col items-center justify-between gap-2">
-                {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
+                {!mobile && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Evasion
                   </h3>
@@ -112,7 +112,7 @@ const CharacterCard = ({
                 </div>
               </div>
               <div className="flex flex-col items-center justify-between gap-2">
-                {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
+                {!mobile && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Armor
                   </h3>
@@ -125,7 +125,7 @@ const CharacterCard = ({
                 </div>
               </div>
               <div className="flex flex-col items-center justify-between gap-2">
-                {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
+                {!mobile && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Ward
                   </h3>
@@ -139,9 +139,9 @@ const CharacterCard = ({
               </div>
             </div>
 
-            <div className="flex items-end justify-end gap-6">
+            <div className="flex w-full items-end justify-end gap-6">
               <div className="flex flex-col items-center justify-between gap-2">
-                {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
+                {!mobile && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Injuries
                   </h3>
@@ -154,7 +154,7 @@ const CharacterCard = ({
                 </div>
               </div>
               <div className="flex flex-col items-center justify-between gap-2">
-                {layoutSize !== 'small' && layoutSize !== 'xsmall' && (
+                {!mobile && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
                     Insanities
                   </h3>

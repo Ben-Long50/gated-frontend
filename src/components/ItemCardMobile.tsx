@@ -39,8 +39,9 @@ import { Modifier } from 'src/types/modifier';
 import ItemPicture from './ItemPicture';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
+import ArrowHeader3 from './ArrowHeader3';
 
-const ItemCard = ({
+const ItemCardMobile = ({
   item,
   category,
   mode,
@@ -58,7 +59,7 @@ const ItemCard = ({
   controls?: ReactNode;
   children: ReactNode;
 }) => {
-  const { accentPrimary } = useContext(ThemeContext);
+  const { accentPrimary, rarityColorMap } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [imageHeight, setImageHeight] = useState(0);
@@ -142,178 +143,167 @@ const ItemCard = ({
             }
           }}
         >
-          <div className="relative flex h-full gap-8">
-            {item.picture && (
-              <ItemPicture
-                className={`${detailsOpen ? 'max-w-[400px]' : 'max-w-[280px]'} timing`}
-                item={item}
-              />
-            )}
-            <div className="w-full">
-              <div className="grid w-full grow grid-cols-[2fr-1fr] items-start gap-x-8 gap-y-4">
-                <div>
-                  <div className="flex items-center gap-4">
-                    <ArrowHeader2 title={item.name} />
-                    {category === 'weapons' && item.vehicleId && (
-                      <h4 className="text-error italic">
-                        (Currently equipped)
-                      </h4>
-                    )}
-                  </div>
-
-                  {item.cyberneticType && (
-                    <p className="text-tertiary italic">
-                      (
-                      {item.cyberneticType[0].toUpperCase() +
-                        item.cyberneticType.slice(1)}
-                      )
-                    </p>
+          <div className="flex h-full flex-col gap-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-4">
+                  <ArrowHeader3 title={item.name} />
+                  {category === 'weapons' && item.vehicleId && (
+                    <h4 className="text-error italic">(Currently equipped)</h4>
                   )}
                 </div>
-
-                <div
-                  className={`${mode === 'codex' && 'row-span-2'} timing col-start-2 row-start-1 flex flex-col items-end justify-end gap-x-8 gap-y-2`}
-                >
-                  {mode === 'codex' && (
-                    <div className="flex items-center justify-end gap-4">
-                      <CardPrice
-                        price={item?.price}
-                        category={category}
-                        itemId={item?.id}
-                      />
-                      {(user?.role === 'ADMIN' ||
-                        user?.role === 'SUPERADMIN') && (
-                        <Link to={`/glam/codex/${category}/${item.id}/update`}>
-                          <button className="text-accent hover:underline">
-                            Edit
-                          </button>
-                        </Link>
-                      )}
-                    </div>
-                  )}
-                  <ItemRarity
-                    className="place-self-end"
-                    rarity={item?.rarity}
-                    grade={item?.grade}
-                  />
-                </div>
-                {(item.body || item.keywords || item.category) && (
-                  <div
-                    className={` ${mode !== 'codex' && 'col-span-2'} col-start-1 row-start-2 flex flex-wrap items-center gap-1`}
-                  >
-                    {item.body && (
-                      <div className="flex flex-col items-center gap-1">
-                        <div className="mr-4 flex flex-wrap items-center gap-2">
-                          <BodyIcon className="size-8" />
-                          {item.body.map((body, index) => {
-                            return (
-                              <p key={body}>
-                                {body}
-                                <span>
-                                  {index < item.body.length - 1 && ','}
-                                </span>
-                              </p>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                    {item?.keywords &&
-                      item.keywords.length > 0 &&
-                      item.keywords?.map(
-                        (
-                          item: { keyword: Keyword; value?: number },
-                          index: number,
-                        ) => {
-                          return (
-                            <Tag
-                              id={item.keyword?.id + index}
-                              key={item.keyword?.id}
-                              label={
-                                item.value
-                                  ? item.keyword?.name + ' ' + item.value
-                                  : item.keyword?.name
-                              }
-                              description={item.keyword?.description}
-                              toolTip={toolTip}
-                              setToolTip={setToolTip}
-                            />
-                          );
-                        },
-                      )}
-                    {item?.category && (
-                      <div className="flex items-center gap-4">
-                        <h4>{subcategoryMap[item.subcategory]}</h4>
-                        <p className="text-tertiary italic">
-                          (
-                          {item.category[0].toUpperCase() +
-                            item.category.slice(1)}
-                          )
-                        </p>
-                        <Icon
-                          className="text-secondary"
-                          path={mdiTriangleDown}
-                          size={0.35}
-                          rotate={-90}
-                        />
-                        <p>{item.itemType}</p>
-                      </div>
-                    )}
+                {item.cyberneticType && (
+                  <p className="text-tertiary italic">
+                    (
+                    {item.cyberneticType[0].toUpperCase() +
+                      item.cyberneticType.slice(1)}
+                    )
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-wrap items-start justify-end gap-x-4 gap-y-1">
+                {mode === 'codex' && (
+                  <div className="flex items-center justify-end gap-4">
+                    <CardPrice
+                      price={item?.price}
+                      category={category}
+                      itemId={item?.id}
+                    />
                   </div>
                 )}
-                <div className="col-span-2 flex w-full flex-col flex-wrap items-center gap-4 pr-5">
-                  <div
-                    className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
-                  >
-                    {Children.map(children, (child) => {
-                      if (isValidElement(child)) {
-                        return cloneElement(child, {
-                          cardWidth: cardRef.current?.offsetWidth,
-                        });
-                      }
-                      return child;
-                    })}
-                  </div>
-
-                  {item.modifiers && item.modifiers?.length > 0 && (
-                    <div className="flex w-full items-center justify-start gap-2 sm:gap-4">
-                      {item.modifiers?.map(
-                        (modifier: Modifier, index: number) => (
-                          <ModifierTag key={index} modifier={modifier} />
-                        ),
-                      )}
-                    </div>
-                  )}
-                </div>
+                {((mode === 'codex' && user?.role === 'ADMIN') ||
+                  (mode === 'codex' && user?.role === 'SUPERADMIN')) && (
+                  <Link to={`/glam/codex/${category}/${item.id}/update`}>
+                    <button className="text-accent hover:underline">
+                      Edit
+                    </button>
+                  </Link>
+                )}
               </div>
-              {mode !== 'equipment' && (
-                <div className="overflow-hidden">
-                  <motion.p
-                    ref={detailRef}
-                    className="text-secondary flex flex-col gap-4 pr-5"
-                    initial={{ marginTop: -detailHeight - 8 }}
-                    animate={{
-                      marginTop: detailsOpen ? 24 : -detailHeight - 8,
-                    }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {item.modifiers && item.modifiers[0]?.duration && (
-                      <div className="flex items-center gap-4">
-                        <StopwatchIcon className="size-7" />
-                        <p>{item.modifiers[0].duration?.value}</p>
-                        <p>
-                          {item.modifiers[0].duration?.unit[0].toUpperCase() +
-                            item.modifiers[0].duration?.unit.slice(1)}
-                        </p>
-                      </div>
-                    )}
-                    {item.description}
-                  </motion.p>
+            </div>
+            <div className="flex items-center justify-between">
+              <ItemRarity rarity={item?.rarity} grade={item?.grade} />
+              {item.body && (
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                  <BodyIcon className="size-8" />
+                  {item.body.map((body, index) => {
+                    return (
+                      <p key={body}>
+                        {body}
+                        <span>{index < item.body.length - 1 && ','}</span>
+                      </p>
+                    );
+                  })}
                 </div>
               )}
             </div>
+            {item?.keywords && item.keywords.length > 0 && (
+              <div className="col-span-2 flex w-full flex-wrap items-center gap-1 justify-self-start">
+                {item.keywords.map(
+                  (
+                    item: { keyword: Keyword; value?: number },
+                    index: number,
+                  ) => {
+                    return (
+                      <Tag
+                        id={item.keyword.id + index}
+                        key={item.keyword.id}
+                        label={
+                          item.value
+                            ? item.keyword.name + ' ' + item.value
+                            : item.keyword.name
+                        }
+                        description={item.keyword.description}
+                        toolTip={toolTip}
+                        setToolTip={setToolTip}
+                      />
+                    );
+                  },
+                )}
+              </div>
+            )}
+            {item?.category && (
+              <div className="flex items-center gap-4">
+                <h4>{subcategoryMap[item.subcategory]}</h4>
+                <p className="text-tertiary italic">
+                  ({item.category[0].toUpperCase() + item.category.slice(1)})
+                </p>
+                <Icon
+                  className="text-secondary shrink-0"
+                  path={mdiTriangleDown}
+                  size={0.35}
+                  rotate={-90}
+                />
+                <p>{item.itemType}</p>
+              </div>
+            )}
+            <motion.div
+              className={`flex w-full items-start`}
+              style={{
+                height: item.picture && imageHeight,
+                gap: item.picture && !detailsOpen ? 16 : 0,
+              }}
+            >
+              {item.picture && (
+                <div className="mx-auto w-full" ref={imageRef}>
+                  <ItemPicture
+                    className={`${detailsOpen ? 'max-w-full' : 'max-w-[300px]'} timing mx-auto w-full`}
+                    item={item}
+                  />
+                </div>
+              )}
+            </motion.div>
           </div>
-          <div className={`overflow-hidden pr-5`}>
+          <div className="overflow-hidden">
+            <motion.div
+              ref={detailRef}
+              className="flex flex-col gap-4 pt-6"
+              initial={{ marginTop: -detailHeight - 4 }}
+              animate={{
+                marginTop: detailsOpen ? 0 : -detailHeight - 4,
+              }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="flex w-full flex-col items-center gap-4">
+                <div
+                  className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
+                >
+                  {Children.map(children, (child) => {
+                    if (isValidElement(child)) {
+                      return cloneElement(child, {
+                        cardWidth: cardRef.current?.offsetWidth,
+                      });
+                    }
+                    return child;
+                  })}
+                </div>
+                {item.modifiers && item.modifiers?.length > 0 && (
+                  <div className="flex w-full items-center gap-2">
+                    {item.modifiers?.map(
+                      (modifier: Modifier, index: number) => (
+                        <ModifierTag key={index} modifier={modifier} />
+                      ),
+                    )}
+                  </div>
+                )}
+              </div>
+              {item.modifiers && item.modifiers[0]?.duration && (
+                <div className="flex items-center gap-4">
+                  <StopwatchIcon className="size-7" />
+                  <p>{item.modifiers[0].duration?.value}</p>
+                  <p>
+                    {item.modifiers[0].duration?.unit[0].toUpperCase() +
+                      item.modifiers[0].duration?.unit.slice(1)}
+                  </p>
+                </div>
+              )}
+              {mode !== 'equipment' && (
+                <p className="text-secondary">{item.description}</p>
+              )}
+            </motion.div>
+          </div>
+
+          <div className={`overflow-hidden`}>
             <motion.div
               ref={integrationRef}
               className="flex flex-col gap-5 p-0.5"
@@ -469,4 +459,4 @@ const ItemCard = ({
   );
 };
 
-export default ItemCard;
+export default ItemCardMobile;

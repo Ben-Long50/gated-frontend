@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import ThemeContainer from './ThemeContainer';
@@ -31,24 +31,25 @@ import { Action } from 'src/types/action';
 import DieIcon from './icons/DieIcon';
 import useCurrentHealthMutation from '../hooks/useCurrentHealthMutation/useCurrentHealthMutation';
 import useCurrentSanityMutation from '../hooks/useCurrentSanityMutation/useCurrentSanityMutation';
-import WeaponCard from './WeaponCard';
-import ArmorCard from './ArmorCard';
-import CyberneticCard from './CyberneticCard';
+import WeaponCard, { WeaponCardMobile } from './WeaponCard';
+import ArmorCard, { ArmorCardMobile } from './ArmorCard';
+import CyberneticCard, { CyberneticCardMobile } from './CyberneticCard';
 import useEquipment from '../hooks/useEquipment';
 import { Item } from 'src/types/item';
 import useItems from '../hooks/useItems';
-import MiscItemCard from './MiscItemCard';
+import MiscItemCard, { MiscItemCardMobile } from './MiscItemCard';
 import ArrowHeader3 from './ArrowHeader3';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
 import InventoryModal from './InventoryModal';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
+import StatBars from './StatBars';
 
 const Equipment = ({ mode }: { mode?: string }) => {
   const { apiUrl, user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
+  const { mobile } = useContext(LayoutContext);
   const { characterId } = useParams();
 
   const [active, setActive] = useState<{
@@ -56,6 +57,8 @@ const Equipment = ({ mode }: { mode?: string }) => {
     category: null | string;
   }>({ id: null, category: null });
   const [modalOpen, setModalOpen] = useState(false);
+
+  const cardRef = useRef(null);
 
   const toggleModal = () => {
     setModalOpen((prev) => !prev);
@@ -176,79 +179,80 @@ const Equipment = ({ mode }: { mode?: string }) => {
           </ThemeContainer>
         )}
         <div
-          className={` ${layoutSize !== 'xsmall' && layoutSize !== 'small' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full items-center gap-4`}
+          ref={cardRef}
+          className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
         >
-          <StatBar
-            title="Health"
-            current={character.stats.currentHealth}
-            total={stats.maxHealth}
-            color="rgb(248 113 113)"
-            mode="adjustable"
-            mutation={
-              character?.userId === user?.id
-                ? (value: number) => handleCurrentHealth(value)
-                : undefined
-            }
-          >
-            <HealthIcon className="size-8" />
-          </StatBar>
-          <StatBar
-            title="Sanity"
-            current={character.stats.currentSanity}
-            total={stats.maxSanity}
-            color="rgb(96 165 250)"
-            mode="adjustable"
-            mutation={
-              character?.userId === user?.id
-                ? (value: number) => handleCurrentSanity(value)
-                : undefined
-            }
-          >
-            <SanityIcon className="size-8" />
-          </StatBar>
-          <StatBar
-            title="Cyber"
-            current={stats.cyber}
-            total={stats.maxCyber}
-            color="rgb(52 211 153)"
-          >
-            <CyberIcon className="size-8" />
-          </StatBar>
-          <StatBar
-            title="Equip"
-            current={stats.weight}
-            total={stats.maxWeight}
-            color="rgb(251 191 36)"
-          >
-            <EquipIcon className="size-8" />
-          </StatBar>
+          <StatBars
+            cardWidth={cardRef.current?.offsetWidth}
+            stats={{
+              ...character.stats,
+              cyber: stats.cyber,
+              weight: stats.weight,
+              maxWeight: stats.maxWeight,
+            }}
+          />
         </div>
       </div>
       <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-[2fr_1fr] xl:grid-cols-[2.5fr_1fr]">
         <div className="flex w-full flex-col gap-8">
           {active.id !== null &&
             (active.category === 'weapon' ? (
-              <WeaponCard
-                key={active.id}
-                weapon={activeItem}
-                mode="equipment"
-              />
+              mobile ? (
+                <WeaponCardMobile
+                  key={active.id}
+                  weapon={activeItem}
+                  mode="equipment"
+                />
+              ) : (
+                <WeaponCard
+                  key={active.id}
+                  weapon={activeItem}
+                  mode="equipment"
+                />
+              )
             ) : active.category === 'armor' ? (
-              <ArmorCard key={active.id} armor={activeItem} mode="equipment" />
+              mobile ? (
+                <ArmorCardMobile
+                  key={active.id}
+                  armor={activeItem}
+                  mode="equipment"
+                />
+              ) : (
+                <ArmorCard
+                  key={active.id}
+                  armor={activeItem}
+                  mode="equipment"
+                />
+              )
             ) : active.category === 'cybernetic' ? (
-              <CyberneticCard
-                key={active.id}
-                cybernetic={activeItem}
-                mode="equipment"
-              />
+              mobile ? (
+                <CyberneticCardMobile
+                  key={active.id}
+                  cybernetic={activeItem}
+                  mode="equipment"
+                />
+              ) : (
+                <CyberneticCard
+                  key={active.id}
+                  cybernetic={activeItem}
+                  mode="equipment"
+                />
+              )
             ) : (
-              active.category === 'item' && (
+              active.category === 'item' &&
+              (mobile ? (
+                <MiscItemCardMobile
+                  key={active.id}
+                  item={activeItem}
+                  mode="equipment"
+                />
+              ) : (
                 <MiscItemCard
                   key={active.id}
                   item={activeItem}
                   mode="equipment"
                 />
-              )
+              ))
             ))}
           <div className="flex items-center justify-between">
             <ArrowHeader2 title="Equipped Items" />

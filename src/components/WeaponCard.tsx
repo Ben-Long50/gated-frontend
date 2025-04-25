@@ -1,8 +1,4 @@
 import DamageIcon from './icons/DamageIcon';
-import SalvoIcon from './icons/SalvoIcon';
-import FlurryIcon from './icons/FlurryIcon';
-import RangeIcon from './icons/RangeIcon';
-import EquipIcon from './icons/EquipIcon';
 import MagCapacityIcon from './icons/MagCapacityIcon';
 import ItemCard from './ItemCard';
 import { WeaponStats, WeaponWithKeywords } from 'src/types/weapon';
@@ -13,9 +9,9 @@ import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useReloadMutation from '../hooks/weaponStatHooks/useReloadAmmoMutation/useReloadAmmoMutation';
 import useRefreshMutation from '../hooks/weaponStatHooks/useRefreshAmmoMutation/useRefreshAmmoMutation';
-import StatBar from './StatBar';
 import { useParams } from 'react-router-dom';
-import { ThemeContext } from '../contexts/ThemeContext';
+import ItemCardMobile from './ItemCardMobile';
+import StatBars from './StatBars';
 
 const WeaponControls = ({
   stats,
@@ -87,77 +83,27 @@ const WeaponCard = ({
       mode={mode}
       controls={<WeaponControls stats={weapon.stats} weaponId={weapon.id} />}
     >
-      <WeaponStatBars stats={weapon.stats} mode={mode} />
+      <StatBars stats={weapon.stats} mode={mode} />
     </ItemCard>
   );
 };
 
-export const WeaponStatBars = ({
-  stats,
+export const WeaponCardMobile = ({
+  weapon,
   mode,
 }: {
-  stats: WeaponStats;
-  mode?: string;
+  weapon: WeaponWithKeywords;
+  mode: string;
 }) => {
-  const { statColorMap } = useContext(ThemeContext);
-
   return (
-    <>
-      {stats.damage && (
-        <StatBar title="DMG" current={stats.damage} color={statColorMap['DMG']}>
-          <DamageIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.salvo && (
-        <StatBar title="SLV" current={stats.salvo} color={statColorMap['SLV']}>
-          <SalvoIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.flurry && (
-        <StatBar title="FLR" current={stats.flurry} color={statColorMap['FLR']}>
-          <FlurryIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.range && (
-        <StatBar
-          title="RNG"
-          current={stats.range}
-          divider={5}
-          color={statColorMap['RNG']}
-        >
-          <RangeIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.weight && (
-        <StatBar title="WGT" current={stats.weight} color={statColorMap['WGT']}>
-          <EquipIcon className="size-8" />
-        </StatBar>
-      )}
-      {mode === 'equipment'
-        ? stats.currentAmmoCount !== undefined &&
-          stats.magCapacity && (
-            <StatBar
-              title="MAG"
-              total={stats.magCapacity}
-              current={stats.currentAmmoCount}
-              reserve={stats.currentMagCount * stats.magCapacity}
-              color={statColorMap['MAG']}
-            >
-              <MagCapacityIcon className="size-8" />
-            </StatBar>
-          )
-        : stats.magCapacity && (
-            <StatBar
-              title="MAG"
-              total={stats.magCapacity}
-              current={stats.magCapacity}
-              reserve={(stats.magCount - 1) * stats.magCapacity}
-              color={statColorMap['MAG']}
-            >
-              <MagCapacityIcon className="size-8" />
-            </StatBar>
-          )}
-    </>
+    <ItemCardMobile
+      item={weapon}
+      category="weapons"
+      mode={mode}
+      controls={<WeaponControls stats={weapon.stats} weaponId={weapon.id} />}
+    >
+      <StatBars stats={weapon.stats} mode={mode} />
+    </ItemCardMobile>
   );
 };
 

@@ -46,8 +46,12 @@ const Faction = () => {
   return (
     <>
       {faction.picture?.imageUrl && (
-        <div className="absolute left-0 right-0 top-0 -z-10 mx-auto flex aspect-[5/2] w-full max-w-8xl items-center overflow-hidden">
-          <img src={`${faction.picture?.imageUrl}`} alt="Faction cover image" />
+        <div className="absolute top-0 -z-10 mx-auto flex aspect-[10/3] min-h-[500px] max-w-9xl justify-center overflow-hidden">
+          <img
+            className="w-full object-cover object-center"
+            src={`${faction.picture?.imageUrl}`}
+            alt="Faction cover image"
+          />
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
         </div>
       )}

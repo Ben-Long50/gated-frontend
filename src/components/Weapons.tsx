@@ -1,16 +1,18 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
-import WeaponCard from './WeaponCard';
+import WeaponCard, { WeaponCardMobile } from './WeaponCard';
 import useWeapons from '../hooks/useWeapons';
-import SelectField from './SelectField';
 import Loading from './Loading';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { FetchOptions } from 'src/types/fetchOptions';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
+import Icon from '@mdi/react';
+import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
+import { LayoutContext } from '../contexts/LayoutContext';
 
 const Weapons = ({
   title,
@@ -22,6 +24,11 @@ const Weapons = ({
   mode: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const { mobile } = useContext(LayoutContext);
+
+  const [cardType, setCardType] = useState<'small' | 'large'>(() =>
+    mobile ? 'small' : 'large',
+  );
 
   const weapons = useWeapons(fetchOptions);
 
@@ -46,7 +53,7 @@ const Weapons = ({
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
+    <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
       <h1 className="text-center">{title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
@@ -70,7 +77,7 @@ const Weapons = ({
               )}
             </searchForm.Field>
           </div>
-          <div className="flex items-end gap-4">
+          <div className="flex items-center gap-4">
             <searchForm.Field name="query">
               {(field) => (
                 <InputField
@@ -83,22 +90,63 @@ const Weapons = ({
                 />
               )}
             </searchForm.Field>
+            {!mobile && (
+              <>
+                <button
+                  className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-0.5 shadow-md shadow-black hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCardType('large');
+                  }}
+                >
+                  <Icon
+                    path={mdiCropSquare}
+                    className={`${cardType === 'large' && 'text-accent'} text-secondary group-hover:text-accent timing`}
+                  />
+                </button>
+                <button
+                  className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-2 shadow-md shadow-black hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCardType('small');
+                  }}
+                >
+                  <Icon
+                    path={mdiGrid}
+                    className={`${cardType === 'small' && 'text-accent'} text-secondary group-hover:text-accent timing`}
+                  />
+                </button>
+              </>
+            )}
             <button
-              className="text-accent z-10 hover:underline"
+              className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-1.5 shadow-md shadow-black hover:underline"
               onClick={(e) => {
                 e.preventDefault();
                 searchForm.reset();
                 searchForm.handleSubmit();
               }}
             >
-              Reset Filters
+              <Icon
+                path={mdiSync}
+                className="text-secondary group-hover:text-accent timing"
+              />
             </button>
           </div>
         </form>
       </ThemeContainer>
-      {weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
-        return <WeaponCard key={weapon.id} weapon={weapon} mode={mode} />;
-      })}
+      {cardType === 'large' ? (
+        weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
+          return <WeaponCard key={weapon.id} weapon={weapon} mode={mode} />;
+        })
+      ) : (
+        <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
+          {weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
+            return (
+              <WeaponCardMobile key={weapon.id} weapon={weapon} mode={mode} />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,4 @@
-import ArmorIcon from './icons/ArmorIcon';
-import WardIcon from './icons/WardIcon';
 import BlockIcon from './icons/BlockIcon';
-import EquipIcon from './icons/EquipIcon';
 import ItemCard from './ItemCard';
 import { ArmorStats, ArmorWithKeywords } from 'src/types/armor';
 import LightningIcon from './icons/LightningIcon';
@@ -14,9 +11,9 @@ import useRefreshArmorBlockMutation from '../hooks/armorStatHooks/useRefreshArmo
 import BtnControl from './buttons/BtnControl';
 import HullIcon from './icons/HullIcon';
 import PowerIcon from './icons/PowerIcon';
-import StatBar from './StatBar';
 import { useParams } from 'react-router-dom';
-import { ThemeContext } from '../contexts/ThemeContext';
+import StatBars from './StatBars';
+import ItemCardMobile from './ItemCardMobile';
 
 const ArmorControls = ({
   armorId,
@@ -99,79 +96,27 @@ const ArmorCard = ({
       mode={mode}
       controls={<ArmorControls armorId={armor.id} stats={armor.stats} />}
     >
-      <ArmorStatBars stats={armor.stats} mode={mode} />
+      <StatBars stats={armor.stats} mode={mode} />
     </ItemCard>
   );
 };
 
-export const ArmorStatBars = ({
-  stats,
+export const ArmorCardMobile = ({
+  armor,
   mode,
 }: {
-  stats: ArmorStats;
-  mode?: string;
+  armor: ArmorWithKeywords;
+  mode: string;
 }) => {
-  const { statColorMap } = useContext(ThemeContext);
   return (
-    <>
-      {stats.armor && (
-        <StatBar title="AV" current={stats.armor} color={statColorMap['AV']}>
-          <ArmorIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.ward && (
-        <StatBar title="WV" current={stats.ward} color={statColorMap['WV']}>
-          <WardIcon className="size-8" />
-        </StatBar>
-      )}
-      {mode === 'equipment'
-        ? stats.block &&
-          stats.currentBlock !== undefined && (
-            <StatBar
-              title="BP"
-              total={stats.block}
-              current={stats.currentBlock}
-              color={statColorMap['BP']}
-            >
-              <BlockIcon className="size-8" />
-            </StatBar>
-          )
-        : stats.block && (
-            <StatBar
-              title="BP"
-              current={stats.block}
-              color={statColorMap['BP']}
-            >
-              <BlockIcon className="size-8" />
-            </StatBar>
-          )}
-      {mode === 'equipment'
-        ? stats.power &&
-          stats.currentPower !== undefined && (
-            <StatBar
-              title="PWR"
-              total={stats.power}
-              current={stats.currentPower}
-              color={statColorMap['PWR']}
-            >
-              <LightningIcon className="size-8" />
-            </StatBar>
-          )
-        : stats.power && (
-            <StatBar
-              title="PWR"
-              current={stats.power}
-              color={statColorMap['PWR']}
-            >
-              <LightningIcon className="size-8" />
-            </StatBar>
-          )}
-      {stats.weight && (
-        <StatBar title="WGT" current={stats.weight} color={statColorMap['WGT']}>
-          <EquipIcon className="size-8" />
-        </StatBar>
-      )}
-    </>
+    <ItemCardMobile
+      item={armor}
+      category="armor"
+      mode={mode}
+      controls={<ArmorControls armorId={armor.id} stats={armor.stats} />}
+    >
+      <StatBars stats={armor.stats} mode={mode} />
+    </ItemCardMobile>
   );
 };
 

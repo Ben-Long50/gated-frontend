@@ -1,22 +1,20 @@
 import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
-import ArmorIcon from './icons/ArmorIcon';
-import WardIcon from './icons/WardIcon';
-import BlockIcon from './icons/BlockIcon';
-import StatCard from './StatCard';
 import { ArmorWithKeywords } from 'src/types/armor';
-import { ArmorStatBars } from './ArmorCard';
+import StatBars from './StatBars';
 
 const SubarmorCard = ({
   armor,
   toolTip,
   setToolTip,
   mode,
+  cardWidth,
 }: {
   armor: ArmorWithKeywords;
   toolTip: number;
   setToolTip: (prevState: number) => void;
   mode?: string;
+  cardWidth: number;
 }) => {
   return (
     <div className="flex h-full grow flex-col items-start justify-between gap-4">
@@ -38,8 +36,10 @@ const SubarmorCard = ({
           );
         })}
       </div>
-      <div className="timing grid h-full w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-4 gap-y-2 border-x-2 border-gray-400 border-opacity-50 px-4">
-        <ArmorStatBars stats={armor.stats} mode={mode} />
+      <div
+        className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
+      >
+        <StatBars stats={armor.stats} mode={mode} cardWidth={cardWidth} />
       </div>
     </div>
   );

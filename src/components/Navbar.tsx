@@ -15,6 +15,7 @@ import NavMenuMobile from './NavMenuMobile';
 import CharacterIcon from './icons/CharacterIcon';
 import useSignoutMutation from '../hooks/useSignoutMutation/useSignoutMutation';
 import AccountPicture from './AccountPicture';
+import Divider from './Divider';
 
 const Navbar = ({
   setNavbarHeight,
@@ -100,6 +101,18 @@ const Navbar = ({
         </div>
       </div>
       <NavMenuMobile menuVisibility={navMenuVisibility}>
+        <Link className="w-full p-2" to="campaigns">
+          <BtnNavbar
+            className="w-full text-left"
+            onClick={() => {
+              setNavMenuVisibility(false);
+              setSidebarVisibility(true);
+            }}
+          >
+            Campaigns
+          </BtnNavbar>
+        </Link>
+        <Divider />
         <Link className="w-full p-2" to="codex">
           <BtnNavbar
             className="w-full text-left"
@@ -111,7 +124,7 @@ const Navbar = ({
             Codex
           </BtnNavbar>
         </Link>
-        <hr className="m-0 w-full border-yellow-300 border-opacity-50" />
+        <Divider />
         <Link className="w-full p-2" to="characters">
           <BtnNavbar
             className="bg-primary text-left"
