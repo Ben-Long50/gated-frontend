@@ -41,8 +41,6 @@ const ResumeForm = () => {
         character?.badMedicine ?? ({} as { html: string; nodes: object }),
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
-
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, val]) => {

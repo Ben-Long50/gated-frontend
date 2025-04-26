@@ -112,8 +112,6 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
     },
 
     onSubmit: async ({ value }) => {
-      console.log(value);
-
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, value]) => {

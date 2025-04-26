@@ -80,8 +80,6 @@ const CharacterForm = () => {
       perks: [] as number[],
     },
     onSubmit: ({ value }) => {
-      console.log(value);
-
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
 
       const formData = new FormData();

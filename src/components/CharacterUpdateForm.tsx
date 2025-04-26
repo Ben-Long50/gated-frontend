@@ -128,8 +128,6 @@ const CharacterUpdateForm = () => {
     onSubmit: async ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
 
-      console.log(value);
-
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, val]) => {

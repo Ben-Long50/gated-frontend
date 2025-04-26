@@ -1,4 +1,4 @@
-import { useForm } from '@tanstack/react-form';
+import { useForm, useStore } from '@tanstack/react-form';
 import { Action } from 'src/types/action';
 import useActions from '../hooks/useActions';
 import ArrowHeader3 from './ArrowHeader3';
@@ -61,15 +61,8 @@ const RollSimulator = ({
     isPending: characterPending,
   } = useActiveCharacterQuery(apiUrl);
 
-  const [selectedCharacter, setSelectedCharacter] = useState(
-    user.id === campaign?.ownerId ? undefined : character,
-  );
-
   const { filteredActions: actions } = useActions();
 
-  const { emptyAttributeTree, getPoints } = useAttributeTree(
-    selectedCharacter?.attributes,
-  );
   const { diceArray, setDiceArray, rolling, calculateSuccesses, successes } =
     useRoll();
 
@@ -84,8 +77,6 @@ const RollSimulator = ({
       diceCount: null as number | null,
     },
     onSubmit: ({ value }) => {
-      console.log(value);
-
       const diceCount =
         getPoints(value.attribute) +
         getPoints(value.attribute, value.skill) +
@@ -96,13 +87,23 @@ const RollSimulator = ({
     },
   });
 
+  const selectedCharacter = useStore(
+    rollForm.store,
+    (state) => state.values.character,
+  );
+
+  const { emptyAttributeTree, getPoints } = useAttributeTree(
+    selectedCharacter?.attributes,
+  );
+
   if (
     campaignLoading ||
     campaignPending ||
     characterLoading ||
     characterPending
-  )
+  ) {
     return <Loading />;
+  }
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-8">

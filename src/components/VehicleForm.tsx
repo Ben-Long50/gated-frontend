@@ -46,8 +46,6 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
     includedKeywords: ['Vehicle'],
   });
 
-  console.log(vehicleWeapons);
-
   const equippedWeapons = useWeapons({ itemList: vehicle?.weapons || [] });
 
   const modifications = useModifications({

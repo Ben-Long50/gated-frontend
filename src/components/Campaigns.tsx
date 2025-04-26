@@ -15,8 +15,6 @@ const Campaigns = ({ title }: { title: string }) => {
     isPending,
   } = useCampaignsQuery(apiUrl, title);
 
-  console.log(campaigns);
-
   if (isLoading || isPending) return <Loading />;
 
   if (campaigns.length === 0) {

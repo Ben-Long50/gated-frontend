@@ -4,22 +4,18 @@ import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import { Affiliation } from 'src/types/faction';
-import { ThemeContext } from '../contexts/ThemeContext';
 import AffiliationCard from './AffiliationCard';
 import { Link } from 'react-router-dom';
 import BtnRect from './buttons/BtnRect';
 
 const Affiliations = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
 
   const {
     data: character,
     isLoading,
     isPending,
   } = useActiveCharacterQuery(apiUrl);
-
-  console.log(character?.affiliations);
 
   const affiliations = character
     ? {

@@ -100,8 +100,6 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
           .map((character: Character) => character.id),
       };
 
-      console.log(data);
-
       const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {
