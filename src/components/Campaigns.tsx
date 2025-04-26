@@ -17,7 +17,7 @@ const Campaigns = ({ title }: { title: string }) => {
 
   if (isLoading || isPending) return <Loading />;
 
-  if (campaigns.length === 0) {
+  if (!campaigns || campaigns.length === 0) {
     return (
       <div className="flex w-full max-w-5xl flex-col items-center gap-8">
         <h1>{title + ' Campaigns'}</h1>

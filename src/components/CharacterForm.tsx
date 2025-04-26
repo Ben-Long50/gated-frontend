@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import InputField from './InputField';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -41,6 +41,8 @@ const CharacterForm = () => {
 
   const [imagePreview, setImagePreview] = useState('');
   const [formMessage, setFormMessage] = useState('');
+
+  const cardRef = useRef(null);
 
   const { data: campaigns } = useCampaignsQuery(apiUrl);
 
@@ -130,6 +132,7 @@ const CharacterForm = () => {
   return (
     <FormLayout createMutation={createCharacter} formMessage={formMessage}>
       <form
+        ref={cardRef}
         className="flex flex-col gap-8"
         onSubmit={(e) => {
           e.preventDefault();
@@ -282,40 +285,42 @@ const CharacterForm = () => {
           </div>
         </div>
 
-        <div
-          className={` ${layoutSize !== 'xsmall' && layoutSize !== 'small' ? 'stat-bar-layout' : 'stat-bar-layout-sm'} w-full gap-4`}
-        >
+        <div className={`grid w-full grid-cols-[auto_auto_1fr_auto] gap-4`}>
           <StatBar
             title="Health"
             current={stats.maxHealth}
             total={stats.maxHealth}
             color="rgb(248 113 113)"
+            cardWidth={cardRef.current?.offsetWidth}
           >
-            <HealthIcon className="size-8" />
+            <HealthIcon className="text-secondary size-8" />
           </StatBar>
           <StatBar
             title="Sanity"
             current={stats.maxSanity}
             total={stats.maxSanity}
             color="rgb(96 165 250)"
+            cardWidth={cardRef.current?.offsetWidth}
           >
-            <SanityIcon className="size-8" />
+            <SanityIcon className="text-secondary size-8" />
           </StatBar>
           <StatBar
             title="Cyber"
             current={stats.maxCyber}
             total={stats.maxCyber}
             color="rgb(52 211 153)"
+            cardWidth={cardRef.current?.offsetWidth}
           >
-            <CyberIcon className="size-8" />
+            <CyberIcon className="text-secondary size-8" />
           </StatBar>
           <StatBar
             title="Equip"
             current={stats.maxWeight}
             total={stats.maxWeight}
             color="rgb(251 191 36)"
+            cardWidth={cardRef.current?.offsetWidth}
           >
-            <EquipIcon className="size-8" />
+            <EquipIcon className="text-secondary size-8" />
           </StatBar>
         </div>
         <div className="flex flex-wrap justify-around gap-6">
@@ -326,7 +331,7 @@ const CharacterForm = () => {
               </h3>
             )}
             <div className="flex items-center justify-center gap-2">
-              <SpeedIcon className="size-8" />
+              <SpeedIcon className="text-secondary size-8" />
               <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
                 {stats.speed}
               </p>
@@ -339,7 +344,7 @@ const CharacterForm = () => {
               </h3>
             )}
             <div className="flex items-center justify-center gap-2">
-              <EvasionIcon className="size-8" />
+              <EvasionIcon className="text-secondary size-8" />
               <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
                 {stats.evasion}
               </p>
@@ -352,7 +357,7 @@ const CharacterForm = () => {
               </h3>
             )}
             <div className="flex items-center justify-center gap-2">
-              <ArmorIcon className="size-8" />
+              <ArmorIcon className="text-secondary size-8" />
               <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
                 {stats.armor}
               </p>

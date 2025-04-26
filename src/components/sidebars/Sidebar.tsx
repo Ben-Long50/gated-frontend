@@ -34,8 +34,8 @@ const Sidebar = ({
 
   const navStyle = mobile
     ? sidebarVisibility
-      ? 'max-w-75dvw w-full'
-      : 'max-w-75dvw w-full -translate-x-full'
+      ? 'w-75dvw w-full'
+      : 'w-75dvw w-full -translate-x-full'
     : sidebarVisibility
       ? 'min-w-80 max-w-96'
       : 'min-w-0 max-w-[68px]';

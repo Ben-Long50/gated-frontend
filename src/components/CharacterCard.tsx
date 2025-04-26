@@ -83,8 +83,12 @@ const CharacterCard = ({
               cardWidth={cardRef.current?.offsetWidth}
             />
           </div>
-          <div className="flex flex-wrap justify-between gap-6">
-            <div className="flex w-full items-center justify-center gap-6">
+          <div
+            className={`${mobile ? 'flex-col' : 'flex-row'} flex w-full flex-wrap items-center justify-between gap-6`}
+          >
+            <div
+              className={`${mobile ? 'justify-center' : 'justify-start'} flex items-center justify-start gap-6`}
+            >
               <div className="flex flex-col items-center justify-between gap-2">
                 {!mobile && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">
@@ -92,7 +96,7 @@ const CharacterCard = ({
                   </h3>
                 )}
                 <div className="flex items-center justify-center gap-2">
-                  <SpeedIcon className="size-8" />
+                  <SpeedIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
                     {stats.speed}
                   </p>
@@ -105,7 +109,7 @@ const CharacterCard = ({
                   </h3>
                 )}
                 <div className="flex items-center justify-center gap-2">
-                  <EvasionIcon className="size-8" />
+                  <EvasionIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
                     {stats.evasion}
                   </p>
@@ -118,7 +122,7 @@ const CharacterCard = ({
                   </h3>
                 )}
                 <div className="flex items-center justify-center gap-2">
-                  <ArmorIcon className="size-8" />
+                  <ArmorIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
                     {stats.armor}
                   </p>
@@ -139,7 +143,7 @@ const CharacterCard = ({
               </div>
             </div>
 
-            <div className="flex w-full items-end justify-end gap-6">
+            <div className="ml-auto flex items-end justify-end gap-6">
               <div className="flex flex-col items-center justify-between gap-2">
                 {!mobile && (
                   <h3 className="text-primary text-xl font-semibold tracking-widest">

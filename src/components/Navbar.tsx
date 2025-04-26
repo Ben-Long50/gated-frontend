@@ -81,23 +81,24 @@ const Navbar = ({
           >
             <Icon path={mdiMenu} size={1.5} className={`text-secondary`} />
           </button>
-          <button
-            className="z-10"
-            onClick={() => {
-              setNavMenuVisibility(false);
-              setAccountMenuVisibility(!accountMenuVisibility);
-            }}
-          >
-            {user?.profilePicture ? (
-              <img
-                className="size-10 rounded-full"
-                src={user?.profilePicture}
-                alt="Profile Picture"
-              />
-            ) : (
-              <CharacterIcon className="size-10" />
-            )}
-          </button>
+          <Link to={`account/${user.id}`}>
+            <button
+              className="z-10"
+              onClick={() => {
+                setSidebarVisibility(true);
+              }}
+            >
+              {user?.profilePicture ? (
+                <img
+                  className="size-10 rounded-full"
+                  src={user?.profilePicture}
+                  alt="Profile Picture"
+                />
+              ) : (
+                <CharacterIcon className="size-10" />
+              )}
+            </button>
+          </Link>
         </div>
       </div>
       <NavMenuMobile menuVisibility={navMenuVisibility}>
@@ -136,46 +137,6 @@ const Navbar = ({
             Characters
           </BtnNavbar>
         </Link>
-      </NavMenuMobile>
-      <NavMenuMobile menuVisibility={accountMenuVisibility}>
-        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-          <Link className="w-full p-2" to="/glam/codex/patchNotes/create">
-            <BtnNavbar
-              className="w-full text-left"
-              onClick={() => {
-                setAccountMenuVisibility(false);
-              }}
-            >
-              <div className="flex w-full items-center gap-2">
-                <p className="text-inherit">Create patch note</p>
-              </div>
-            </BtnNavbar>
-          </Link>
-        )}
-        <Link className="w-full p-2" to="/error/report">
-          <BtnNavbar
-            className="w-full text-left"
-            onClick={() => {
-              setAccountMenuVisibility(false);
-            }}
-          >
-            <div className="flex w-full items-center gap-2">
-              <p className="text-inherit">Error report</p>
-              <p className="text-tertiary text-sm"> (do not abuse)</p>
-            </div>
-          </BtnNavbar>
-        </Link>
-        <BtnNavbar
-          className="hover:text-accent timing rounded p-2 hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950"
-          onClick={() => {
-            setAccountMenuVisibility(false);
-            signout.mutate();
-          }}
-        >
-          <div className="flex w-full items-center gap-2">
-            <p className="text-inherit">Sign out</p>
-          </div>
-        </BtnNavbar>
       </NavMenuMobile>
     </nav>
   ) : (

@@ -9,6 +9,7 @@ import { mdiTriangleDown } from '@mdi/js';
 import LocationIcon from './icons/LocationIcon';
 import AccountPicture from './AccountPicture';
 import { User } from 'src/types/user';
+import ArrowHeader2 from './ArrowHeader2';
 
 const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -22,20 +23,14 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
     >
       <div className="flex flex-col items-center gap-8 p-6 md:flex-row">
         <div className="z-10 flex h-full w-full flex-col justify-between gap-4 md:gap-6">
-          <div className="flex w-full items-center justify-between">
+          <div className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-4">
-              <Icon
-                className="text-primary"
-                path={mdiTriangleDown}
-                size={0.5}
-                rotate={-90}
-              />
-              <h2>{campaign.name}</h2>
+              <ArrowHeader2 className="text-left" title={campaign.name} />
               {campaign.pendingPlayers.length > 0 && <p>(Pending)</p>}
             </div>
             <div className="flex items-center gap-4">
-              <LocationIcon className="text-accent size-8" />
-              <h3 className="text-accent">{campaign.location}</h3>
+              <LocationIcon className="text-accent size-6 shrink-0 sm:size-8" />
+              <h3 className="text-accent text-right">{campaign.location}</h3>
             </div>
           </div>
           <div className="grid grid-cols-[1fr_1fr]">
