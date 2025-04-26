@@ -1,4 +1,5 @@
 import {
+  RefObject,
   useContext,
   useEffect,
   useLayoutEffect,
@@ -13,7 +14,6 @@ import Icon from '@mdi/react';
 import { mdiBellOutline, mdiMenu, mdiMenuClose, mdiMenuOpen } from '@mdi/js';
 import NavMenuMobile from './NavMenuMobile';
 import CharacterIcon from './icons/CharacterIcon';
-import useSignoutMutation from '../hooks/useSignoutMutation/useSignoutMutation';
 import AccountPicture from './AccountPicture';
 import Divider from './Divider';
 
@@ -21,20 +21,18 @@ const Navbar = ({
   setNavbarHeight,
   sidebarVisibility,
   setSidebarVisibility,
+  navbarRef,
 }: {
   setNavbarHeight: (height: number) => void;
   sidebarVisibility: boolean;
   setSidebarVisibility: (mode: boolean) => void;
+  navbarRef: RefObject;
 }) => {
-  const { apiUrl, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
 
   const [navMenuVisibility, setNavMenuVisibility] = useState(false);
   const [accountMenuVisibility, setAccountMenuVisibility] = useState(false);
-
-  const signout = useSignoutMutation(apiUrl);
-
-  const navbarRef = useRef(null);
 
   useEffect(() => {
     const closeMenus = (e) => {
@@ -81,7 +79,7 @@ const Navbar = ({
           >
             <Icon path={mdiMenu} size={1.5} className={`text-secondary`} />
           </button>
-          <Link to={`account/${user.id}`}>
+          <Link to={`account/${user.id}`} className="flex items-center">
             <button
               className="z-10"
               onClick={() => {

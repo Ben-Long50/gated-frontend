@@ -364,7 +364,7 @@ const CharacterUpdateForm = () => {
           </div>
         </div>
         <div
-          className={`grid w-full grid-cols-[auto_auto_1fr_auto_auto] items-center gap-4`}
+          className={`${mobile ? 'grid-cols-[0px_auto_1fr_auto_auto]' : 'grid-cols-[auto_auto_1fr_auto_auto]'} grid w-full items-center gap-4`}
         >
           <characterUpdateForm.Field
             name="stats.currentHealth"
@@ -382,14 +382,16 @@ const CharacterUpdateForm = () => {
             {(field) => (
               <>
                 <StatBar
-                  title="Health"
+                  title={mobile ? '' : 'Health'}
                   mode="edit"
                   current={field.state.value}
                   total={stats.maxHealth}
                   color="rgb(248 113 113)"
                   cardWidth={cardRef.current?.offsetWidth}
                 >
-                  <HealthIcon className="text-secondary size-8" />
+                  <HealthIcon
+                    className={`${mobile && 'col-span-2'} text-secondary size-8`}
+                  />
                 </StatBar>
                 <InputField
                   className="w-28 justify-self-end"
@@ -416,14 +418,16 @@ const CharacterUpdateForm = () => {
             {(field) => (
               <>
                 <StatBar
-                  title="Sanity"
+                  title={mobile ? '' : 'Sanity'}
                   mode="edit"
                   current={field.state.value}
                   total={stats.maxSanity}
                   color="rgb(96 165 250)"
                   cardWidth={cardRef.current?.offsetWidth}
                 >
-                  <SanityIcon className="text-secondary size-8" />
+                  <SanityIcon
+                    className={`${mobile && 'col-span-2'} text-secondary size-8`}
+                  />
                 </StatBar>
                 <InputField
                   className="w-28 justify-self-end"
@@ -449,14 +453,14 @@ const CharacterUpdateForm = () => {
           >
             {(field) => (
               <>
-                <h4>Injuries</h4>
+                {!mobile && <h4>Injuries</h4>}
                 <div
-                  className={`${mobile ? 'gap-0' : 'gap-2'} col-span-3 flex grow items-center`}
+                  className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center`}
                 >
                   {Array.from({ length: field.state.value }).map((_, index) => (
                     <InjuryIcon
                       key={index}
-                      className="text-secondary size-6 shrink-0 sm:size-8"
+                      className="text-secondary size-7 shrink-0 sm:size-8"
                     />
                   ))}
                   {Array.from({
@@ -465,7 +469,7 @@ const CharacterUpdateForm = () => {
                     <Icon
                       path={mdiCircleOutline}
                       key={index}
-                      className="text-tertiary size-6 shrink-0 p-1 sm:size-8"
+                      className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
                     />
                   ))}
                 </div>
@@ -493,14 +497,14 @@ const CharacterUpdateForm = () => {
           >
             {(field) => (
               <>
-                <h4>Insanities</h4>
+                {!mobile && <h4>Insanities</h4>}
                 <div
-                  className={`${mobile ? 'gap-0' : 'gap-2'} col-span-3 flex grow items-center`}
+                  className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center`}
                 >
                   {Array.from({ length: field.state.value }).map((_, index) => (
                     <InsanityIcon
                       key={index}
-                      className="text-secondary size-6 shrink-0 sm:size-8"
+                      className="text-secondary size-7 shrink-0 sm:size-8"
                     />
                   ))}
                   {Array.from({
@@ -509,14 +513,14 @@ const CharacterUpdateForm = () => {
                     <Icon
                       path={mdiCircleOutline}
                       key={index}
-                      className="text-tertiary size-6 shrink-0 p-1 sm:size-8"
+                      className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
                     />
                   ))}
                 </div>
                 <InputField
                   className="w-28 justify-self-end"
                   field={field}
-                  label="Injuries"
+                  label="Insanities"
                   type="number"
                 />
               </>

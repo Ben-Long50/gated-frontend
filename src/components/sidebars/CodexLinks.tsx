@@ -28,7 +28,6 @@ const CodexLinks = ({
   setSidebarVisibility: (mode: boolean) => void;
 }) => {
   const { apiUrl, user } = useContext(AuthContext);
-  const { layoutSize } = useContext(LayoutContext);
 
   const {
     data: bookSections,
@@ -37,7 +36,7 @@ const CodexLinks = ({
   } = useBookSectionsQuery(apiUrl);
 
   if (isLoading || isPending) {
-    return <Loading />;
+    return <span></span>;
   }
 
   return (

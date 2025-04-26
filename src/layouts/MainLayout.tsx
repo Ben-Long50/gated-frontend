@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -11,13 +11,13 @@ import AccountLinks from '../components/sidebars/AccountLinks';
 
 const MainLayout = () => {
   const { theme } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
+  const { mobile } = useContext(LayoutContext);
   const { pathname } = useLocation();
 
   const [sidebarVisibility, setSidebarVisibility] = useState(false);
   const [navbarHeight, setNavbarHeight] = useState(0);
 
-  const mobile = layoutSize === 'xsmall' || layoutSize === 'small';
+  const navbarRef = useRef(null);
 
   return (
     <div className={`${theme} main-layout-large relative min-h-dvh w-dvw`}>
@@ -25,11 +25,13 @@ const MainLayout = () => {
         setNavbarHeight={setNavbarHeight}
         sidebarVisibility={sidebarVisibility}
         setSidebarVisibility={setSidebarVisibility}
+        navbarRef={navbarRef}
       />
       <Sidebar
         sidebarVisibility={sidebarVisibility}
         setSidebarVisibility={setSidebarVisibility}
         navbarHeight={navbarHeight}
+        navbarRef={navbarRef}
       >
         {pathname.startsWith('/glam/codex') && (
           <CodexLinks

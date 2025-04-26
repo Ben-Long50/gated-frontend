@@ -20,7 +20,7 @@ const StatBar = ({
   mutation,
   cardWidth,
 }: {
-  title: string;
+  title?: string;
   total?: number;
   reserve?: number;
   current: number;
@@ -35,7 +35,7 @@ const StatBar = ({
 
   return (
     <>
-      <h4>{title}</h4>
+      {title && <h4>{title}</h4>}
       {children}
       <div className="col-span-2 flex w-full items-center justify-between gap-2">
         <div

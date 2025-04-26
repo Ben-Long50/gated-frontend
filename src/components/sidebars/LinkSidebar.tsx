@@ -25,20 +25,20 @@ const LinkSidebar = ({
         isActive ? 'text-accent group flex' : 'text-secondary group flex'
       }
       to={path}
+      onClick={() => {
+        if (mobile) {
+          setSidebarVisibility(false);
+        }
+        if (onClick) {
+          onClick();
+        }
+      }}
       end
     >
       {icon}
       {
         <button
           className={`${!sidebarVisibility && 'invisible -translate-x-full opacity-0'} timing w-full pl-4 text-left text-inherit`}
-          onClick={() => {
-            if (mobile) {
-              setSidebarVisibility(false);
-            }
-            if (onClick) {
-              onClick();
-            }
-          }}
         >
           <div className="timing group-hover:text-accent whitespace-nowrap text-xl tracking-wide text-inherit">
             {title}

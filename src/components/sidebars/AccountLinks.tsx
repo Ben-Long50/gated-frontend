@@ -3,7 +3,6 @@ import { AuthContext } from '../../contexts/AuthContext';
 import LinkSidebar from './LinkSidebar';
 import Icon from '@mdi/react';
 import {
-  mdiAccountLockOpenOutline,
   mdiAccountOutline,
   mdiAccountTieOutline,
   mdiAccountWrenchOutline,
@@ -80,7 +79,10 @@ const AccountLinks = ({
             path={`account/${user?.id}/adminTools`}
             title="Error Reports"
             icon={
-              <ConditionIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+              <Icon
+                path={mdiAlertCircleOutline}
+                className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit"
+              />
             }
             sidebarVisibility={sidebarVisibility}
             setSidebarVisibility={setSidebarVisibility}

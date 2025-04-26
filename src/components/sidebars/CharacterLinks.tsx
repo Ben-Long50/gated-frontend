@@ -27,7 +27,7 @@ const CharacterLinks = ({
     isLoading,
   } = useActiveCharacterQuery(apiUrl);
 
-  if (isLoading || isPending) return <Loading />;
+  if (isLoading || isPending) return <span></span>;
 
   return (
     <>

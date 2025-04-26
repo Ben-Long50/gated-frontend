@@ -80,11 +80,9 @@ const InputSelectField = ({
   };
 
   const filteredOptions =
-    options?.filter((option) => {
-      return option.length > 0
-        ? optionName(option).toLowerCase().includes(query.toLowerCase())
-        : option;
-    }) || [];
+    options?.filter((item) =>
+      optionName(item).toLowerCase().includes(query.toLowerCase()),
+    ) || [];
 
   return (
     <div

@@ -1,5 +1,5 @@
 import useActiveCharacterQuery from '../../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
-import { ReactNode, useContext } from 'react';
+import { ReactNode, RefObject, useContext, useEffect, useRef } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import LinkSidebar from './LinkSidebar';
 import { LayoutContext } from '../../contexts/LayoutContext';
@@ -10,21 +10,45 @@ const Sidebar = ({
   sidebarVisibility,
   setSidebarVisibility,
   navbarHeight,
+  navbarRef,
   children,
 }: {
   sidebarVisibility: boolean;
   setSidebarVisibility: (mode: boolean) => void;
   navbarHeight: number;
+  navbarRef: RefObject;
   children: ReactNode;
 }) => {
   const { apiUrl } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
+
+  const sidebarRef = useRef(null);
 
   const {
     data: character,
     isPending,
     isLoading,
   } = useActiveCharacterQuery(apiUrl);
+
+  useEffect(() => {
+    const closeSidebar = (e: Event) => {
+      if (
+        mobile &&
+        sidebarVisibility &&
+        sidebarRef.current &&
+        !sidebarRef.current.contains(e.target) &&
+        !navbarRef.current.contains(e.target)
+      ) {
+        setSidebarVisibility(false);
+      }
+    };
+
+    document.addEventListener('click', closeSidebar);
+
+    return () => {
+      document.removeEventListener('click', closeSidebar);
+    };
+  }, [mobile, setSidebarVisibility, sidebarVisibility, sidebarRef]);
 
   const cartLength = Object.values(character?.characterCart || {})
     .filter((value) => Array.isArray(value))
@@ -34,21 +58,26 @@ const Sidebar = ({
 
   const navStyle = mobile
     ? sidebarVisibility
-      ? 'w-75dvw w-full'
-      : 'w-75dvw w-full -translate-x-full'
+      ? 'w-75vw'
+      : 'w-75vw -translate-x-full'
     : sidebarVisibility
       ? 'min-w-80 max-w-96'
       : 'min-w-0 max-w-[68px]';
 
   return (
     <nav
+      ref={sidebarRef}
       className={`${navStyle} bg-secondary timing sticky z-20 col-start-1 row-start-2 flex w-auto overflow-x-hidden border-r border-yellow-300 border-opacity-50`}
       style={{
         height: `calc(100dvh - ${navbarHeight}px)`,
         top: `${navbarHeight}px`,
       }}
-      onMouseEnter={() => setSidebarVisibility(true)}
-      onMouseLeave={() => setSidebarVisibility(false)}
+      onMouseEnter={() => {
+        if (!mobile) setSidebarVisibility(true);
+      }}
+      onMouseLeave={() => {
+        if (!mobile) setSidebarVisibility(false);
+      }}
     >
       <div className="scrollbar-secondary flex grow flex-col gap-4 overflow-y-auto overflow-x-hidden px-2 py-4">
         {character && (

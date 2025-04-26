@@ -33,7 +33,7 @@ const CampaignLinks = ({
     setModalOpen((prev) => !prev);
   };
 
-  if (isLoading || isPending) return <Loading />;
+  if (isLoading || isPending) return <span></span>;
 
   return (
     <>
