@@ -1,7 +1,7 @@
-const Die3Icon = ({ className }: { className: string }) => {
+const Die3Icon = ({ className }: { className?: string }) => {
   return (
     <svg
-      className={`${className} timing`}
+      className={`${className ? className : 'text-secondary'} timing`}
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
       viewBox="0 0 1080 1080"

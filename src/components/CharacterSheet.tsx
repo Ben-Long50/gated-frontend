@@ -202,6 +202,7 @@ const CharacterSheet = () => {
           cardWidth={cardRef.current?.offsetWidth}
           stats={{
             ...character.stats,
+            maxCyber: stats.maxCyber,
             cyber: stats.cyber,
             weight: stats.weight,
             maxWeight: stats.maxWeight,

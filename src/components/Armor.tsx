@@ -5,7 +5,6 @@ import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import useArmor from '../hooks/useArmor';
 import ArmorCard, { ArmorCardMobile } from './ArmorCard';
-import SelectField from './SelectField';
 import Loading from './Loading';
 import { FetchOptions } from 'src/types/fetchOptions';
 import { ArmorWithKeywords } from 'src/types/armor';

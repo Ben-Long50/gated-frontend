@@ -186,6 +186,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
             cardWidth={cardRef.current?.offsetWidth}
             stats={{
               ...character.stats,
+              maxCyber: stats.maxCyber,
               cyber: stats.cyber,
               weight: stats.weight,
               maxWeight: stats.maxWeight,
@@ -294,7 +295,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
             <ArrowHeader3 title="Stats" />
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <SpeedIcon className="size-8" />
+                <SpeedIcon className="text-secondary size-8" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Speed
                 </h3>
@@ -305,7 +306,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <EvasionIcon className="size-8" />
+                <EvasionIcon className="text-secondary size-8" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Evasion
                 </h3>
@@ -316,7 +317,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <ArmorIcon className="size-8" />
+                <ArmorIcon className="text-secondary size-8" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Armor
                 </h3>
@@ -415,7 +416,10 @@ const Equipment = ({ mode }: { mode?: string }) => {
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-0.5">
                           {Array.from({ length: bonus }).map((_, index) => (
-                            <DieIcon key={index} className="size-8 shrink-0" />
+                            <DieIcon
+                              key={index}
+                              className="text-secondary size-8 shrink-0"
+                            />
                           ))}
                         </div>
                         <h4>{action}</h4>

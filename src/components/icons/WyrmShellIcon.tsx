@@ -1,12 +1,12 @@
-const WyrmShellIcon = (props) => {
+const WyrmShellIcon = ({ className }: { className?: string }) => {
   return (
     <svg
-      className={`${props.className} timing text-secondary stroke-gray-200`}
+      className={`${className ? className : 'text-secondary'} timing`}
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
       viewBox="5 08 85 85"
     >
-      <g strokeWidth="1">
+      <g stroke="currentColor" strokeWidth="1">
         <path d="m51.836 88.324 7.2656-7.2578h-18.203l7.2656 7.2578zm6.168-6.8047-6.3555 6.3516h-3.2969l-6.3555-6.3477z" />
         <path d="m76.086 76.766 0.003906-10.27-12.871 12.871 10.27-0.003907zm-11.766 2.1484 11.316-11.32-0.003907 8.9844-2.3281 2.332z" />
         <path d="m26.508 79.359 10.27 0.003906-12.871-12.871 0.003906 10.27zm9.1719-0.44922-8.9844-0.003906-2.3281-2.332-0.003907-8.9844z" />

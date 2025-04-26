@@ -1,11 +1,11 @@
-const VehicleSpeedIcon = (props) => {
+const VehicleSpeedIcon = ({ className }: { className?: string }) => {
   return (
     <svg
-      className={`${props.className}`}
+      className={`${className ? className : 'text-secondary'} timing`}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
     >
-      <g fill="rgb(229 231 235)">
+      <g>
         <path d="M256,361.88a49.65,49.65,0,1,1,49.65-49.64A49.71,49.71,0,0,1,256,361.88Zm0-83.29a33.65,33.65,0,1,0,33.65,33.65A33.69,33.69,0,0,0,256,278.59Z" />
         <path d="M296,308.6a8,8,0,0,1-6.54-12.6l40.72-57.93-57.93,40.72A8,8,0,0,1,263,265.7l95.45-67.09a8,8,0,0,1,11.14,11.14L302.54,305.2A8,8,0,0,1,296,308.6Z" />
         <path d="M256,140.24a8,8,0,0,1-8-8v-45a8,8,0,0,1,16,0v45A8,8,0,0,1,256,140.24Z" />

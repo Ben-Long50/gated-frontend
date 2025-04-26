@@ -80,13 +80,13 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
       {modifier.value && (
         <div className="flex items-center gap-0.5">
           {Array.from({ length: modifier.value }).map((_, index) => (
-            <DieIcon key={index} className="size-7 shrink-0" />
+            <DieIcon key={index} className="text-secondary size-8 shrink-0" />
           ))}
         </div>
       )}
       {modifier.valueType === 'attribute' && modifier.attribute && (
         <>
-          <DieIcon className="size-8 shrink-0" />
+          <DieIcon className="text-secondary size-8 shrink-0" />
           <p className="font-semibold">
             {modifier.attribute[0].toUpperCase() + modifier.attribute?.slice(1)}
           </p>
@@ -100,7 +100,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
       )}
       {modifier.valueType === 'skill' && modifier.skill && (
         <>
-          <DieIcon className="size-8 shrink-0" />
+          <DieIcon className="text-secondary size-8 shrink-0" />
           <p className="font-semibold">
             {modifier.skill[0].toUpperCase() + modifier.skill?.slice(1)}
           </p>

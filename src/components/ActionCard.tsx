@@ -54,7 +54,7 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
         <div className="flex flex-col gap-2">
           {action.roll.map((roll, index) => (
             <div key={index} className="flex items-center gap-4">
-              <DieIcon className="size-8" />
+              <DieIcon className="text-secondary size-8" />
               <p className="font-semibold">
                 {roll.attribute[0].toUpperCase() + roll.attribute.slice(1)}
               </p>
@@ -118,17 +118,23 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
               color={color}
               cardWidth={cardRef.current?.offsetWidth}
             >
-              {cost.stat === 'health' && <HealthIcon className="size-8" />}
-              {cost.stat === 'sanity' && <SanityIcon className="size-8" />}
+              {cost.stat === 'health' && (
+                <HealthIcon className="text-secondary size-8" />
+              )}
+              {cost.stat === 'sanity' && (
+                <SanityIcon className="text-secondary size-8" />
+              )}
               {cost.stat === 'actionPoints' && (
-                <ActionIcon className="size-8" />
+                <ActionIcon className="text-secondary size-8" />
               )}
               {cost.stat === 'reactionPoints' && (
-                <ReactionIcon className="size-8" />
+                <ReactionIcon className="text-secondary size-8" />
               )}
-              {cost.stat === 'power' && <LightningIcon className="size-8" />}
+              {cost.stat === 'power' && (
+                <LightningIcon className="text-secondary size-8" />
+              )}
               {cost.stat === 'wyrmShells' && (
-                <WyrmShellIcon className="size-8" />
+                <WyrmShellIcon className="text-secondary size-8" />
               )}
             </StatBar>
           );

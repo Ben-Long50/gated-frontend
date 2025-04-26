@@ -185,7 +185,7 @@ const ItemCardMobile = ({
               <ItemRarity rarity={item?.rarity} grade={item?.grade} />
               {item.body && (
                 <div className="flex flex-wrap items-center justify-end gap-2">
-                  <BodyIcon className="size-8" />
+                  <BodyIcon className="text-secondary size-8" />
                   {item.body.map((body, index) => {
                     return (
                       <p key={body}>
@@ -289,7 +289,7 @@ const ItemCardMobile = ({
               </div>
               {item.modifiers && item.modifiers[0]?.duration && (
                 <div className="flex items-center gap-4">
-                  <StopwatchIcon className="size-7" />
+                  <StopwatchIcon className="text-secondary size-8" />
                   <p>{item.modifiers[0].duration?.value}</p>
                   <p>
                     {item.modifiers[0].duration?.unit[0].toUpperCase() +

@@ -1,12 +1,12 @@
-const WeaponIcon = (props) => {
+const WeaponIcon = ({ className }: { className?: string }) => {
   return (
     <svg
-      className={`${props.className}`}
+      className={`${className ? className : 'text-secondary'} timing`}
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
       viewBox="0 0 1707 1707"
     >
-      <g fill="rgb(229 231 235)">
+      <g>
         <path
           className="fil0"
           d="M151 729c-130,-21 -134,-70 -134,-190l0 -9c0,-125 4,-153 133,-182l11 47c-96,22 -96,22 -96,135l0 9c0,110 0,126 94,142l-8 48z"

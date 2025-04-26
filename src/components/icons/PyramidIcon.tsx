@@ -1,11 +1,11 @@
-const PyramidIcon = (props) => {
+const PyramidIcon = ({ className }: { className?: string }) => {
   return (
     <svg
-      className={`${props.className} `}
+      className={`${className ? className : 'text-secondary'} timing`}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="-5.0 -10.0 110.0 110.0"
     >
-      <g fill="rgb(253 224 71)">
+      <g>
         <path d="m48.086 1.2891-9.293 18.59c3.0312-0.82031 6.1523-1.3086 9.293-1.4492z" />
         <path d="m51.914 1.2891v17.141c3.1367 0.13672 6.2539 0.62109 9.293 1.4453z" />
         <path d="m76.039 53.582c-6.9219 5.2891-15.426 8.3594-24.129 8.7539v8.1055l28.207-11.383-3.1172-6.2344c-0.31641 0.25781-0.63672 0.51172-0.96094 0.75781z" />

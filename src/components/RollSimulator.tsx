@@ -35,6 +35,7 @@ import InputSelectField from './InputSelectField';
 import { useParams } from 'react-router-dom';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import { Character } from 'src/types/character';
+import { LayoutContext } from '../contexts/LayoutContext';
 
 const RollSimulator = ({
   modalOpen,
@@ -44,6 +45,7 @@ const RollSimulator = ({
   toggleModal?: () => void;
 }) => {
   const { apiUrl, user } = useContext(AuthContext);
+  const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { campaignId } = useParams();
 
@@ -111,56 +113,59 @@ const RollSimulator = ({
         borderColor={accentPrimary}
         chamfer="medium"
       >
-        <div className="grid w-full grid-cols-2 gap-8 p-4">
-          <div className="flex flex-col">
-            <div className="col-span-3">
-              <rollForm.Field
-                name="character"
-                listeners={{
-                  onChange: ({ value }) => {
-                    rollForm.setFieldValue('action', '');
-                    rollForm.setFieldValue('rollType', 'recommended');
-                    rollForm.setFieldValue('modifiers', []);
-                    setSelectedCharacter(value);
-                    setDiceArray([]);
-                  },
-                }}
-              >
-                {(field) => (
-                  <div className="flex w-full flex-col gap-4">
-                    {user.id === campaign?.ownerId && (
-                      <InputSelectField
-                        field={field}
-                        options={campaign?.characters}
-                        label="Character to Roll"
+        <div
+          className={`${mobile ? 'grid-rows-[auto_auto_1fr]' : 'grid-cols-2 grid-rows-[auto_1fr]'} grid w-full gap-8 p-4`}
+        >
+          <div className={`${mobile ? 'col-start-1 row-start-1' : ''}`}>
+            <rollForm.Field
+              name="character"
+              listeners={{
+                onChange: ({ value }) => {
+                  rollForm.setFieldValue('action', '');
+                  rollForm.setFieldValue('rollType', 'recommended');
+                  rollForm.setFieldValue('modifiers', []);
+                  setSelectedCharacter(value);
+                  setDiceArray([]);
+                },
+              }}
+            >
+              {(field) => (
+                <div className="flex w-full flex-col gap-8">
+                  {user.id === campaign?.ownerId && (
+                    <InputSelectField
+                      field={field}
+                      options={campaign?.characters}
+                      label="Character to Roll"
+                    />
+                  )}
+                  {field.state.value && (
+                    <div className="flex w-full items-center justify-start gap-4">
+                      <img
+                        className="z-10 size-16 shrink-0 rounded-full shadow shadow-zinc-950"
+                        src={field.state.value?.picture.imageUrl}
+                        alt={
+                          field.state.value?.firstName +
+                          ' ' +
+                          field.state.value?.lastName +
+                          "'s profile picture"
+                        }
                       />
-                    )}
-                    {field.state.value && (
-                      <div className="flex w-full items-center justify-start gap-4">
-                        <img
-                          className="z-10 size-16 shrink-0 rounded-full shadow shadow-zinc-950"
-                          src={field.state.value?.picture.imageUrl}
-                          alt={
-                            field.state.value?.firstName +
-                            ' ' +
-                            field.state.value?.lastName +
-                            "'s profile picture"
-                          }
-                        />
-                        <ArrowHeader1
-                          title={
-                            field.state.value.firstName +
-                            ' ' +
-                            field.state.value.lastName
-                          }
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </rollForm.Field>
-            </div>
-            <Divider />
+                      <ArrowHeader1
+                        title={
+                          field.state.value.firstName +
+                          ' ' +
+                          field.state.value.lastName
+                        }
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </rollForm.Field>
+          </div>
+          <div
+            className={`${mobile ? 'col-start-1 row-start-3' : ''} flex h-full flex-col justify-between gap-4`}
+          >
             <div className="grid grid-cols-3 place-items-start">
               {diceArray.map((number: number, index) => {
                 const modifiers = rollForm.getFieldValue('modifiers');
@@ -251,7 +256,7 @@ const RollSimulator = ({
               })}
             </div>
             {!rolling && successes !== null && (
-              <div className="mt-auto flex flex-col gap-4">
+              <div className="flex flex-col gap-4">
                 <div className="grid grid-cols-[auto_auto_1fr] gap-x-8 gap-y-4">
                   <h2>Successes</h2>
                   <Icon
@@ -283,7 +288,7 @@ const RollSimulator = ({
               e.stopPropagation();
               rollForm.handleSubmit();
             }}
-            className="mb-auto flex flex-col items-start justify-start gap-8"
+            className={`${mobile ? 'row-span-1' : 'col-start-2 row-start-1 row-end-3'} mb-auto flex flex-col items-start justify-start gap-8`}
           >
             <ArrowHeader3 title="Roll Options" />
             <rollForm.Field
@@ -508,7 +513,7 @@ const RollSimulator = ({
                 >
                   {([attribute, skill, dice, modifiers]) => (
                     <>
-                      <DieIcon className="size-10" />
+                      <DieIcon className="text-secondary size-10" />
                       <Icon
                         className="text-primary"
                         path={mdiTriangleDown}

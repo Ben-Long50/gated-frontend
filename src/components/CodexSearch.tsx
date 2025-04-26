@@ -5,7 +5,7 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import SelectField from './SelectField';
 import InputField from './InputField';
 import useWeapons from '../hooks/useWeapons';
-import WeaponCard from './WeaponCard';
+import WeaponCard, { WeaponCardMobile } from './WeaponCard';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import useArmor from '../hooks/useArmor';
 import { Keyword } from 'src/types/keyword';
@@ -13,11 +13,11 @@ import useCybernetics from '../hooks/useCybernetics';
 import Loading from './Loading';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import { ArmorWithKeywords } from 'src/types/armor';
-import ArmorCard from './ArmorCard';
-import CyberneticCard from './CyberneticCard';
+import ArmorCard, { ArmorCardMobile } from './ArmorCard';
+import CyberneticCard, { CyberneticCardMobile } from './CyberneticCard';
 import useKeywords from '../hooks/useKeywords';
 import KeywordCard from './KeywordCard';
-import VehicleCard from './VehicleCard';
+import VehicleCard, { VehicleCardMobile } from './VehicleCard';
 import useVehicles from '../hooks/useVehicles';
 import { Modification, VehicleWithWeapons } from 'src/types/vehicle';
 import PerkCard from './PerkCard';
@@ -33,13 +33,20 @@ import ConditionCard from './ConditionCard';
 import ModCard from './ModCard';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
+import Icon from '@mdi/react';
+import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
+import { LayoutContext } from '../contexts/LayoutContext';
 
 const CodexSearch = () => {
   const { accentPrimary } = useContext(ThemeContext);
+  const { mobile } = useContext(LayoutContext);
 
   const [nameQuery, setNameQuery] = useState<string | null>(null);
   const [descriptionQuery, setDescriptionQuery] = useState<string | null>(null);
   const [category, setCategory] = useState('');
+  const [cardType, setCardType] = useState<'small' | 'large'>(() =>
+    mobile ? 'small' : 'large',
+  );
 
   const nameTimerRef = useRef<number | null>(null);
   const descriptionTimerRef = useRef<number | null>(null);
@@ -245,7 +252,7 @@ const CodexSearch = () => {
   if (isLoading || isPending) return <Loading />;
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
+    <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
       <h1>Search Codex</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
@@ -294,8 +301,36 @@ const CodexSearch = () => {
                 />
               )}
             </searchForm.Field>
+            {!mobile && (
+              <>
+                <button
+                  className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-0.5 shadow-md shadow-black hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCardType('large');
+                  }}
+                >
+                  <Icon
+                    path={mdiCropSquare}
+                    className={`${cardType === 'large' && 'text-accent'} text-secondary group-hover:text-accent timing`}
+                  />
+                </button>
+                <button
+                  className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-2 shadow-md shadow-black hover:underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCardType('small');
+                  }}
+                >
+                  <Icon
+                    path={mdiGrid}
+                    className={`${cardType === 'small' && 'text-accent'} text-secondary group-hover:text-accent timing`}
+                  />
+                </button>
+              </>
+            )}
             <button
-              className="text-accent z-10 hover:underline"
+              className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-1.5 shadow-md shadow-black hover:underline"
               onClick={(e) => {
                 e.preventDefault();
                 searchForm.reset();
@@ -304,43 +339,80 @@ const CodexSearch = () => {
                 setDescriptionQuery(null);
               }}
             >
-              Reset Filters
+              <Icon
+                path={mdiSync}
+                className="text-secondary group-hover:text-accent timing"
+              />
             </button>
           </div>
         </form>
       </ThemeContainer>
-
-      {codex.map((item) => {
-        return item.type === 'weapon' ? (
-          <WeaponCard
-            key={item.item.name + item.item.id}
-            weapon={item.item}
-            mode="codex"
-          />
-        ) : item.type === 'armor' ? (
-          <ArmorCard
-            key={item.item.name + item.item.id}
-            armor={item.item}
-            mode="codex"
-          />
-        ) : item.type === 'cybernetic' ? (
-          <CyberneticCard
-            key={item.item.name + item.item.id}
-            cybernetic={item.item}
-            mode="codex"
-          />
-        ) : (
-          item.type === 'vehicle' && (
-            <VehicleCard
-              key={item.item.name + item.item.id}
-              vehicle={item.item}
-              mode="codex"
-            />
-          )
-        );
-      })}
+      <div
+        className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
+      >
+        {codex.map((item) => {
+          return item.type === 'weapon' ? (
+            cardType === 'large' ? (
+              <WeaponCard
+                key={item.item.name + item.item.id}
+                weapon={item.item}
+                mode="codex"
+              />
+            ) : (
+              <WeaponCardMobile
+                key={item.item.name + item.item.id}
+                weapon={item.item}
+                mode="codex"
+              />
+            )
+          ) : item.type === 'armor' ? (
+            cardType === 'large' ? (
+              <ArmorCard
+                key={item.item.name + item.item.id}
+                armor={item.item}
+                mode={'codex'}
+              />
+            ) : (
+              <ArmorCardMobile
+                key={item.item.name + item.item.id}
+                armor={item.item}
+                mode={'codex'}
+              />
+            )
+          ) : item.type === 'cybernetic' ? (
+            cardType === 'large' ? (
+              <CyberneticCard
+                key={item.item.name + item.item.id}
+                cybernetic={item.item}
+                mode="codex"
+              />
+            ) : (
+              <CyberneticCardMobile
+                key={item.item.name + item.item.id}
+                cybernetic={item.item}
+                mode="codex"
+              />
+            )
+          ) : (
+            item.type === 'vehicle' &&
+            (cardType === 'large' ? (
+              <VehicleCard
+                key={item.item.name + item.item.id}
+                vehicle={item.item}
+                mode="codex"
+              />
+            ) : (
+              <VehicleCardMobile
+                key={item.item.name + item.item.id}
+                vehicle={item.item}
+                mode="codex"
+              />
+            ))
+          );
+        })}
+      </div>
       {codex.filter((item) => item.type === 'modification').length > 0 && (
-        <div className="flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           <h2 className="pl-4">Modifications</h2>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             {codex.map((item, index) => {
@@ -354,7 +426,7 @@ const CodexSearch = () => {
         </div>
       )}
       {codex.filter((item) => item.type === 'keyword').length > 0 && (
-        <div className="flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           <h2 className="pl-4">Keywords</h2>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             {codex.map((item, index) => {
@@ -368,7 +440,7 @@ const CodexSearch = () => {
         </div>
       )}
       {codex.filter((item) => item.type === 'perk').length > 0 && (
-        <div className="flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           <h2 className="pl-4">Perks</h2>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             {codex.map((item, index) => {
@@ -382,7 +454,7 @@ const CodexSearch = () => {
         </div>
       )}
       {codex.filter((item) => item.type === 'action').length > 0 && (
-        <div className="flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           <h2 className="pl-4">Actions</h2>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             {codex.map((item, index) => {
@@ -396,7 +468,7 @@ const CodexSearch = () => {
         </div>
       )}
       {codex.filter((item) => item.type === 'condition').length > 0 && (
-        <div className="flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           <h2 className="pl-4">Conditions</h2>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             {codex.map((item, index) => {

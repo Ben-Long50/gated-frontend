@@ -53,7 +53,9 @@ const ItemControls = ({
       {stats.currentStacks && stats.currentStacks > 0 ? (
         <BtnControl
           title="Use"
-          icon={<StackIcon className="size-8 group-hover:fill-yellow-300" />}
+          icon={
+            <StackIcon className="text-secondary group-hover:text-accent size-8" />
+          }
           mutation={editCurrentStacks}
           value={-1}
         />
@@ -61,7 +63,9 @@ const ItemControls = ({
       {stats.maxStacks && (
         <BtnControl
           title="Refill"
-          icon={<StackIcon className="size-8 group-hover:fill-yellow-300" />}
+          icon={
+            <StackIcon className="text-secondary group-hover:text-accent size-8" />
+          }
           mutation={refreshStacks}
         />
       )}
@@ -69,7 +73,7 @@ const ItemControls = ({
         <BtnControl
           title="Activate"
           icon={
-            <LightningIcon className="size-8 group-hover:fill-yellow-300" />
+            <LightningIcon className="text-secondary group-hover:text-accent size-8" />
           }
           mutation={editCurrentPower}
           value={-1}
@@ -78,7 +82,9 @@ const ItemControls = ({
       {stats.power && (
         <BtnControl
           title="Recharge"
-          icon={<PowerIcon className="size-8 group-hover:fill-yellow-300" />}
+          icon={
+            <PowerIcon className="text-secondary group-hover:text-accent size-8" />
+          }
           mutation={refreshPower}
         />
       )}

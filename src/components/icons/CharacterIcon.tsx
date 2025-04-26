@@ -1,7 +1,7 @@
-const CharacterIcon = ({ className }: { className: string }) => {
+const CharacterIcon = ({ className }: { className?: string }) => {
   return (
     <svg
-      className={`${className} timing`}
+      className={`${className ? className : 'text-secondary'} timing`}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100 100"
     >

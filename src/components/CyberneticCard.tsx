@@ -40,7 +40,7 @@ const CyberneticControls = ({
         <BtnControl
           title="Activate"
           icon={
-            <LightningIcon className="size-8 group-hover:fill-yellow-300" />
+            <LightningIcon className="text-secondary group-hover:text-accent size-8" />
           }
           mutation={editCurrentPower}
           value={-1}
@@ -50,7 +50,9 @@ const CyberneticControls = ({
       {stats.power && (
         <BtnControl
           title="Recharge"
-          icon={<PowerIcon className="size-8 group-hover:fill-yellow-300" />}
+          icon={
+            <PowerIcon className="text-secondary group-hover:text-accent size-8" />
+          }
           mutation={refreshPower}
         />
       )}

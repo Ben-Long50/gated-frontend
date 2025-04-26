@@ -204,7 +204,7 @@ const ItemCard = ({
                     {item.body && (
                       <div className="flex flex-col items-center gap-1">
                         <div className="mr-4 flex flex-wrap items-center gap-2">
-                          <BodyIcon className="size-8" />
+                          <BodyIcon className="text-secondary size-8" />
                           {item.body.map((body, index) => {
                             return (
                               <p key={body}>
@@ -288,7 +288,7 @@ const ItemCard = ({
               </div>
               {mode !== 'equipment' && (
                 <div className="overflow-hidden">
-                  <motion.p
+                  <motion.div
                     ref={detailRef}
                     className="text-secondary flex flex-col gap-4 pr-5"
                     initial={{ marginTop: -detailHeight - 8 }}
@@ -299,7 +299,7 @@ const ItemCard = ({
                   >
                     {item.modifiers && item.modifiers[0]?.duration && (
                       <div className="flex items-center gap-4">
-                        <StopwatchIcon className="size-7" />
+                        <StopwatchIcon className="text-secondary size-8" />
                         <p>{item.modifiers[0].duration?.value}</p>
                         <p>
                           {item.modifiers[0].duration?.unit[0].toUpperCase() +
@@ -307,8 +307,8 @@ const ItemCard = ({
                         </p>
                       </div>
                     )}
-                    {item.description}
-                  </motion.p>
+                    <p>{item.description}</p>
+                  </motion.div>
                 </div>
               )}
             </div>
@@ -405,16 +405,13 @@ const ItemCard = ({
                   <div className="flex flex-col gap-4 p-4">
                     {item.actions?.map((action: Action, index: number) => {
                       return (
-                        <>
+                        <div key={action.id}>
                           <SubactionCard
-                            key={action.id}
                             action={action}
                             cardWidth={cardRef.current?.offsetWidth}
                           />
-                          {index < item.actions.length - 1 && (
-                            <Divider key={action.id} />
-                          )}
-                        </>
+                          {index < item.actions.length - 1 && <Divider />}
+                        </div>
                       );
                     })}
                   </div>

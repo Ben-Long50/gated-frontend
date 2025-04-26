@@ -36,7 +36,9 @@ const WeaponControls = ({
       {stats.currentAmmoCount && stats.currentAmmoCount > 0 ? (
         <BtnControl
           title="Fire"
-          icon={<DamageIcon className="size-8 group-hover:fill-yellow-300" />}
+          icon={
+            <DamageIcon className="text-secondary group-hover:text-accent size-8" />
+          }
           mutation={
             stats.currentAmmoCount &&
             stats.currentAmmoCount > 0 &&
@@ -49,7 +51,7 @@ const WeaponControls = ({
         <BtnControl
           title="Reload"
           icon={
-            <MagCapacityIcon className="size-8 group-hover:fill-yellow-300" />
+            <MagCapacityIcon className="text-secondary group-hover:text-accent size-8" />
           }
           mutation={
             stats.currentMagCount && stats.currentMagCount > 0 && reloadAmmo
@@ -60,7 +62,7 @@ const WeaponControls = ({
         <BtnControl
           title="Refresh"
           icon={
-            <SpareAmmoIcon className="size-8 group-hover:fill-yellow-300" />
+            <SpareAmmoIcon className="text-secondary group-hover:text-accent size-8" />
           }
           mutation={refreshAmmo}
         />

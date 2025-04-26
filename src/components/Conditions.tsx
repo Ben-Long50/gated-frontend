@@ -8,6 +8,8 @@ import useConditions from '../hooks/useConditions';
 import ConditionCard from './ConditionCard';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
+import Icon from '@mdi/react';
+import { mdiSync } from '@mdi/js';
 
 const Conditions = ({ mode }: { mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -68,14 +70,17 @@ const Conditions = ({ mode }: { mode?: string }) => {
               )}
             </searchForm.Field>
             <button
-              className="text-accent z-10 hover:underline"
+              className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-1.5 shadow-md shadow-black hover:underline"
               onClick={(e) => {
                 e.preventDefault();
                 searchForm.reset();
                 searchForm.handleSubmit();
               }}
             >
-              Reset Filters
+              <Icon
+                path={mdiSync}
+                className="text-secondary group-hover:text-accent timing"
+              />
             </button>
           </div>
         </form>

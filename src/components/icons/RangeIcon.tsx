@@ -1,7 +1,7 @@
-const RangeIcon = (props) => {
+const RangeIcon = ({ className }: { className?: string }) => {
   return (
     <svg
-      className={`${props.className}`}
+      className={`${className ? className : 'text-secondary'} timing`}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 48 48"
     >

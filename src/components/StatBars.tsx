@@ -45,7 +45,7 @@ const StatBars = ({
           color={statColorMap['Health']}
           cardWidth={cardWidth}
         >
-          <HealthIcon className="size-8" />
+          <HealthIcon className="text-secondary size-8" />
         </StatBar>
       )}
       {stats.currentSanity && (
@@ -56,7 +56,7 @@ const StatBars = ({
           color={statColorMap['Sanity']}
           cardWidth={cardWidth}
         >
-          <SanityIcon className="size-8" />
+          <SanityIcon className="text-secondary size-8" />
         </StatBar>
       )}
       {stats.maxCyber && (
@@ -67,7 +67,7 @@ const StatBars = ({
           color={statColorMap['Cyber']}
           cardWidth={cardWidth}
         >
-          <CyberIcon className="size-8" />
+          <CyberIcon className="text-secondary size-8" />
         </StatBar>
       )}
       {stats.maxWeight && (
@@ -78,7 +78,7 @@ const StatBars = ({
           color={statColorMap['Equip']}
           cardWidth={cardWidth}
         >
-          <EquipIcon className="size-8" />
+          <EquipIcon className="text-secondary size-8" />
         </StatBar>
       )}
       {stats.damage && (
@@ -88,7 +88,7 @@ const StatBars = ({
           color={statColorMap['DMG']}
           cardWidth={cardWidth}
         >
-          <DamageIcon className="size-8" />
+          <DamageIcon className="text-secondary size-8" />
         </StatBar>
       )}
       {stats.salvo && (
@@ -98,7 +98,7 @@ const StatBars = ({
           color={statColorMap['SLV']}
           cardWidth={cardWidth}
         >
-          <SalvoIcon className="size-8" />
+          <SalvoIcon className="text-secondary size-8" />
         </StatBar>
       )}
       {stats.flurry && (
@@ -108,7 +108,7 @@ const StatBars = ({
           color={statColorMap['FLR']}
           cardWidth={cardWidth}
         >
-          <FlurryIcon className="size-8" />
+          <FlurryIcon className="text-secondary size-8" />
         </StatBar>
       )}
       {stats.range && (
@@ -119,17 +119,7 @@ const StatBars = ({
           color={statColorMap['RNG']}
           cardWidth={cardWidth}
         >
-          <RangeIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.weight && !stats.maxWeight && (
-        <StatBar
-          title="WGT"
-          current={stats.weight}
-          color={statColorMap['WGT']}
-          cardWidth={cardWidth}
-        >
-          <EquipIcon className="size-8" />
+          <RangeIcon className="text-secondary size-8" />
         </StatBar>
       )}
       {mode === 'equipment'
@@ -143,7 +133,7 @@ const StatBars = ({
               color={statColorMap['MAG']}
               cardWidth={cardWidth}
             >
-              <MagCapacityIcon className="size-8" />
+              <MagCapacityIcon className="text-secondary size-8" />
             </StatBar>
           )
         : stats.magCapacity && (
@@ -155,9 +145,64 @@ const StatBars = ({
               color={statColorMap['MAG']}
               cardWidth={cardWidth}
             >
-              <MagCapacityIcon className="size-8" />
+              <MagCapacityIcon className="text-secondary size-8" />
             </StatBar>
           )}
+
+      {stats.cyber && !stats.maxCyber && (
+        <StatBar
+          title="CBR"
+          current={stats.cyber}
+          total={stats.maxCyber}
+          color={statColorMap['Cyber']}
+          cardWidth={cardWidth}
+        >
+          <CyberIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
+
+      {stats.size && (
+        <StatBar
+          title="SZE"
+          current={stats.size}
+          color={statColorMap['SZE']}
+          cardWidth={cardWidth}
+        >
+          <SizeIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
+      {stats.speed && (
+        <StatBar
+          title="SPD"
+          current={stats.speed}
+          divider={10}
+          color={statColorMap['SPD']}
+          cardWidth={cardWidth}
+        >
+          <VehicleSpeedIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
+      {stats.agility && (
+        <StatBar
+          title="AGL"
+          current={stats.agility}
+          color={statColorMap['AGL']}
+          cardWidth={cardWidth}
+        >
+          <AgilityIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
+      {stats.hull && (
+        <StatBar
+          title="HULL"
+          current={stats.hull}
+          divider={2}
+          color={statColorMap['HULL']}
+          cardWidth={cardWidth}
+        >
+          <HullIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
       {stats.armor && (
         <StatBar
           title="AV"
@@ -165,7 +210,47 @@ const StatBars = ({
           color={statColorMap['AV']}
           cardWidth={cardWidth}
         >
-          <ArmorIcon className="size-8" />
+          <ArmorIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
+      {stats.cargo && (
+        <StatBar
+          title="CRG"
+          current={stats.cargo}
+          color={statColorMap['CRG']}
+          cardWidth={cardWidth}
+        >
+          <CargoIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
+      {stats.hangar && (
+        <StatBar
+          title="HGR"
+          current={stats.hangar}
+          color={statColorMap['HGR']}
+          cardWidth={cardWidth}
+        >
+          <HangarIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
+      {stats.pass && (
+        <StatBar
+          title="PASS"
+          current={stats.pass}
+          color={statColorMap['PASS']}
+          cardWidth={cardWidth}
+        >
+          <PassIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
+      {stats.weapon && (
+        <StatBar
+          title="WPN"
+          current={stats.weapon}
+          color={statColorMap['WPN']}
+          cardWidth={cardWidth}
+        >
+          <VehicleWeaponIcon className="text-secondary size-8" />
         </StatBar>
       )}
       {stats.ward && (
@@ -175,7 +260,7 @@ const StatBars = ({
           color={statColorMap['WV']}
           cardWidth={cardWidth}
         >
-          <WardIcon className="size-8" />
+          <WardIcon className="text-secondary size-8" />
         </StatBar>
       )}
       {mode === 'equipment'
@@ -188,7 +273,7 @@ const StatBars = ({
               color={statColorMap['BP']}
               cardWidth={cardWidth}
             >
-              <BlockIcon className="size-8" />
+              <BlockIcon className="text-secondary size-8" />
             </StatBar>
           )
         : stats.block && (
@@ -198,20 +283,9 @@ const StatBars = ({
               color={statColorMap['BP']}
               cardWidth={cardWidth}
             >
-              <BlockIcon className="size-8" />
+              <BlockIcon className="text-secondary size-8" />
             </StatBar>
           )}
-      {stats.cyber && (
-        <StatBar
-          title="CBR"
-          current={stats.cyber}
-          total={stats.maxCyber}
-          color={statColorMap['Cyber']}
-          cardWidth={cardWidth}
-        >
-          <CyberIcon className="size-8" />
-        </StatBar>
-      )}
       {mode === 'equipment'
         ? stats.power &&
           stats.currentPower !== undefined && (
@@ -222,7 +296,7 @@ const StatBars = ({
               color="rgb(107, 255, 124)"
               cardWidth={cardWidth}
             >
-              <LightningIcon className="size-8" />
+              <LightningIcon className="text-secondary size-8" />
             </StatBar>
           )
         : stats.power && (
@@ -232,101 +306,9 @@ const StatBars = ({
               color="rgb(107, 255, 124)"
               cardWidth={cardWidth}
             >
-              <LightningIcon className="size-8" />
+              <LightningIcon className="text-secondary size-8" />
             </StatBar>
           )}
-      {stats.size && (
-        <StatBar
-          title="SZE"
-          current={stats.size}
-          color={statColorMap['SZE']}
-          cardWidth={cardWidth}
-        >
-          <SizeIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.speed && (
-        <StatBar
-          title="SPD"
-          current={stats.speed}
-          divider={10}
-          color={statColorMap['SPD']}
-          cardWidth={cardWidth}
-        >
-          <VehicleSpeedIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.agility && (
-        <StatBar
-          title="AGL"
-          current={stats.agility}
-          color={statColorMap['AGL']}
-          cardWidth={cardWidth}
-        >
-          <AgilityIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.hull && (
-        <StatBar
-          title="HULL"
-          current={stats.hull}
-          divider={2}
-          color={statColorMap['HULL']}
-          cardWidth={cardWidth}
-        >
-          <HullIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.armor && (
-        <StatBar
-          title="AV"
-          current={stats.armor}
-          color={statColorMap['AV']}
-          cardWidth={cardWidth}
-        >
-          <ArmorIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.cargo && (
-        <StatBar
-          title="CRG"
-          current={stats.cargo}
-          color={statColorMap['CRG']}
-          cardWidth={cardWidth}
-        >
-          <CargoIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.hangar && (
-        <StatBar
-          title="HGR"
-          current={stats.hangar}
-          color={statColorMap['HGR']}
-          cardWidth={cardWidth}
-        >
-          <HangarIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.pass && (
-        <StatBar
-          title="PASS"
-          current={stats.pass}
-          color={statColorMap['PASS']}
-          cardWidth={cardWidth}
-        >
-          <PassIcon className="size-8" />
-        </StatBar>
-      )}
-      {stats.weapon && (
-        <StatBar
-          title="WPN"
-          current={stats.weapon}
-          color={statColorMap['WPN']}
-          cardWidth={cardWidth}
-        >
-          <VehicleWeaponIcon className="size-8" />
-        </StatBar>
-      )}
       {stats.currentStacks ? (
         <StatBar
           title="STACKS"
@@ -335,9 +317,19 @@ const StatBars = ({
           color={statColorMap['STACKS']}
           cardWidth={cardWidth}
         >
-          <StackIcon className="size-8" />
+          <StackIcon className="text-secondary size-8" />
         </StatBar>
       ) : null}
+      {stats.weight && !stats.maxWeight && (
+        <StatBar
+          title="WGT"
+          current={stats.weight}
+          color={statColorMap['WGT']}
+          cardWidth={cardWidth}
+        >
+          <EquipIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
     </>
   );
 };
