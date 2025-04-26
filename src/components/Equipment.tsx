@@ -70,25 +70,6 @@ const Equipment = ({ mode }: { mode?: string }) => {
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, characterId);
 
-  const editCurrentHealth = useCurrentHealthMutation(
-    apiUrl,
-    Number(characterId),
-  );
-
-  const editCurrentSanity = useCurrentSanityMutation(
-    apiUrl,
-    Number(characterId),
-  );
-
-  const handleCurrentHealth = (value: number) => {
-    if (character?.stats.currentHealth <= 0) return;
-    editCurrentHealth.mutate(value);
-  };
-
-  const handleCurrentSanity = (value: number) => {
-    editCurrentSanity.mutate(value);
-  };
-
   const { filteredWeapons: weapons } = useWeapons({
     itemList: character?.characterInventory?.weapons,
     excludedKeywords: ['Vehicle', 'Cybernetic'],
@@ -190,6 +171,8 @@ const Equipment = ({ mode }: { mode?: string }) => {
               cyber: stats.cyber,
               weight: stats.weight,
               maxWeight: stats.maxWeight,
+              maxHealth: stats.maxHealth,
+              maxSanity: stats.maxSanity,
             }}
           />
         </div>

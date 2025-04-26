@@ -206,6 +206,8 @@ const CharacterSheet = () => {
             cyber: stats.cyber,
             weight: stats.weight,
             maxWeight: stats.maxWeight,
+            maxHealth: stats.maxHealth,
+            maxSanity: stats.maxSanity,
           }}
         />
       </div>

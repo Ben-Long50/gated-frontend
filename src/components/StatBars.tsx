@@ -23,6 +23,11 @@ import HangarIcon from './icons/HangarIcon';
 import PassIcon from './icons/PassIcon';
 import VehicleWeaponIcon from './icons/VehicleWeaponIcon';
 import StackIcon from './icons/StackIcon';
+import { useParams } from 'react-router-dom';
+import useCurrentHealthMutation from '../hooks/useCurrentHealthMutation/useCurrentHealthMutation';
+import { AuthContext } from '../contexts/AuthContext';
+import useCurrentSanityMutation from '../hooks/useCurrentSanityMutation/useCurrentSanityMutation';
+import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 
 const StatBars = ({
   stats,
@@ -33,7 +38,31 @@ const StatBars = ({
   mode?: string;
   cardWidth: number;
 }) => {
+  const { apiUrl } = useContext(AuthContext);
   const { statColorMap } = useContext(ThemeContext);
+  const { characterId } = useParams();
+
+  const { data: character } = useCharacterQuery(apiUrl, Number(characterId));
+
+  const editCurrentHealth = useCurrentHealthMutation(
+    apiUrl,
+    Number(characterId),
+  );
+
+  const editCurrentSanity = useCurrentSanityMutation(
+    apiUrl,
+    Number(characterId),
+  );
+
+  const handleCurrentHealth = (value: number) => {
+    if (character?.stats.currentHealth <= 0) return;
+    editCurrentHealth.mutate(value);
+  };
+
+  const handleCurrentSanity = (value: number) => {
+    if (character?.stats.currentSanity <= 0) return;
+    editCurrentSanity.mutate(value);
+  };
 
   return (
     <>
@@ -44,6 +73,8 @@ const StatBars = ({
           total={stats.maxHealth}
           color={statColorMap['Health']}
           cardWidth={cardWidth}
+          mutation={handleCurrentHealth}
+          mode="adjustable"
         >
           <HealthIcon className="text-secondary size-8" />
         </StatBar>
@@ -55,6 +86,8 @@ const StatBars = ({
           total={stats.maxSanity}
           color={statColorMap['Sanity']}
           cardWidth={cardWidth}
+          mutation={handleCurrentSanity}
+          mode="adjustable"
         >
           <SanityIcon className="text-secondary size-8" />
         </StatBar>
