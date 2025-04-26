@@ -2,6 +2,7 @@ import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
 import { ArmorWithKeywords } from 'src/types/armor';
 import StatBars from './StatBars';
+import ArrowHeader3 from './ArrowHeader3';
 
 const SubarmorCard = ({
   armor,
@@ -18,7 +19,7 @@ const SubarmorCard = ({
 }) => {
   return (
     <div className="flex h-full grow flex-col items-start justify-between gap-4">
-      <h3> {armor.name}</h3>
+      <ArrowHeader3 title={armor?.name} />
       <div className="flex flex-wrap items-center gap-2">
         {armor.keywords?.map((item: { keyword: Keyword; value?: number }) => {
           return (

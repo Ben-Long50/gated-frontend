@@ -12,6 +12,7 @@ import StopwatchIcon from './icons/StopwatchIcon';
 import StatBar from './StatBar';
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
+import ArrowHeader3 from './ArrowHeader3';
 
 const SubactionCard = ({
   action,
@@ -28,7 +29,7 @@ const SubactionCard = ({
       className="flex h-full grow flex-col items-start justify-start gap-4"
     >
       <div className="flex w-full items-center justify-start gap-4">
-        <h3> {action.name}</h3>
+        <ArrowHeader3 title={action?.name} />
         <p className="text-tertiary italic">
           ({action.actionType[0].toUpperCase() + action.actionType.slice(1)})
         </p>

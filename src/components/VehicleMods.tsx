@@ -10,6 +10,7 @@ import useModifications from '../hooks/useModifications';
 import { FetchOptions } from 'src/types/fetchOptions';
 import Icon from '@mdi/react';
 import { mdiTriangleDown } from '@mdi/js';
+import ArrowHeader2 from './ArrowHeader2';
 
 const VehicleMods = ({
   title,
@@ -73,16 +74,7 @@ const VehicleMods = ({
           borderColor={accentPrimary}
         >
           <div className="flex w-full flex-col gap-8 p-4 sm:p-8">
-            <div className="flex items-center gap-4">
-              <Icon
-                className="text-primary"
-                path={mdiTriangleDown}
-                size={0.5}
-                rotate={-90}
-              />
-              <h2>Modifications</h2>
-            </div>
-
+            <ArrowHeader2 title="Modifications" />
             <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
               {modifications.filteredMods.map((modification: Modification) => {
                 return (

@@ -21,7 +21,7 @@ const Tag = ({
       <div
         className={`${className} bg-primary relative cursor-pointer rounded border border-yellow-300 border-opacity-50 px-2 text-base`}
         onClick={
-          id
+          setToolTip
             ? (e) => {
                 e.stopPropagation();
                 setToolTip(id);
@@ -33,7 +33,7 @@ const Tag = ({
       </div>
 
       <div
-        className={`${toolTip === id ? 'visible opacity-100' : 'invisible opacity-0'} bg-secondary timing scrollbar-secondary absolute right-0 top-0 z-10 max-h-full min-w-72 max-w-1/2 overflow-y-auto rounded-md p-3 shadow-md shadow-zinc-950`}
+        className={`${toolTip === id ? 'visible opacity-100' : 'invisible opacity-0'} bg-secondary timing scrollbar-secondary absolute right-2 top-2 z-20 max-h-full min-w-72 max-w-1/2 overflow-y-auto rounded-md p-3 shadow-md shadow-zinc-950`}
       >
         <ArrowHeader4 title={label} />
         <Divider />

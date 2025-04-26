@@ -4,8 +4,6 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import BtnRect from './buttons/BtnRect';
 import { Link } from 'react-router-dom';
 import { Campaign } from 'src/types/campaign';
-import Icon from '@mdi/react';
-import { mdiTriangleDown } from '@mdi/js';
 import LocationIcon from './icons/LocationIcon';
 import AccountPicture from './AccountPicture';
 import { User } from 'src/types/user';
@@ -65,7 +63,12 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
                 className="ml-auto mt-auto self-end"
                 to={`/glam/campaigns/${campaign.id}`}
               >
-                <BtnRect>Campaign Info</BtnRect>
+                <BtnRect
+                  ariaLabel="navigate to campaign information"
+                  type="button"
+                >
+                  Campaign Info
+                </BtnRect>
               </Link>
             </div>
           </div>

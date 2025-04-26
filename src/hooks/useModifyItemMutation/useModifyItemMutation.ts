@@ -18,7 +18,7 @@ const useModifyItemMutation = (
         exact: false,
       });
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
+        queryKey: ['character'],
         exact: false,
       });
     },

@@ -1,8 +1,31 @@
 import clsx from 'clsx';
 import CardPrice from './CardPrice';
 import CloudinaryImageSmall from './CloudinaryImageSmall';
+import { WeaponWithKeywords } from 'src/types/weapon';
+import { ArmorWithKeywords } from 'src/types/armor';
+import { CyberneticWithKeywords } from 'src/types/cybernetic';
+import { VehicleWithWeapons } from 'src/types/vehicle';
+import { Item } from 'src/types/item';
+import { ReactNode } from 'react';
 
-const CartCard = ({ item, category, handleRemove, children }, props) => {
+const CartCard = ({
+  className,
+  item,
+  category,
+  handleRemove,
+  children,
+}: {
+  className: string;
+  item:
+    | WeaponWithKeywords
+    | ArmorWithKeywords
+    | CyberneticWithKeywords
+    | VehicleWithWeapons
+    | Item;
+  category: string;
+  handleRemove: () => void;
+  children: ReactNode;
+}) => {
   const rarityColors = {
     common: 'bg-gray-400',
     uncommon: 'bg-green-500',
@@ -14,7 +37,7 @@ const CartCard = ({ item, category, handleRemove, children }, props) => {
   return (
     <div className="rounded-br-4xl rounded-tl-4xl shadow-md shadow-zinc-950">
       <div
-        className={`${props.className} bg-secondary timing flex w-full flex-col pr-4 clip-4 sm:pr-6`}
+        className={`${className} bg-secondary timing flex w-full flex-col pr-4 clip-4 sm:pr-6`}
       >
         <div className="relative flex h-full items-center gap-4 sm:gap-8">
           <div

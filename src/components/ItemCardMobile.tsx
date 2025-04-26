@@ -9,7 +9,6 @@ import {
   useState,
 } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { LayoutContext } from '../contexts/LayoutContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
 import { Link } from 'react-router-dom';
@@ -39,7 +38,6 @@ import { Modifier } from 'src/types/modifier';
 import ItemPicture from './ItemPicture';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
-import ArrowHeader3 from './ArrowHeader3';
 
 const ItemCardMobile = ({
   item,
@@ -59,7 +57,7 @@ const ItemCardMobile = ({
   controls?: ReactNode;
   children: ReactNode;
 }) => {
-  const { accentPrimary, rarityColorMap } = useContext(ThemeContext);
+  const { accentPrimary } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [imageHeight, setImageHeight] = useState(0);
@@ -147,7 +145,7 @@ const ItemCardMobile = ({
             <div className="flex items-start justify-between gap-4">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-4">
-                  <ArrowHeader3 title={item.name} />
+                  <ArrowHeader2 title={item.name} />
                   {category === 'weapons' && item.vehicleId && (
                     <h4 className="text-error italic">(Currently equipped)</h4>
                   )}

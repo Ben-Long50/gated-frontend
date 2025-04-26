@@ -68,6 +68,7 @@ const InventoryModal = ({
         >
           {(item, index, { tab }) => (
             <ThemeContainer
+              key={index}
               chamfer="small"
               borderColor="transparent"
               overflowHidden={true}

@@ -76,13 +76,15 @@ const InputSelectField = ({
       return option.length > 0
         ? option[0].toUpperCase() + option.slice(1)
         : option;
-    } else return;
+    } else return '';
   };
 
   const filteredOptions =
-    options?.filter((item) =>
-      optionName(item).toLowerCase().includes(query.toLowerCase()),
-    ) || [];
+    options?.filter((item) => {
+      return item
+        ? optionName(item).toLowerCase().includes(query.toLowerCase())
+        : '';
+    }) || [];
 
   return (
     <div

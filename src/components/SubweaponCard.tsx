@@ -2,6 +2,7 @@ import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import StatBars from './StatBars';
+import ArrowHeader3 from './ArrowHeader3';
 
 const SubweaponCard = ({
   vehicleId,
@@ -22,7 +23,7 @@ const SubweaponCard = ({
   return (
     <div className="flex h-full w-full grow flex-col items-start justify-between gap-4">
       <div className="flex items-center gap-4">
-        <h3>{weapon?.name}</h3>
+        <ArrowHeader3 title={weapon?.name} />
         <p className="text-error italic">
           {weapon?.vehicleId &&
             weapon.vehicleId !== vehicleId &&

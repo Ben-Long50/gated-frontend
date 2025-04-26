@@ -23,6 +23,7 @@ import Icon from '@mdi/react';
 import { mdiTriangleDown } from '@mdi/js';
 import useItems from '../hooks/useItems';
 import { Item } from 'src/types/item';
+import ArrowHeader2 from './ArrowHeader2';
 
 const Cart = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -226,10 +227,7 @@ const Cart = () => {
             {(field) =>
               field.state.value.length > 0 && (
                 <div className="text-secondary flex w-full flex-col gap-4">
-                  <div className="flex items-center gap-4">
-                    <Icon path={mdiTriangleDown} size={0.5} rotate={-90} />
-                    <h2>{key[0].toUpperCase() + key.slice(1)}</h2>
-                  </div>
+                  <ArrowHeader2 title={key[0].toUpperCase() + key.slice(1)} />
                   {field.state.value.map((_, i: number) => {
                     let item;
                     switch (key) {

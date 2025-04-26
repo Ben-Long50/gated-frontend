@@ -1,8 +1,5 @@
 import { useContext, useRef } from 'react';
 import ThemeContainer from './ThemeContainer';
-import StatBar from './StatBar';
-import HealthIcon from './icons/HealthIcon';
-import SanityIcon from './icons/SanityIcon';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { LayoutContext } from '../contexts/LayoutContext';
 import { Link } from 'react-router-dom';
