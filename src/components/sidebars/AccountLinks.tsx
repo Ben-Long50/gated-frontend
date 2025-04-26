@@ -10,6 +10,7 @@ import {
   mdiBellOutline,
   mdiLockOpenOutline,
   mdiLogout,
+  mdiNoteMultipleOutline,
 } from '@mdi/js';
 import useSignoutMutation from '../../hooks/useSignoutMutation/useSignoutMutation';
 import LinkListSidebar from './LinkListSidebar';
@@ -75,6 +76,18 @@ const AccountLinks = ({
           }
           title="Admin Tools"
         >
+          <LinkSidebar
+            path={`account/${user?.id}/patchNotes/create`}
+            title="Create Patch Notes"
+            icon={
+              <Icon
+                path={mdiNoteMultipleOutline}
+                className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit"
+              />
+            }
+            sidebarVisibility={sidebarVisibility}
+            setSidebarVisibility={setSidebarVisibility}
+          />
           <LinkSidebar
             path={`account/${user?.id}/adminTools`}
             title="Error Reports"

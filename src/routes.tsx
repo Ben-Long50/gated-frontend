@@ -87,6 +87,9 @@ const router = createBrowserRouter(
           <Route path="preferences" element={<ErrorReport />} />
           <Route path="adminTools" element={<ErrorReports />} />
           <Route path="errorReport" element={<ErrorReport />} />
+          <Route path="patchNotes">
+            <Route path="create" element={<PatchNoteForm />} />
+          </Route>
         </Route>
 
         <Route path="campaigns">
