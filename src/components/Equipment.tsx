@@ -187,12 +187,14 @@ const Equipment = ({ mode }: { mode?: string }) => {
                   key={active.id}
                   weapon={activeItem}
                   mode="equipment"
+                  ownerId={character?.userId}
                 />
               ) : (
                 <WeaponCard
                   key={active.id}
                   weapon={activeItem}
                   mode="equipment"
+                  ownerId={character?.userId}
                 />
               )
             ) : active.category === 'armor' ? (
@@ -201,12 +203,14 @@ const Equipment = ({ mode }: { mode?: string }) => {
                   key={active.id}
                   armor={activeItem}
                   mode="equipment"
+                  ownerId={character?.userId}
                 />
               ) : (
                 <ArmorCard
                   key={active.id}
                   armor={activeItem}
                   mode="equipment"
+                  ownerId={character?.userId}
                 />
               )
             ) : active.category === 'cybernetic' ? (
@@ -215,12 +219,14 @@ const Equipment = ({ mode }: { mode?: string }) => {
                   key={active.id}
                   cybernetic={activeItem}
                   mode="equipment"
+                  ownerId={character?.userId}
                 />
               ) : (
                 <CyberneticCard
                   key={active.id}
                   cybernetic={activeItem}
                   mode="equipment"
+                  ownerId={character?.userId}
                 />
               )
             ) : (
@@ -230,12 +236,14 @@ const Equipment = ({ mode }: { mode?: string }) => {
                   key={active.id}
                   item={activeItem}
                   mode="equipment"
+                  ownerId={character?.userId}
                 />
               ) : (
                 <MiscItemCard
                   key={active.id}
                   item={activeItem}
                   mode="equipment"
+                  ownerId={character?.userId}
                 />
               ))
             ))}

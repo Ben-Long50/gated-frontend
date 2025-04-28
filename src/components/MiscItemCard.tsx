@@ -92,13 +92,27 @@ const ItemControls = ({
   );
 };
 
-const MiscItemCard = ({ item, mode }: { item: Item; mode: string }) => {
+const MiscItemCard = ({
+  item,
+  mode,
+  ownerId,
+}: {
+  item: Item;
+  mode: string;
+  ownerId?: number;
+}) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <ItemCard
       item={item}
       category="items"
       mode={mode}
-      controls={<ItemControls itemId={item.id} stats={item.stats} />}
+      controls={
+        ownerId === user?.id ? (
+          <ItemControls itemId={item.id} stats={item.stats} />
+        ) : null
+      }
     >
       <StatBars stats={item.stats} mode={mode} />
     </ItemCard>
@@ -108,16 +122,24 @@ const MiscItemCard = ({ item, mode }: { item: Item; mode: string }) => {
 export const MiscItemCardMobile = ({
   item,
   mode,
+  ownerId,
 }: {
   item: Item;
   mode: string;
+  ownerId?: number;
 }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <ItemCardMobile
       item={item}
       category="items"
       mode={mode}
-      controls={<ItemControls itemId={item.id} stats={item.stats} />}
+      controls={
+        ownerId === user?.id ? (
+          <ItemControls itemId={item.id} stats={item.stats} />
+        ) : null
+      }
     >
       <StatBars stats={item.stats} mode={mode} />
     </ItemCardMobile>

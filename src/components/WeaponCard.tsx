@@ -81,16 +81,24 @@ const WeaponControls = ({
 const WeaponCard = ({
   weapon,
   mode,
+  ownerId,
 }: {
   weapon: WeaponWithKeywords;
   mode: string;
+  ownerId?: number;
 }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <ItemCard
       item={weapon}
       category="weapons"
       mode={mode}
-      controls={<WeaponControls stats={weapon.stats} weaponId={weapon.id} />}
+      controls={
+        ownerId === user?.id ? (
+          <WeaponControls stats={weapon.stats} weaponId={weapon.id} />
+        ) : null
+      }
     >
       <StatBars stats={weapon.stats} mode={mode} />
     </ItemCard>
@@ -100,16 +108,24 @@ const WeaponCard = ({
 export const WeaponCardMobile = ({
   weapon,
   mode,
+  ownerId,
 }: {
   weapon: WeaponWithKeywords;
   mode: string;
+  ownerId?: number;
 }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <ItemCardMobile
       item={weapon}
       category="weapons"
       mode={mode}
-      controls={<WeaponControls stats={weapon.stats} weaponId={weapon.id} />}
+      controls={
+        ownerId === user?.id ? (
+          <WeaponControls stats={weapon.stats} weaponId={weapon.id} />
+        ) : null
+      }
     >
       <StatBars stats={weapon.stats} mode={mode} />
     </ItemCardMobile>

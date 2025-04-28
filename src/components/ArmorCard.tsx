@@ -91,16 +91,24 @@ const ArmorControls = ({
 const ArmorCard = ({
   armor,
   mode,
+  ownerId,
 }: {
   armor: ArmorWithKeywords;
   mode: string;
+  ownerId?: number;
 }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <ItemCard
       item={armor}
       category="armor"
       mode={mode}
-      controls={<ArmorControls armorId={armor.id} stats={armor.stats} />}
+      controls={
+        ownerId === user?.id ? (
+          <ArmorControls armorId={armor.id} stats={armor.stats} />
+        ) : null
+      }
     >
       <StatBars stats={armor.stats} mode={mode} />
     </ItemCard>
@@ -110,16 +118,24 @@ const ArmorCard = ({
 export const ArmorCardMobile = ({
   armor,
   mode,
+  ownerId,
 }: {
   armor: ArmorWithKeywords;
   mode: string;
+  ownerId: number;
 }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <ItemCardMobile
       item={armor}
       category="armor"
       mode={mode}
-      controls={<ArmorControls armorId={armor.id} stats={armor.stats} />}
+      controls={
+        ownerId === user?.id ? (
+          <ArmorControls armorId={armor.id} stats={armor.stats} />
+        ) : null
+      }
     >
       <StatBars stats={armor.stats} mode={mode} />
     </ItemCardMobile>

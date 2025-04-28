@@ -65,6 +65,8 @@ const ItemCard = ({
 
   const cardRef = useRef(null);
 
+  console.log(item);
+
   return (
     <ThemeContainer
       chamfer="medium"

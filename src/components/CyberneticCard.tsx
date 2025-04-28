@@ -63,20 +63,26 @@ const CyberneticControls = ({
 const CyberneticCard = ({
   cybernetic,
   mode,
+  ownerId,
 }: {
   cybernetic: CyberneticWithKeywords;
   mode: string;
+  ownerId?: number;
 }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <ItemCard
       item={cybernetic}
       category="cybernetics"
       mode={mode}
       controls={
-        <CyberneticControls
-          cyberneticId={cybernetic.id}
-          stats={cybernetic.stats}
-        />
+        ownerId === user?.id ? (
+          <CyberneticControls
+            cyberneticId={cybernetic.id}
+            stats={cybernetic.stats}
+          />
+        ) : null
       }
     >
       <StatBars stats={cybernetic.stats} mode={mode} />
@@ -105,20 +111,26 @@ const CyberneticCard = ({
 export const CyberneticCardMobile = ({
   cybernetic,
   mode,
+  ownerId,
 }: {
   cybernetic: CyberneticWithKeywords;
   mode: string;
+  ownerId: number;
 }) => {
+  const { user } = useContext(AuthContext);
+
   return (
     <ItemCardMobile
       item={cybernetic}
       category="cybernetics"
       mode={mode}
       controls={
-        <CyberneticControls
-          cyberneticId={cybernetic.id}
-          stats={cybernetic.stats}
-        />
+        ownerId === user?.id ? (
+          <CyberneticControls
+            cyberneticId={cybernetic.id}
+            stats={cybernetic.stats}
+          />
+        ) : null
       }
     >
       <StatBars stats={cybernetic.stats} mode={mode} />
