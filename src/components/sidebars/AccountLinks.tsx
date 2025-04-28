@@ -101,7 +101,7 @@ const AccountLinks = ({
             setSidebarVisibility={setSidebarVisibility}
           />
           <LinkSidebar
-            path={`account/${user?.id}/adminTools`}
+            path={`account/${user?.id}/userPermissions`}
             title="User Account Permissions"
             icon={
               <Icon

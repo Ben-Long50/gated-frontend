@@ -21,7 +21,7 @@ const AccountPicture = ({
         className={`${className} flex size-10 shrink-0 items-center justify-center rounded-full bg-yellow-300`}
       >
         <p className="pt-1 text-2xl font-semibold !text-zinc-900">
-          {user.firstName[0].toUpperCase()}
+          {user.username[0].toUpperCase()}
         </p>
       </div>
     )

@@ -63,6 +63,7 @@ import Notes from './components/Notes';
 import NotesForm from './components/NotesForm';
 import AccountSettingsForm from './components/AccountSettingsForm';
 import ItemPageWrapper from './components/ItemPageWrapper';
+import UserRoles from './components/UserRoles';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -93,6 +94,7 @@ const router = createBrowserRouter(
             <Route path="notifications" element={<Notifications />} />
             <Route path="preferences" element={<ErrorReport />} />
             <Route path="adminTools" element={<ErrorReports />} />
+            <Route path="userPermissions" element={<UserRoles />} />
             <Route path="errorReport" element={<ErrorReport />} />
             <Route path="patchNotes">
               <Route path="create" element={<PatchNoteForm />} />
