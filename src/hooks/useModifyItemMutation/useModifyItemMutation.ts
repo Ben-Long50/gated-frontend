@@ -3,7 +3,7 @@ import modifyItem from './modifyItem';
 
 const useModifyItemMutation = (
   apiUrl: string,
-  itemId: string,
+  itemId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
@@ -13,13 +13,8 @@ const useModifyItemMutation = (
     },
     onSuccess: (data) => {
       setFormMessage(data.message);
-      queryClient.invalidateQueries({
-        queryKey: ['item'],
-        exact: false,
-      });
       return queryClient.invalidateQueries({
-        queryKey: ['character'],
-        exact: false,
+        queryKey: ['item', itemId],
       });
     },
     onError: (error) => {

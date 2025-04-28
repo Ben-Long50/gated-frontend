@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const useDeletePerkMutation = (
   apiUrl: string,
-  perkId: string,
+  perkId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
@@ -15,9 +15,8 @@ const useDeletePerkMutation = (
     },
     onSuccess: () => {
       navigate('/glam/codex/perks');
-      queryClient.invalidateQueries({
-        queryKey: ['perk'],
-        exact: false,
+      queryClient.removeQueries({
+        queryKey: ['perk', perkId],
       });
       return queryClient.invalidateQueries({
         queryKey: ['perks'],

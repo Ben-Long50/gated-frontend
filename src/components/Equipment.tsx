@@ -68,7 +68,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
     data: character,
     isLoading: characterLoading,
     isPending: characterPending,
-  } = useCharacterQuery(apiUrl, characterId);
+  } = useCharacterQuery(apiUrl, Number(characterId));
 
   const { filteredWeapons: weapons } = useWeapons({
     itemList: character?.characterInventory?.weapons,
@@ -76,6 +76,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
   });
   const { filteredArmor: armor } = useArmor({
     itemList: character?.characterInventory?.armor,
+    excludedKeywords: ['Cybernetic'],
   });
   const { filteredCybernetics: cybernetics } = useCybernetics({
     itemList: character?.characterInventory?.cybernetics,

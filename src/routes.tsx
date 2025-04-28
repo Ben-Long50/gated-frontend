@@ -295,9 +295,9 @@ const router = createBrowserRouter(
                 element={
                   <Weapons
                     title="All Weapons"
-                    // fetchOptions={{
-                    //   excludedKeywords: ['Vehicle', 'Cybernetic'],
-                    // }}
+                    fetchOptions={{
+                      excludedKeywords: ['Vehicle', 'Cybernetic'],
+                    }}
                     mode="codex"
                     key="weapons"
                   />
@@ -439,7 +439,7 @@ const router = createBrowserRouter(
                 element={
                   <Armor
                     title="All Armor"
-                    // fetchOptions={{ excludedKeywords: ['Cybernetic'] }}
+                    fetchOptions={{ excludedKeywords: ['Cybernetic'] }}
                     mode="codex"
                     key="armor"
                   />

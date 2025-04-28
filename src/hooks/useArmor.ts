@@ -18,20 +18,24 @@ const useArmor = (fetchOptions?: FetchOptions) => {
 
     const list = fetchOptions?.itemList || armor;
 
-    return list.filter((armorSet: ArmorWithKeywords) => {
-      const matchesKeywordList = fetchOptions?.includedKeywords
-        ? armorSet.keywords?.some((keyword) =>
-            fetchOptions.includedKeywords?.includes(keyword.keyword?.name),
-          )
-        : true;
-      const matchesExcludeList = fetchOptions?.excludedKeywords
-        ? armorSet.keywords?.some(
+    const filteredExcludeList = fetchOptions?.excludedKeywords
+      ? list.filter((armor: ArmorWithKeywords) =>
+          armor.keywords?.every(
             (keyword) =>
               !fetchOptions.excludedKeywords?.includes(keyword.keyword?.name),
-          )
-        : true;
-      return matchesKeywordList && matchesExcludeList;
-    });
+          ),
+        )
+      : list;
+
+    const filteredIncludeList = fetchOptions?.includedKeywords
+      ? filteredExcludeList.filter((armor: ArmorWithKeywords) =>
+          armor.keywords?.some((keyword) =>
+            fetchOptions.includedKeywords?.includes(keyword.keyword?.name),
+          ),
+        )
+      : filteredExcludeList;
+
+    return filteredIncludeList;
   }, [armor, fetchOptions]);
 
   const filteredKeywords = useMemo(() => {

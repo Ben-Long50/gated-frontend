@@ -3,7 +3,7 @@ import createPerk from './createPerk';
 
 const useCreatePerkMutation = (
   apiUrl: string,
-  perkId: string,
+  perkId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
@@ -14,8 +14,7 @@ const useCreatePerkMutation = (
     onSuccess: () => {
       setFormMessage('Perk successfully created');
       queryClient.invalidateQueries({
-        queryKey: ['perk'],
-        exact: false,
+        queryKey: ['perk', perkId],
       });
       return queryClient.invalidateQueries({
         queryKey: ['perks'],

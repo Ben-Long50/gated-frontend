@@ -112,6 +112,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
 
   const vehicleForm = useForm({
     defaultValues: {
+      id: vehicle?.id || 0,
       name: vehicle?.name || '',
       rarity: vehicle?.rarity || '',
       grade: vehicle?.grade || 1,
@@ -160,7 +161,6 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      formData.append('vehicleId', JSON.stringify(vehicleId || 0));
 
       if (mode === 'create' || mode === 'update') {
         await createVehicle.mutate(formData);

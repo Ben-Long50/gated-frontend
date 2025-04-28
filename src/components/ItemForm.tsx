@@ -30,14 +30,20 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { itemId } = useParams();
 
-  const { data: item } = useItemQuery(apiUrl, itemId);
+  const { data: item } = useItemQuery(apiUrl, Number(itemId), {
+    enabled: !!itemId,
+  });
 
   const [imagePreview, setImagePreview] = useState(
     item?.picture?.imageUrl || '',
   );
 
   const createItem = useCreateItemMutation(apiUrl, setFormMessage);
-  const modifyItem = useModifyItemMutation(apiUrl, itemId, setFormMessage);
+  const modifyItem = useModifyItemMutation(
+    apiUrl,
+    Number(itemId),
+    setFormMessage,
+  );
   const deleteItem = useDeleteItemMutation(apiUrl, setFormMessage, itemId);
 
   useEffect(() => {
@@ -105,7 +111,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
       modifiers:
         item?.modifiers?.map((modifier: Modifier) => ({
           type: modifier.type,
-          action: modifier.action?.id || null,
+          actionId: modifier.action?.id || null,
           stat: modifier.stat || null,
           operator: modifier.operator,
           valueType: modifier.valueType,

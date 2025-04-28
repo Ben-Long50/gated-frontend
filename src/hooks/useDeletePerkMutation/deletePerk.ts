@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const deletePerk = async (apiUrl: string, perkId: string) => {
+const deletePerk = async (apiUrl: string, perkId: number) => {
   try {
     const response = await fetch(`${apiUrl}/perks/${perkId}`, {
       method: 'DELETE',

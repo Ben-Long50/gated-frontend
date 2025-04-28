@@ -30,8 +30,16 @@ const PerkForm = ({ mode }: { mode?: string }) => {
     (perk: Perk) => perk.id === Number(perkId),
   )[0];
 
-  const createPerk = useCreatePerkMutation(apiUrl, perkId, setFormMessage);
-  const deletePerk = useDeletePerkMutation(apiUrl, perkId, setFormMessage);
+  const createPerk = useCreatePerkMutation(
+    apiUrl,
+    Number(perkId),
+    setFormMessage,
+  );
+  const deletePerk = useDeletePerkMutation(
+    apiUrl,
+    Number(perkId),
+    setFormMessage,
+  );
 
   const handleDelete = () => {
     if (deleteMode) {
@@ -68,7 +76,7 @@ const PerkForm = ({ mode }: { mode?: string }) => {
       modifiers:
         perk?.modifiers?.map((modifier: Modifier) => ({
           type: modifier.type,
-          action: modifier.action?.id || null,
+          actionId: modifier.action?.id || null,
           stat: modifier.stat || null,
           operator: modifier.operator,
           valueType: modifier.valueType,

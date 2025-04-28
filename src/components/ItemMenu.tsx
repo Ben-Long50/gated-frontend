@@ -92,7 +92,7 @@ const ItemMenu = ({
         </div>
         <Divider className="col-span-2" />
         <div
-          className={`${mode === 'equipment' ? 'grid grid-cols-2' : 'grid grid-cols-[repeat(auto-fill,minmax(100px,auto))]'} scrollbar-secondary-2 gap-4`}
+          className={`${mode === 'equipment' ? 'grid grid-cols-2' : 'grid grid-cols-3 sm:grid-cols-6'} scrollbar-secondary-2 gap-2 sm:gap-4`}
         >
           {itemList.map((item, index) => children(item, index, { tab }))}
         </div>

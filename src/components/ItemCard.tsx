@@ -34,6 +34,7 @@ import ModifierTag from './ModifierTag';
 import { Modifier } from 'src/types/modifier';
 import ItemPicture from './ItemPicture';
 import ArrowHeader2 from './ArrowHeader2';
+import ArrowHeader4 from './ArrowHeader4';
 
 const ItemCard = ({
   item,
@@ -79,64 +80,64 @@ const ItemCard = ({
           {item.picture && (
             <ItemPicture className={`timing w-[280px]`} item={item} />
           )}
-          <div className="w-full">
-            <div className="grid w-full grow grid-cols-[2fr-1fr] items-start gap-x-8 gap-y-4">
-              <div>
-                <div className="flex items-center gap-4">
-                  <ArrowHeader2 title={item.name} />
-                  {category === 'weapons' && item.vehicleId && (
-                    <h4 className="text-error italic">(Currently equipped)</h4>
-                  )}
-                </div>
+          <div className="flex w-full flex-col gap-4">
+            <div className="flex w-full items-start justify-between">
+              <div className="flex items-center gap-4">
+                <ArrowHeader2 title={item.name} />
                 {item.cyberneticType && (
-                  <p className="text-tertiary italic">
+                  <p className="text-tertiary">
                     (
                     {item.cyberneticType[0].toUpperCase() +
                       item.cyberneticType.slice(1)}
                     )
                   </p>
                 )}
+                {item?.category && (
+                  <p className="text-tertiary">
+                    ({item.category[0].toUpperCase() + item.category.slice(1)})
+                  </p>
+                )}
               </div>
-
-              <div
-                className={`${mode === 'codex' && 'row-span-2'} timing col-start-2 row-start-1 flex flex-col items-end justify-end gap-x-8 gap-y-2`}
-              >
-                <div className="flex items-start gap-4">
-                  <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
-                  {mode === 'codex' && (
-                    <CartButton
-                      price={item?.price}
-                      category={category}
-                      itemId={item?.id}
-                    />
-                  )}
+              <div className="flex items-start gap-4">
+                <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
+                {mode === 'codex' && (
+                  <CartButton
+                    price={item?.price}
+                    category={category}
+                    itemId={item?.id}
+                  />
+                )}
+              </div>
+            </div>
+            <div
+              className={`timing flex items-center justify-between gap-x-8 gap-y-2`}
+            >
+              {item.itemType && (
+                <div className="flex gap-4">
+                  <h4>
+                    {item.itemType[0].toUpperCase() + item.itemType.slice(1)}
+                  </h4>
+                  <p className="text-tertiary">
+                    {item.subcategory[0].toUpperCase() +
+                      item.subcategory.slice(1)}
+                  </p>
                 </div>
-                <ItemRarity
-                  className="place-self-end"
-                  rarity={item?.rarity}
-                  grade={item?.grade}
-                  cardWidth={cardWidth}
-                />
-              </div>
-              {(item.body || item.keywords || item.category) && (
-                <div
-                  className={` ${mode !== 'codex' && 'col-span-2'} col-start-1 row-start-2 flex flex-wrap items-center gap-1`}
-                >
-                  {item.body && (
-                    <div className="flex flex-col items-center gap-1">
-                      <div className="mr-4 flex flex-wrap items-center gap-2">
-                        <BodyIcon className="text-secondary size-8" />
-                        {item.body.map((body, index) => {
-                          return (
-                            <p key={body}>
-                              {body}
-                              <span>{index < item.body.length - 1 && ','}</span>
-                            </p>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+              )}
+              {item.body && (
+                <div className="mr-4 flex flex-wrap items-center gap-2">
+                  <BodyIcon className="text-secondary size-8" />
+                  {item.body.map((body, index) => {
+                    return (
+                      <p key={body}>
+                        {body}
+                        <span>{index < item.body.length - 1 && ','}</span>
+                      </p>
+                    );
+                  })}
+                </div>
+              )}
+              {item.keywords && (
+                <div className={`flex flex-wrap items-center gap-1`}>
                   {item?.keywords &&
                     item.keywords.length > 0 &&
                     item.keywords?.map(
@@ -158,52 +159,35 @@ const ItemCard = ({
                         );
                       },
                     )}
-                  {item?.category && (
-                    <div className="flex items-center gap-4">
-                      <h4>{subcategoryMap[item.subcategory]}</h4>
-                      <p className="text-tertiary italic">
-                        (
-                        {item.category[0].toUpperCase() +
-                          item.category.slice(1)}
-                        )
-                      </p>
-                      <Icon
-                        className="text-secondary"
-                        path={mdiTriangleDown}
-                        size={0.35}
-                        rotate={-90}
-                      />
-                      <p>{item.itemType}</p>
-                    </div>
-                  )}
                 </div>
               )}
-              <div className="col-span-2 flex w-full flex-col flex-wrap items-center gap-4 pr-2">
-                <div
-                  ref={cardRef}
-                  className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
-                >
-                  {Children.map(children, (child) => {
-                    if (isValidElement(child)) {
-                      return cloneElement(child, {
-                        cardWidth,
-                      });
-                    }
-                    return child;
-                  })}
-                </div>
-
-                {item.modifiers && item.modifiers?.length > 0 && (
-                  <div className="flex w-full items-center justify-start gap-2 sm:gap-4">
-                    {item.modifiers?.map(
-                      (modifier: Modifier, index: number) => (
-                        <ModifierTag key={index} modifier={modifier} />
-                      ),
-                    )}
-                  </div>
-                )}
-              </div>
+              <ItemRarity
+                className="ml-auto"
+                rarity={item?.rarity}
+                grade={item?.grade}
+                cardWidth={cardWidth}
+              />
             </div>
+            <div
+              ref={cardRef}
+              className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
+            >
+              {Children.map(children, (child) => {
+                if (isValidElement(child)) {
+                  return cloneElement(child, {
+                    cardWidth,
+                  });
+                }
+                return child;
+              })}
+            </div>
+            {item.modifiers && item.modifiers?.length > 0 && (
+              <div className="flex w-full items-center justify-start gap-2 sm:gap-4">
+                {item.modifiers?.map((modifier: Modifier, index: number) => (
+                  <ModifierTag key={index} modifier={modifier} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
         {mode === 'equipment' && controls}

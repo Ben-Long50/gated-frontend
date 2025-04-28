@@ -18,21 +18,24 @@ const useWeapons = (fetchOptions?: FetchOptions) => {
 
     const list = fetchOptions?.itemList || weapons;
 
-    return list.filter((weapon: WeaponWithKeywords) => {
-      const matchesKeywordList = fetchOptions?.includedKeywords
-        ? weapon.keywords?.some((keyword) =>
-            fetchOptions.includedKeywords?.includes(keyword.keyword?.name),
-          )
-        : true;
-      const matchesExcludeList = fetchOptions?.excludedKeywords
-        ? weapon.keywords?.some(
+    const filteredExcludeList = fetchOptions?.excludedKeywords
+      ? list.filter((weapon: WeaponWithKeywords) =>
+          weapon.keywords?.every(
             (keyword) =>
               !fetchOptions.excludedKeywords?.includes(keyword.keyword?.name),
-          )
-        : true;
+          ),
+        )
+      : list;
 
-      return matchesKeywordList && matchesExcludeList;
-    });
+    const filteredIncludeList = fetchOptions?.includedKeywords
+      ? filteredExcludeList.filter((weapon: WeaponWithKeywords) =>
+          weapon.keywords?.some((keyword) =>
+            fetchOptions.includedKeywords?.includes(keyword.keyword?.name),
+          ),
+        )
+      : filteredExcludeList;
+
+    return filteredIncludeList;
   }, [weapons, fetchOptions]);
 
   const filteredKeywords = useMemo(() => {

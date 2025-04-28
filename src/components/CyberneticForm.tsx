@@ -37,7 +37,11 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { cyberneticId } = useParams();
 
-  const { data: cybernetic } = useCyberneticQuery(apiUrl, Number(cyberneticId));
+  const { data: cybernetic } = useCyberneticQuery(
+    apiUrl,
+    Number(cyberneticId),
+    { enabled: !!cyberneticId },
+  );
 
   const keywords = useKeywords();
   const attributeTree = useAttributeTree();
@@ -151,7 +155,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
       modifiers:
         cybernetic?.modifiers?.map((modifier: Modifier) => ({
           type: modifier.type,
-          action: modifier.action?.id || null,
+          actionId: modifier.action?.id || null,
           stat: modifier.stat || null,
           operator: modifier.operator,
           valueType: modifier.valueType,
