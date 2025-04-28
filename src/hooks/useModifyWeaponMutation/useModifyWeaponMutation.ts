@@ -3,7 +3,7 @@ import modifyWeapon from './modifyWeapon';
 
 const useModifyWeaponMutation = (
   apiUrl: string,
-  weaponId: string,
+  weaponId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
@@ -14,7 +14,7 @@ const useModifyWeaponMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['weapon'],
+        queryKey: ['weapon', weaponId],
         exact: false,
       });
       return queryClient.invalidateQueries({

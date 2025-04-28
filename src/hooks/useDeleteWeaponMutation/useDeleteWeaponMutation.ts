@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const useDeleteWeaponMutation = (
   apiUrl: string,
-  weaponId: string,
+  weaponId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
@@ -15,9 +15,8 @@ const useDeleteWeaponMutation = (
     },
     onSuccess: () => {
       navigate(-1);
-      queryClient.invalidateQueries({
-        queryKey: ['weapon'],
-        exact: false,
+      queryClient.removeQueries({
+        queryKey: ['weapon', weaponId],
       });
       queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],

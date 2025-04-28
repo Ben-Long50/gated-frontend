@@ -1,54 +1,24 @@
 import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useVehiclesQuery from './useVehiclesQuery/useVehiclesQuery';
-import { Vehicle, VehicleWithWeapons } from 'src/types/vehicle';
-import { Weapon } from 'src/types/weapon';
-import useKeywords from './useKeywords';
-import { Keyword } from 'src/types/keyword';
+import { VehicleWithWeapons } from 'src/types/vehicle';
 import { FetchOptions } from 'src/types/fetchOptions';
 
 const useVehicles = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
-  const keywords = useKeywords();
-
   const { data: vehicles, isLoading, isPending } = useVehiclesQuery(apiUrl);
 
-  const getWeaponsKeywords = (weapons: Weapon[]) => {
-    if (!weapons || weapons.length === 0) return;
-    return weapons?.map((weapon: Weapon) => {
-      const keywordDetails = weapon.keywords.map((keyword) => {
-        const details = keywords.filteredKeywords.find(
-          (item: Keyword) => item.id === keyword.keywordId,
-        );
-        return { keyword: details, value: keyword.value };
-      });
-      return { ...weapon, keywords: keywordDetails };
-    });
-  };
-
-  const vehiclesWithWeapons = useMemo(() => {
-    if (!vehicles) return null;
-
-    const list = fetchOptions?.itemList || vehicles;
-
-    if (list.length === 0) return [];
-
-    return list?.map((vehicle: Vehicle) => {
-      const integratedWeaopns = getWeaponsKeywords(vehicle.weapons);
-
-      return { ...vehicle, weapons: integratedWeaopns };
-    });
-  }, [fetchOptions, vehicles]);
+  const list = fetchOptions?.itemList || vehicles;
 
   const [query, setQuery] = useState('');
 
   const filteredVehicles = useMemo(() => {
-    if (!vehiclesWithWeapons) return [];
-    return vehiclesWithWeapons?.filter((vehicle: VehicleWithWeapons) =>
+    if (!list) return [];
+    return list?.filter((vehicle: VehicleWithWeapons) =>
       vehicle.name.toLowerCase().includes(query.toLowerCase()),
     );
-  }, [vehiclesWithWeapons, query]);
+  }, [list, query]);
 
   const filterByQuery = (newQuery: string) => {
     setQuery(newQuery);

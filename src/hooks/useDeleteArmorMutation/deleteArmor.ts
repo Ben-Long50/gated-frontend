@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const deleteArmor = async (apiUrl: string, armorId: string) => {
+const deleteArmor = async (apiUrl: string, armorId: number) => {
   try {
     const response = await fetch(`${apiUrl}/armor/${armorId}`, {
       method: 'DELETE',

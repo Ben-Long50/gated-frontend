@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const deleteCybernetic = async (apiUrl: string, cyberneticId: string) => {
+const deleteCybernetic = async (apiUrl: string, cyberneticId: number) => {
   try {
     const response = await fetch(`${apiUrl}/cybernetics/${cyberneticId}`, {
       method: 'DELETE',

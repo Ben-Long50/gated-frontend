@@ -32,7 +32,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { armorId } = useParams();
 
-  const { data: armor } = useArmorPieceQuery(apiUrl, armorId);
+  const { data: armor } = useArmorPieceQuery(apiUrl, Number(armorId));
 
   const keywords = useKeywords('armor');
 
@@ -41,8 +41,16 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   );
 
   const createArmor = useCreateArmorMutation(apiUrl, setFormMessage);
-  const modifyArmor = useModifyArmorMutation(apiUrl, armorId, setFormMessage);
-  const deleteArmor = useDeleteArmorMutation(apiUrl, armorId, setFormMessage);
+  const modifyArmor = useModifyArmorMutation(
+    apiUrl,
+    Number(armorId),
+    setFormMessage,
+  );
+  const deleteArmor = useDeleteArmorMutation(
+    apiUrl,
+    Number(armorId),
+    setFormMessage,
+  );
 
   const handleDelete = () => {
     if (deleteMode) {
@@ -83,6 +91,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const armorForm = useForm({
     defaultValues: {
+      id: armor?.id || 0,
       name: armor?.name || '',
       rarity: armor?.rarity || '',
       grade: armor?.grade || 1,
@@ -134,7 +143,6 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      formData.append('armorId', JSON.stringify(armorId || 0));
       if (mode === 'create' || mode === 'update') {
         await createArmor.mutate(formData);
       } else if (mode === 'modify') {

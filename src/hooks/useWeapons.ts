@@ -1,9 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useWeaponsQuery from './useWeaponsQuery/useWeaponsQuery';
-import { Weapon, WeaponWithKeywords } from '../types/weapon';
-import useKeywords from './useKeywords';
-import { Keyword } from 'src/types/keyword';
+import { WeaponWithKeywords } from '../types/weapon';
 import { FetchOptions } from 'src/types/fetchOptions';
 
 const useWeapons = (fetchOptions?: FetchOptions) => {
@@ -13,41 +11,29 @@ const useWeapons = (fetchOptions?: FetchOptions) => {
     setCategory('');
   }, [fetchOptions]);
 
-  const keywords = useKeywords('weapon');
-
   const { data: weapons, isLoading, isPending } = useWeaponsQuery(apiUrl);
 
   const weaponsWithKeywords = useMemo(() => {
-    if (!weapons || !keywords.filteredKeywords) return null;
+    if (!weapons) return null;
 
     const list = fetchOptions?.itemList || weapons;
 
-    return list
-      ?.map((weapon: Weapon) => {
-        const keywordDetails = weapon.keywords.map((keyword) => {
-          const details = keywords.filteredKeywords.find(
-            (item: Keyword) => item.id === keyword.keywordId,
-          );
-          return { keyword: details, value: keyword.value };
-        });
-        return { ...weapon, keywords: keywordDetails };
-      })
-      .filter((weapon: WeaponWithKeywords) => {
-        const matchesKeywordList = fetchOptions?.includedKeywords
-          ? weapon.keywords.some((keyword) =>
-              fetchOptions.includedKeywords?.includes(keyword.keyword?.name),
-            )
-          : true;
-        const matchesExcludeList = fetchOptions?.excludedKeywords
-          ? weapon.keywords.every(
-              (keyword) =>
-                !fetchOptions.excludedKeywords?.includes(keyword.keyword?.name),
-            )
-          : true;
+    return list.filter((weapon: WeaponWithKeywords) => {
+      const matchesKeywordList = fetchOptions?.includedKeywords
+        ? weapon.keywords?.some((keyword) =>
+            fetchOptions.includedKeywords?.includes(keyword.keyword?.name),
+          )
+        : true;
+      const matchesExcludeList = fetchOptions?.excludedKeywords
+        ? weapon.keywords?.some(
+            (keyword) =>
+              !fetchOptions.excludedKeywords?.includes(keyword.keyword?.name),
+          )
+        : true;
 
-        return matchesKeywordList && matchesExcludeList;
-      });
-  }, [weapons, fetchOptions, keywords.filteredKeywords]);
+      return matchesKeywordList && matchesExcludeList;
+    });
+  }, [weapons, fetchOptions]);
 
   const filteredKeywords = useMemo(() => {
     if (!weaponsWithKeywords) return null;
@@ -101,8 +87,6 @@ const useWeapons = (fetchOptions?: FetchOptions) => {
     resetList,
     isLoading,
     isPending,
-    keywordsLoading: keywords.isLoading,
-    keywordsPending: keywords.isPending,
   };
 };
 

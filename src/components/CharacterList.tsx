@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useCharactersQuery from '../hooks/useCharactersQuery/useCharactersQuery';
 import CharacterCard from './CharacterCard';
@@ -13,12 +13,15 @@ import SelectField from './SelectField';
 import { Character } from 'src/types/character';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ArrowHeader2 from './ArrowHeader2';
+import { useQueryClient } from '@tanstack/react-query';
 
 const CharacterList = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const queryClient = useQueryClient();
 
   const { data: characters, isLoading, isPending } = useCharactersQuery(apiUrl);
+
   const { data: activeCharacter } = useActiveCharacterQuery(apiUrl);
 
   const setActiveCharacter = useSetActiveCharacterMutation(apiUrl);

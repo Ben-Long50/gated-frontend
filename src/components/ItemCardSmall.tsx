@@ -8,11 +8,13 @@ import { ThemeContext } from '../contexts/ThemeContext';
 const ItemCardSmall = ({
   cardRef,
   className,
+  expanded,
   heading,
   children,
 }: {
   cardRef?: Ref;
   className?: string;
+  expanded?: boolean;
   heading: ReactNode;
   children?: ReactNode;
 }) => {
@@ -31,7 +33,7 @@ const ItemCardSmall = ({
   return (
     <ThemeContainer
       chamfer="small"
-      borderColor={detailsOpen ? accentPrimary : 'transparent'}
+      borderColor={detailsOpen || expanded ? accentPrimary : 'transparent'}
       className={`timing mb-auto w-full`}
       overflowHidden={true}
     >
@@ -59,14 +61,14 @@ const ItemCardSmall = ({
         </summary>
         {children && (
           <div
-            className={`${detailsOpen && 'pr-1 pt-4'} timing overflow-hidden`}
+            className={`${detailsOpen || (expanded && 'pr-1 pt-4')} timing overflow-hidden`}
           >
             <motion.div
               ref={detailRef}
               className="flex flex-col gap-4"
               initial={{ marginTop: -detailHeight - 4 }}
               animate={{
-                marginTop: detailsOpen ? 0 : -detailHeight - 4,
+                marginTop: detailsOpen || expanded ? 0 : -detailHeight - 4,
               }}
               transition={{ duration: 0.2 }}
             >

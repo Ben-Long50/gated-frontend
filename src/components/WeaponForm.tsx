@@ -32,7 +32,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { weaponId } = useParams();
 
-  const { data: weapon } = useWeaponQuery(apiUrl, weaponId);
+  const { data: weapon } = useWeaponQuery(apiUrl, Number(weaponId));
 
   const keywords = useKeywords('weapon');
 
@@ -40,15 +40,19 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
     weapon?.picture?.imageUrl || '',
   );
 
-  const createWeapon = useCreateWeaponMutation(apiUrl, setFormMessage);
+  const createWeapon = useCreateWeaponMutation(
+    apiUrl,
+    setFormMessage,
+    Number(weaponId),
+  );
   const modifyWeapon = useModifyWeaponMutation(
     apiUrl,
-    weaponId,
+    Number(weaponId),
     setFormMessage,
   );
   const deleteWeapon = useDeleteWeaponMutation(
     apiUrl,
-    weaponId,
+    Number(weaponId),
     setFormMessage,
   );
 
@@ -63,12 +67,6 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   const handleReset = async () => {
     weaponForm.reset();
   };
-
-  const weaponKeywordData = weapon?.keywords.map(
-    (item: { keyword: Keyword; value?: number }) => {
-      return { keywordId: item.keyword.id, value: item.value };
-    },
-  );
 
   useEffect(() => {
     if (weapon) {
@@ -91,6 +89,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const weaponForm = useForm({
     defaultValues: {
+      id: weapon?.id || 0,
       name: weapon?.name || '',
       rarity: weapon?.rarity || '',
       grade: weapon?.grade || 1,
@@ -123,7 +122,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         }[]),
       price: weapon?.price || null,
       keywords:
-        weaponKeywordData || ([] as { keywordId: number; value?: number }[]),
+        weapon?.keywords || ([] as { keywordId: number; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
       value.stats.currentAmmoCount = value.stats.magCapacity;
@@ -146,7 +145,6 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      formData.append('weaponId', JSON.stringify(weaponId || 0));
 
       if (mode === 'create' || mode === 'update') {
         await createWeapon.mutate(formData);

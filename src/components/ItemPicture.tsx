@@ -34,7 +34,7 @@ const ItemPicture = ({
         }}
       />
       <CloudinaryImage
-        className="timing clip-6"
+        className="timing w-full clip-6"
         url={item.picture?.imageUrl}
         alt={item.name + ' ' + 'picture'}
       />

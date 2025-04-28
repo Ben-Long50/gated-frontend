@@ -6,6 +6,7 @@ const useCharacterQuery = (apiUrl: string, characterId: number) => {
   return useQuery<Character>({
     queryKey: ['character', Number(characterId)],
     queryFn: async () => await getCharacter(apiUrl, characterId),
+    enabled: !!characterId,
   });
 };
 

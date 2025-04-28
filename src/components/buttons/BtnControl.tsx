@@ -14,7 +14,7 @@ const BtnControl = ({
 }) => {
   return (
     <button
-      className="hover:bg-tertiary timing group flex w-full shrink-0 items-center justify-center gap-4 rounded-md border border-yellow-300 px-2 py-1 shadow-md shadow-zinc-950"
+      className="hover:bg-tertiary text-secondary timing hover:text-accent grid w-full shrink-0 items-center justify-center gap-4 rounded-md border border-yellow-300 px-2 py-2 shadow-md shadow-zinc-950"
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -27,8 +27,10 @@ const BtnControl = ({
         }
       }}
     >
-      <div className="shrink-0">{icon}</div>
-      <p className="timing group-hover:text-accent">{title}</p>
+      <div className="mx-auto grid grid-cols-[1fr_4fr]">
+        <div className="shrink-0">{icon}</div>
+        <p className="timing !text-inherit">{title}</p>
+      </div>
     </button>
   );
 };

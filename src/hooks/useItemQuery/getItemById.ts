@@ -1,6 +1,6 @@
 import handleResponse from '../handleResponse';
 
-const getItemById = async (apiUrl: string, itemId?: string) => {
+const getItemById = async (apiUrl: string, itemId: number) => {
   try {
     const response = await fetch(`${apiUrl}/items/${itemId}`, {
       method: 'GET',

@@ -1,9 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useArmorQuery from './useArmorQuery/useArmorQuery';
-import { Armor, ArmorWithKeywords } from '../types/armor';
-import useKeywords from './useKeywords';
-import { Keyword } from 'src/types/keyword';
+import { ArmorWithKeywords } from '../types/armor';
 import { FetchOptions } from 'src/types/fetchOptions';
 
 const useArmor = (fetchOptions?: FetchOptions) => {
@@ -13,40 +11,28 @@ const useArmor = (fetchOptions?: FetchOptions) => {
     setCategory('');
   }, [fetchOptions]);
 
-  const keywords = useKeywords('armor');
-
   const { data: armor, isLoading, isPending } = useArmorQuery(apiUrl);
 
   const armorWithKeywords = useMemo(() => {
-    if (!armor || !keywords.filteredKeywords) return null;
+    if (!armor) return null;
 
     const list = fetchOptions?.itemList || armor;
 
-    return list
-      ?.map((armorSet: Armor) => {
-        const keywordDetails = armorSet.keywords.map((keyword) => {
-          const details = keywords.filteredKeywords.find(
-            (item: Keyword) => item.id === keyword.keywordId,
-          );
-          return { keyword: details, value: keyword.value };
-        });
-        return { ...armorSet, keywords: keywordDetails };
-      })
-      .filter((armorSet: ArmorWithKeywords) => {
-        const matchesKeywordList = fetchOptions?.includedKeywords
-          ? armorSet.keywords.some((keyword) =>
-              fetchOptions.includedKeywords?.includes(keyword.keyword?.name),
-            )
-          : true;
-        const matchesExcludeList = fetchOptions?.excludedKeywords
-          ? armorSet.keywords.some(
-              (keyword) =>
-                !fetchOptions.excludedKeywords?.includes(keyword.keyword?.name),
-            )
-          : true;
-        return matchesKeywordList && matchesExcludeList;
-      });
-  }, [armor, fetchOptions, keywords.filteredKeywords]);
+    return list.filter((armorSet: ArmorWithKeywords) => {
+      const matchesKeywordList = fetchOptions?.includedKeywords
+        ? armorSet.keywords?.some((keyword) =>
+            fetchOptions.includedKeywords?.includes(keyword.keyword?.name),
+          )
+        : true;
+      const matchesExcludeList = fetchOptions?.excludedKeywords
+        ? armorSet.keywords?.some(
+            (keyword) =>
+              !fetchOptions.excludedKeywords?.includes(keyword.keyword?.name),
+          )
+        : true;
+      return matchesKeywordList && matchesExcludeList;
+    });
+  }, [armor, fetchOptions]);
 
   const filteredKeywords = useMemo(() => {
     if (!armorWithKeywords) return null;
@@ -98,8 +84,6 @@ const useArmor = (fetchOptions?: FetchOptions) => {
     resetList,
     isLoading,
     isPending,
-    keywordsLoading: keywords.isLoading,
-    keywordsPending: keywords.isPending,
   };
 };
 

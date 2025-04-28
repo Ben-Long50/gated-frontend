@@ -37,7 +37,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { cyberneticId } = useParams();
 
-  const { data: cybernetic } = useCyberneticQuery(apiUrl, cyberneticId);
+  const { data: cybernetic } = useCyberneticQuery(apiUrl, Number(cyberneticId));
 
   const keywords = useKeywords();
   const attributeTree = useAttributeTree();
@@ -49,12 +49,12 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
   const createCybernetic = useCreateCyberneticMutation(apiUrl, setFormMessage);
   const modifyCybernetic = useModifyCyberneticMutation(
     apiUrl,
-    cyberneticId,
+    Number(cyberneticId),
     setFormMessage,
   );
   const deleteCybernetic = useDeleteCyberneticMutation(
     apiUrl,
-    cyberneticId,
+    Number(cyberneticId),
     setFormMessage,
   );
 
@@ -69,12 +69,6 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
   const handleReset = async () => {
     cyberneticForm.reset();
   };
-
-  const cyberneticKeywordData = cybernetic?.keywords?.map(
-    (item: { keyword: Keyword; value?: number }) => {
-      return { keywordId: item.keyword.id, value: item.value };
-    },
-  );
 
   const weaponData = cybernetic?.weapons?.map((weapon) => {
     const parsedKeywords = weapon.keywords.map(
@@ -104,6 +98,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const cyberneticForm = useForm({
     defaultValues: {
+      id: cybernetic?.id || 0,
       name: cybernetic?.name || '',
       rarity: cybernetic?.rarity || '',
       grade: cybernetic?.grade || 1,
@@ -166,8 +161,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
           duration: modifier.duration,
         })) || ([] as Modifier[]),
       keywords:
-        cyberneticKeywordData ||
-        ([] as { keywordId: number; value?: number }[]),
+        cybernetic?.keywords || ([] as { keywordId: number; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
       value.stats.currentPower = value.stats.power;
@@ -221,7 +215,6 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      formData.append('cyberneticId', JSON.stringify(cyberneticId || 0));
 
       if (mode === 'create' || mode === 'update') {
         await createCybernetic.mutate(formData);

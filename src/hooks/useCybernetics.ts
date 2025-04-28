@@ -1,17 +1,12 @@
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useCyberneticsQuery from './useCyberneticsQuery/useCyberneticsQuery';
-import { Cybernetic, CyberneticWithKeywords } from 'src/types/cybernetic';
-import { Weapon } from 'src/types/weapon';
-import useKeywords from './useKeywords';
-import { Keyword } from 'src/types/keyword';
-import { Armor } from 'src/types/armor';
+import { CyberneticWithKeywords } from 'src/types/cybernetic';
+
 import { FetchOptions } from 'src/types/fetchOptions';
 
 const useCybernetics = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
-
-  const keywords = useKeywords();
 
   const {
     data: cybernetics,
@@ -19,63 +14,13 @@ const useCybernetics = (fetchOptions?: FetchOptions) => {
     isPending,
   } = useCyberneticsQuery(apiUrl);
 
-  const getWeaponsKeywords = (weapons: Weapon[]) => {
-    if (!weapons || weapons.length === 0) return;
-    return weapons?.map((weapon: Weapon) => {
-      const keywordDetails = weapon.keywords.map((keyword) => {
-        const details = keywords.filteredKeywords.find(
-          (item: Keyword) => item.id === keyword.keywordId,
-        );
-        return { keyword: details, value: keyword.value };
-      });
-      return { ...weapon, keywords: keywordDetails };
-    });
-  };
-
-  const getArmorKeywords = (armor: Armor[]) => {
-    if (!armor || armor.length === 0) return;
-    return armor?.map((armorSet: Armor) => {
-      const keywordDetails = armorSet.keywords.map((keyword) => {
-        const details = keywords.filteredKeywords.find(
-          (item: Keyword) => item.id === keyword.keywordId,
-        );
-        return { keyword: details, value: keyword.value };
-      });
-      return { ...armorSet, keywords: keywordDetails };
-    });
-  };
-
-  const cyberneticsWithKeywords = useMemo(() => {
-    if (!cybernetics || !keywords) return null;
-
-    const list = fetchOptions?.itemList || cybernetics;
-
-    if (list.length === 0) return [];
-
-    return list?.map((cybernetic: Cybernetic) => {
-      const keywordDetails = cybernetic.keywords?.map((keyword) => {
-        const details = keywords.filteredKeywords.find(
-          (item: Keyword) => item.id === keyword.keywordId,
-        );
-        return { keyword: details, value: keyword.value };
-      });
-      const integratedWeaopns = getWeaponsKeywords(cybernetic.weapons);
-      const integratedArmor = getArmorKeywords(cybernetic.armor);
-
-      return {
-        ...cybernetic,
-        keywords: keywordDetails,
-        weapons: integratedWeaopns,
-        armor: integratedArmor,
-      };
-    });
-  }, [fetchOptions, cybernetics, keywords]);
+  const list = fetchOptions?.itemList || cybernetics || [];
 
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('');
 
   const filteredCybernetics = category
-    ? cyberneticsWithKeywords
+    ? list
         ?.filter(
           (cybernetic: CyberneticWithKeywords) =>
             cybernetic.cyberneticType === category,
@@ -83,7 +28,7 @@ const useCybernetics = (fetchOptions?: FetchOptions) => {
         .filter((cybernetic: CyberneticWithKeywords) =>
           cybernetic.name.toLowerCase().includes(query.toLowerCase()),
         )
-    : (cyberneticsWithKeywords?.filter((cybernetic: CyberneticWithKeywords) =>
+    : (list?.filter((cybernetic: CyberneticWithKeywords) =>
         cybernetic.name.toLowerCase().includes(query.toLowerCase()),
       ) ?? []);
 
@@ -106,8 +51,6 @@ const useCybernetics = (fetchOptions?: FetchOptions) => {
     resetList,
     isLoading,
     isPending,
-    keywordsLoading: keywords.isLoading,
-    keywordsPending: keywords.isPending,
   };
 };
 

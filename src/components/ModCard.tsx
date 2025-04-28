@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { Modification } from 'src/types/vehicle';
-import CardPrice from './CardPrice';
+import CartButton from './CartButton';
 import ItemRarity from './ItemRarity';
 
 import ItemCardSmall from './ItemCardSmall';
@@ -37,7 +37,7 @@ const ModCard = ({
           >
             <div className="flex items-center gap-4">
               {mode === 'codex' && (
-                <CardPrice
+                <CartButton
                   price={modification?.price}
                   category="modifications"
                   itemId={modification?.id}

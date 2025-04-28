@@ -2,7 +2,7 @@ import handleResponse from '../handleResponse';
 
 const modifyWeapon = async (
   formData: FormData,
-  weaponId: string,
+  weaponId: number,
   apiUrl: string,
 ) => {
   try {

@@ -2,7 +2,7 @@ import handleResponse from '../handleResponse';
 
 const modifyCybernetic = async (
   formData: FormData,
-  cyberneticId: string,
+  cyberneticId: number,
   apiUrl: string,
 ) => {
   try {

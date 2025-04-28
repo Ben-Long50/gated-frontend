@@ -3,7 +3,7 @@ import modifyCybernetic from './modifyCybernetic';
 
 const useModifyCyberneticMutation = (
   apiUrl: string,
-  cyberneticId: string,
+  cyberneticId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();

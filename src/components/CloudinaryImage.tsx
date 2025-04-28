@@ -22,7 +22,7 @@ const CloudinaryImage = ({
     const splitUrl = url?.split('upload/');
 
     responsiveUrl = splitUrl[0]
-      .concat('upload/w_500,c_scale/')
+      .concat('upload/w_auto,c_scale/')
       .concat(splitUrl[1]);
   }
 

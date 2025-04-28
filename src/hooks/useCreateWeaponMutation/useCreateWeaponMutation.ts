@@ -4,6 +4,7 @@ import createWeapon from './createWeapon';
 const useCreateWeaponMutation = (
   apiUrl: string,
   setFormMessage: (message: string) => void,
+  weaponId?: number,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -13,8 +14,7 @@ const useCreateWeaponMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['weapon'],
-        exact: false,
+        queryKey: ['weapon', weaponId],
       });
       queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],

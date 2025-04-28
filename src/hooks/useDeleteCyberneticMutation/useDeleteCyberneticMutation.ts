@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const useDeleteCyberneticMutation = (
   apiUrl: string,
-  cyberneticId: string,
+  cyberneticId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();

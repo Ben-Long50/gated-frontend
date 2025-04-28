@@ -3,7 +3,7 @@ import modifyArmor from './modifyArmor';
 
 const useModifyArmorMutation = (
   apiUrl: string,
-  armorId: string,
+  armorId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();

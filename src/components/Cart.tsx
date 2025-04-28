@@ -19,8 +19,6 @@ import { useForm } from '@tanstack/react-form';
 import InputField from './InputField';
 import useCompletePurchaseMutation from '../hooks/useCompletePurchaseMutation/useCompletePurchaseMutation';
 import useModifications from '../hooks/useModifications';
-import Icon from '@mdi/react';
-import { mdiTriangleDown } from '@mdi/js';
 import useItems from '../hooks/useItems';
 import { Item } from 'src/types/item';
 import ArrowHeader2 from './ArrowHeader2';

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const useDeleteArmorMutation = (
   apiUrl: string,
-  armorId: string,
+  armorId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();

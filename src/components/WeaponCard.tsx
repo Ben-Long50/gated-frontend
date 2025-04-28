@@ -12,6 +12,7 @@ import useRefreshMutation from '../hooks/weaponStatHooks/useRefreshAmmoMutation/
 import { useParams } from 'react-router-dom';
 import ItemCardMobile from './ItemCardMobile';
 import StatBars from './StatBars';
+import SalvoIcon from './icons/SalvoIcon';
 
 const WeaponControls = ({
   stats,
@@ -35,10 +36,8 @@ const WeaponControls = ({
     <div className="col-span-2 flex w-full flex-col items-center justify-start gap-2 sm:gap-4">
       {stats.currentAmmoCount && stats.currentAmmoCount > 0 ? (
         <BtnControl
-          title="Fire"
-          icon={
-            <DamageIcon className="text-secondary group-hover:text-accent size-8" />
-          }
+          title="Single Shot"
+          icon={<DamageIcon className="size-8 text-inherit" />}
           mutation={
             stats.currentAmmoCount &&
             stats.currentAmmoCount > 0 &&
@@ -47,12 +46,22 @@ const WeaponControls = ({
           value={-1}
         />
       ) : null}
+      {stats.currentAmmoCount && stats.currentAmmoCount > stats.salvo ? (
+        <BtnControl
+          title="Salvo"
+          icon={<SalvoIcon className="size-8 text-inherit" />}
+          mutation={
+            stats.currentAmmoCount &&
+            stats.currentAmmoCount > 0 &&
+            editCurrentAmmo
+          }
+          value={-stats.salvo}
+        />
+      ) : null}
       {stats.currentMagCount && stats.currentMagCount > 0 ? (
         <BtnControl
           title="Reload"
-          icon={
-            <MagCapacityIcon className="text-secondary group-hover:text-accent size-8" />
-          }
+          icon={<MagCapacityIcon className="size-8 text-inherit" />}
           mutation={
             stats.currentMagCount && stats.currentMagCount > 0 && reloadAmmo
           }
@@ -61,9 +70,7 @@ const WeaponControls = ({
       {stats.magCapacity && (
         <BtnControl
           title="Refresh"
-          icon={
-            <SpareAmmoIcon className="text-secondary group-hover:text-accent size-8" />
-          }
+          icon={<SpareAmmoIcon className="size-8 text-inherit" />}
           mutation={refreshAmmo}
         />
       )}

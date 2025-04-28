@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import CardPrice from './CardPrice';
+import CartButton from './CartButton';
 import CloudinaryImageSmall from './CloudinaryImageSmall';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { ArmorWithKeywords } from 'src/types/armor';
@@ -57,7 +57,7 @@ const CartCard = ({
           <h2 className={`${!item?.picture && 'py-5 pl-4'}`}>{item?.name}</h2>
           <div className="ml-auto flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-4">
             <div className="flex items-center justify-end gap-4">
-              <CardPrice
+              <CartButton
                 price={item?.price}
                 category={category}
                 itemId={item?.id}
