@@ -7,6 +7,7 @@ const getCharacter = async (apiUrl: string, characterId: number) => {
       credentials: 'include',
     });
     const data = await handleResponse(response);
+    console.log(characterId);
 
     return data;
   } catch (error) {

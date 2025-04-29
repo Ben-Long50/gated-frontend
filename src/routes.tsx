@@ -64,6 +64,7 @@ import NotesForm from './components/NotesForm';
 import AccountSettingsForm from './components/AccountSettingsForm';
 import ItemPageWrapper from './components/ItemPageWrapper';
 import UserRoles from './components/UserRoles';
+import { CampaignSocketProvider } from './contexts/CampaignSocketContext';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -74,11 +75,9 @@ const router = createBrowserRouter(
           <Route path="signup" element={<SignupForm />} />
           <Route path="signin" element={<SigninForm />} />
         </Route>
-
         <Route path="error">
           <Route path="report" element={<ErrorReport />} />
         </Route>
-
         <Route
           path="glam"
           element={<MainLayout />}
@@ -88,7 +87,6 @@ const router = createBrowserRouter(
           <Route path="error">
             <Route index element={<ErrorReports />} />
           </Route>
-
           <Route path="account/:userId">
             <Route index element={<AccountSettingsForm />} />
             <Route path="notifications" element={<Notifications />} />
@@ -102,7 +100,7 @@ const router = createBrowserRouter(
           </Route>
 
           <Route path="campaigns">
-            <Route path=":campaignId">
+            <Route path=":campaignId" element={<CampaignSocketProvider />}>
               <Route index element={<Campaign />} />
               <Route
                 path="update"
@@ -161,7 +159,11 @@ const router = createBrowserRouter(
               </Route>
               <Route path="rollSimulator" element={<RollSimulator />} />
             </Route>
-            <Route path="player" element={<Campaigns title="Player" />} />
+            <Route
+              index
+              // path="player"
+              element={<Campaigns title="Player" />}
+            />
             <Route path="pending" element={<Campaigns title="Pending" />} />
             <Route path="owner" element={<Campaigns title="Owner" />} />
             <Route
@@ -170,7 +172,7 @@ const router = createBrowserRouter(
             />
             <Route path="rollSimulator" element={<RollSimulator />} />
           </Route>
-
+          {/* </Route> */}
           <Route path="characters">
             <Route index element={<CharacterList />} />
             <Route path="playerCharacters" element={<CharacterList />} />

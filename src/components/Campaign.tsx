@@ -1,11 +1,11 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import { ThemeContext } from '../contexts/ThemeContext';
 import Icon from '@mdi/react';
-import { mdiCircle, mdiCrown, mdiTriangleDown } from '@mdi/js';
+import { mdiCircle, mdiCrown } from '@mdi/js';
 import { format } from 'date-fns';
 import LocationIcon from './icons/LocationIcon';
 import { Session } from 'src/types/campaign';
@@ -14,8 +14,6 @@ import ArrowHeader2 from './ArrowHeader2';
 import { Character } from 'src/types/character';
 import CharacterCard from './CharacterCard';
 import Divider from './Divider';
-import NoblebloodIcon from './icons/NoblebloodIcon';
-import FederalIcon from './icons/FederalIcon';
 import BtnAuth from './buttons/BtnAuth';
 import AccountPicture from './AccountPicture';
 import ThemeContainer from './ThemeContainer';
@@ -24,12 +22,15 @@ import BtnRect from './buttons/BtnRect';
 import useJoinCampaignMutation from '../hooks/useJoinCampaignMutation/useJoinCampaignMutation';
 import { LayoutContext } from '../contexts/LayoutContext';
 import ArrowHeader3 from './ArrowHeader3';
+import { useQueryClient } from '@tanstack/react-query';
+import useCharacterQueries from '../hooks/useCharacterQuery/useCharacterQueries';
 
 const Campaign = () => {
   const { apiUrl, user } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
   const { campaignId } = useParams();
   const { accentPrimary } = useContext(ThemeContext);
+  const queryClient = useQueryClient();
 
   const {
     data: campaign,
@@ -37,22 +38,34 @@ const Campaign = () => {
     isPending,
     isError,
   } = useCampaignQuery(apiUrl, Number(campaignId));
+  console.log(campaign);
+
+  const characterIds = campaign
+    ? campaign?.characters.map((character: { id: number }) => character.id)
+    : [];
+
+  const characters = useCharacterQueries(apiUrl, characterIds);
+  console.log(characters);
 
   const playerCharacters =
-    campaign?.characters.filter(
-      (character: Character) => character.playerCharacter === true,
-    ) || [];
+    characters
+      ?.map((character) => character.data)
+      .filter((character) => character?.playerCharacter) || [];
 
   const nonPlayerCharacters =
-    campaign?.characters.filter(
-      (character: Character) => character.playerCharacter === false,
-    ) || [];
+    characters
+      ?.map((character) => character.data)
+      .filter((character) => !character?.playerCharacter) || [];
+
+  useEffect(() => {
+    queryClient.refetchQueries({ queryKey: ['character'] });
+  }, [campaign]);
 
   const joinCampaign = useJoinCampaignMutation(apiUrl, campaignId);
 
   const pendingIds = campaign?.pendingPlayers.map((player: User) => player.id);
 
-  if (isLoading || isPending) return <Loading />;
+  if (isLoading) return <Loading />;
 
   if (isError) {
     throw new Error('Failed to load campaign info');
@@ -164,32 +177,36 @@ const Campaign = () => {
           </ThemeContainer>
 
           <Divider className="col-span-2" />
-          <div className="col-span-2 flex flex-col items-start gap-8">
-            {playerCharacters.length > 0 && (
-              <>
-                <ArrowHeader2 title="Player Characters" />
-                {playerCharacters.map((character: Character) => (
-                  <CharacterCard
-                    key={character.id}
-                    character={character}
-                    path={`characters`}
-                  />
-                ))}
-              </>
-            )}
-            {playerCharacters.length > 0 && (
-              <>
-                <ArrowHeader2 title="Non-player Characters" />
-                {nonPlayerCharacters.map((character: Character) => (
-                  <CharacterCard
-                    key={character.id}
-                    character={character}
-                    path={`characters`}
-                  />
-                ))}
-              </>
-            )}
-          </div>
+          {characters[0].isLoading || characters[0].isPending ? (
+            <Loading />
+          ) : (
+            <div className="col-span-2 flex flex-col items-start gap-8">
+              {playerCharacters.length > 0 && (
+                <>
+                  <ArrowHeader2 title="Player Characters" />
+                  {playerCharacters.map((character: Character) => (
+                    <CharacterCard
+                      key={character.id}
+                      character={character}
+                      path={`characters`}
+                    />
+                  ))}
+                </>
+              )}
+              {playerCharacters.length > 0 && (
+                <>
+                  <ArrowHeader2 title="Non-player Characters" />
+                  {nonPlayerCharacters.map((character: Character) => (
+                    <CharacterCard
+                      key={character.id}
+                      character={character}
+                      path={`characters`}
+                    />
+                  ))}
+                </>
+              )}
+            </div>
+          )}
           <Link className="col-start-2" to={`update`}>
             <BtnRect
               className="w-full"

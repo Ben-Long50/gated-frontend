@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import editCurrentHealth from './editCurrentHealth';
 import { Character } from 'src/types/character';
 import { useRef } from 'react';
+import { socket } from '../../socket';
 
 const useCurrentHealthMutation = (apiUrl: string, characterId: number) => {
   const queryClient = useQueryClient();
@@ -49,6 +50,7 @@ const useCurrentHealthMutation = (apiUrl: string, characterId: number) => {
     },
 
     onSuccess: () => {
+      socket.emit('character', characterId);
       return queryClient.invalidateQueries({
         queryKey: ['character', characterId],
         exact: false,

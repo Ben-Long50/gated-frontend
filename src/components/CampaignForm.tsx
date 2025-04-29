@@ -114,7 +114,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
     }
   };
 
-  if (isLoading || isPending) return <Loading />;
+  if (isLoading) return <Loading />;
 
   return (
     <FormLayout

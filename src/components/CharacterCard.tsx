@@ -150,7 +150,7 @@ const CharacterCard = ({
                 <div className="flex items-center justify-center gap-2">
                   <InjuryIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {character.stats.injuries}
+                    {character.stats?.injuries}
                   </p>
                 </div>
               </div>
@@ -163,7 +163,7 @@ const CharacterCard = ({
                 <div className="flex items-center justify-center gap-2">
                   <InsanityIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {character.stats.insanities}
+                    {character.stats?.insanities}
                   </p>
                 </div>
               </div>
