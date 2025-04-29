@@ -22,6 +22,7 @@ import { ItemStats } from 'src/types/item';
 import useModifyItemMutation from '../hooks/useModifyItemMutation/useModifyItemMutation';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
+import { Action, ActionCosts } from 'src/types/action';
 
 const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -98,7 +99,15 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
         item?.actions ||
         ([] as {
           name: string;
-          costs: { stat: string; value: number }[];
+          costs: {
+            actionPoints: number;
+            reactionPoints: number;
+            power: number;
+            health: number;
+            sanity: number;
+            wyrmShells: number;
+            currentAmmoCount: number;
+          };
           roll: { attribute: string; skill: string }[];
           actionType: string;
           actionSubtypes: string[];
@@ -128,6 +137,12 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
       );
+
+      value.actions.forEach((action: Action) => {
+        action.costs = Object.fromEntries(
+          Object.entries(action.costs).filter(([_, value]) => value),
+        ) as ActionCosts;
+      });
 
       value.stats = { ...filteredStats };
 
