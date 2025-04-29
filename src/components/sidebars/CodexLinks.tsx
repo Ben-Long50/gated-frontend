@@ -42,7 +42,7 @@ const CodexLinks = ({
   return (
     <>
       <LinkSidebar
-        title="Search codex"
+        title="Search Codex"
         icon={
           <Icon
             className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit"
@@ -82,14 +82,14 @@ const CodexLinks = ({
         })}
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
-            title="Manage book"
+            title="Manage Book"
             path="codex/book/manage"
             setSidebarVisibility={setSidebarVisibility}
           />
         )}
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
-            title="Create entry"
+            title="Create Entry"
             path="codex/book/create"
             setSidebarVisibility={setSidebarVisibility}
           />
@@ -101,7 +101,7 @@ const CodexLinks = ({
         title="Weapons"
       >
         <SubLinkSidebar
-          title="All weapons"
+          title="All Weapons"
           path="codex/weapons"
           setSidebarVisibility={setSidebarVisibility}
         />
@@ -126,23 +126,23 @@ const CodexLinks = ({
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Heavy weapons"
+          title="Heavy Weapons"
           path="codex/weapons/heavyWeapons"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Melee weapons"
+          title="Melee Weapons"
           path="codex/weapons/melee"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Launchers & explosives"
+          title="Launchers & Explosives"
           path="codex/weapons/explosives"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
-            title="Create a new weapon"
+            title="Create a New Weapon"
             path="codex/weapons/create"
             setSidebarVisibility={setSidebarVisibility}
           />
@@ -154,23 +154,23 @@ const CodexLinks = ({
         title="Armor"
       >
         <SubLinkSidebar
-          title="All armor"
+          title="All Armor"
           path="codex/armor"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Basic armor"
+          title="Basic Armor"
           path="codex/armor/basic"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Power armor"
+          title="Power Armor"
           path="codex/armor/power"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
-            title="Create new armor"
+            title="Create New Armor"
             path="codex/armor/create"
             setSidebarVisibility={setSidebarVisibility}
           />
@@ -182,13 +182,13 @@ const CodexLinks = ({
         title="Cybernetics"
       >
         <SubLinkSidebar
-          title="All cybernetics"
+          title="All Cybernetics"
           path="codex/cybernetics"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
-            title="Create a new cybernetic"
+            title="Create a New Cybernetic"
             path="codex/cybernetics/create"
             setSidebarVisibility={setSidebarVisibility}
           />
@@ -202,29 +202,29 @@ const CodexLinks = ({
         title="Vehicles"
       >
         <SubLinkSidebar
-          title="All vehicles"
+          title="All Vehicles"
           path="codex/vehicles"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Vehicle weapons"
+          title="Vehicle Weapons"
           path="codex/vehicles/weapons"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Vehicle mods"
+          title="Vehicle Mods"
           path="codex/vehicles/modifications"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <>
             <SubLinkSidebar
-              title="Create a new vehicle"
+              title="Create a New Vehicle"
               path="codex/vehicles/create"
               setSidebarVisibility={setSidebarVisibility}
             />
             <SubLinkSidebar
-              title="Create a new mod"
+              title="Create a New Mod"
               path="codex/vehicles/modifications/create"
               setSidebarVisibility={setSidebarVisibility}
             />
@@ -255,17 +255,17 @@ const CodexLinks = ({
         </LinkSublistSidebar>
         <LinkSublistSidebar title="Consumables">
           <SubLinkSidebar
-            title="Chemical therapy"
+            title="Chemical Therapy"
             path="codex/items/consumables/chemicalTherapy"
             setSidebarVisibility={setSidebarVisibility}
           />
           <SubLinkSidebar
-            title="Chemical assistance"
+            title="Chemical Assistance"
             path="codex/items/consumables/chemicalAssistance"
             setSidebarVisibility={setSidebarVisibility}
           />
           <SubLinkSidebar
-            title="Misc. consumables"
+            title="Misc. Consumables"
             path="codex/items/consumables/misc"
             setSidebarVisibility={setSidebarVisibility}
           />
@@ -273,7 +273,7 @@ const CodexLinks = ({
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <>
             <SubLinkSidebar
-              title="Create a new item"
+              title="Create a New Item"
               path="codex/items/create"
               setSidebarVisibility={setSidebarVisibility}
             />
@@ -286,13 +286,13 @@ const CodexLinks = ({
         title="Perks"
       >
         <SubLinkSidebar
-          title="All perks"
+          title="All Perks"
           path="codex/perks"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
-            title="Create a new perk"
+            title="Create a New Perk"
             path="codex/perks/create"
             setSidebarVisibility={setSidebarVisibility}
           />
@@ -303,16 +303,16 @@ const CodexLinks = ({
         icon={
           <KeywordIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
         }
-        title="Keywords"
+        title="Traits"
       >
         <SubLinkSidebar
-          title="All keywords"
+          title="All Traits"
           path="codex/keywords"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
-            title="Create a new keyword"
+            title="Create a New Trait"
             path="codex/keywords/create"
             setSidebarVisibility={setSidebarVisibility}
           />
@@ -324,13 +324,13 @@ const CodexLinks = ({
         title="Actions"
       >
         <SubLinkSidebar
-          title="All actions"
+          title="All Actions"
           path="codex/actions"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
-            title="Create a new action"
+            title="Create a New Action"
             path="codex/actions/create"
             setSidebarVisibility={setSidebarVisibility}
           />
@@ -350,7 +350,7 @@ const CodexLinks = ({
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
-            title="Create a new condition"
+            title="Create a New Condition"
             path="codex/conditions/create"
             setSidebarVisibility={setSidebarVisibility}
           />

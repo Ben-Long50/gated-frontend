@@ -33,7 +33,7 @@ const Keywords = ({ mode }: { mode?: string }) => {
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">Keywords</h1>
+      <h1 className="text-center">Traits</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
@@ -45,7 +45,7 @@ const Keywords = ({ mode }: { mode?: string }) => {
             <searchForm.Field name="category">
               {(field) => (
                 <InputSelectField
-                  label="Keyword Type"
+                  label="Trait Type"
                   options={['', 'weapon', 'armor', 'cybernetic']}
                   field={field}
                   onChange={() => {
@@ -60,7 +60,7 @@ const Keywords = ({ mode }: { mode?: string }) => {
               {(field) => (
                 <InputField
                   className="w-full"
-                  label="Search keywords"
+                  label="Search Traits"
                   field={field}
                   onChange={() => {
                     keywords.filterByQuery(field.state.value);
@@ -95,10 +95,8 @@ const Keywords = ({ mode }: { mode?: string }) => {
               <ArrowHeader2
                 title={
                   category.length > 0
-                    ? category[0].toUpperCase() +
-                      category.slice(1) +
-                      ' Keywords'
-                    : 'All Keywords'
+                    ? category[0].toUpperCase() + category.slice(1) + ' Traits'
+                    : 'All Traits'
                 }
               />
             )}

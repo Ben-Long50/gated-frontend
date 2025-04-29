@@ -239,12 +239,22 @@ const ItemPage = ({
                           heading={
                             <h4>
                               {item.value
-                                ? `${item.keyword.name} ${item.value}`
-                                : `${item.keyword.name}`}
+                                ? item.keyword?.name.replace(
+                                    /X/g,
+                                    item.value.toString(),
+                                  )
+                                : item.keyword?.name}
                             </h4>
                           }
                         >
-                          <p>{item.keyword.description}</p>
+                          <p>
+                            {item.value
+                              ? item.keyword?.description.replace(
+                                  /X/g,
+                                  item.value.toString(),
+                                )
+                              : item.keyword?.description}
+                          </p>
                         </ItemCardSmall>
                       );
                     },

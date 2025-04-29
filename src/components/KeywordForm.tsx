@@ -81,34 +81,34 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
         }}
       >
         <h1 className="text-center">
-          {keyword ? 'Update Keyword' : 'Create Keyword'}
+          {keyword ? 'Update Trait' : 'Create Trait'}
         </h1>
         <Divider />
-        <ArrowHeader2 title="Keyword Information" />
+        <ArrowHeader2 title="Trait Information" />
         <keywordForm.Field
           name="name"
           validators={{
             onChange: ({ value }) =>
               value.length < 2
-                ? 'Keyword name must be at least 2 characters long'
+                ? 'Trait name must be at least 2 characters long'
                 : undefined,
           }}
         >
-          {(field) => <InputField label="Keyword name" field={field} />}
+          {(field) => <InputField label="Trait Name" field={field} />}
         </keywordForm.Field>
         <keywordForm.Field
           name="description"
           validators={{
             onChange: ({ value }) =>
               value.length < 2
-                ? 'Keyword description must be at least 2 characters long'
+                ? 'Trait description must be at least 2 characters long'
                 : undefined,
           }}
         >
           {(field) => (
             <TextAreaField
               className="h-40 w-full"
-              label="Keyword description"
+              label="Trait Description"
               field={field}
             />
           )}
@@ -117,11 +117,11 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
           name="keywordType"
           validators={{
             onSubmit: ({ value }) =>
-              value.length < 1 ? 'You must select a keyword type' : undefined,
+              value.length < 1 ? 'You must select a trait type' : undefined,
           }}
         >
           {(field) => (
-            <SelectField type="select" label="Keyword type" field={field}>
+            <SelectField type="select" label="Trait Type" field={field}>
               <option defaultValue="" disabled></option>
               <option value="weapon">Weapon</option>
               <option value="armor">Armor</option>
@@ -129,7 +129,11 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
             </SelectField>
           )}
         </keywordForm.Field>
-        <BtnRect type="submit" className="group w-full">
+        <BtnRect
+          ariaLabel="Create or update triat"
+          type="submit"
+          className="group w-full"
+        >
           {createKeyword.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"

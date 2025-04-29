@@ -181,8 +181,11 @@ const ItemCardMobile = ({
                           key={item.keyword.id}
                           label={
                             item.value
-                              ? item.keyword.name + ' ' + item.value
-                              : item.keyword.name
+                              ? item.keyword?.name.replace(
+                                  /X/g,
+                                  item.value.toString(),
+                                )
+                              : item.keyword?.name
                           }
                           description={item.keyword.description}
                           toolTip={toolTip}

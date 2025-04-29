@@ -51,90 +51,7 @@ const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
                     />
                   )}
                 </form.Field>
-                <form.Field name={`actions[${i}].costs`} mode="array">
-                  {(field) => {
-                    return (
-                      <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
-                        {field.state.value.map((_, j: number) => {
-                          return (
-                            <div
-                              key={j}
-                              className="flex gap-2 sm:gap-4 lg:gap-6"
-                            >
-                              <form.Field
-                                name={`actions[${i}].costs[${j}].stat`}
-                              >
-                                {(subField) => {
-                                  return (
-                                    <SelectField
-                                      className="grow"
-                                      label="Stat"
-                                      field={subField}
-                                    >
-                                      <option defaultValue=""></option>
-                                      <option value="actionPoints">
-                                        Action points
-                                      </option>
-                                      <option value="reactionPoints">
-                                        Reaction points
-                                      </option>
-                                      <option value="power">Power</option>
-                                      <option value="health">Health</option>
-                                      <option value="sanity">Sanity</option>
-                                      <option value="wyrmShells">
-                                        Wyrm shells
-                                      </option>
-                                    </SelectField>
-                                  );
-                                }}
-                              </form.Field>
-                              <form.Field
-                                key={j}
-                                name={`actions[${i}].costs[${j}].value`}
-                              >
-                                {(subField) => {
-                                  return (
-                                    <InputField
-                                      className="max-w-28"
-                                      type="number"
-                                      label="Value"
-                                      field={subField}
-                                    />
-                                  );
-                                }}
-                              </form.Field>
-                              <button
-                                className="sm:-ml-2 lg:-ml-4"
-                                onClick={() => field.removeValue(j)}
-                                type="button"
-                              >
-                                <Icon
-                                  className="text-tertiary"
-                                  path={mdiClose}
-                                  size={1}
-                                />
-                              </button>
-                            </div>
-                          );
-                        })}
-                        <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
-                          <button
-                            className="text-accent self-end hover:underline"
-                            onClick={() =>
-                              field.pushValue({
-                                stat: '',
-                                value: 1,
-                              })
-                            }
-                            type="button"
-                          >
-                            Add cost
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  }}
-                </form.Field>
+
                 <form.Field name={`actions[${i}].roll`} mode="array">
                   {(field) => {
                     return (
@@ -249,8 +166,9 @@ const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
                     <SelectField label="Action type" field={field}>
                       <option defaultValue="" disabled></option>
                       <option value="action">Action</option>
-                      <option value="extendedAction">Ex. action</option>
+                      <option value="extendedAction">Extended action</option>
                       <option value="reaction">Reaction</option>
+                      <option value="passive">Passive</option>
                     </SelectField>
                   )}
                 </form.Field>
@@ -371,9 +289,82 @@ const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
                     />
                   )}
                 </form.Field>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
+                  <form.Field name={`actions[${i}].costs.actionPoints`}>
+                    {(field) => (
+                      <InputField
+                        className="grow"
+                        type="number"
+                        label="Actions"
+                        field={field}
+                      />
+                    )}
+                  </form.Field>
+                  <form.Field name={`actions[${i}].costs.reactionPoints`}>
+                    {(field) => (
+                      <InputField
+                        className="grow"
+                        type="number"
+                        label="Reactions"
+                        field={field}
+                      />
+                    )}
+                  </form.Field>
+                  <form.Field name={`actions[${i}].costs.power`}>
+                    {(field) => (
+                      <InputField
+                        className="grow"
+                        type="number"
+                        label="Power"
+                        field={field}
+                      />
+                    )}
+                  </form.Field>
+                  <form.Field name={`actions[${i}].costs.health`}>
+                    {(field) => (
+                      <InputField
+                        className="grow"
+                        type="number"
+                        label="Health"
+                        field={field}
+                      />
+                    )}
+                  </form.Field>
+                  <form.Field name={`actions[${i}].costs.sanity`}>
+                    {(field) => (
+                      <InputField
+                        className="grow"
+                        type="number"
+                        label="Sanity"
+                        field={field}
+                      />
+                    )}
+                  </form.Field>
+                  <form.Field name={`actions[${i}].costs.wyrmShells`}>
+                    {(field) => (
+                      <InputField
+                        className="grow"
+                        type="number"
+                        label="Wyrm Shells"
+                        field={field}
+                      />
+                    )}
+                  </form.Field>
+                  <form.Field name={`actions[${i}].costs.currentAmmoCount`}>
+                    {(field) => (
+                      <InputField
+                        className="grow"
+                        type="number"
+                        label="Ammunition"
+                        field={field}
+                      />
+                    )}
+                  </form.Field>
+                </div>
               </div>
             );
           })}
+
           <div className="flex w-full flex-row-reverse items-center justify-between">
             <button
               className="text-accent hover:underline"
@@ -381,10 +372,6 @@ const SubactionForm = ({ form }: { form: ReturnType<typeof useForm<T>> }) => {
                 e.preventDefault();
                 field.pushValue({
                   name: '',
-                  costs: [{ stat: 'actionPoints', value: 1 }] as {
-                    stat: string;
-                    value: number;
-                  }[],
                   roll: [] as {
                     attribute: string;
                     skill: string;

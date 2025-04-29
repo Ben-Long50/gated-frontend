@@ -24,6 +24,7 @@ import { WeaponStats } from 'src/types/weapon';
 import useModifyWeaponMutation from '../hooks/useModifyWeaponMutation/useModifyWeaponMutation';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
+import { Action, ActionCosts } from 'src/types/action';
 
 const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -110,7 +111,15 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         weapon?.actions ||
         ([] as {
           name: string;
-          costs: { stat: string; value: number }[];
+          costs: {
+            actionPoints: number;
+            reactionPoints: number;
+            power: number;
+            health: number;
+            sanity: number;
+            wyrmShells: number;
+            currentAmmoCount: number;
+          };
           roll: { attribute: string; skill: string }[];
           actionType: string;
           actionSubtypes: string[];
@@ -134,7 +143,14 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         Object.entries(value.stats).filter(([_, val]) => val),
       );
 
+      value.actions.forEach((action: Action) => {
+        action.costs = Object.fromEntries(
+          Object.entries(action.costs).filter(([_, value]) => value),
+        ) as ActionCosts;
+      });
+
       value.stats = { ...filteredStats };
+      console.log(value);
 
       const formData = new FormData();
 

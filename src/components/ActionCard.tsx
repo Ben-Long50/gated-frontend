@@ -2,25 +2,19 @@ import { useContext, useRef } from 'react';
 import Tag from './Tag';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import HealthIcon from './icons/HealthIcon';
-import SanityIcon from './icons/SanityIcon';
-import ActionIcon from './icons/ActionIcon';
-import ReactionIcon from './icons/ReactionIcon';
 import DieIcon from './icons/DieIcon';
 import { Action } from 'src/types/action';
 import ItemCardSmall from './ItemCardSmall';
-import WyrmShellIcon from './icons/WyrmShellIcon';
-import LightningIcon from './icons/LightningIcon';
 import Icon from '@mdi/react';
 import { mdiTriangleDown } from '@mdi/js';
-import { ThemeContext } from '../contexts/ThemeContext';
-import StatBar from './StatBar';
+import ActionStatBars from './ActionStatBars';
 
 const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
   const { user } = useContext(AuthContext);
-  const { statColorMap } = useContext(ThemeContext);
 
   const cardRef = useRef(null);
+
+  const costLength = action?.costs ? Object.keys(action.costs).length : 0;
 
   return (
     <ItemCardSmall
@@ -37,110 +31,58 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
         </div>
       }
     >
-      {action?.actionSubtypes?.length > 0 && (
-        <div className="flex items-center gap-2">
-          {action?.actionSubtypes?.map((subtype) => {
-            return (
-              <Tag
-                key={subtype}
-                label={subtype[0].toUpperCase() + subtype.slice(1)}
-                toolTip={0}
-              />
-            );
-          })}
-        </div>
-      )}
-      {action?.roll && action?.roll.length > 0 && (
-        <div className="flex flex-col gap-2">
-          {action.roll.map((roll, index) => (
-            <div key={index} className="flex items-center gap-4">
-              <DieIcon className="text-secondary size-8" />
-              <p className="font-semibold">
-                {roll.attribute[0].toUpperCase() + roll.attribute.slice(1)}
-              </p>
-              {roll.skill && (
-                <>
-                  <Icon
-                    className="text-secondary"
-                    path={mdiTriangleDown}
-                    size={0.35}
-                    rotate={-90}
-                  />
-                  <p>{roll.skill[0].toUpperCase() + roll.skill.slice(1)}</p>{' '}
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-      <div
-        className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
-      >
-        {action?.costs.map((cost) => {
-          let title;
-          let color;
-
-          switch (cost.stat) {
-            case 'health':
-              title = 'Health';
-              color = statColorMap['Health'];
-              break;
-            case 'sanity':
-              title = 'Sanity';
-              color = statColorMap['Sanity'];
-              break;
-            case 'actionPoints':
-              title = 'AP';
-              color = statColorMap['AP'];
-              break;
-            case 'reactionPoints':
-              title = 'RP';
-              color = statColorMap['RP'];
-              break;
-            case 'power':
-              title = 'PWR';
-              color = statColorMap['PWR'];
-              break;
-            case 'wyrmShells':
-              title = 'Wyrm Shells';
-              color = statColorMap['wyrmShells'];
-              break;
-            default:
-              title = '';
-              color = '';
-              break;
-          }
-          return (
-            <StatBar
-              key={cost.stat}
-              current={cost.value}
-              title={title}
-              color={color}
-              cardWidth={cardRef.current?.offsetWidth}
+      <div className="flex flex-col gap-4 pt-2">
+        {action?.actionSubtypes?.length > 0 && (
+          <div className="flex items-center gap-2">
+            {action?.actionSubtypes?.map((subtype) => {
+              return (
+                <Tag
+                  key={subtype}
+                  label={subtype[0].toUpperCase() + subtype.slice(1)}
+                  toolTip={0}
+                />
+              );
+            })}
+          </div>
+        )}
+        {action?.roll && action?.roll.length > 0 && (
+          <div className="flex flex-col gap-2">
+            {action.roll.map((roll, index) => (
+              <div key={index} className="flex items-center gap-4">
+                <DieIcon className="text-secondary size-8" />
+                <p className="font-semibold">
+                  {roll.attribute[0].toUpperCase() + roll.attribute.slice(1)}
+                </p>
+                {roll.skill && (
+                  <>
+                    <Icon
+                      className="text-secondary"
+                      path={mdiTriangleDown}
+                      size={0.35}
+                      rotate={-90}
+                    />
+                    <p>{roll.skill[0].toUpperCase() + roll.skill.slice(1)}</p>{' '}
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        {costLength > 0 && (
+          <div className="flex w-full flex-col justify-start gap-2">
+            <p className="text-accent text-base tracking-widest">Costs</p>
+            <div
+              className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
             >
-              {cost.stat === 'health' && (
-                <HealthIcon className="text-secondary size-8" />
-              )}
-              {cost.stat === 'sanity' && (
-                <SanityIcon className="text-secondary size-8" />
-              )}
-              {cost.stat === 'actionPoints' && (
-                <ActionIcon className="text-secondary size-8" />
-              )}
-              {cost.stat === 'reactionPoints' && (
-                <ReactionIcon className="text-secondary size-8" />
-              )}
-              {cost.stat === 'power' && (
-                <LightningIcon className="text-secondary size-8" />
-              )}
-              {cost.stat === 'wyrmShells' && (
-                <WyrmShellIcon className="text-secondary size-8" />
-              )}
-            </StatBar>
-          );
-        })}
+              <ActionStatBars
+                stats={action.costs}
+                cardWidth={cardRef.current?.offsetWidth}
+              />
+            </div>
+          </div>
+        )}
+        <p className="text-secondary">{action?.description}</p>
       </div>
-      <p className="text-secondary">{action?.description}</p>
     </ItemCardSmall>
   );
 };

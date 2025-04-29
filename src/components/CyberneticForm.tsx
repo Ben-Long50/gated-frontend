@@ -24,7 +24,7 @@ import useCyberneticQuery from '../hooks/useCyberneticQuery/useCyberneticQuery';
 import { Keyword } from 'src/types/keyword';
 import { Weapon } from 'src/types/weapon';
 import { Armor } from 'src/types/armor';
-import { Action } from 'src/types/action';
+import { Action, ActionCosts } from 'src/types/action';
 import SubactionForm from './SubactionForm';
 import useModifyCyberneticMutation from '../hooks/useModifyCyberneticMutation/useModifyCyberneticMutation';
 import Divider from './Divider';
@@ -145,7 +145,15 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
         cybernetic?.actions ||
         ([] as {
           name: string;
-          costs: { stat: string; value: number }[];
+          costs: {
+            actionPoints: number;
+            reactionPoints: number;
+            power: number;
+            health: number;
+            sanity: number;
+            wyrmShells: number;
+            currentAmmoCount: number;
+          };
           attribute: string;
           skill: string;
           actionType: string;
@@ -196,14 +204,18 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
         armor.stats = { ...armor.stats, ...filteredArmorStats[index] };
       });
 
+      value.actions.forEach((action: Action) => {
+        action.costs = Object.fromEntries(
+          Object.entries(action.costs).filter(([_, value]) => value),
+        ) as ActionCosts;
+      });
+
       const filteredActions = value.actions.map((action: Action) => {
-        const filteredCosts = action.costs.filter((cost) => cost.stat);
         const filteredSubtypes = action.actionSubtypes.filter(
           (subtype) => subtype.length,
         );
         return {
           ...action,
-          costs: filteredCosts,
           actionSubtypes: filteredSubtypes,
         };
       });
