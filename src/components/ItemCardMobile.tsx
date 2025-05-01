@@ -31,13 +31,15 @@ import ModifierTag from './ModifierTag';
 import { Modifier } from 'src/types/modifier';
 import ItemPicture from './ItemPicture';
 import ArrowHeader2 from './ArrowHeader2';
+import { ItemObject } from 'src/types/global';
+import StatBars from './StatBars';
 
 const ItemCardMobile = ({
   item,
   category,
   mode,
   controls,
-  children,
+  toggleFormLink,
 }: {
   item:
     | WeaponWithKeywords
@@ -48,7 +50,7 @@ const ItemCardMobile = ({
   category: string;
   mode: string;
   controls?: ReactNode;
-  children: ReactNode;
+  toggleFormLink?: (id: ItemObject) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -114,18 +116,18 @@ const ItemCardMobile = ({
         overflowHidden={true}
       >
         <Link
-          to={`${item.id}`}
+          to={mode === 'form' ? '' : `${category}/${item.id}`}
           className="timing hover:bg-secondary relative flex cursor-pointer flex-col gap-8"
         >
           <div
             className="timing relative flex cursor-pointer flex-col gap-4 p-4"
-            onClick={() => {
-              if (!toolTip) {
-                setDetailsOpen(!detailsOpen);
-              } else {
-                setToolTip(0);
-              }
-            }}
+            onClick={
+              mode === 'form' && toggleFormLink
+                ? () => {
+                    toggleFormLink(item);
+                  }
+                : undefined
+            }
           >
             <div className="flex h-full flex-col gap-2">
               <div className="flex items-start justify-between gap-4">
@@ -133,7 +135,7 @@ const ItemCardMobile = ({
                 {category === 'weapons' && item.vehicleId && (
                   <h4 className="text-error italic">(Currently equipped)</h4>
                 )}
-                <div className="flex items-start gap-4">
+                <div className="flex flex-wrap items-start justify-end gap-4 gap-y-2">
                   <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
                   {mode === 'codex' && (
                     <CartButton
@@ -219,35 +221,20 @@ const ItemCardMobile = ({
                 <p>{item.itemType}</p>
               </div>
             )}
-            <div
-              className={`flex w-full items-start`}
-              style={{
-                height: item.picture && imageHeight,
-                gap: item.picture && !detailsOpen ? 16 : 0,
-              }}
-            >
-              {item.picture && (
-                <div className="mx-auto" ref={imageRef}>
-                  <ItemPicture
-                    className={`${detailsOpen ? 'max-w-full' : 'max-w-[300px]'} timing mx-auto w-full`}
-                    item={item}
-                  />
-                </div>
-              )}
-            </div>
+
+            {item.picture && (
+              <ItemPicture className={`timing mx-8 shrink-0`} item={item} />
+            )}
 
             <div className="flex w-full flex-col items-center gap-4 pr-1">
               <div
                 className={`${cardWidth && cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
               >
-                {Children.map(children, (child) => {
-                  if (isValidElement(child)) {
-                    return cloneElement(child, {
-                      cardWidth,
-                    });
-                  }
-                  return child;
-                })}
+                <StatBars
+                  cardWidth={cardWidth}
+                  stats={item.stats}
+                  mode={mode}
+                />
               </div>
               {item.modifiers && item.modifiers?.length > 0 && (
                 <div className="flex w-full items-center gap-2">

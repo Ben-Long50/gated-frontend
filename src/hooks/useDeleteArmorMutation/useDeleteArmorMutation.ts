@@ -14,7 +14,7 @@ const useDeleteArmorMutation = (
       return deleteArmor(apiUrl, armorId);
     },
     onSuccess: () => {
-      navigate(-1);
+      navigate(-2);
       queryClient.invalidateQueries({
         queryKey: ['armorPiece'],
         exact: false,

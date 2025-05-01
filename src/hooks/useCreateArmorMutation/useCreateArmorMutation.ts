@@ -4,6 +4,7 @@ import createArmor from './createArmor';
 const useCreateArmorMutation = (
   apiUrl: string,
   setFormMessage: (message: string) => void,
+  armorId?: number,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -12,10 +13,7 @@ const useCreateArmorMutation = (
     },
     onSuccess: (data) => {
       setFormMessage(data.message);
-      queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
-        exact: false,
-      });
+      queryClient.invalidateQueries({ queryKey: ['armorPiece', armorId] });
       return queryClient.invalidateQueries({
         queryKey: ['armor'],
         exact: false,

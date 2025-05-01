@@ -13,15 +13,18 @@ import InputSelectField from './InputSelectField';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
+import { ItemObject } from 'src/types/global';
 
 const Cybernetics = ({
   title,
   fetchOptions,
   mode,
+  toggleFormLink,
 }: {
   title: string;
   fetchOptions?: FetchOptions;
   mode: string;
+  toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
@@ -60,7 +63,7 @@ const Cybernetics = ({
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <form className="flex w-full flex-col gap-4 p-4">
+        <div className="flex w-full flex-col gap-4 p-4">
           <div className="grid w-full grid-cols-2">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
@@ -139,7 +142,7 @@ const Cybernetics = ({
               />
             </button>
           </div>
-        </form>
+        </div>
       </ThemeContainer>
 
       {cardType === 'large' ? (
@@ -150,6 +153,7 @@ const Cybernetics = ({
                 key={cybernetic.id}
                 cybernetic={cybernetic}
                 mode={mode}
+                toggleFormLink={toggleFormLink}
               />
             );
           },
@@ -163,6 +167,7 @@ const Cybernetics = ({
                   key={cybernetic.id}
                   cybernetic={cybernetic}
                   mode={mode}
+                  toggleFormLink={toggleFormLink}
                 />
               );
             },

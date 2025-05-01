@@ -14,7 +14,7 @@ const useDeleteItemMutation = (
       return deleteItem(apiUrl, itemId);
     },
     onSuccess: () => {
-      navigate(-1);
+      navigate(-2);
       queryClient.invalidateQueries({
         queryKey: ['item'],
         exact: false,

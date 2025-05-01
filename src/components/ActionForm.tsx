@@ -63,13 +63,13 @@ const ActionForm = ({ mode }: { mode?: string }) => {
       id: action?.id || 0,
       name: action?.name || '',
       costs: {
-        actionPoints: action?.costs?.actionPoints || null,
-        reactionPoints: action?.costs?.reactionPoints || null,
-        power: action?.costs?.power || null,
-        health: action?.costs?.health || null,
-        sanity: action?.costs?.sanity || null,
-        wyrmShells: action?.costs?.wyrmShells || null,
-        currentAmmoCount: action?.costs?.currentAmmoCount || null,
+        actionPoints: action?.costs?.actionPoints || '',
+        reactionPoints: action?.costs?.reactionPoints || '',
+        power: action?.costs?.power || '',
+        health: action?.costs?.health || '',
+        sanity: action?.costs?.sanity || '',
+        wyrmShells: action?.costs?.wyrmShells || '',
+        currentAmmoCount: action?.costs?.currentAmmoCount || '',
       },
       roll:
         action?.roll ||

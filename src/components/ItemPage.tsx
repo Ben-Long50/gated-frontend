@@ -8,7 +8,7 @@ import {
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
 import Icon from '@mdi/react';
@@ -85,6 +85,8 @@ const ItemPage = ({
     enabled: category === 'cybernetics',
   });
 
+  console.log(cybernetic);
+
   const {
     data: vehicle,
     isLoading: vehicleLoading,
@@ -120,6 +122,7 @@ const ItemPage = ({
     default:
       break;
   }
+  console.log(item);
 
   const isLoading =
     weaponLoading ||
@@ -158,7 +161,7 @@ const ItemPage = ({
         )}
       </div>
       <div className="relative flex h-full w-full flex-col gap-8 sm:flex-row sm:gap-12">
-        {item.picture && (
+        {item.picture?.imageUrl && (
           <ItemPicture className={`timing w-full sm:w-2/5`} item={item} />
         )}
         <div className="flex w-full flex-col gap-8">
@@ -397,6 +400,13 @@ const ItemPage = ({
           </BtnRect>
         </Link>
       )}
+      {/* {mode === 'inventory' && (
+        <Link className="w-1/3 self-end" to={`modify`}>
+          <BtnRect ariaLabel="Navigate to modify weapon form" type="button">
+            Modify
+          </BtnRect>
+        </Link>
+      )} */}
     </div>
   );
 };

@@ -4,14 +4,27 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import KeywordCard from './KeywordCard';
 import useKeywords from '../hooks/useKeywords';
 import InputField from './InputField';
-import { useForm } from '@tanstack/react-form';
+import { FieldApi, useForm } from '@tanstack/react-form';
 import Loading from './Loading';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
+import { ItemObject } from 'src/types/global';
+import { Keyword } from 'src/types/keyword';
+import InputFieldBasic from './InputFieldBasic';
 
-const Keywords = ({ mode }: { mode?: string }) => {
+const Keywords = ({
+  title,
+  mode,
+  field,
+  toggleFormLink,
+}: {
+  title?: string;
+  mode?: string;
+  field?: FieldApi;
+  toggleFormLink?: (item: ItemObject) => void;
+}) => {
   const { accentPrimary } = useContext(ThemeContext);
 
   const keywords = useKeywords();
@@ -32,14 +45,14 @@ const Keywords = ({ mode }: { mode?: string }) => {
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">Traits</h1>
+    <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
+      <h1 className="text-center">{title || 'Traits'}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <form className="flex w-full flex-col gap-4 p-4">
+        <div className="flex w-full flex-col gap-4 p-4">
           <div className="grid w-full grid-cols-2 gap-4 sm:gap-8">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
@@ -82,7 +95,7 @@ const Keywords = ({ mode }: { mode?: string }) => {
               />
             </button>
           </div>
-        </form>
+        </div>
       </ThemeContainer>
       <ThemeContainer
         chamfer="medium"
@@ -103,8 +116,61 @@ const Keywords = ({ mode }: { mode?: string }) => {
           </searchForm.Subscribe>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             {keywords.filteredKeywords.map((keyword) => {
+              const activeKeyword =
+                mode === 'form'
+                  ? field.state.value.find(
+                      (item: { keyword: Keyword; value?: number }) =>
+                        item.keyword.id === keyword.id,
+                    )
+                  : null;
               return (
-                <KeywordCard key={keyword.name} keyword={keyword} mode={mode} />
+                <div key={keyword.id} className="flex items-center gap-4">
+                  <KeywordCard mode={mode} keyword={keyword}>
+                    {activeKeyword && (
+                      <InputFieldBasic
+                        className="max-w-20 shrink-0"
+                        name="value"
+                        type="number"
+                        label="Value"
+                        value={activeKeyword.value}
+                        onChange={(value: number | string) => {
+                          const updatedValue = field.state.value.map(
+                            (item: { keyword: Keyword; value?: number }) =>
+                              item.keyword.id === keyword.id
+                                ? {
+                                    keyword: item.keyword,
+                                    value,
+                                  }
+                                : item,
+                          );
+                          field.handleChange(updatedValue);
+                        }}
+                      />
+                    )}
+                  </KeywordCard>
+                  {mode === 'form' && (
+                    <input
+                      className="size-6 shrink-0"
+                      type="checkbox"
+                      checked={activeKeyword}
+                      onChange={() => {
+                        if (!activeKeyword) {
+                          field.handleChange([
+                            ...field.state.value,
+                            { keyword },
+                          ]);
+                        } else {
+                          field.handleChange(
+                            field.state.value.filter(
+                              (item: { keyword: Keyword; value?: number }) =>
+                                item.keyword.id !== keyword.id,
+                            ),
+                          );
+                        }
+                      }}
+                    />
+                  )}
+                </div>
               );
             })}
           </div>

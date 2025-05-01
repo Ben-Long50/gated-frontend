@@ -41,7 +41,7 @@ const ThemeContainer = ({
         chamfer={chamfer}
       />
       <div
-        className={`${!!overflowHidden && `overflow-hidden ${chamferMapBg[chamfer]}`} relative h-full`}
+        className={`${!!overflowHidden && `overflow-hidden ${chamferMapBg[chamfer]}`} relative`}
       >
         {children}
       </div>

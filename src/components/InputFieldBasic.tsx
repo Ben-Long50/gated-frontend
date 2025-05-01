@@ -13,7 +13,7 @@ const InputFieldBasic = ({
   className: string;
   type: string;
   name: string;
-  onChange: (value: string) => void;
+  onChange: (value: number | string) => void;
   value: string;
   label: string;
 }) => {

@@ -14,7 +14,7 @@ const useDeleteVehicleMutation = (
       return deleteVehicle(apiUrl, vehicleId);
     },
     onSuccess: () => {
-      navigate(-1);
+      navigate(-2);
       queryClient.invalidateQueries({
         queryKey: ['vehicle'],
         exact: false,

@@ -4,6 +4,7 @@ import createCybernetic from './createCybernetic';
 const useCreateCyberneticMutation = (
   apiUrl: string,
   setFormMessage: (message: string) => void,
+  cyberneticId?: number,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -13,20 +14,7 @@ const useCreateCyberneticMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['weapons'],
-        exact: false,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['armor'],
-        exact: false,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['actions'],
-        exact: false,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
-        exact: false,
+        queryKey: ['cybernetic', cyberneticId],
       });
       return queryClient.invalidateQueries({
         queryKey: ['cybernetics'],

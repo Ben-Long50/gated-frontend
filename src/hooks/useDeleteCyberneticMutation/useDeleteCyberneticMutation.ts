@@ -14,7 +14,7 @@ const useDeleteCyberneticMutation = (
       return deleteCybernetic(apiUrl, cyberneticId);
     },
     onSuccess: () => {
-      navigate(-1);
+      navigate(-2);
       queryClient.invalidateQueries({
         queryKey: ['cybernetic'],
         exact: false,

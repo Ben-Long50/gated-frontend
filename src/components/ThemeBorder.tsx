@@ -42,7 +42,7 @@ const ThemeBorder = ({
       />
       {bgImageUrl && (
         <div
-          className={`${chamferMapBg[chamfer]} absolute h-full w-full bg-black bg-opacity-50`}
+          className={`${chamferMapBg[chamfer]} absolute w-full bg-black bg-opacity-50`}
         />
       )}
     </>

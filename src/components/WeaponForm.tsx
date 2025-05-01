@@ -7,24 +7,29 @@ import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
 import useKeywords from '../hooks/useKeywords';
-import KeywordCard from './KeywordCard';
 import Icon from '@mdi/react';
 import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import useCreateWeaponMutation from '../hooks/useCreateWeaponMutation/useCreateWeaponMutation';
 import Loading from './Loading';
-import InputFieldBasic from './InputFieldBasic';
 import FormLayout from '../layouts/FormLayout';
 import { useParams } from 'react-router-dom';
 import useDeleteWeaponMutation from '../hooks/useDeleteWeaponMutation/useDeleteWeaponMutation';
 import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
 import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
-import SubactionForm from './SubactionForm';
-import { WeaponStats } from 'src/types/weapon';
+import { WeaponStats, WeaponWithKeywords } from 'src/types/weapon';
 import useModifyWeaponMutation from '../hooks/useModifyWeaponMutation/useModifyWeaponMutation';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
-import { Action, ActionCosts } from 'src/types/action';
+import { Action } from 'src/types/action';
+import { ArmorWithKeywords } from 'src/types/armor';
+import { CyberneticWithKeywords } from 'src/types/cybernetic';
+import CyberneticLinkField from './form_fields/CyberneticLinkField';
+import ActionLinkField from './form_fields/ActionLinkField';
+import ArmorLinkField from './form_fields/ArmorLinkField';
+import WeaponLinkField from './form_fields/WeaponLinkField';
+import KeywordLinkField from './form_fields/KeywordLinkField';
+import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 
 const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -33,7 +38,9 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { weaponId } = useParams();
 
-  const { data: weapon } = useWeaponQuery(apiUrl, Number(weaponId));
+  const { data: weapon } = useWeaponQuery(apiUrl, Number(weaponId), {
+    options: !!weaponId,
+  });
 
   const keywords = useKeywords('weapon');
 
@@ -75,19 +82,6 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
     }
   }, [weapon]);
 
-  const searchForm = useForm({
-    defaultValues: {
-      query: '',
-    },
-    onSubmit: ({ value }) => {
-      if (value.query === '') {
-        keywords.resetList();
-      } else {
-        keywords.filterByQuery(value.query);
-      }
-    },
-  });
-
   const weaponForm = useForm({
     defaultValues: {
       id: weapon?.id || 0,
@@ -96,6 +90,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
       grade: weapon?.grade || 1,
       picture: weapon?.picture || '',
       description: weapon?.description || '',
+      price: weapon?.price || '',
       stats: {
         damage: weapon?.stats.damage || '',
         salvo: weapon?.stats.salvo || '',
@@ -107,31 +102,12 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         currentMagCount: weapon?.stats.currentMagCount || '',
         weight: weapon?.stats.weight || '',
       } as WeaponStats,
-      actions:
-        weapon?.actions ||
-        ([] as {
-          name: string;
-          costs: {
-            actionPoints: number;
-            reactionPoints: number;
-            power: number;
-            health: number;
-            sanity: number;
-            wyrmShells: number;
-            currentAmmoCount: number;
-          };
-          roll: { attribute: string; skill: string }[];
-          actionType: string;
-          actionSubtypes: string[];
-          duration: {
-            unit: string;
-            value: number;
-          };
-          description: string;
-        }[]),
-      price: weapon?.price || null,
+      weapons: weapon?.weapons || ([] as WeaponWithKeywords[]),
+      armor: weapon?.armor || ([] as ArmorWithKeywords[]),
+      cybernetics: weapon?.cybernetics || ([] as CyberneticWithKeywords[]),
+      actions: weapon?.actions || ([] as Action[]),
       keywords:
-        weapon?.keywords || ([] as { keywordId: number; value?: number }[]),
+        weapon?.keywords || ([] as { keyword: Keyword; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
       value.stats.currentAmmoCount = value.stats.magCapacity;
@@ -143,18 +119,22 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         Object.entries(value.stats).filter(([_, val]) => val),
       );
 
-      value.actions.forEach((action: Action) => {
-        action.costs = Object.fromEntries(
-          Object.entries(action.costs).filter(([_, value]) => value),
-        ) as ActionCosts;
-      });
-
       value.stats = { ...filteredStats };
-      console.log(value);
+
+      const { weapons, armor, cybernetics, actions, keywords, ...rest } = value;
+
+      const data = {
+        ...rest,
+        weaponIds: extractItemListIds(value.weapons),
+        armorIds: extractItemListIds(value.armor),
+        cyberneticIds: extractItemListIds(value.cybernetics),
+        actionIds: extractItemListIds(value.actions),
+        keywordIds: extractKeywordListIds(value.keywords),
+      };
 
       const formData = new FormData();
 
-      Object.entries(value).forEach(([key, value]) => {
+      Object.entries(data).forEach(([key, value]) => {
         if (key === 'picture' && value instanceof File) {
           formData.append(key, value);
         } else {
@@ -165,18 +145,17 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
       if (mode === 'create' || mode === 'update') {
         await createWeapon.mutate(formData);
       } else if (mode === 'modify') {
-        await modifyWeapon.mutate(formData);
+        // await modifyWeapon.mutate(formData);
       }
     },
   });
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // Get the selected file
+    const selectedFile = e.target.files[0];
 
     if (selectedFile) {
       weaponForm.setFieldValue('picture', selectedFile);
 
-      // Create a URL for the selected file to preview
       const fileUrl = URL.createObjectURL(selectedFile);
       setImagePreview(fileUrl);
     }
@@ -417,88 +396,19 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
             </weaponForm.Field>
           </div>
         </div>
-        <Divider />
-        <SubactionForm form={weaponForm} />
-        <Divider />
-        <ArrowHeader2 title="Weapon Keywords" />
-        <searchForm.Field name="query">
-          {(field) => (
-            <InputField
-              className="col-span-2"
-              label="Search keywords"
-              field={field}
-              onChange={() => {
-                searchForm.handleSubmit();
-              }}
-            />
-          )}
-        </searchForm.Field>
-        <weaponForm.Field name="keywords">
-          {(field) => (
-            <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto px-0.5 pr-2 md:grid md:grid-cols-2">
-              {keywords.filteredKeywords.map((keyword) => {
-                const activeKeyword = field.state.value.find(
-                  (item: { keywordId: number; value?: number }) =>
-                    item.keywordId === keyword.id,
-                );
-                return (
-                  <div key={keyword.id} className="flex items-center gap-4">
-                    <KeywordCard keyword={keyword}>
-                      {activeKeyword && (
-                        <InputFieldBasic
-                          className="max-w-20 shrink-0"
-                          type="number"
-                          label="Value"
-                          value={activeKeyword.value}
-                          onChange={(value: number) => {
-                            const updatedValue = field.state.value.some(
-                              (item: { keywordId: number; value?: number }) =>
-                                item.keywordId === keyword.id,
-                            )
-                              ? field.state.value.map(
-                                  (item: {
-                                    keywordId: number;
-                                    value?: number;
-                                  }) =>
-                                    item.keywordId === keyword.id
-                                      ? { ...item, value }
-                                      : item,
-                                )
-                              : [...field.state.value, { ...keyword, value }];
-                            field.handleChange(updatedValue);
-                          }}
-                        />
-                      )}
-                    </KeywordCard>
-                    <div className="flex flex-col items-center gap-4">
-                      <input
-                        className="size-6 shrink-0"
-                        type="checkbox"
-                        checked={activeKeyword}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            field.handleChange([
-                              ...field.state.value,
-                              { keywordId: keyword.id },
-                            ]);
-                          } else {
-                            field.handleChange(
-                              field.state.value.filter(
-                                (item: { keywordId: number; value?: number }) =>
-                                  item.keywordId !== keyword.id,
-                              ),
-                            );
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </weaponForm.Field>
-        <BtnRect type="submit" className="group w-full">
+        <div className="flex flex-col gap-4">
+          <KeywordLinkField form={weaponForm} />
+          <Divider />
+          <WeaponLinkField form={weaponForm} />
+          <Divider />
+          <ArmorLinkField form={weaponForm} />
+          <Divider />
+          <CyberneticLinkField form={weaponForm} />
+          <Divider />
+          <ActionLinkField form={weaponForm} />
+          <Divider />
+        </div>
+        <BtnRect ariaLabel={title} type="submit" className="group w-full">
           {createWeapon.isPending || modifyWeapon.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"

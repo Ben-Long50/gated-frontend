@@ -11,8 +11,8 @@ import useReloadMutation from '../hooks/weaponStatHooks/useReloadAmmoMutation/us
 import useRefreshMutation from '../hooks/weaponStatHooks/useRefreshAmmoMutation/useRefreshAmmoMutation';
 import { useParams } from 'react-router-dom';
 import ItemCardMobile from './ItemCardMobile';
-import StatBars from './StatBars';
 import SalvoIcon from './icons/SalvoIcon';
+import { ItemObject } from 'src/types/global';
 
 const WeaponControls = ({
   stats,
@@ -82,10 +82,12 @@ const WeaponCard = ({
   weapon,
   mode,
   ownerId,
+  toggleFormLink,
 }: {
   weapon: WeaponWithKeywords;
   mode: string;
   ownerId?: number;
+  toggleFormLink?: (weaponId: ItemObject) => void;
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -99,9 +101,8 @@ const WeaponCard = ({
           <WeaponControls stats={weapon.stats} weaponId={weapon.id} />
         ) : null
       }
-    >
-      <StatBars stats={weapon.stats} mode={mode} />
-    </ItemCard>
+      toggleFormLink={toggleFormLink}
+    />
   );
 };
 
@@ -109,10 +110,12 @@ export const WeaponCardMobile = ({
   weapon,
   mode,
   ownerId,
+  toggleFormLink,
 }: {
   weapon: WeaponWithKeywords;
   mode: string;
   ownerId?: number;
+  toggleFormLink?: (weaponId: ItemObject) => void;
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -126,9 +129,8 @@ export const WeaponCardMobile = ({
           <WeaponControls stats={weapon.stats} weaponId={weapon.id} />
         ) : null
       }
-    >
-      <StatBars stats={weapon.stats} mode={mode} />
-    </ItemCardMobile>
+      toggleFormLink={toggleFormLink}
+    />
   );
 };
 

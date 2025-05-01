@@ -13,15 +13,18 @@ import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
+import { ItemObject } from 'src/types/global';
 
 const Armor = ({
   title,
   fetchOptions,
   mode,
+  toggleFormLink,
 }: {
   title: string;
   fetchOptions?: FetchOptions;
   mode: string;
+  toggleFormLink: (item: ItemObject) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
@@ -60,7 +63,7 @@ const Armor = ({
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <form className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-4 p-4">
           <div className="grid w-full grid-cols-2 items-center justify-between">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
@@ -132,16 +135,30 @@ const Armor = ({
               />
             </button>
           </div>
-        </form>
+        </div>
       </ThemeContainer>
       {cardType === 'large' ? (
         armor.filteredArmor.map((armor: ArmorWithKeywords) => {
-          return <ArmorCard key={armor.id} armor={armor} mode={mode} />;
+          return (
+            <ArmorCard
+              key={armor.id}
+              armor={armor}
+              mode={mode}
+              toggleFormLink={toggleFormLink}
+            />
+          );
         })
       ) : (
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
           {armor.filteredArmor.map((armor: ArmorWithKeywords) => {
-            return <ArmorCardMobile key={armor.id} armor={armor} mode={mode} />;
+            return (
+              <ArmorCardMobile
+                key={armor.id}
+                armor={armor}
+                mode={mode}
+                toggleFormLink={toggleFormLink}
+              />
+            );
           })}
         </div>
       )}

@@ -18,6 +18,8 @@ const useWeapons = (fetchOptions?: FetchOptions) => {
 
     const list = fetchOptions?.itemList || weapons;
 
+    console.log(list);
+
     const filteredExcludeList = fetchOptions?.excludedKeywords
       ? list.filter((weapon: WeaponWithKeywords) =>
           weapon.keywords?.every(

@@ -15,13 +15,17 @@ import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
 
 const Weapons = ({
+  className,
   title,
   fetchOptions,
   mode,
+  toggleFormLink,
 }: {
+  className?: string;
   title: string;
   fetchOptions?: FetchOptions;
   mode: string;
+  toggleFormLink?: (weaponId: WeaponWithKeywords) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { mobile } = useContext(LayoutContext);
@@ -43,24 +47,21 @@ const Weapons = ({
     },
   });
 
-  if (
-    weapons.isLoading ||
-    weapons.isPending ||
-    weapons.keywordsLoading ||
-    weapons.keywordsPending
-  ) {
+  if (weapons.isLoading || weapons.isPending) {
     return <Loading />;
   }
 
   return (
-    <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
+    <div
+      className={`${className} flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8`}
+    >
       <h1 className="text-center">{title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <form className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-4 p-4">
           <div className="grid w-full grid-cols-2 items-center justify-between">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
@@ -132,17 +133,29 @@ const Weapons = ({
               />
             </button>
           </div>
-        </form>
+        </div>
       </ThemeContainer>
       {cardType === 'large' ? (
-        weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
-          return <WeaponCard key={weapon.id} weapon={weapon} mode={mode} />;
+        weapons.filteredWeapons?.map((weapon: WeaponWithKeywords) => {
+          return (
+            <WeaponCard
+              key={weapon.id}
+              weapon={weapon}
+              mode={mode}
+              toggleFormLink={toggleFormLink}
+            />
+          );
         })
       ) : (
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-          {weapons.filteredWeapons.map((weapon: WeaponWithKeywords) => {
+          {weapons.filteredWeapons?.map((weapon: WeaponWithKeywords) => {
             return (
-              <WeaponCardMobile key={weapon.id} weapon={weapon} mode={mode} />
+              <WeaponCardMobile
+                key={weapon.id}
+                weapon={weapon}
+                mode={mode}
+                toggleFormLink={toggleFormLink}
+              />
             );
           })}
         </div>

@@ -8,40 +8,34 @@ import {
   useRef,
   useState,
 } from 'react';
-
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
 import { Link } from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
-import Icon from '@mdi/react';
-import { mdiTriangleDown } from '@mdi/js';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { ArmorWithKeywords } from 'src/types/armor';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import { Modification, VehicleWithWeapons } from 'src/types/vehicle';
 import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
-
 import SubmodificationCard from './SubmodificationCard';
 import BodyIcon from './icons/BodyIcon';
 import BtnRect from './buttons/BtnRect';
-
 import { Item } from 'src/types/item';
-
-import { subcategoryMap } from '../types/maps';
 import ModifierTag from './ModifierTag';
 import { Modifier } from 'src/types/modifier';
 import ItemPicture from './ItemPicture';
 import ArrowHeader2 from './ArrowHeader2';
-import ArrowHeader4 from './ArrowHeader4';
+import { ItemObject } from 'src/types/global';
+import StatBars from './StatBars';
 
 const ItemCard = ({
   item,
   category,
   mode,
   controls,
-  children,
+  toggleFormLink,
 }: {
   item:
     | WeaponWithKeywords
@@ -52,7 +46,7 @@ const ItemCard = ({
   category: string;
   mode: string;
   controls?: ReactNode;
-  children: ReactNode;
+  toggleFormLink?: (id: ItemObject) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const [cardWidth, setCardWidth] = useState(0);
@@ -65,8 +59,6 @@ const ItemCard = ({
 
   const cardRef = useRef(null);
 
-  console.log(item);
-
   return (
     <ThemeContainer
       chamfer="medium"
@@ -75,12 +67,25 @@ const ItemCard = ({
       overflowHidden={true}
     >
       <Link
-        to={`${category}/${item.id}`}
-        className="timing hover:bg-secondary relative flex cursor-pointer flex-col gap-8 p-4"
+        to={mode === 'form' ? '' : `${category}/${item.id}`}
+        state={mode}
+        className={`hover:bg-secondary timing relative flex w-full flex-col gap-8 p-4`}
       >
-        <div className="relative flex h-full gap-8">
-          {item.picture && (
-            <ItemPicture className={`timing w-[280px]`} item={item} />
+        <div
+          className="my-auto flex w-full gap-8"
+          onClick={
+            mode === 'form' && toggleFormLink
+              ? () => {
+                  toggleFormLink(item);
+                }
+              : undefined
+          }
+        >
+          {item.picture?.imageUrl && (
+            <ItemPicture
+              className={`timing aspect-square h-[300px]`}
+              item={item}
+            />
           )}
           <div className="flex w-full flex-col gap-4">
             <div className="flex w-full items-start justify-between">
@@ -175,16 +180,9 @@ const ItemCard = ({
             </div>
             <div
               ref={cardRef}
-              className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
+              className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} scrollbar-primary-2 grid w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 overflow-y-auto border-x-2 border-gray-400 border-opacity-50`}
             >
-              {Children.map(children, (child) => {
-                if (isValidElement(child)) {
-                  return cloneElement(child, {
-                    cardWidth,
-                  });
-                }
-                return child;
-              })}
+              <StatBars cardWidth={cardWidth} stats={item.stats} mode={mode} />
             </div>
             {item.modifiers && item.modifiers?.length > 0 && (
               <div className="flex w-full items-center justify-start gap-2 sm:gap-4">
@@ -219,13 +217,6 @@ const ItemCard = ({
               )}
             </div>
           </ThemeContainer>
-        )}
-        {mode === 'inventory' && (
-          <Link className="w-1/3 self-end" to={`${item.id}/modify`}>
-            <BtnRect ariaLabel="Navigate to modify weapon form" type="button">
-              Modify
-            </BtnRect>
-          </Link>
         )}
       </Link>
     </ThemeContainer>

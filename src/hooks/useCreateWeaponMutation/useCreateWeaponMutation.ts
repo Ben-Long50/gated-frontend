@@ -16,10 +16,6 @@ const useCreateWeaponMutation = (
       queryClient.invalidateQueries({
         queryKey: ['weapon', weaponId],
       });
-      queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
-        exact: false,
-      });
       return queryClient.invalidateQueries({
         queryKey: ['weapons'],
         exact: false,

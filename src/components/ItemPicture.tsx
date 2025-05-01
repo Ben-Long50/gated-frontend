@@ -26,6 +26,7 @@ const ItemPicture = ({
       borderColor={rarityColorMap[item.rarity] || accentPrimary}
       chamfer="medium"
       className={`${className} relative mb-auto shrink-0 opacity-100`}
+      overflowHidden={true}
     >
       <div
         className="absolute inset-0 z-10 opacity-50 clip-6"

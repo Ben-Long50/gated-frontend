@@ -12,6 +12,7 @@ import StatBar from './StatBar';
 import { useParams } from 'react-router-dom';
 import StatBars from './StatBars';
 import ItemCardMobile from './ItemCardMobile';
+import { ItemObject } from 'src/types/global';
 
 const CyberneticControls = ({
   cyberneticId,
@@ -64,10 +65,12 @@ const CyberneticCard = ({
   cybernetic,
   mode,
   ownerId,
+  toggleFormLink,
 }: {
   cybernetic: CyberneticWithKeywords;
   mode: string;
   ownerId?: number;
+  toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -84,27 +87,8 @@ const CyberneticCard = ({
           />
         ) : null
       }
-    >
-      <StatBars stats={cybernetic.stats} mode={mode} />
-      {cybernetic.weapons?.length > 0 && (
-        <div className="col-span-4 flex w-full items-center justify-between">
-          <h4 className="text-accent">Integrated Weapons</h4>
-          <p>{cybernetic.weapons.length}</p>
-        </div>
-      )}
-      {cybernetic.armor?.length > 0 && (
-        <div className="col-span-4 flex w-full items-center justify-between">
-          <h4 className="text-accent">Integrated Armor</h4>
-          <p>{cybernetic.armor.length}</p>
-        </div>
-      )}
-      {cybernetic.actions?.length > 0 && (
-        <div className="col-span-4 flex w-full items-center justify-between">
-          <h4 className="text-accent">Unique Actions</h4>
-          <p>{cybernetic.actions.length}</p>
-        </div>
-      )}
-    </ItemCard>
+      toggleFormLink={toggleFormLink}
+    />
   );
 };
 
@@ -112,10 +96,12 @@ export const CyberneticCardMobile = ({
   cybernetic,
   mode,
   ownerId,
+  toggleFormLink,
 }: {
   cybernetic: CyberneticWithKeywords;
   mode: string;
-  ownerId: number;
+  ownerId?: number;
+  toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -132,27 +118,8 @@ export const CyberneticCardMobile = ({
           />
         ) : null
       }
-    >
-      <StatBars stats={cybernetic.stats} mode={mode} />
-      {cybernetic.weapons?.length > 0 && (
-        <div className="col-span-4 flex w-full items-center justify-between">
-          <h4 className="text-accent">Integrated Weapons</h4>
-          <p>{cybernetic.weapons.length}</p>
-        </div>
-      )}
-      {cybernetic.armor?.length > 0 && (
-        <div className="col-span-4 flex w-full items-center justify-between">
-          <h4 className="text-accent">Integrated Armor</h4>
-          <p>{cybernetic.armor.length}</p>
-        </div>
-      )}
-      {cybernetic.actions?.length > 0 && (
-        <div className="col-span-4 flex w-full items-center justify-between">
-          <h4 className="text-accent">Unique Actions</h4>
-          <p>{cybernetic.actions.length}</p>
-        </div>
-      )}
-    </ItemCardMobile>
+      toggleFormLink={toggleFormLink}
+    />
   );
 };
 

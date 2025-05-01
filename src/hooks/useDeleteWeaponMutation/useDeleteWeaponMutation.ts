@@ -14,7 +14,7 @@ const useDeleteWeaponMutation = (
       return deleteWeapon(apiUrl, weaponId);
     },
     onSuccess: () => {
-      navigate(-1);
+      navigate(-2);
       queryClient.removeQueries({
         queryKey: ['weapon', weaponId],
       });

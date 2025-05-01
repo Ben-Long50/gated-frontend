@@ -7,33 +7,42 @@ import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
 import useKeywords from '../hooks/useKeywords';
-import KeywordCard from './KeywordCard';
 import Icon from '@mdi/react';
 import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import useCreateArmorMutation from '../hooks/useCreateArmorMutation/useCreateArmorMutation';
 import FormLayout from '../layouts/FormLayout';
 import { useParams } from 'react-router-dom';
-import InputFieldBasic from './InputFieldBasic';
 import useDeleteArmorMutation from '../hooks/useDeleteArmorMutation/useDeleteArmorMutation';
 import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
 import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
-import SubactionForm from './SubactionForm';
-import { ArmorStats } from 'src/types/armor';
+import { ArmorStats, ArmorWithKeywords } from 'src/types/armor';
 import useModifyArmorMutation from '../hooks/useModifyArmorMutation/useModifyArmorMutation';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
-import { Action, ActionCosts } from 'src/types/action';
+import { Action } from 'src/types/action';
+import { WeaponWithKeywords } from 'src/types/weapon';
+import { CyberneticWithKeywords } from 'src/types/cybernetic';
+
+import WeaponLinkField from './form_fields/WeaponLinkField';
+import ArmorLinkField from './form_fields/ArmorLinkField';
+import CyberneticLinkField from './form_fields/CyberneticLinkField';
+import ActionLinkField from './form_fields/ActionLinkField';
+import KeywordLinkField from './form_fields/KeywordLinkField';
+import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 
 const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
+
   const { armorId } = useParams();
 
-  const { data: armor } = useArmorPieceQuery(apiUrl, Number(armorId));
+  const { data: armor } = useArmorPieceQuery(apiUrl, Number(armorId), {
+    enabled: !!armorId,
+  });
 
   const keywords = useKeywords('armor');
 
@@ -41,7 +50,12 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
     armor?.picture?.imageUrl || '',
   );
 
-  const createArmor = useCreateArmorMutation(apiUrl, setFormMessage);
+  const createArmor = useCreateArmorMutation(
+    apiUrl,
+    setFormMessage,
+    Number(armorId),
+  );
+
   const modifyArmor = useModifyArmorMutation(
     apiUrl,
     Number(armorId),
@@ -65,30 +79,11 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
     armorForm.reset();
   };
 
-  const armorKeywordData = armor?.keywords.map(
-    (item: { keyword: Keyword; value?: number }) => {
-      return { keywordId: item.keyword.id, value: item.value };
-    },
-  );
-
   useEffect(() => {
     if (armor) {
       setImagePreview(armor.picture?.imageUrl);
     } else setImagePreview('');
   }, [armor, armorId]);
-
-  const searchForm = useForm({
-    defaultValues: {
-      query: '',
-    },
-    onSubmit: ({ value }) => {
-      if (value.query === '') {
-        keywords.resetList();
-      } else {
-        keywords.filterByQuery(value.query);
-      }
-    },
-  });
 
   const armorForm = useForm({
     defaultValues: {
@@ -98,6 +93,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
       grade: armor?.grade || 1,
       picture: armor?.picture || '',
       description: armor?.description || '',
+      price: armor?.price || '',
       stats: {
         armor: armor?.stats.armor || '',
         ward: armor?.stats.ward || '',
@@ -107,31 +103,12 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
         currentPower: armor?.stats.currentPower || '',
         weight: armor?.stats.weight || '',
       } as ArmorStats,
-      actions:
-        armor?.actions ||
-        ([] as {
-          name: string;
-          costs: {
-            actionPoints: number;
-            reactionPoints: number;
-            power: number;
-            health: number;
-            sanity: number;
-            wyrmShells: number;
-            currentAmmoCount: number;
-          };
-          roll: { attribute: string; skill: string }[];
-          actionType: string;
-          actionSubtypes: string[];
-          duration: {
-            unit: string;
-            value: number;
-          };
-          description: string;
-        }[]),
-      price: armor?.price || null,
+      weapons: armor?.weapons || ([] as WeaponWithKeywords[]),
+      armor: armor?.armor || ([] as ArmorWithKeywords[]),
+      cybernetics: armor?.cybernetics || ([] as CyberneticWithKeywords[]),
+      actions: armor?.actions || ([] as Action[]),
       keywords:
-        armorKeywordData || ([] as { keywordId: number; value?: number }[]),
+        armor?.keywords || ([] as { keyword: Keyword; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
       value.stats.currentBlock = value.stats.block;
@@ -141,17 +118,22 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
         Object.entries(value.stats).filter(([_, val]) => val),
       );
 
-      value.actions.forEach((action: Action) => {
-        action.costs = Object.fromEntries(
-          Object.entries(action.costs).filter(([_, value]) => value),
-        ) as ActionCosts;
-      });
-
       value.stats = { ...filteredStats };
+
+      const { weapons, armor, cybernetics, actions, keywords, ...rest } = value;
+
+      const data = {
+        ...rest,
+        weaponIds: extractItemListIds(value.weapons),
+        armorIds: extractItemListIds(value.armor),
+        cyberneticIds: extractItemListIds(value.cybernetics),
+        actionIds: extractItemListIds(value.actions),
+        keywordIds: extractKeywordListIds(value.keywords),
+      };
 
       const formData = new FormData();
 
-      Object.entries(value).forEach(([key, value]) => {
+      Object.entries(data).forEach(([key, value]) => {
         if (key === 'picture' && value instanceof File) {
           formData.append(key, value);
         } else {
@@ -161,7 +143,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
       if (mode === 'create' || mode === 'update') {
         await createArmor.mutate(formData);
       } else if (mode === 'modify') {
-        await modifyArmor.mutate(formData);
+        // await modifyArmor.mutate(formData);
       }
     },
   });
@@ -182,299 +164,237 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
   }
 
   return (
-    <FormLayout
-      itemId={armorId}
-      createMutation={createArmor}
-      modifyMutation={modifyArmor}
-      deleteMutation={deleteArmor}
-      handleDelete={handleDelete}
-      handleReset={handleReset}
-      formMessage={formMessage}
-      deleteMode={deleteMode}
-      setDeleteMode={setDeleteMode}
-    >
-      <form
-        className="flex flex-col gap-8"
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          armorForm.handleSubmit();
-        }}
+    <>
+      <FormLayout
+        itemId={armorId}
+        createMutation={createArmor}
+        modifyMutation={modifyArmor}
+        deleteMutation={deleteArmor}
+        handleDelete={handleDelete}
+        handleReset={handleReset}
+        formMessage={formMessage}
+        deleteMode={deleteMode}
+        setDeleteMode={setDeleteMode}
       >
-        <div className="flex items-center justify-center gap-4">
-          <h1>{title} Armor</h1>
-        </div>
-        <Divider />
-        <ArrowHeader2 title="Armor Information" />
-        <div className="flex w-full gap-4 lg:gap-8">
-          <armorForm.Field
-            name="name"
-            validators={{
-              onChange: ({ value }) =>
-                value.length < 2
-                  ? 'Armor name must be at least 2 characters long'
-                  : undefined,
-            }}
-          >
-            {(field) => (
-              <InputField className="grow" label="Armor name" field={field} />
-            )}
-          </armorForm.Field>
-          <armorForm.Field name="price">
-            {(field) => (
-              <InputField
-                className="max-w-28"
-                type="number"
-                label="Price"
-                field={field}
-              />
-            )}
-          </armorForm.Field>
-        </div>
-        <div className="flex w-full items-center gap-4 lg:gap-8">
-          <armorForm.Field
-            name="rarity"
-            validators={{
-              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
-            }}
-          >
-            {(field) => (
-              <SelectField className="w-full" label="Item rarity" field={field}>
-                <option value=""></option>
-                <option value="common">Common</option>
-                <option value="uncommon">Uncommon</option>
-                <option value="rare">Rare</option>
-                <option value="blackMarket">Black Market</option>
-                <option value="artifact">Artifact</option>
-              </SelectField>
-            )}
-          </armorForm.Field>
-          <armorForm.Field
-            name="grade"
-            validators={{
-              onChange: ({ value }) =>
-                value <= 0 ? 'Minimum grade is 1' : undefined,
-            }}
-          >
-            {(field) => (
-              <InputField
-                className="w-full max-w-28"
-                type="number"
-                label="Item grade"
-                field={field}
-              />
-            )}
-          </armorForm.Field>
-        </div>
-        <div className="flex flex-col gap-8 sm:flex-row">
-          <ThemeContainer
-            className="mx-auto w-full max-w-sm"
-            chamfer="medium"
-            borderColor={accentPrimary}
-            overflowHidden={true}
-          >
-            {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
-                <div className="flex h-full w-full flex-col items-center justify-center gap-2 pb-6 pt-5 clip-6">
-                  <Icon
-                    className="text-tertiary"
-                    path={mdiImagePlus}
-                    size={3}
-                  />
-                  <p className="text-tertiary font-semibold">
-                    Upload armor picture
-                  </p>
-                  <p className="text-tertiary">PNG, JPG, JPEG</p>
-                </div>
-                <input
-                  id="file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black">
-                <img
-                  className="fade-in-bottom"
-                  src={imagePreview}
-                  alt="Preview"
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2"
-                  onClick={() => {
-                    armorForm.setFieldValue('picture', '');
-                    setImagePreview('');
-                  }}
-                >
-                  <div className="rounded bg-zinc-950">
-                    <Icon path={mdiCloseBox} size={1.5} />
-                  </div>
-                </button>
-              </div>
-            )}
-          </ThemeContainer>
-          <armorForm.Field
-            name="description"
-            validators={{
-              onChange: ({ value }) =>
-                value.length < 2
-                  ? 'Armor description must be at least 2 characters long'
-                  : undefined,
-            }}
-          >
-            {(field) => (
-              <TextAreaField label="Armor description" field={field} />
-            )}
-          </armorForm.Field>
-        </div>
-        <div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
-            <armorForm.Field name="stats.armor">
+        <form
+          className="flex flex-col gap-8"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            armorForm.handleSubmit();
+          }}
+        >
+          <div className="flex items-center justify-center gap-4">
+            <h1>{title} Armor</h1>
+          </div>
+          <Divider />
+          <ArrowHeader2 title="Armor Information" />
+          <div className="flex w-full gap-4 lg:gap-8">
+            <armorForm.Field
+              name="name"
+              validators={{
+                onChange: ({ value }) =>
+                  value.length < 2
+                    ? 'Armor name must be at least 2 characters long'
+                    : undefined,
+              }}
+            >
               {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Armor value"
-                  field={field}
-                />
+                <InputField className="grow" label="Armor name" field={field} />
               )}
             </armorForm.Field>
-            <armorForm.Field name="stats.ward">
+            <armorForm.Field name="price">
               {(field) => (
                 <InputField
-                  className="grow"
+                  className="max-w-28"
                   type="number"
-                  label="Ward value"
-                  field={field}
-                />
-              )}
-            </armorForm.Field>
-            <armorForm.Field name="stats.block">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Block points"
-                  field={field}
-                />
-              )}
-            </armorForm.Field>
-            <armorForm.Field name="stats.power">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Power"
-                  field={field}
-                />
-              )}
-            </armorForm.Field>
-            <armorForm.Field name="stats.weight">
-              {(field) => (
-                <InputField
-                  className="grow"
-                  type="number"
-                  label="Weight"
+                  label="Price"
                   field={field}
                 />
               )}
             </armorForm.Field>
           </div>
-        </div>
-        <Divider />
-        <SubactionForm form={armorForm} />
-        <Divider />
-        <ArrowHeader2 title="Armor Keywords" />
-        <searchForm.Field name="query">
-          {(field) => (
-            <InputField
-              label="Search keywords"
-              field={field}
-              onChange={() => {
-                searchForm.handleSubmit();
+          <div className="flex w-full items-center gap-4 lg:gap-8">
+            <armorForm.Field
+              name="rarity"
+              validators={{
+                onSubmit: ({ value }) =>
+                  !value ? 'Select a rarity' : undefined,
               }}
-            />
-          )}
-        </searchForm.Field>
-
-        <armorForm.Field name="keywords">
-          {(field) => (
-            <div className="scrollbar-primary-2 flex max-h-[364px] flex-col gap-4 overflow-y-auto px-0.5 pr-2 md:grid md:grid-cols-2">
-              {keywords.filteredKeywords.map((keyword) => {
-                const activeKeyword = field.state.value.find(
-                  (item: { keywordId: number; value?: number }) =>
-                    item.keywordId === keyword.id,
-                );
-                return (
-                  <div key={keyword.id} className="flex items-center gap-4">
-                    <KeywordCard className="w-full" keyword={keyword}>
-                      {activeKeyword && (
-                        <InputFieldBasic
-                          className="max-w-20 shrink-0"
-                          type="number"
-                          label="Value"
-                          value={activeKeyword.value}
-                          onChange={(value: number) => {
-                            const updatedValue = field.state.value.some(
-                              (item: { keywordId: number; value?: number }) =>
-                                item.keywordId === keyword.id,
-                            )
-                              ? field.state.value.map(
-                                  (item: {
-                                    keywordId: number;
-                                    value?: number;
-                                  }) =>
-                                    item.keywordId === keyword.id
-                                      ? { ...item, value }
-                                      : item,
-                                )
-                              : [...field.state.value, { ...keyword, value }];
-                            field.handleChange(updatedValue);
-                          }}
-                        />
-                      )}
-                    </KeywordCard>
-                    <div className="flex flex-col items-center gap-4">
-                      <input
-                        className="size-6 shrink-0"
-                        type="checkbox"
-                        checked={activeKeyword}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            field.handleChange([
-                              ...field.state.value,
-                              { keywordId: keyword.id },
-                            ]);
-                          } else {
-                            field.handleChange(
-                              field.state.value.filter(
-                                (item: { keywordId: number; value?: number }) =>
-                                  item.keywordId !== keyword.id,
-                              ),
-                            );
-                          }
-                        }}
-                      />
-                    </div>
+            >
+              {(field) => (
+                <SelectField
+                  className="w-full"
+                  label="Item rarity"
+                  field={field}
+                >
+                  <option value=""></option>
+                  <option value="common">Common</option>
+                  <option value="uncommon">Uncommon</option>
+                  <option value="rare">Rare</option>
+                  <option value="blackMarket">Black Market</option>
+                  <option value="artifact">Artifact</option>
+                </SelectField>
+              )}
+            </armorForm.Field>
+            <armorForm.Field
+              name="grade"
+              validators={{
+                onChange: ({ value }) =>
+                  value <= 0 ? 'Minimum grade is 1' : undefined,
+              }}
+            >
+              {(field) => (
+                <InputField
+                  className="w-full max-w-28"
+                  type="number"
+                  label="Item grade"
+                  field={field}
+                />
+              )}
+            </armorForm.Field>
+          </div>
+          <div className="flex flex-col gap-8 sm:flex-row">
+            <ThemeContainer
+              className="mx-auto w-full max-w-sm"
+              chamfer="medium"
+              borderColor={accentPrimary}
+              overflowHidden={true}
+            >
+              {!imagePreview ? (
+                <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
+                  <div className="flex h-full w-full flex-col items-center justify-center gap-2 pb-6 pt-5 clip-6">
+                    <Icon
+                      className="text-tertiary"
+                      path={mdiImagePlus}
+                      size={3}
+                    />
+                    <p className="text-tertiary font-semibold">
+                      Upload armor picture
+                    </p>
+                    <p className="text-tertiary">PNG, JPG, JPEG</p>
                   </div>
-                );
-              })}
+                  <input
+                    id="file"
+                    type="file"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </label>
+              ) : (
+                <div className="relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black">
+                  <img
+                    className="fade-in-bottom"
+                    src={imagePreview}
+                    alt="Preview"
+                  />
+                  <button
+                    className="text-secondary absolute right-2 top-2"
+                    onClick={() => {
+                      armorForm.setFieldValue('picture', '');
+                      setImagePreview('');
+                    }}
+                  >
+                    <div className="rounded bg-zinc-950">
+                      <Icon path={mdiCloseBox} size={1.5} />
+                    </div>
+                  </button>
+                </div>
+              )}
+            </ThemeContainer>
+            <armorForm.Field
+              name="description"
+              validators={{
+                onChange: ({ value }) =>
+                  value.length < 2
+                    ? 'Armor description must be at least 2 characters long'
+                    : undefined,
+              }}
+            >
+              {(field) => (
+                <TextAreaField label="Armor description" field={field} />
+              )}
+            </armorForm.Field>
+          </div>
+          <div>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
+              <armorForm.Field name="stats.armor">
+                {(field) => (
+                  <InputField
+                    className="grow"
+                    type="number"
+                    label="Armor value"
+                    field={field}
+                  />
+                )}
+              </armorForm.Field>
+              <armorForm.Field name="stats.ward">
+                {(field) => (
+                  <InputField
+                    className="grow"
+                    type="number"
+                    label="Ward value"
+                    field={field}
+                  />
+                )}
+              </armorForm.Field>
+              <armorForm.Field name="stats.block">
+                {(field) => (
+                  <InputField
+                    className="grow"
+                    type="number"
+                    label="Block points"
+                    field={field}
+                  />
+                )}
+              </armorForm.Field>
+              <armorForm.Field name="stats.power">
+                {(field) => (
+                  <InputField
+                    className="grow"
+                    type="number"
+                    label="Power"
+                    field={field}
+                  />
+                )}
+              </armorForm.Field>
+              <armorForm.Field name="stats.weight">
+                {(field) => (
+                  <InputField
+                    className="grow"
+                    type="number"
+                    label="Weight"
+                    field={field}
+                  />
+                )}
+              </armorForm.Field>
             </div>
-          )}
-        </armorForm.Field>
-        <BtnRect type="submit" className="group w-full">
-          {createArmor.isPending || modifyArmor.isPending ? (
-            <Loading
-              className="group-hover:text-yellow-300 dark:text-gray-900"
-              size={1.15}
-            />
-          ) : (
-            title
-          )}
-        </BtnRect>
-      </form>
-    </FormLayout>
+          </div>
+          <div className="flex flex-col gap-4">
+            <KeywordLinkField form={armorForm} />
+            <Divider />
+            <WeaponLinkField form={armorForm} />
+            <Divider />
+            <ArmorLinkField form={armorForm} />
+            <Divider />
+            <CyberneticLinkField form={armorForm} />
+            <Divider />
+            <ActionLinkField form={armorForm} />
+            <Divider />
+          </div>
+          <BtnRect ariaLabel={title} type="submit" className="group w-full">
+            {createArmor.isPending || modifyArmor.isPending ? (
+              <Loading
+                className="group-hover:text-yellow-300 dark:text-gray-900"
+                size={1.15}
+              />
+            ) : (
+              title
+            )}
+          </BtnRect>
+        </form>
+      </FormLayout>
+    </>
   );
 };
 

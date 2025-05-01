@@ -14,6 +14,7 @@ import PowerIcon from './icons/PowerIcon';
 import { useParams } from 'react-router-dom';
 import StatBars from './StatBars';
 import ItemCardMobile from './ItemCardMobile';
+import { ItemObject } from 'src/types/global';
 
 const ArmorControls = ({
   armorId,
@@ -92,10 +93,12 @@ const ArmorCard = ({
   armor,
   mode,
   ownerId,
+  toggleFormLink,
 }: {
   armor: ArmorWithKeywords;
   mode: string;
   ownerId?: number;
+  toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -109,9 +112,8 @@ const ArmorCard = ({
           <ArmorControls armorId={armor.id} stats={armor.stats} />
         ) : null
       }
-    >
-      <StatBars stats={armor.stats} mode={mode} />
-    </ItemCard>
+      toggleFormLink={toggleFormLink}
+    />
   );
 };
 
@@ -119,10 +121,12 @@ export const ArmorCardMobile = ({
   armor,
   mode,
   ownerId,
+  toggleFormLink,
 }: {
   armor: ArmorWithKeywords;
   mode: string;
-  ownerId: number;
+  ownerId?: number;
+  toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -136,9 +140,8 @@ export const ArmorCardMobile = ({
           <ArmorControls armorId={armor.id} stats={armor.stats} />
         ) : null
       }
-    >
-      <StatBars stats={armor.stats} mode={mode} />
-    </ItemCardMobile>
+      toggleFormLink={toggleFormLink}
+    />
   );
 };
 
