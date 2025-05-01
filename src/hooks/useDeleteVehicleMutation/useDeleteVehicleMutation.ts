@@ -4,7 +4,7 @@ import deleteVehicle from './deleteVehicle';
 
 const useDeleteVehicleMutation = (
   apiUrl: string,
-  vehicleId: string,
+  vehicleId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();

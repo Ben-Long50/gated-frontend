@@ -42,8 +42,6 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
     options: !!weaponId,
   });
 
-  const keywords = useKeywords('weapon');
-
   const [imagePreview, setImagePreview] = useState(
     weapon?.picture?.imageUrl || '',
   );
@@ -160,10 +158,6 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
       setImagePreview(fileUrl);
     }
   };
-
-  if (keywords.isLoading || keywords.isPending) {
-    return <Loading />;
-  }
 
   return (
     <FormLayout

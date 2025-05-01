@@ -3,7 +3,7 @@ import modifyVehicle from './modifyVehicle';
 
 const useModifyVehicleMutation = (
   apiUrl: string,
-  vehicleId: string,
+  vehicleId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
@@ -14,7 +14,7 @@ const useModifyVehicleMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['vehicle'],
+        queryKey: ['vehicle', vehicleId],
         exact: false,
       });
       return queryClient.invalidateQueries({

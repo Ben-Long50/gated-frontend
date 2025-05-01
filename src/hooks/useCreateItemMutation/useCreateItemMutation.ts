@@ -4,6 +4,7 @@ import createItem from './createItem';
 const useCreateItemMutation = (
   apiUrl: string,
   setFormMessage: (message: string) => void,
+  itemId?: number,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -13,11 +14,7 @@ const useCreateItemMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
-        exact: false,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['item'],
+        queryKey: ['item', itemId],
         exact: false,
       });
       return queryClient.invalidateQueries({

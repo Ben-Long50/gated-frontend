@@ -7,7 +7,7 @@ import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
 import Icon from '@mdi/react';
-import { mdiChevronDown, mdiCloseBox, mdiImagePlus } from '@mdi/js';
+import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 import { useParams } from 'react-router-dom';
@@ -15,63 +15,53 @@ import { Modification, VehicleStats } from '../types/vehicle';
 import { WeaponWithKeywords } from '../types/weapon';
 import useCreateVehicleMutation from '../hooks/useCreateVehicleMutation/useCreateVehicleMutation';
 import useDeleteVehicleMutation from '../hooks/useDeleteVehicleMutation/useDeleteVehicleMutation';
-import useModifications from '../hooks/useModifications';
-import ModCard from './ModCard';
-import SubweaponCard from './SubweaponCard';
-import useWeapons from '../hooks/useWeapons';
 import SelectField from './SelectField';
 import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
-import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import useModifyVehicleMutation from '../hooks/useModifyVehicleMutation/useModifyVehicleMutation';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
+import { Keyword } from 'src/types/keyword';
+import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
+import { ArmorWithKeywords } from 'src/types/armor';
+import { Action } from 'src/types/action';
+import KeywordLinkField from './form_fields/KeywordLinkField';
+import WeaponLinkField from './form_fields/WeaponLinkField';
+import ArmorLinkField from './form_fields/ArmorLinkField';
+import ActionLinkField from './form_fields/ActionLinkField';
 
 const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
-  const [weaponDetailsOpen, setWeaponDetailsOpen] = useState(false);
-  const [modDetailsOpen, setModDetailsOpen] = useState(false);
-  const [toolTip, setToolTip] = useState('');
   const { vehicleId } = useParams();
 
-  const { data: character } = useActiveCharacterQuery(apiUrl);
-
-  const { data: vehicle } = useVehicleQuery(apiUrl, vehicleId);
-
-  const vehicleWeapons = useWeapons({
-    itemList:
-      title === 'Modify' ? character?.characterInventory?.weapons : undefined,
-    includedKeywords: ['Vehicle'],
-  });
-
-  const equippedWeapons = useWeapons({ itemList: vehicle?.weapons || [] });
-
-  const modifications = useModifications({
-    itemList: title === 'Modify' && character?.characterInventory.modifications,
-  });
-
-  const equippedMods = useModifications({ itemList: vehicle?.modifications });
-
-  const modList =
-    title === 'Modify'
-      ? modifications.filteredMods
-      : [...modifications.filteredMods, ...equippedMods.filteredMods];
+  const { data: vehicle, isLoading } = useVehicleQuery(
+    apiUrl,
+    Number(vehicleId),
+    {
+      enabled: !!vehicleId,
+    },
+  );
 
   const [imagePreview, setImagePreview] = useState(
     vehicle?.picture?.imageUrl || '',
   );
 
-  const createVehicle = useCreateVehicleMutation(apiUrl, setFormMessage);
+  const createVehicle = useCreateVehicleMutation(
+    apiUrl,
+    setFormMessage,
+    Number(vehicleId),
+  );
+
   const modifyVehicle = useModifyVehicleMutation(
     apiUrl,
-    vehicleId,
+    Number(vehicleId),
     setFormMessage,
   );
   const deleteVehicle = useDeleteVehicleMutation(
     apiUrl,
-    vehicleId,
+    Number(vehicleId),
     setFormMessage,
   );
 
@@ -87,28 +77,11 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
     vehicleForm.reset();
   };
 
-  const vehicleWeaponDetails = vehicle?.weapons?.map(
-    (weapon: WeaponWithKeywords) => weapon.id,
-  );
-
-  const modIds = vehicle?.modifications?.map(
-    (modification: Modification) => modification.id,
-  );
-
   useEffect(() => {
     if (vehicle) {
       setImagePreview(vehicle.picture?.imageUrl);
     }
   }, [vehicle]);
-
-  const searchForm = useForm({
-    defaultValues: {
-      query: '',
-    },
-    onSubmit: ({ value }) => {
-      vehicleWeapons.filterByQuery(value.query);
-    },
-  });
 
   const vehicleForm = useForm({
     defaultValues: {
@@ -135,8 +108,12 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
         currentWeapon: vehicle?.stats?.currentWeapon || '',
       } as VehicleStats,
       price: vehicle?.price || null,
-      weapons: vehicleWeaponDetails || [],
-      modifications: modIds || [],
+      weapons: vehicle?.weapons || ([] as WeaponWithKeywords[]),
+      armor: vehicle?.armor || ([] as ArmorWithKeywords[]),
+      actions: vehicle?.actions || ([] as Action[]),
+      modifications: vehicle?.modifications || ([] as Modification[]),
+      keywords:
+        vehicle?.keywords || ([] as { keyword: Keyword; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
       value.stats.currentHull = value.stats.hull;
@@ -152,9 +129,23 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
       if (value.stats.hangar) value.stats.currentHangar = 0;
       if (value.stats.pass) value.stats.currentPass = 0;
 
+      const { weapons, armor, actions, modifications, keywords, ...rest } =
+        value;
+
+      const data = {
+        ...rest,
+        weaponIds: extractItemListIds(value.weapons),
+        armorIds: extractItemListIds(value.armor),
+        actionIds: extractItemListIds(value.actions),
+        modificationIds: extractItemListIds(value.modifications),
+        keywordIds: extractKeywordListIds(value.keywords),
+      };
+
+      console.log(data);
+
       const formData = new FormData();
 
-      Object.entries(value).forEach(([key, value]) => {
+      Object.entries(data).forEach(([key, value]) => {
         if (key === 'picture' && value instanceof File) {
           formData.append(key, value);
         } else {
@@ -165,18 +156,13 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
       if (mode === 'create' || mode === 'update') {
         await createVehicle.mutate(formData);
       } else if (mode === 'modify') {
-        await modifyVehicle.mutate(formData);
+        // await modifyVehicle.mutate(formData);
       }
     },
     validators: {
       onSubmit: ({ value }) => {
         if (value.stats.weapon) {
-          const count = value.weapons.reduce(
-            (sum: number, weapon: { weaponId: number; quantity: number }) =>
-              sum + weapon.quantity,
-            0,
-          );
-          if (value.stats.weapon < count) {
+          if (value.stats.weapon < value.weapons.length) {
             return "You cannot mount more weapons than this vehicle's weapons stat";
           }
         } else if (value.weapons.length > 0) {
@@ -198,14 +184,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
     }
   };
 
-  if (
-    vehicleWeapons.isLoading ||
-    vehicleWeapons.isPending ||
-    equippedWeapons.isLoading ||
-    equippedWeapons.isPending
-  ) {
-    return <Loading />;
-  }
+  if (isLoading) return <Loading />;
 
   return (
     <FormLayout
@@ -454,222 +433,16 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
             </vehicleForm.Field>
           </div>
         </div>
-        <Divider />
-        <div className="relative flex flex-col" onClick={() => setToolTip('')}>
-          <div
-            className={`timing mb-4 flex cursor-pointer items-center justify-between`}
-            onClick={() => setWeaponDetailsOpen(!weaponDetailsOpen)}
-          >
-            <div className="flex items-center gap-8">
-              <ArrowHeader2 title="Mount Weapons" />
-              <p className="text-tertiary italic">(Click to expand)</p>
-            </div>
-
-            <div className="flex items-center gap-8">
-              <vehicleForm.Subscribe selector={(state) => state.values.weapons}>
-                {(weapons) => <h3 className="text-accent">{weapons.length}</h3>}
-              </vehicleForm.Subscribe>
-              <span
-                className={`timing shrink-0 ${weaponDetailsOpen && '-rotate-180'}`}
-              >
-                <Icon
-                  path={mdiChevronDown}
-                  size={1.1}
-                  className="text-secondary"
-                ></Icon>
-              </span>
-            </div>
-          </div>
-          <div
-            className={`${weaponDetailsOpen ? 'max-h-[1000px]' : 'max-h-0'} timing flex flex-col gap-4 overflow-y-auto`}
-          >
-            <p className="border-l border-gray-400 pl-4">
-              Select vehicle weapons from the list below to mount to your
-              vehicle. You can only select up the number of weapons slots your
-              vehicle has. This value is denoted by the WPN stat.
-            </p>
-            <vehicleForm.Field name="weapons">
-              {(field) => (
-                <>
-                  <div className="flex flex-col gap-8 py-1 pl-1 pr-4">
-                    {equippedWeapons.filteredWeapons.map(
-                      (weapon: WeaponWithKeywords) => {
-                        const activeWeapon = field.state.value.includes(
-                          weapon.id,
-                        );
-
-                        return (
-                          <div
-                            className="flex items-center gap-8"
-                            key={weapon.id}
-                          >
-                            <SubweaponCard
-                              vehicleId={vehicle?.id}
-                              weapon={weapon}
-                              toolTip={toolTip}
-                              setToolTip={setToolTip}
-                            />
-
-                            <input
-                              type="checkbox"
-                              className="size-6"
-                              checked={!!activeWeapon}
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  field.handleChange([
-                                    ...field.state.value,
-                                    weapon.id,
-                                  ]);
-                                } else {
-                                  field.handleChange(
-                                    field.state.value.filter(
-                                      (item: number) => item !== weapon.id,
-                                    ),
-                                  );
-                                }
-                              }}
-                            />
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
-                  <form className="bg-primary flex w-full flex-col gap-4 p-0.5 pt-2">
-                    <searchForm.Field name="query">
-                      {(field) => (
-                        <InputField
-                          label="Search vehicle weapons"
-                          field={field}
-                          onChange={() => {
-                            searchForm.handleSubmit();
-                          }}
-                        />
-                      )}
-                    </searchForm.Field>
-                  </form>
-                  <div
-                    className={`scrollbar-primary flex flex-col gap-8 overflow-y-auto py-1 pl-1 pr-4`}
-                  >
-                    {vehicleWeapons.filteredWeapons.map(
-                      (weapon: WeaponWithKeywords) => {
-                        const activeWeapon = field.state.value.includes(
-                          weapon.id,
-                        );
-
-                        return (
-                          <>
-                            <div
-                              className="flex items-center gap-8"
-                              key={weapon.id}
-                            >
-                              <SubweaponCard
-                                vehicleId={vehicle?.id}
-                                weapon={weapon}
-                                toolTip={toolTip}
-                                setToolTip={setToolTip}
-                              />
-
-                              <input
-                                type="checkbox"
-                                className="size-6"
-                                checked={!!activeWeapon}
-                                onChange={(e) => {
-                                  if (e.target.checked) {
-                                    field.handleChange([
-                                      ...field.state.value,
-                                      weapon.id,
-                                    ]);
-                                  } else {
-                                    field.handleChange(
-                                      field.state.value.filter(
-                                        (item: number) => item !== weapon.id,
-                                      ),
-                                    );
-                                  }
-                                }}
-                              />
-                            </div>
-                            <Divider />
-                          </>
-                        );
-                      },
-                    )}
-                  </div>
-                </>
-              )}
-            </vehicleForm.Field>
-          </div>
+        <div className="flex flex-col gap-4">
+          <KeywordLinkField form={vehicleForm} />
+          <Divider />
+          <WeaponLinkField form={vehicleForm} />
+          <Divider />
+          <ArmorLinkField form={vehicleForm} />
+          <Divider />
+          <ActionLinkField form={vehicleForm} />
+          <Divider />
         </div>
-        {/* <Divider />
-        <div className="flex flex-col">
-          <div
-            className={`${modDetailsOpen && 'pb-8'} timing flex cursor-pointer items-center justify-between`}
-            onClick={() => setModDetailsOpen(!modDetailsOpen)}
-          >
-            <h3>Fit modifications</h3>
-            <div className="flex items-center gap-8">
-              <vehicleForm.Subscribe
-                selector={(state) => state.values.modifications}
-              >
-                {(modifications) => (
-                  <h3 className="text-accent">{modifications.length}</h3>
-                )}
-              </vehicleForm.Subscribe>
-              <span
-                className={`timing shrink-0 ${modDetailsOpen && '-rotate-180'}`}
-              >
-                <Icon
-                  path={mdiChevronDown}
-                  size={1.1}
-                  className="text-secondary"
-                ></Icon>
-              </span>
-            </div>
-          </div>
-          <div
-            className={`${modDetailsOpen ? 'max-h-[500px] py-1' : 'max-h-0'} timing scrollbar-primary grid grid-cols-1 gap-x-6 gap-y-4 overflow-y-auto pl-1 pr-4 sm:grid-cols-2`}
-          >
-            <vehicleForm.Field name="modifications">
-              {(field) =>
-                modList.map((modification: Modification) => {
-                  const activeModification = field.state.value.includes(
-                    modification.id,
-                  );
-                  return (
-                    <div
-                      className="flex items-center gap-4"
-                      key={modification.id}
-                    >
-                      <ModCard
-                        vehicleId={vehicle?.id}
-                        modification={modification}
-                      />
-                      <input
-                        type="checkbox"
-                        className="size-6"
-                        checked={!!activeModification}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            field.handleChange([
-                              ...field.state.value,
-                              modification.id,
-                            ]);
-                          } else {
-                            field.handleChange(
-                              field.state.value.filter(
-                                (item: number) => item !== modification.id,
-                              ),
-                            );
-                          }
-                        }}
-                      />
-                    </div>
-                  );
-                })
-              }
-            </vehicleForm.Field>
-          </div>
-        </div> */}
         <vehicleForm.Subscribe selector={(state) => state.errorMap}>
           {(errorMap) =>
             errorMap.onSubmit ? (
@@ -677,7 +450,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
             ) : null
           }
         </vehicleForm.Subscribe>
-        <BtnRect type="submit" className="group w-full">
+        <BtnRect ariaLabel={title} type="submit" className="group w-full">
           {createVehicle.isPending || modifyVehicle.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"

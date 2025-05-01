@@ -4,6 +4,7 @@ import createVehicle from './createVehicle';
 const useCreateVehicleMutation = (
   apiUrl: string,
   setFormMessage: (message: string) => void,
+  vehicleId: number,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -13,11 +14,7 @@ const useCreateVehicleMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
-        exact: false,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['vehicle'],
+        queryKey: ['vehicle', vehicleId],
         exact: false,
       });
       return queryClient.invalidateQueries({

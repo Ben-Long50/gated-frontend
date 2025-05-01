@@ -22,7 +22,11 @@ import { ItemStats } from 'src/types/item';
 import useModifyItemMutation from '../hooks/useModifyItemMutation/useModifyItemMutation';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
-import { Action, ActionCosts } from 'src/types/action';
+import { Action } from 'src/types/action';
+import { Keyword } from 'src/types/keyword';
+import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
+import KeywordLinkField from './form_fields/KeywordLinkField';
+import ActionLinkField from './form_fields/ActionLinkField';
 
 const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -39,7 +43,12 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
     item?.picture?.imageUrl || '',
   );
 
-  const createItem = useCreateItemMutation(apiUrl, setFormMessage);
+  const createItem = useCreateItemMutation(
+    apiUrl,
+    setFormMessage,
+    Number(itemId),
+  );
+
   const modifyItem = useModifyItemMutation(
     apiUrl,
     Number(itemId),
@@ -66,12 +75,11 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   };
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // Get the selected file
+    const selectedFile = e.target.files[0];
 
     if (selectedFile) {
       itemForm.setFieldValue('picture', selectedFile);
 
-      // Create a URL for the selected file to preview
       const fileUrl = URL.createObjectURL(selectedFile);
       setImagePreview(fileUrl);
     }
@@ -95,28 +103,9 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
         currentPower: item?.stats.currentPower || '',
         weight: item?.stats.weight || '',
       } as ItemStats,
-      actions:
-        item?.actions ||
-        ([] as {
-          name: string;
-          costs: {
-            actionPoints: number;
-            reactionPoints: number;
-            power: number;
-            health: number;
-            sanity: number;
-            wyrmShells: number;
-            currentAmmoCount: number;
-          };
-          roll: { attribute: string; skill: string }[];
-          actionType: string;
-          actionSubtypes: string[];
-          duration: {
-            unit: string;
-            value: number;
-          };
-          description: string;
-        }[]),
+      actions: item?.actions || ([] as Action[]),
+      keywords:
+        item?.keywords || ([] as { keyword: Keyword; value?: number }[]),
       modifiers:
         item?.modifiers?.map((modifier: Modifier) => ({
           type: modifier.type,
@@ -138,13 +127,15 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
         Object.entries(value.stats).filter(([_, val]) => val),
       );
 
-      value.actions.forEach((action: Action) => {
-        action.costs = Object.fromEntries(
-          Object.entries(action.costs).filter(([_, value]) => value),
-        ) as ActionCosts;
-      });
-
       value.stats = { ...filteredStats };
+
+      const { actions, keywords, ...rest } = value;
+
+      const data = {
+        ...rest,
+        actionIds: extractItemListIds(value.actions),
+        keywordIds: extractKeywordListIds(value.keywords),
+      };
 
       const formData = new FormData();
 
@@ -157,9 +148,9 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
       });
 
       if (mode === 'create' || mode === 'update') {
-        await createItem.mutate(formData);
+        // await createItem.mutate(formData);
       } else if (mode === 'modify') {
-        await modifyItem.mutate(formData);
+        // await modifyItem.mutate(formData);
       }
     },
   });
@@ -442,11 +433,12 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
             )}
           </itemForm.Subscribe>
         </div>
-        <Divider />
-        <SubactionForm form={itemForm} />
-        <Divider />
-        <ModifierField form={itemForm} />
-        <Divider />
+        <div className="flex flex-col gap-4">
+          <KeywordLinkField form={itemForm} />
+          <Divider />
+          <ActionLinkField form={itemForm} />
+          <Divider />
+        </div>
         <BtnRect
           ariaLabel={`${title} item`}
           type="submit"
