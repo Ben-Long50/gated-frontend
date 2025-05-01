@@ -86,7 +86,7 @@ const ModificationForm = ({
 
   const modificationForm = useForm({
     defaultValues: {
-      id: Number(modificationId) || 0,
+      id: modification?.id || null,
       name: modification?.name || '',
       rarity: modification?.rarity || '',
       grade: modification?.grade || 1,

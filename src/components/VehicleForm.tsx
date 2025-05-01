@@ -85,7 +85,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
 
   const vehicleForm = useForm({
     defaultValues: {
-      id: vehicle?.id || 0,
+      id: vehicle?.id || null,
       name: vehicle?.name || '',
       rarity: vehicle?.rarity || '',
       grade: vehicle?.grade || 1,

@@ -82,7 +82,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const weaponForm = useForm({
     defaultValues: {
-      id: weapon?.id || 0,
+      id: weapon?.id || null,
       name: weapon?.name || '',
       rarity: weapon?.rarity || '',
       grade: weapon?.grade || 1,

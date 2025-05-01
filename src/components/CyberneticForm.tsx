@@ -88,7 +88,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const cyberneticForm = useForm({
     defaultValues: {
-      id: cybernetic?.id || 0,
+      id: cybernetic?.id || null,
       name: cybernetic?.name || '',
       rarity: cybernetic?.rarity || '',
       grade: cybernetic?.grade || 1,

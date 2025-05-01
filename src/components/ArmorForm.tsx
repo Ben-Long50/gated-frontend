@@ -87,7 +87,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const armorForm = useForm({
     defaultValues: {
-      id: armor?.id || 0,
+      id: armor?.id || null,
       name: armor?.name || '',
       rarity: armor?.rarity || '',
       grade: armor?.grade || 1,

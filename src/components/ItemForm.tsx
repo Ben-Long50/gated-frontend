@@ -86,7 +86,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const itemForm = useForm({
     defaultValues: {
-      id: Number(itemId) || 0,
+      id: item?.id || null,
       name: item?.name || '',
       rarity: item?.rarity || '',
       grade: item?.grade || 1,

@@ -80,7 +80,7 @@ const DroneForm = ({ title, mode }: { title: string; mode: string }) => {
 
   const droneForm = useForm({
     defaultValues: {
-      id: drone?.id || 0,
+      id: drone?.id || null,
       name: drone?.name || '',
       rarity: drone?.rarity || '',
       grade: drone?.grade || 1,
