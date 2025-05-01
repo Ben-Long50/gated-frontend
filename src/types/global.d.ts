@@ -1,3 +1,4 @@
+import { Action } from './action';
 import { ArmorWithKeywords } from './armor';
 import { CyberneticWithKeywords } from './cybernetic';
 import { Item } from './item';
@@ -10,4 +11,5 @@ export type ItemObject =
   | ArmorWithKeywords
   | CyberneticWithKeywords
   | VehicleWithWeapons
-  | Item;
+  | Item
+  | Action;

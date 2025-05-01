@@ -143,7 +143,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
       if (mode === 'create' || mode === 'update') {
         await createArmor.mutate(formData);
       } else if (mode === 'modify') {
-        // await modifyArmor.mutate(formData);
+        await modifyArmor.mutate(formData);
       }
     },
   });
@@ -371,7 +371,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
             </div>
           </div>
           <div className="flex flex-col gap-4">
-            <KeywordLinkField form={armorForm} />
+            <KeywordLinkField form={armorForm} keywordType="armor" />
             <Divider />
             <WeaponLinkField form={armorForm} />
             <Divider />

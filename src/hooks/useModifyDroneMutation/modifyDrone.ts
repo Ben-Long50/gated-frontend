@@ -1,13 +1,17 @@
 import handleResponse from '../handleResponse';
 
-const getVehicleModById = async (apiUrl: string, modId?: string) => {
+const modifyDrone = async (
+  formData: FormData,
+  droneId: number,
+  apiUrl: string,
+) => {
   try {
-    const response = await fetch(`${apiUrl}/vehicles/modifications/${modId}`, {
-      method: 'GET',
+    const response = await fetch(`${apiUrl}/drones/${droneId}`, {
+      method: 'PUT',
       credentials: 'include',
+      body: formData,
     });
     const data = await handleResponse(response);
-
     return data;
   } catch (error) {
     if (error instanceof Error) {
@@ -17,4 +21,4 @@ const getVehicleModById = async (apiUrl: string, modId?: string) => {
   }
 };
 
-export default getVehicleModById;
+export default modifyDrone;

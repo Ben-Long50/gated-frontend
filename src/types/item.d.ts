@@ -11,8 +11,6 @@ interface Item {
   price: number;
   equipped: boolean;
   category: ItemCategory;
-  subcategory: ItemSubcategory;
-  itemType: string;
   description: string;
   stats: Partial<ItemStats>;
   actions: Action[];
@@ -20,6 +18,7 @@ interface Item {
 }
 
 interface ItemStats {
+  range?: number;
   currentPower?: number;
   power?: number;
   weight?: number;
@@ -30,12 +29,4 @@ interface ItemStats {
 enum ItemCategory {
   reusable = 'reusable',
   consumable = 'consumable',
-}
-
-enum ItemSubcategory {
-  chemicalTherapy = 'chemicalTherapy',
-  chemicalAssistance = 'chemicalAssistance',
-  anomaly = 'anomaly',
-  gadget = 'gadget',
-  misc = 'misc',
 }

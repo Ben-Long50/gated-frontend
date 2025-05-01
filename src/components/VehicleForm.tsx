@@ -156,7 +156,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
       if (mode === 'create' || mode === 'update') {
         await createVehicle.mutate(formData);
       } else if (mode === 'modify') {
-        // await modifyVehicle.mutate(formData);
+        await modifyVehicle.mutate(formData);
       }
     },
     validators: {
@@ -434,7 +434,7 @@ const VehicleForm = ({ title, mode }: { title: string; mode: string }) => {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <KeywordLinkField form={vehicleForm} />
+          <KeywordLinkField form={vehicleForm} keywordType="vehicle" />
           <Divider />
           <WeaponLinkField form={vehicleForm} />
           <Divider />

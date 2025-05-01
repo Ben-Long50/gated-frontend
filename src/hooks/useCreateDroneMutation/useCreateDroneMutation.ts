@@ -1,24 +1,23 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import createVehicleMod from './createVehicleMod';
+import createDrone from './createDrone';
 
-const useCreateVehicleModMutation = (
+const useCreateDroneMutation = (
   apiUrl: string,
-  modId: string,
   setFormMessage: (message: string) => void,
+  droneId: number,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData: object) => {
-      return createVehicleMod(formData, modId, apiUrl);
+    mutationFn: (formData: FormData) => {
+      return createDrone(formData, apiUrl);
     },
-    onSuccess: () => {
-      setFormMessage('Modification successfully created');
+    onSuccess: (data) => {
+      setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['vehicleMod'],
-        exact: false,
+        queryKey: ['drone', droneId],
       });
       return queryClient.invalidateQueries({
-        queryKey: ['vehicleMods'],
+        queryKey: ['drones'],
         exact: false,
       });
     },
@@ -29,4 +28,4 @@ const useCreateVehicleModMutation = (
   });
 };
 
-export default useCreateVehicleModMutation;
+export default useCreateDroneMutation;

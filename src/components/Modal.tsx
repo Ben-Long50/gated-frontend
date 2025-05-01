@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import RootPortal from '../layouts/RootPortal';
 import { ReactNode } from 'react';
 
@@ -10,15 +11,19 @@ const Modal = ({
   toggleModal: () => void;
   children: ReactNode;
 }) => {
+  const navigate = useNavigate();
+
   if (!modalOpen) return;
 
   return (
     <>
       <div
         className={`fixed inset-0 z-20 flex items-center justify-center px-2`}
-        onClick={(e) => {
-          e.stopPropagation();
+        onClick={() => {
           toggleModal();
+          if (modalOpen) {
+            navigate(-2);
+          }
         }}
       >
         {children}

@@ -1,4 +1,3 @@
-import EquipIcon from './icons/EquipIcon';
 import ItemCard from './ItemCard';
 import LightningIcon from './icons/LightningIcon';
 import { useContext } from 'react';
@@ -11,10 +10,7 @@ import useEditItemPowerMutation from '../hooks/itemStatHooks/useEditItemPowerMut
 import useEditItemStacksMutation from '../hooks/itemStatHooks/useEditItemStacksMutation/useEditItemStacksMutation';
 import useRefreshItemPowerMutation from '../hooks/itemStatHooks/useRefreshItemPowerMutation/useRefreshItemPowerMutation';
 import useRefreshItemStacksMutation from '../hooks/itemStatHooks/useRefreshItemStacksMutation/useRefreshItemStacksMutation';
-import StatBar from './StatBar';
 import { useParams } from 'react-router-dom';
-import { ThemeContext } from '../contexts/ThemeContext';
-import StatBars from './StatBars';
 import ItemCardMobile from './ItemCardMobile';
 
 const ItemControls = ({
@@ -113,9 +109,7 @@ const MiscItemCard = ({
           <ItemControls itemId={item.id} stats={item.stats} />
         ) : null
       }
-    >
-      <StatBars stats={item.stats} mode={mode} />
-    </ItemCard>
+    />
   );
 };
 
@@ -140,9 +134,7 @@ export const MiscItemCardMobile = ({
           <ItemControls itemId={item.id} stats={item.stats} />
         ) : null
       }
-    >
-      <StatBars stats={item.stats} mode={mode} />
-    </ItemCardMobile>
+    />
   );
 };
 

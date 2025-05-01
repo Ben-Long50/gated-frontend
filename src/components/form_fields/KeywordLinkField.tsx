@@ -9,7 +9,19 @@ import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import ArrowHeader2 from '../ArrowHeader2';
 
-const KeywordLinkField = ({ form }: { form: FormApi }) => {
+const KeywordLinkField = ({
+  form,
+  keywordType,
+}: {
+  form: FormApi;
+  keywordType?:
+    | 'weapon'
+    | 'armor'
+    | 'vehicle'
+    | 'chromebits'
+    | 'hardwired'
+    | 'networked';
+}) => {
   const [keywordsOpen, setKeywordsOpen] = useState(false);
 
   const toggleKeywords = () => setKeywordsOpen((prev) => !prev);
@@ -35,6 +47,7 @@ const KeywordLinkField = ({ form }: { form: FormApi }) => {
                         mode="form"
                         field={field}
                         toggleFormLink={toggleFormLink}
+                        keywordType={keywordType}
                       />
                     )}
                   </FormLinkModal>

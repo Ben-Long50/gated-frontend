@@ -8,11 +8,9 @@ import { Modification } from 'src/types/vehicle';
 import ModCard from './ModCard';
 import useModifications from '../hooks/useModifications';
 import { FetchOptions } from 'src/types/fetchOptions';
-import Icon from '@mdi/react';
-import { mdiTriangleDown } from '@mdi/js';
 import ArrowHeader2 from './ArrowHeader2';
 
-const VehicleMods = ({
+const Modifications = ({
   title,
   fetchOptions,
   mode,
@@ -93,4 +91,4 @@ const VehicleMods = ({
   );
 };
 
-export default VehicleMods;
+export default Modifications;

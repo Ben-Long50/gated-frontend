@@ -121,11 +121,14 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
           }}
         >
           {(field) => (
-            <SelectField type="select" label="Trait Type" field={field}>
+            <SelectField label="Trait Type" field={field}>
               <option defaultValue="" disabled></option>
               <option value="weapon">Weapon</option>
               <option value="armor">Armor</option>
-              <option value="cybernetic">Cybernetic</option>
+              <option value="vehicle">Vehicle</option>
+              <option value="chromebits">Chromebits</option>
+              <option value="hardwired">Hardwired</option>
+              <option value="networked">Networked</option>
             </SelectField>
           )}
         </keywordForm.Field>

@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import useVehicleModsQuery from './useVehicleModsQuery/useVehicleModsQuery';
+import useModificationsQuery from './useModificationsQuery/useModificationsQuery';
 import { Modification } from '../types/vehicle';
 import { FetchOptions } from 'src/types/fetchOptions';
 
@@ -11,7 +11,7 @@ const useModifications = (fetchOptions?: FetchOptions) => {
     data: modifications,
     isLoading,
     isPending,
-  } = useVehicleModsQuery(apiUrl);
+  } = useModificationsQuery(apiUrl);
 
   const [query, setQuery] = useState('');
 

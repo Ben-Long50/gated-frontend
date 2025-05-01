@@ -1,7 +1,4 @@
 import {
-  Children,
-  cloneElement,
-  isValidElement,
   ReactNode,
   useContext,
   useLayoutEffect,
@@ -21,7 +18,6 @@ import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
 import SubmodificationCard from './SubmodificationCard';
 import BodyIcon from './icons/BodyIcon';
-import BtnRect from './buttons/BtnRect';
 import { Item } from 'src/types/item';
 import ModifierTag from './ModifierTag';
 import { Modifier } from 'src/types/modifier';
@@ -67,7 +63,13 @@ const ItemCard = ({
       overflowHidden={true}
     >
       <Link
-        to={mode === 'form' ? '' : `${category}/${item.id}`}
+        to={
+          mode === 'form'
+            ? ''
+            : mode === 'equipment'
+              ? `${category}/${item.id}`
+              : `${item.id}`
+        }
         state={mode}
         className={`hover:bg-secondary timing relative flex w-full flex-col gap-8 p-4`}
       >

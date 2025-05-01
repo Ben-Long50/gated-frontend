@@ -1,10 +1,11 @@
 import handleResponse from '../handleResponse';
 
-const deleteVehicleMod = async (apiUrl: string, modId: string) => {
+const createDrone = async (formData: FormData, apiUrl: string) => {
   try {
-    const response = await fetch(`${apiUrl}/vehicles/modifications/${modId}`, {
-      method: 'DELETE',
+    const response = await fetch(`${apiUrl}/drones`, {
+      method: 'POST',
       credentials: 'include',
+      body: formData,
     });
     const data = await handleResponse(response);
     return data;
@@ -16,4 +17,4 @@ const deleteVehicleMod = async (apiUrl: string, modId: string) => {
   }
 };
 
-export default deleteVehicleMod;
+export default createDrone;

@@ -24,7 +24,7 @@ const Armor = ({
   title: string;
   fetchOptions?: FetchOptions;
   mode: string;
-  toggleFormLink: (item: ItemObject) => void;
+  toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);

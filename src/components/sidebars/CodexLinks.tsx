@@ -9,16 +9,16 @@ import KeywordIcon from '../icons/KeywordIcon';
 import PerkIcon from '../icons/PerkIcon';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useContext } from 'react';
-import Loading from '../../components/Loading';
 import useBookSectionsQuery from '../../hooks/useBookSectionsQuery/useBookSectionsQuery';
 import LinkSublistSidebar from './LinkSublistSidebar';
 import VehicleIcon from '../../components/icons/VehicleIcon';
 import ConditionIcon from '../../components/icons/ConditionIcon';
 import Icon from '@mdi/react';
 import { mdiMagnify } from '@mdi/js';
-import { LayoutContext } from '../../contexts/LayoutContext';
 import SackIcon from '../../components/icons/SackIcon';
 import LinkSidebar from './LinkSidebar';
+import ModificationIcon from '../icons/ModificationIcon';
+import DroneIcon from '../icons/DroneIcon';
 
 const CodexLinks = ({
   sidebarVisibility,
@@ -106,28 +106,8 @@ const CodexLinks = ({
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Pistols"
-          path="codex/weapons/pistols"
-          setSidebarVisibility={setSidebarVisibility}
-        />
-        <SubLinkSidebar
-          title="Shotguns"
-          path="codex/weapons/shotguns"
-          setSidebarVisibility={setSidebarVisibility}
-        />
-        <SubLinkSidebar
-          title="SMGs"
-          path="codex/weapons/smgs"
-          setSidebarVisibility={setSidebarVisibility}
-        />
-        <SubLinkSidebar
-          title="Rifles"
-          path="codex/weapons/rifles"
-          setSidebarVisibility={setSidebarVisibility}
-        />
-        <SubLinkSidebar
-          title="Heavy Weapons"
-          path="codex/weapons/heavyWeapons"
+          title="Ranged Weapons"
+          path="codex/weapons/ranged"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
@@ -136,8 +116,8 @@ const CodexLinks = ({
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Launchers & Explosives"
-          path="codex/weapons/explosives"
+          title="Consumable Weapons"
+          path="codex/weapons/consumables"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
@@ -166,6 +146,11 @@ const CodexLinks = ({
         <SubLinkSidebar
           title="Power Armor"
           path="codex/armor/power"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <SubLinkSidebar
+          title="Sanity Armor"
+          path="codex/armor/sanity"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
@@ -211,11 +196,6 @@ const CodexLinks = ({
           path="codex/vehicles/weapons"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <SubLinkSidebar
-          title="Vehicle Mods"
-          path="codex/vehicles/modifications"
-          setSidebarVisibility={setSidebarVisibility}
-        />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <>
             <SubLinkSidebar
@@ -223,9 +203,51 @@ const CodexLinks = ({
               path="codex/vehicles/create"
               setSidebarVisibility={setSidebarVisibility}
             />
+          </>
+        )}
+      </LinkListSidebar>
+      <LinkListSidebar
+        sidebarVisibility={sidebarVisibility}
+        icon={<DroneIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
+        title="Drones"
+      >
+        <SubLinkSidebar
+          title="All Drones"
+          path="codex/drones"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <SubLinkSidebar
+          title="Drone Weapons"
+          path="codex/drones/weapons"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+          <>
             <SubLinkSidebar
-              title="Create a New Mod"
-              path="codex/vehicles/modifications/create"
+              title="Create a New Drone"
+              path="codex/drones/create"
+              setSidebarVisibility={setSidebarVisibility}
+            />
+          </>
+        )}
+      </LinkListSidebar>
+      <LinkListSidebar
+        sidebarVisibility={sidebarVisibility}
+        icon={
+          <ModificationIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+        }
+        title="Modifications"
+      >
+        <SubLinkSidebar
+          title="All Modifications"
+          path="codex/modifications"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+          <>
+            <SubLinkSidebar
+              title="Create a New Modification"
+              path="codex/modifications/create"
               setSidebarVisibility={setSidebarVisibility}
             />
           </>
@@ -241,35 +263,16 @@ const CodexLinks = ({
           path="codex/items"
           setSidebarVisibility={setSidebarVisibility}
         />
-        <LinkSublistSidebar title="Reusables">
-          <SubLinkSidebar
-            title="Gadgets"
-            path="codex/items/reusables/gadgets"
-            setSidebarVisibility={setSidebarVisibility}
-          />
-          <SubLinkSidebar
-            title="Anomalies"
-            path="codex/items/reusables/anomalies"
-            setSidebarVisibility={setSidebarVisibility}
-          />
-        </LinkSublistSidebar>
-        <LinkSublistSidebar title="Consumables">
-          <SubLinkSidebar
-            title="Chemical Therapy"
-            path="codex/items/consumables/chemicalTherapy"
-            setSidebarVisibility={setSidebarVisibility}
-          />
-          <SubLinkSidebar
-            title="Chemical Assistance"
-            path="codex/items/consumables/chemicalAssistance"
-            setSidebarVisibility={setSidebarVisibility}
-          />
-          <SubLinkSidebar
-            title="Misc. Consumables"
-            path="codex/items/consumables/misc"
-            setSidebarVisibility={setSidebarVisibility}
-          />
-        </LinkSublistSidebar>
+        <SubLinkSidebar
+          title="Reusables"
+          path="codex/items/reusables"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <SubLinkSidebar
+          title="Consumables"
+          path="codex/items/consumables"
+          setSidebarVisibility={setSidebarVisibility}
+        />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <>
             <SubLinkSidebar

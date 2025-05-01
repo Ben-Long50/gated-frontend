@@ -1,17 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import deleteVehicleMod from './deleteVehicleMod';
+import deleteModification from './deleteModification';
 
-const useDeleteVehicleModMutation = (
+const useDeleteModificationMutation = (
   apiUrl: string,
-  modId: string,
+  modificationId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
     mutationFn: () => {
-      return deleteVehicleMod(apiUrl, modId);
+      return deleteModification(apiUrl, modificationId);
     },
     onSuccess: () => {
       navigate(-1);
@@ -35,4 +35,4 @@ const useDeleteVehicleModMutation = (
   });
 };
 
-export default useDeleteVehicleModMutation;
+export default useDeleteModificationMutation;

@@ -2,6 +2,7 @@ import { mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
 import { ReactNode, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 
 const RootPortal = ({
   modalOpen,
@@ -13,12 +14,14 @@ const RootPortal = ({
   children?: ReactNode;
 }) => {
   const portalRoot = document.getElementById('portal-root');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handlePopstate = (e) => {
       if (modalOpen) {
         e.preventDefault();
         toggleModal();
+        navigate(-1);
       }
     };
 
@@ -36,7 +39,6 @@ const RootPortal = ({
   return createPortal(
     <div
       className={`backdrop-fade absolute inset-0 z-10 bg-black bg-opacity-80 sm:p-4 md:p-8`}
-      onClick={toggleModal}
     >
       {children}
       <button

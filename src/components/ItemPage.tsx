@@ -44,6 +44,7 @@ import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
 import useItemQuery from '../hooks/useItemQuery/useItemQuery';
 import ItemCardSmall from './ItemCardSmall';
 import { Keyword } from 'src/types/keyword';
+import useDroneQuery from '../hooks/useDroneQuery/useDroneQuery';
 
 const ItemPage = ({
   itemId,
@@ -51,7 +52,7 @@ const ItemPage = ({
   category,
 }: {
   itemId: number;
-  mode: string;
+  mode?: string;
   category: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -96,6 +97,14 @@ const ItemPage = ({
   });
 
   const {
+    data: drone,
+    isLoading: droneLoading,
+    isPending: dronePending,
+  } = useDroneQuery(apiUrl, Number(itemId), {
+    enabled: category === 'drones',
+  });
+
+  const {
     data: miscItem,
     isLoading: miscItemLoading,
     isPending: miscItemPending,
@@ -116,6 +125,9 @@ const ItemPage = ({
     case 'vehicles':
       item = vehicle;
       break;
+    case 'drones':
+      item = drone;
+      break;
     case 'items':
       item = miscItem;
       break;
@@ -129,6 +141,7 @@ const ItemPage = ({
     armorLoading ||
     cyberneticLoading ||
     vehicleLoading ||
+    droneLoading ||
     miscItemLoading;
 
   const isPending =
@@ -136,6 +149,7 @@ const ItemPage = ({
     armorPending ||
     cyberneticPending ||
     vehiclePending ||
+    dronePending ||
     miscItemPending;
 
   useLayoutEffect(() => {
@@ -379,20 +393,14 @@ const ItemPage = ({
           </div>
         </ThemeContainer>
       )}
-      {mode === 'inventory' && (
-        <Link className="w-1/3 self-end" to={`modify`}>
-          <BtnRect ariaLabel="Navigate to modify weapon form" type="button">
-            Modify
-          </BtnRect>
-        </Link>
-      )}
-      {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+      {((mode === 'codex' && user?.role === 'ADMIN') ||
+        (mode === 'codex' && user?.role === 'SUPERADMIN')) && (
         <Link
-          className="self-end"
+          className="w-1/3 self-end"
           to={`/glam/codex/${category}/${item.id}/update`}
         >
           <BtnRect
-            ariaLabel="Edit weapon"
+            ariaLabel="Navigat to edit weapon form"
             type="button"
             className="text-accent hover:underline"
           >
@@ -400,13 +408,13 @@ const ItemPage = ({
           </BtnRect>
         </Link>
       )}
-      {/* {mode === 'inventory' && (
+      {mode === 'inventory' && (
         <Link className="w-1/3 self-end" to={`modify`}>
           <BtnRect ariaLabel="Navigate to modify weapon form" type="button">
-            Modify
+            {'Modify ' + item.name}
           </BtnRect>
         </Link>
-      )} */}
+      )}
     </div>
   );
 };

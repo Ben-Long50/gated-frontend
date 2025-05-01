@@ -153,18 +153,17 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
       if (mode === 'create' || mode === 'update') {
         await createCybernetic.mutate(formData);
       } else if (mode === 'modify') {
-        // await modifyCybernetic.mutate(formData);
+        await modifyCybernetic.mutate(formData);
       }
     },
   });
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // Get the selected file
+    const selectedFile = e.target.files[0];
 
     if (selectedFile) {
       cyberneticForm.setFieldValue('picture', selectedFile);
 
-      // Create a URL for the selected file to preview
       const fileUrl = URL.createObjectURL(selectedFile);
       setImagePreview(fileUrl);
     }
@@ -389,7 +388,7 @@ const CyberneticForm = ({ title, mode }: { title: string; mode?: string }) => {
           </cyberneticForm.Field>
         </div>
         <div className="flex flex-col gap-4">
-          <KeywordLinkField form={cyberneticForm} />
+          <KeywordLinkField form={cyberneticForm} keywordType="chromebits" />
           <cyberneticForm.Subscribe
             selector={(state) => [state.values.cyberneticType]}
           >

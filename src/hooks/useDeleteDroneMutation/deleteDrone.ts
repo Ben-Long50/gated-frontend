@@ -1,13 +1,12 @@
 import handleResponse from '../handleResponse';
 
-const getVehicleMods = async (apiUrl: string) => {
+const deleteDrone = async (apiUrl: string, droneId: number) => {
   try {
-    const response = await fetch(`${apiUrl}/vehicles/modifications`, {
-      method: 'GET',
+    const response = await fetch(`${apiUrl}/drones/${droneId}`, {
+      method: 'DELETE',
       credentials: 'include',
     });
     const data = await handleResponse(response);
-
     return data;
   } catch (error) {
     if (error instanceof Error) {
@@ -17,4 +16,4 @@ const getVehicleMods = async (apiUrl: string) => {
   }
 };
 
-export default getVehicleMods;
+export default deleteDrone;

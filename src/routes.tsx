@@ -31,9 +31,9 @@ import Actions from './components/Actions';
 import ErrorReport from './components/ErrorReport';
 import BookManage from './components/BookManage';
 import VehicleForm from './components/VehicleForm';
-import Vehicles from './components/Vehicles';
-import VehicleModForm from './components/VehicleModForm';
-import VehicleMods from './components/VehicleMods';
+import Vehicles from './components/Drones';
+import ModificationForm from './components/ModificationForm';
+import Modifications from './components/Modifications';
 import PatchNotes from './components/PatchNotes';
 import PatchNoteForm from './components/PatchNotesForm';
 import ErrorReports from './components/ErrorReports';
@@ -64,6 +64,8 @@ import NotesForm from './components/NotesForm';
 import AccountSettingsForm from './components/AccountSettingsForm';
 import ItemPageWrapper from './components/ItemPageWrapper';
 import UserRoles from './components/UserRoles';
+import DroneForm from './components/DroneForm';
+import Drones from './components/Drones';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -84,7 +86,7 @@ const router = createBrowserRouter(
           element={<MainLayout />}
           errorElement={<ErrorPage />}
         >
-          <Route path="*" element={<ItemPageWrapper mode="codex" />} />
+          <Route path="*" element={<ItemPageWrapper />} />
           <Route path="error">
             <Route index element={<ErrorReports />} />
           </Route>
@@ -306,78 +308,15 @@ const router = createBrowserRouter(
                 }
               />
               <Route
-                path="pistols"
+                path="ranged"
                 element={
                   <Weapons
-                    title="Pistols"
+                    title="Ranged Weapons"
                     fetchOptions={{
-                      includedKeywords: ['Pistol', 'Heavy Pistol'],
-                      excludedKeywords: ['Vehicle', 'Cybernetic'],
+                      includedKeywords: ['Ranged'],
                     }}
                     mode="codex"
-                    key="pistols"
-                  />
-                }
-              />
-              <Route
-                path="shotguns"
-                element={
-                  <Weapons
-                    title="Shotguns"
-                    fetchOptions={{
-                      includedKeywords: ['Shotgun', 'Heavy Shotgun'],
-                      excludedKeywords: ['Vehicle', 'Cybernetic'],
-                    }}
-                    mode="codex"
-                    key="shotguns"
-                  />
-                }
-              />
-              <Route
-                path="smgs"
-                element={
-                  <Weapons
-                    title="SMGs"
-                    fetchOptions={{
-                      includedKeywords: ['SMG', 'Heavy SMG'],
-                      excludedKeywords: ['Vehicle', 'Cybernetic'],
-                    }}
-                    mode="codex"
-                    key="smgs"
-                  />
-                }
-              />
-              <Route
-                path="rifles"
-                element={
-                  <Weapons
-                    title="Rifles"
-                    fetchOptions={{
-                      includedKeywords: ['Rifle', 'Heavy Rifle'],
-                      excludedKeywords: ['Vehicle', 'Cybernetic'],
-                    }}
-                    mode="codex"
-                    key="rifles"
-                  />
-                }
-              />
-              <Route
-                path="heavyWeapons"
-                element={
-                  <Weapons
-                    title="Heavy Weapons"
-                    fetchOptions={{
-                      includedKeywords: [
-                        'HW',
-                        'Heavy Pistol',
-                        'Heavy Rifle',
-                        'Heavy Shotgun',
-                        'Heavy SMG',
-                      ],
-                      excludedKeywords: ['Vehicle', 'Cybernetic'],
-                    }}
-                    mode="codex"
-                    key="heavy weapons"
+                    key="ranged"
                   />
                 }
               />
@@ -388,7 +327,6 @@ const router = createBrowserRouter(
                     title="Melee Weapons"
                     fetchOptions={{
                       includedKeywords: ['Melee'],
-                      excludedKeywords: ['Vehicle', 'Cybernetic'],
                     }}
                     mode="codex"
                     key="melee"
@@ -396,13 +334,12 @@ const router = createBrowserRouter(
                 }
               />
               <Route
-                path="explosives"
+                path="consumables"
                 element={
                   <Weapons
-                    title="Launchers and Explosives"
+                    title="Consumable Explosives"
                     fetchOptions={{
-                      includedKeywords: ['Grenade', 'Mine', 'Launcher'],
-                      excludedKeywords: ['Vehicle', 'Cybernetic'],
+                      includedKeywords: ['Grenade', 'Mine'],
                     }}
                     mode="codex"
                     key="explosives"
@@ -432,10 +369,6 @@ const router = createBrowserRouter(
             </Route>
 
             <Route path="armor">
-              <Route
-                path=":armorId"
-                element={<ItemPageWrapper mode="codex" category="armor" />}
-              />
               <Route
                 index
                 element={
@@ -476,6 +409,20 @@ const router = createBrowserRouter(
                 }
               />
               <Route
+                path="sanity"
+                element={
+                  <Armor
+                    title="Sanity Armor"
+                    fetchOptions={{
+                      includedKeywords: ['Sanity'],
+                      excludedKeywords: ['Cybernetic'],
+                    }}
+                    mode="codex"
+                    key="sanity armor"
+                  />
+                }
+              />
+              <Route
                 path="create"
                 element={
                   <ArmorForm title="Create" mode="create" key="create armor" />
@@ -490,12 +437,6 @@ const router = createBrowserRouter(
             </Route>
 
             <Route path="cybernetics">
-              <Route
-                path=":cyberneticId"
-                element={
-                  <ItemPageWrapper mode="codex" category="cybernetics" />
-                }
-              />
               <Route
                 index
                 element={
@@ -530,10 +471,6 @@ const router = createBrowserRouter(
 
             <Route path="vehicles">
               <Route
-                path=":vehicleId"
-                element={<ItemPageWrapper mode="codex" category="vehicles" />}
-              />
-              <Route
                 index
                 element={
                   <Vehicles title="Vehicles" mode="codex" key="vehicles" />
@@ -560,16 +497,7 @@ const router = createBrowserRouter(
                   />
                 }
               />
-              <Route
-                path="modifications"
-                element={
-                  <VehicleMods
-                    title="Vehicle Mods"
-                    mode="codex"
-                    key="modifications"
-                  />
-                }
-              />
+
               <Route
                 path="create"
                 element={
@@ -580,16 +508,7 @@ const router = createBrowserRouter(
                   />
                 }
               />
-              <Route
-                path="modifications/create"
-                element={
-                  <VehicleModForm
-                    title="Create"
-                    mode="create"
-                    key="create modification"
-                  />
-                }
-              />
+
               <Route
                 path=":vehicleId/update"
                 element={
@@ -600,10 +519,72 @@ const router = createBrowserRouter(
                   />
                 }
               />
+            </Route>
+            <Route path="drones">
               <Route
-                path="modifications/:modId/update"
+                index
+                element={<Drones title="Drones" mode="codex" key="drones" />}
+              />
+              <Route
+                path="weapons"
                 element={
-                  <VehicleModForm
+                  <Weapons
+                    title="Drone Weapons"
+                    mode="codex"
+                    key="drone weapons"
+                  />
+                }
+              />
+              <Route
+                path="weapons/:weaponId/update"
+                element={
+                  <WeaponForm
+                    title="Update"
+                    mode="update"
+                    key="update drone weapon"
+                  />
+                }
+              />
+
+              <Route
+                path="create"
+                element={
+                  <DroneForm title="Create" mode="create" key="create drone" />
+                }
+              />
+
+              <Route
+                path=":droneId/update"
+                element={
+                  <DroneForm title="Update" mode="update" key="update drone" />
+                }
+              />
+            </Route>
+            <Route path="modifications">
+              <Route
+                index
+                element={
+                  <Modifications
+                    title="Modifications"
+                    mode="codex"
+                    key="modifications"
+                  />
+                }
+              />
+              <Route
+                path="create"
+                element={
+                  <ModificationForm
+                    title="Create"
+                    mode="create"
+                    key="create modification"
+                  />
+                }
+              />
+              <Route
+                path=":modId/update"
+                element={
+                  <ModificationForm
                     title="Update"
                     mode="update"
                     key="update modification"
@@ -613,66 +594,19 @@ const router = createBrowserRouter(
             </Route>
             <Route path="items">
               <Route
-                path=":itemId"
-                element={<ItemPageWrapper mode="codex" category="items" />}
-              />
-              <Route
                 index
                 element={<Items title="All Items" mode="codex" key="items" />}
               />
               <Route
-                path="reusables/gadgets"
+                path="reusables"
                 element={
-                  <Items
-                    title="Gadgets"
-                    mode="codex"
-                    key="gadgets"
-                    fetchOptions={{ includedKeywords: ['gadget'] }}
-                  />
+                  <Items title="Reusables" mode="codex" key="reusables" />
                 }
               />
               <Route
-                path="reusables/anomalies"
+                path="consumables"
                 element={
-                  <Items
-                    title="Anomalies"
-                    mode="codex"
-                    key="anomalies"
-                    fetchOptions={{ includedKeywords: ['anomaly'] }}
-                  />
-                }
-              />
-              <Route
-                path="consumables/chemicalTherapy"
-                element={
-                  <Items
-                    title="Chemical Therapy"
-                    mode="codex"
-                    key="chemicalTherapy"
-                    fetchOptions={{ includedKeywords: ['chemicalTherapy'] }}
-                  />
-                }
-              />
-              <Route
-                path="consumables/chemicalAssistance"
-                element={
-                  <Items
-                    title="Chemical Assistance"
-                    mode="codex"
-                    key="chemicalAssistance"
-                    fetchOptions={{ includedKeywords: ['chemicalAssistance'] }}
-                  />
-                }
-              />
-              <Route
-                path="consumables/misc"
-                element={
-                  <Items
-                    title="Misc. Consumables"
-                    mode="codex"
-                    key="misc"
-                    fetchOptions={{ includedKeywords: ['misc'] }}
-                  />
+                  <Items title="Consumables" mode="codex" key="consumables" />
                 }
               />
               <Route

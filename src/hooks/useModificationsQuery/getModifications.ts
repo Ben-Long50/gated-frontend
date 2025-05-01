@@ -1,20 +1,13 @@
 import handleResponse from '../handleResponse';
 
-const createVehicleMod = async (
-  formData: object,
-  modId: string,
-  apiUrl: string,
-) => {
+const getModifications = async (apiUrl: string) => {
   try {
     const response = await fetch(`${apiUrl}/vehicles/modifications`, {
-      method: 'POST',
+      method: 'GET',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ ...formData, modId }),
     });
     const data = await handleResponse(response);
+
     return data;
   } catch (error) {
     if (error instanceof Error) {
@@ -24,4 +17,4 @@ const createVehicleMod = async (
   }
 };
 
-export default createVehicleMod;
+export default getModifications;

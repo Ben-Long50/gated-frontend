@@ -8,7 +8,6 @@ import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 import { useParams } from 'react-router-dom';
 import SelectField from './SelectField';
-import SubactionForm from './SubactionForm';
 import { Modifier } from 'src/types/modifier';
 import ModifierField from './ModifierField';
 import useDeleteItemMutation from '../hooks/useDeleteItemMutation/useDeleteItemMutation';
@@ -56,12 +55,6 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   );
   const deleteItem = useDeleteItemMutation(apiUrl, setFormMessage, itemId);
 
-  useEffect(() => {
-    if (item) {
-      setImagePreview(item.picture?.imageUrl);
-    } else setImagePreview('');
-  }, [item, itemId]);
-
   const handleDelete = () => {
     if (deleteMode) {
       deleteItem.mutate();
@@ -73,6 +66,12 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
   const handleReset = async () => {
     itemForm.reset();
   };
+
+  useEffect(() => {
+    if (item) {
+      setImagePreview(item.picture?.imageUrl);
+    } else setImagePreview('');
+  }, [item, itemId]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -93,10 +92,10 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
       grade: item?.grade || 1,
       picture: item?.picture || '',
       category: item?.category || '',
-      subcategory: item?.subcategory || '',
-      itemType: item?.itemType || '',
       description: item?.description || '',
+      price: item?.price || '',
       stats: {
+        range: item?.stats.range || '',
         currentStacks: item?.stats.currentStacks || '',
         maxStacks: item?.stats.maxStacks || '',
         power: item?.stats.power || '',
@@ -118,7 +117,6 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
           value: modifier.value,
           duration: modifier.duration,
         })) || ([] as Modifier[]),
-      price: item?.price || null,
     },
     onSubmit: async ({ value }) => {
       value.stats.currentPower = value.stats.power;
@@ -139,7 +137,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
 
       const formData = new FormData();
 
-      Object.entries(value).forEach(([key, value]) => {
+      Object.entries(data).forEach(([key, value]) => {
         if (key === 'picture' && value instanceof File) {
           formData.append(key, value);
         } else {
@@ -148,9 +146,9 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
       });
 
       if (mode === 'create' || mode === 'update') {
-        // await createItem.mutate(formData);
+        await createItem.mutate(formData);
       } else if (mode === 'modify') {
-        // await modifyItem.mutate(formData);
+        await modifyItem.mutate(formData);
       }
     },
   });
@@ -240,81 +238,21 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
             )}
           </itemForm.Field>
         </div>
-        <div className="flex w-full items-center gap-4 lg:gap-8">
-          <itemForm.Field
-            name="category"
-            validators={{
-              onSubmit: ({ value }) =>
-                !value ? 'Select a category' : undefined,
-            }}
-          >
-            {(field) => (
-              <SelectField
-                className="w-full"
-                label="Item category"
-                field={field}
-              >
-                <option value=""></option>
-                <option value="reusable">Reusable</option>
-                <option value="consumable">Consumable</option>
-              </SelectField>
-            )}
-          </itemForm.Field>
-          <itemForm.Subscribe selector={() => itemForm.state.values.category}>
-            {(category) => (
-              <itemForm.Field
-                name="subcategory"
-                validators={{
-                  onSubmit: ({ value }) =>
-                    !value ? 'Select a subcategory' : undefined,
-                }}
-              >
-                {(field) => (
-                  <SelectField
-                    className="w-full"
-                    label="Item subcategory"
-                    field={field}
-                  >
-                    <option value=""></option>
-                    {category === 'reusable' ? (
-                      <>
-                        <option value="anomaly">Anomaly</option>
-                        <option value="gadget">Gadget</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="chemicalTherapy">
-                          Chemical therapy
-                        </option>
-                        <option value="chemicalAssistance">
-                          Chemical assistance
-                        </option>
+        <itemForm.Field
+          name="category"
+          validators={{
+            onSubmit: ({ value }) => (!value ? 'Select a category' : undefined),
+          }}
+        >
+          {(field) => (
+            <SelectField className="w-full" label="Item category" field={field}>
+              <option value=""></option>
+              <option value="reusable">Reusable</option>
+              <option value="consumable">Consumable</option>
+            </SelectField>
+          )}
+        </itemForm.Field>
 
-                        <option value="misc">Misc.</option>
-                      </>
-                    )}
-                  </SelectField>
-                )}
-              </itemForm.Field>
-            )}
-          </itemForm.Subscribe>
-          <itemForm.Field
-            name="itemType"
-            validators={{
-              onChange: ({ value }) =>
-                value <= 0 ? 'Provide an item type' : undefined,
-            }}
-          >
-            {(field) => (
-              <InputField
-                className="w-full"
-                type="string"
-                label="Item type"
-                field={field}
-              />
-            )}
-          </itemForm.Field>
-        </div>
         <div className="flex flex-col gap-8 sm:flex-row">
           <ThemeContainer
             className="mx-auto w-full max-w-sm"
@@ -387,6 +325,16 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
                       className="grow"
                       type="number"
                       label="Power"
+                      field={field}
+                    />
+                  )}
+                </itemForm.Field>
+                <itemForm.Field name="stats.range">
+                  {(field) => (
+                    <InputField
+                      className="grow"
+                      type="number"
+                      label="Range"
                       field={field}
                     />
                   )}

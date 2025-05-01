@@ -15,7 +15,6 @@ const useCreateVehicleMutation = (
       setFormMessage(data.message);
       queryClient.invalidateQueries({
         queryKey: ['vehicle', vehicleId],
-        exact: false,
       });
       return queryClient.invalidateQueries({
         queryKey: ['vehicles'],

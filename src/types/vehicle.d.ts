@@ -1,3 +1,4 @@
+import { Action } from './action';
 import { Picture } from './picture';
 import { Weapon, WeaponWithKeywords } from './weapon';
 
@@ -24,6 +25,7 @@ export interface VehicleWithWeapons {
   stats: VehicleStats;
   price: number;
   weapons: WeaponWithKeywords[];
+  actions: Action[];
   modifications: Modification[];
 }
 

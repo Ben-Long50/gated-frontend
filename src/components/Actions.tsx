@@ -61,7 +61,13 @@ const Actions = ({
                 <InputSelectField
                   className="w-full"
                   label="Action Type"
-                  options={['', 'action', 'extendedAction', 'reaction']}
+                  options={[
+                    '',
+                    'action',
+                    'extendedAction',
+                    'reaction',
+                    'passive',
+                  ]}
                   initialValue=""
                   field={field}
                   onChange={() => {

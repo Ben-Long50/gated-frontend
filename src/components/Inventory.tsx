@@ -2,11 +2,11 @@ import { useContext } from 'react';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import Loading from './Loading';
 import { AuthContext } from '../contexts/AuthContext';
-import VehicleMods from './VehicleMods';
+import Modifications from './Modifications';
 import Weapons from './Weapons';
 import Armor from './Armor';
 import Cybernetics from './Cybernetics';
-import Vehicles from './Vehicles';
+import Vehicles from './Drones';
 import Items from './Items';
 
 const Inventory = ({ category }: { category: string }) => {
@@ -123,7 +123,7 @@ const Inventory = ({ category }: { category: string }) => {
           key={character?.id + ' ' + 'vehicle weapons'}
         />
       ) : category === 'vehicle modifications' ? (
-        <VehicleMods
+        <Modifications
           title={namePrefix + ' ' + 'Vehicle Mods'}
           fetchOptions={{
             itemList: character?.characterInventory?.modifications,

@@ -19,15 +19,23 @@ const Keywords = ({
   mode,
   field,
   toggleFormLink,
+  keywordType,
 }: {
   title?: string;
   mode?: string;
   field?: FieldApi;
   toggleFormLink?: (item: ItemObject) => void;
+  keywordType:
+    | 'weapon'
+    | 'armor'
+    | 'vehicle'
+    | 'chromebits'
+    | 'hardwired'
+    | 'networked';
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
-  const keywords = useKeywords();
+  const keywords = useKeywords(keywordType || undefined);
 
   const searchForm = useForm({
     defaultValues: {
@@ -59,7 +67,15 @@ const Keywords = ({
               {(field) => (
                 <InputSelectField
                   label="Trait Type"
-                  options={['', 'weapon', 'armor', 'cybernetic']}
+                  options={[
+                    '',
+                    'weapon',
+                    'armor',
+                    'vehicle',
+                    'chromebits',
+                    'hardwired',
+                    'networked',
+                  ]}
                   field={field}
                   onChange={() => {
                     keywords.filterByCategory(field.state.value);

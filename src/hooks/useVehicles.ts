@@ -1,8 +1,8 @@
 import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import useVehiclesQuery from './useVehiclesQuery/useVehiclesQuery';
 import { VehicleWithWeapons } from 'src/types/vehicle';
 import { FetchOptions } from 'src/types/fetchOptions';
+import useVehiclesQuery from './useVehiclsQuery/useVehiclesQuery';
 
 const useVehicles = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
