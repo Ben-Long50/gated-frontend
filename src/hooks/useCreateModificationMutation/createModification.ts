@@ -2,7 +2,7 @@ import handleResponse from '../handleResponse';
 
 const createModification = async (formData: FormData, apiUrl: string) => {
   try {
-    const response = await fetch(`${apiUrl}/vehicles/modifications`, {
+    const response = await fetch(`${apiUrl}/modifications`, {
       method: 'POST',
       credentials: 'include',
       body: formData,

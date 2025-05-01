@@ -2,13 +2,10 @@ import handleResponse from '../handleResponse';
 
 const getModificationById = async (apiUrl: string, modificationId?: number) => {
   try {
-    const response = await fetch(
-      `${apiUrl}/vehicles/modifications/${modificationId}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      },
-    );
+    const response = await fetch(`${apiUrl}/modifications/${modificationId}`, {
+      method: 'GET',
+      credentials: 'include',
+    });
     const data = await handleResponse(response);
 
     return data;
