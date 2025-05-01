@@ -31,7 +31,7 @@ import Actions from './components/Actions';
 import ErrorReport from './components/ErrorReport';
 import BookManage from './components/BookManage';
 import VehicleForm from './components/VehicleForm';
-import Vehicles from './components/Drones';
+import Vehicles from './components/Vehicles';
 import ModificationForm from './components/ModificationForm';
 import Modifications from './components/Modifications';
 import PatchNotes from './components/PatchNotes';

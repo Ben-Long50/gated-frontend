@@ -2,7 +2,7 @@ import handleResponse from '../handleResponse';
 
 const getVehicles = async (apiUrl: string) => {
   try {
-    const response = await fetch(`${apiUrl}/vehciles`, {
+    const response = await fetch(`${apiUrl}/vehicles`, {
       method: 'GET',
       credentials: 'include',
     });

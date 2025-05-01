@@ -74,7 +74,7 @@ const ItemCard = ({
         className={`hover:bg-secondary timing relative flex w-full flex-col gap-8 p-4`}
       >
         <div
-          className="my-auto flex w-full gap-8"
+          className="my-auto flex max-h-[300px] w-full gap-8"
           onClick={
             mode === 'form' && toggleFormLink
               ? () => {
