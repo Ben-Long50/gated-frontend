@@ -12,24 +12,26 @@ import ArrowHeader2 from './ArrowHeader2';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
-const Items = ({
-  title,
-  fetchOptions,
-  mode,
-}: {
-  title: string;
-  fetchOptions?: FetchOptions;
-  mode: string;
-}) => {
+const Items = ({ title, mode }: { title: string; mode: string }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const state = location.state;
+
+  const include = searchParams.getAll('include');
+  const exclude = searchParams.getAll('exclude');
 
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
   );
 
-  const items = useItems(fetchOptions);
+  const items = useItems({
+    includedKeywords: include.length > 0 ? include : undefined,
+    excludedKeywords: exclude.length > 0 ? exclude : undefined,
+  });
 
   const searchForm = useForm({
     defaultValues: {
@@ -50,7 +52,7 @@ const Items = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-8">
-      <h1 className="text-center">{title}</h1>
+      <h1 className="text-center">{state.title || title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

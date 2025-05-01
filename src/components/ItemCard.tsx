@@ -132,19 +132,6 @@ const ItemCard = ({
                   </p>
                 </div>
               )}
-              {item.body && (
-                <div className="mr-4 flex flex-wrap items-center gap-2">
-                  <BodyIcon className="text-secondary size-8" />
-                  {item.body.map((body, index) => {
-                    return (
-                      <p key={body}>
-                        {body}
-                        <span>{index < item.body.length - 1 && ','}</span>
-                      </p>
-                    );
-                  })}
-                </div>
-              )}
               {item.keywords && (
                 <div className={`flex flex-wrap items-center gap-1`}>
                   {item?.keywords &&

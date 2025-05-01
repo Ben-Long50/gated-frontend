@@ -25,7 +25,7 @@ const Keywords = ({
   mode?: string;
   field?: FieldApi;
   toggleFormLink?: (item: ItemObject) => void;
-  keywordType:
+  keywordType?:
     | 'weapon'
     | 'armor'
     | 'vehicle'

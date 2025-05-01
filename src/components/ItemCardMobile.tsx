@@ -148,27 +148,21 @@ const ItemCardMobile = ({
               </div>
               <div className="col-span-2 flex w-full items-center justify-between gap-4">
                 {item.cyberneticType && (
-                  <p>
+                  <p className="text-tertiary">
+                    (
                     {item.cyberneticType[0].toUpperCase() +
-                      item.cyberneticType.slice(1)}{' '}
-                    Augment
+                      item.cyberneticType.slice(1)}
+                    )
                   </p>
                 )}
-                {item.body && (
-                  <div className="flex items-center justify-end gap-2">
-                    <BodyIcon className="text-secondary size-8" />
-                    {item.body.map((body, index) => {
-                      return (
-                        <p key={body}>
-                          {body}
-                          <span>{index < item.body.length - 1 && ','}</span>
-                        </p>
-                      );
-                    })}
-                  </div>
+                {item?.category && (
+                  <p className="text-tertiary">
+                    ({item.category[0].toUpperCase() + item.category.slice(1)})
+                  </p>
                 )}
               </div>
             </div>
+
             <div className="flex w-full items-center justify-between">
               {item?.keywords && item.keywords.length > 0 && (
                 <div className="col-span-2 flex w-full flex-wrap items-center gap-1 justify-self-start">
@@ -205,22 +199,6 @@ const ItemCardMobile = ({
                 cardWidth={cardWidth}
               />
             </div>
-
-            {item?.category && (
-              <div className="flex items-center gap-4">
-                <h4>{subcategoryMap[item.subcategory]}</h4>
-                <p className="text-tertiary italic">
-                  ({item.category[0].toUpperCase() + item.category.slice(1)})
-                </p>
-                <Icon
-                  className="text-secondary shrink-0"
-                  path={mdiTriangleDown}
-                  size={0.35}
-                  rotate={-90}
-                />
-                <p>{item.itemType}</p>
-              </div>
-            )}
 
             {item.picture && (
               <ItemPicture className={`timing mx-8 shrink-0`} item={item} />

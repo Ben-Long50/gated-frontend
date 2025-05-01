@@ -7,34 +7,41 @@ import WeaponCard, { WeaponCardMobile } from './WeaponCard';
 import useWeapons from '../hooks/useWeapons';
 import Loading from './Loading';
 import { WeaponWithKeywords } from 'src/types/weapon';
-import { FetchOptions } from 'src/types/fetchOptions';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Weapons = ({
-  className,
   title,
-  fetchOptions,
   mode,
   toggleFormLink,
 }: {
-  className?: string;
-  title: string;
-  fetchOptions?: FetchOptions;
+  title?: string;
   mode: string;
   toggleFormLink?: (weaponId: WeaponWithKeywords) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { mobile } = useContext(LayoutContext);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const state = location.state;
+
+  const include = searchParams.getAll('include');
+  const exclude = searchParams.getAll('exclude');
 
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
   );
 
-  const weapons = useWeapons(fetchOptions);
+  console.log(include, exclude);
+
+  const weapons = useWeapons({
+    includedKeywords: include.length > 0 ? include : undefined,
+    excludedKeywords: exclude.length > 0 ? exclude : undefined,
+  });
 
   const searchForm = useForm({
     defaultValues: {
@@ -53,9 +60,9 @@ const Weapons = ({
 
   return (
     <div
-      className={`${className} flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8`}
+      className={`flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8`}
     >
-      <h1 className="text-center">{title}</h1>
+      <h1 className="text-center">{state.title || title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

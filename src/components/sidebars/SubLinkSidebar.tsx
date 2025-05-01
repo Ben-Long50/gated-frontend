@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { LayoutContext } from '../../contexts/LayoutContext';
 
 const SubLinkSidebar = ({
@@ -14,14 +14,10 @@ const SubLinkSidebar = ({
   const { layoutSize } = useContext(LayoutContext);
 
   return (
-    <NavLink
-      className={({ isActive }) =>
-        isActive
-          ? 'text-accent group flex gap-4'
-          : 'text-secondary group flex gap-4'
-      }
+    <Link
+      className="text-secondary group flex gap-4"
       to={path}
-      end
+      state={{ title }}
     >
       <button
         className="w-full pl-4 text-left text-inherit"
@@ -35,7 +31,7 @@ const SubLinkSidebar = ({
           {title}
         </div>
       </button>
-    </NavLink>
+    </Link>
   );
 };
 

@@ -107,17 +107,17 @@ const CodexLinks = ({
         />
         <SubLinkSidebar
           title="Ranged Weapons"
-          path="codex/weapons/ranged"
+          path="codex/weapons?include=Ranged"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Melee Weapons"
-          path="codex/weapons/melee"
+          path="codex/weapons/?include=Melee"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Consumable Weapons"
-          path="codex/weapons/consumables"
+          path="codex/weapons?include=Grenade&include=Mine"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
@@ -140,17 +140,17 @@ const CodexLinks = ({
         />
         <SubLinkSidebar
           title="Basic Armor"
-          path="codex/armor/basic"
+          path="codex/armor/?include=Armor&exclude=Power"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Power Armor"
-          path="codex/armor/power"
+          path="codex/armor/?include=Power"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Sanity Armor"
-          path="codex/armor/sanity"
+          path="codex/armor/?include=Sanity"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
@@ -193,7 +193,7 @@ const CodexLinks = ({
         />
         <SubLinkSidebar
           title="Vehicle Weapons"
-          path="codex/vehicles/weapons"
+          path="codex/weapons?include=Vehicle"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
@@ -218,7 +218,7 @@ const CodexLinks = ({
         />
         <SubLinkSidebar
           title="Drone Weapons"
-          path="codex/drones/weapons"
+          path="codex/weapons?include=Drone"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
@@ -265,12 +265,12 @@ const CodexLinks = ({
         />
         <SubLinkSidebar
           title="Reusables"
-          path="codex/items/reusables"
+          path="codex/items?include=reusable"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Consumables"
-          path="codex/items/consumables"
+          path="codex/items?include=consumable"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (

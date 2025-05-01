@@ -14,26 +14,38 @@ import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
 import { ItemObject } from 'src/types/global';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Armor = ({
   title,
-  fetchOptions,
   mode,
   toggleFormLink,
 }: {
-  title: string;
-  fetchOptions?: FetchOptions;
+  title?: string;
   mode: string;
   toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const state = location.state;
+
+  const include = searchParams.getAll('include');
+  const exclude = searchParams.getAll('exclude');
 
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
   );
 
-  const armor = useArmor(fetchOptions);
+  console.log(include, exclude);
+
+  const armor = useArmor({
+    includedKeywords: include.length > 0 ? include : undefined,
+    excludedKeywords: exclude.length > 0 ? exclude : undefined,
+  });
+
+  console.log(armor);
 
   const searchForm = useForm({
     defaultValues: {
@@ -57,7 +69,7 @@ const Armor = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">{title}</h1>
+      <h1 className="text-center">{state.title || title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

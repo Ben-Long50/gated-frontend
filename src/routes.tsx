@@ -297,53 +297,7 @@ const router = createBrowserRouter(
               <Route
                 index
                 element={
-                  <Weapons
-                    title="All Weapons"
-                    fetchOptions={{
-                      excludedKeywords: ['Vehicle', 'Cybernetic'],
-                    }}
-                    mode="codex"
-                    key="weapons"
-                  />
-                }
-              />
-              <Route
-                path="ranged"
-                element={
-                  <Weapons
-                    title="Ranged Weapons"
-                    fetchOptions={{
-                      includedKeywords: ['Ranged'],
-                    }}
-                    mode="codex"
-                    key="ranged"
-                  />
-                }
-              />
-              <Route
-                path="melee"
-                element={
-                  <Weapons
-                    title="Melee Weapons"
-                    fetchOptions={{
-                      includedKeywords: ['Melee'],
-                    }}
-                    mode="codex"
-                    key="melee"
-                  />
-                }
-              />
-              <Route
-                path="consumables"
-                element={
-                  <Weapons
-                    title="Consumable Explosives"
-                    fetchOptions={{
-                      includedKeywords: ['Grenade', 'Mine'],
-                    }}
-                    mode="codex"
-                    key="explosives"
-                  />
+                  <Weapons title="All Weapons" mode="codex" key="weapons" />
                 }
               />
               <Route
@@ -367,60 +321,10 @@ const router = createBrowserRouter(
                 }
               />
             </Route>
-
             <Route path="armor">
               <Route
                 index
-                element={
-                  <Armor
-                    title="All Armor"
-                    fetchOptions={{ excludedKeywords: ['Cybernetic'] }}
-                    mode="codex"
-                    key="armor"
-                  />
-                }
-              />
-              <Route
-                path="basic"
-                element={
-                  <Armor
-                    title="Basic Armor"
-                    fetchOptions={{
-                      includedKeywords: ['Armor'],
-                      excludedKeywords: ['Cybernetic'],
-                    }}
-                    mode="codex"
-                    key="basic armor"
-                  />
-                }
-              />
-              <Route
-                path="power"
-                element={
-                  <Armor
-                    title="Power Armor"
-                    fetchOptions={{
-                      includedKeywords: ['Power'],
-                      excludedKeywords: ['Cybernetic'],
-                    }}
-                    mode="codex"
-                    key="power armor"
-                  />
-                }
-              />
-              <Route
-                path="sanity"
-                element={
-                  <Armor
-                    title="Sanity Armor"
-                    fetchOptions={{
-                      includedKeywords: ['Sanity'],
-                      excludedKeywords: ['Cybernetic'],
-                    }}
-                    mode="codex"
-                    key="sanity armor"
-                  />
-                }
+                element={<Armor title="All Armor" mode="codex" key="armor" />}
               />
               <Route
                 path="create"
@@ -435,7 +339,6 @@ const router = createBrowserRouter(
                 }
               />
             </Route>
-
             <Route path="cybernetics">
               <Route
                 index
@@ -468,23 +371,11 @@ const router = createBrowserRouter(
                 }
               />
             </Route>
-
             <Route path="vehicles">
               <Route
                 index
                 element={
                   <Vehicles title="Vehicles" mode="codex" key="vehicles" />
-                }
-              />
-              <Route
-                path="weapons"
-                element={
-                  <Weapons
-                    title="Vehicle Weapons"
-                    fetchOptions={{ includedKeywords: ['Vehicle'] }}
-                    mode="codex"
-                    key="vehicle weapons"
-                  />
                 }
               />
               <Route
@@ -497,7 +388,6 @@ const router = createBrowserRouter(
                   />
                 }
               />
-
               <Route
                 path="create"
                 element={
@@ -508,7 +398,6 @@ const router = createBrowserRouter(
                   />
                 }
               />
-
               <Route
                 path=":vehicleId/update"
                 element={
@@ -596,18 +485,6 @@ const router = createBrowserRouter(
               <Route
                 index
                 element={<Items title="All Items" mode="codex" key="items" />}
-              />
-              <Route
-                path="reusables"
-                element={
-                  <Items title="Reusables" mode="codex" key="reusables" />
-                }
-              />
-              <Route
-                path="consumables"
-                element={
-                  <Items title="Consumables" mode="codex" key="consumables" />
-                }
               />
               <Route
                 path="create"

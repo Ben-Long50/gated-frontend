@@ -8,6 +8,7 @@ const useItems = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
   const { data: items, isLoading, isPending } = useItemsQuery(apiUrl);
+  console.log(items);
 
   const [query, setQuery] = useState('');
 
@@ -17,7 +18,7 @@ const useItems = (fetchOptions?: FetchOptions) => {
     list
       ?.filter((item: Item) => {
         const match = fetchOptions?.includedKeywords
-          ? fetchOptions?.includedKeywords.includes(item.subcategory)
+          ? fetchOptions?.includedKeywords.includes(item.category)
           : true;
         return match;
       })
