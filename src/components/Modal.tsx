@@ -22,7 +22,7 @@ const Modal = ({
         onClick={() => {
           toggleModal();
           if (modalOpen) {
-            navigate(-2);
+            navigate(-1);
           }
         }}
       >

@@ -21,7 +21,7 @@ const RootPortal = ({
       if (modalOpen) {
         e.preventDefault();
         toggleModal();
-        navigate(-1);
+        // navigate(-1);
       }
     };
 
