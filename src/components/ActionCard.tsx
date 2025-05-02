@@ -39,7 +39,6 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
                 <Tag
                   key={subtype}
                   label={subtype[0].toUpperCase() + subtype.slice(1)}
-                  toolTip={0}
                 />
               );
             })}

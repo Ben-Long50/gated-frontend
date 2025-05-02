@@ -1,19 +1,23 @@
+import { Keyword } from 'src/types/keyword';
+
 const Tag = ({
-  label,
+  keyword,
   className,
+  label,
 }: {
-  id?: number;
-  label: string;
-  description?: string;
+  keyword?: { keyword: Keyword; value?: number };
   className?: string;
-  toolTip?: number;
-  setToolTip?: (prevState: number) => void;
+  label?: string;
 }) => {
+  const keywordName = keyword?.value
+    ? keyword?.keyword?.name.replace(/X/g, keyword?.value?.toString())
+    : keyword?.keyword?.name;
+
   return (
     <div
       className={`${className} bg-primary relative cursor-pointer rounded border border-yellow-300 border-opacity-50 px-2 text-base`}
     >
-      <p className="whitespace-nowrap text-base">{label}</p>
+      <p className="whitespace-nowrap text-base">{keywordName || label}</p>
     </div>
   );
 };

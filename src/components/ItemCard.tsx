@@ -137,25 +137,8 @@ const ItemCard = ({
                   {item?.keywords &&
                     item.keywords.length > 0 &&
                     item.keywords?.map(
-                      (
-                        item: { keyword: Keyword; value?: number },
-                        index: number,
-                      ) => {
-                        return (
-                          <Tag
-                            id={item.keyword?.id + index}
-                            key={item.keyword?.id}
-                            label={
-                              item.value
-                                ? item.keyword?.name.replace(
-                                    /X/g,
-                                    item.value.toString(),
-                                  )
-                                : item.keyword?.name
-                            }
-                            description={item.keyword?.description}
-                          />
-                        );
+                      (item: { keyword: Keyword; value?: number }) => {
+                        return <Tag key={item.keyword?.id} keyword={item} />;
                       },
                     )}
                 </div>

@@ -14,19 +14,14 @@ import ThemeContainer from './ThemeContainer';
 import { Link } from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
-import Icon from '@mdi/react';
-import { mdiTriangleDown } from '@mdi/js';
 import { WeaponWithKeywords } from 'src/types/weapon';
 import { ArmorWithKeywords } from 'src/types/armor';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import { VehicleWithWeapons } from 'src/types/vehicle';
 import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
-import BodyIcon from './icons/BodyIcon';
-import { motion } from 'motion/react';
 import { Item } from 'src/types/item';
 import StopwatchIcon from './icons/StopwatchIcon';
-import { subcategoryMap } from '../types/maps';
 import ModifierTag from './ModifierTag';
 import { Modifier } from 'src/types/modifier';
 import ItemPicture from './ItemPicture';
@@ -53,7 +48,6 @@ const ItemCardMobile = ({
   toggleFormLink?: (id: ItemObject) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const [detailsOpen, setDetailsOpen] = useState(false);
   const [imageHeight, setImageHeight] = useState(0);
   const [toolTip, setToolTip] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
@@ -167,27 +161,8 @@ const ItemCardMobile = ({
               {item?.keywords && item.keywords.length > 0 && (
                 <div className="col-span-2 flex w-full flex-wrap items-center gap-1 justify-self-start">
                   {item.keywords.map(
-                    (
-                      item: { keyword: Keyword; value?: number },
-                      index: number,
-                    ) => {
-                      return (
-                        <Tag
-                          id={item.keyword.id + index}
-                          key={item.keyword.id}
-                          label={
-                            item.value
-                              ? item.keyword?.name.replace(
-                                  /X/g,
-                                  item.value.toString(),
-                                )
-                              : item.keyword?.name
-                          }
-                          description={item.keyword.description}
-                          toolTip={toolTip}
-                          setToolTip={setToolTip}
-                        />
-                      );
+                    (item: { keyword: Keyword; value?: number }) => {
+                      return <Tag key={item.keyword?.id} keyword={item} />;
                     },
                   )}
                 </div>

@@ -326,7 +326,7 @@ const ItemPage = ({
               return (
                 <SubweaponCard
                   key={index}
-                  vehicleId={item.id}
+                  mode={mode}
                   weapon={weapon}
                   cardWidth={cardRef.current?.offsetWidth}
                 />
@@ -344,6 +344,7 @@ const ItemPage = ({
               return (
                 <SubarmorCard
                   key={index}
+                  mode={mode}
                   armor={armor}
                   cardWidth={cardRef.current?.offsetWidth}
                 />
