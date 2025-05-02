@@ -36,11 +36,12 @@ const SubweaponCard = ({
         <div className="my-auto flex max-h-[250px] w-full gap-8">
           {weapon.picture?.imageUrl && (
             <ItemPicture
+              key={weapon.id}
               className={`timing aspect-square h-[250px]`}
               item={weapon}
             />
           )}
-          <div className="flex w-full grow flex-col items-start justify-between gap-4">
+          <div className="flex w-full grow flex-col items-start justify-start gap-4">
             <div className="flex items-center gap-4">
               <ArrowHeader3 title={weapon?.name} />
               <p className="text-error italic">

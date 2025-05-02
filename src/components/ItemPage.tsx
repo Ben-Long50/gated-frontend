@@ -166,17 +166,17 @@ const ItemPage = ({
         <h1 className="col-start-2 text-center">{item.name}</h1>
         {mode === 'codex' && (
           <div className="col-start-3 flex items-center justify-end gap-4 self-end">
-            <CartButton
-              price={item?.price}
-              category={category}
-              itemId={item?.id}
-            />
+            <CartButton category={category} itemId={item?.id} />
           </div>
         )}
       </div>
       <div className="relative flex h-full w-full flex-col gap-8 sm:flex-row sm:gap-12">
         {item.picture?.imageUrl && (
-          <ItemPicture className={`timing w-full sm:w-2/5`} item={item} />
+          <ItemPicture
+            key={item.id}
+            className={`timing w-full sm:w-2/5`}
+            item={item}
+          />
         )}
         <div className="flex w-full flex-col gap-8">
           <div className="flex items-center justify-between">

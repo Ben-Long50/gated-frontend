@@ -85,6 +85,7 @@ const ItemCard = ({
         >
           {item.picture?.imageUrl && (
             <ItemPicture
+              key={item.id}
               className={`timing aspect-square h-[300px]`}
               item={item}
             />

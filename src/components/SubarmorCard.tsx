@@ -33,11 +33,12 @@ const SubarmorCard = ({
         <div className="my-auto flex max-h-[250px] w-full gap-8">
           {armor.picture?.imageUrl && (
             <ItemPicture
+              key={armor.id}
               className={`timing aspect-square h-[250px]`}
               item={armor}
             />
           )}
-          <div className="flex grow flex-col items-start justify-between gap-4">
+          <div className="flex grow flex-col items-start justify-start gap-4">
             <ArrowHeader3 title={armor?.name} />
             <div className="flex flex-wrap items-center gap-2">
               {armor.keywords?.map(
