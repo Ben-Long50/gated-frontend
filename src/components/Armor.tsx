@@ -58,18 +58,13 @@ const Armor = ({
     },
   });
 
-  if (
-    armor.isLoading ||
-    armor.isPending ||
-    armor.keywordsLoading ||
-    armor.keywordsPending
-  ) {
+  if (armor.isLoading || armor.isPending) {
     return <Loading />;
   }
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">{state.title || title}</h1>
+      <h1 className="text-center">{state?.title || title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
