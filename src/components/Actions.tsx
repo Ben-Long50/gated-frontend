@@ -14,12 +14,10 @@ import { ItemObject } from 'src/types/global';
 import { Action } from 'src/types/action';
 
 const Actions = ({
-  title,
   mode,
   field,
   toggleFormLink,
 }: {
-  title?: string;
   mode?: string;
   field?: FieldApi;
   toggleFormLink?: (item: ItemObject) => void;
@@ -47,7 +45,7 @@ const Actions = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">{title || 'Actions'}</h1>
+      <h1 className="text-center">Actions</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

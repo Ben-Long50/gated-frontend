@@ -124,11 +124,7 @@ const Perks = ({ mode }: { mode?: string }) => {
         className="w-full"
         borderColor={accentPrimary}
       >
-        <PerkList
-          className="p-4 sm:p-8"
-          perkTree={perks.filteredPerkTree}
-          mode={mode}
-        />
+        <PerkList perkTree={perks.filteredPerkTree} mode={mode} />
       </ThemeContainer>
     </div>
   );

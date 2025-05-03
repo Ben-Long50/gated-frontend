@@ -8,7 +8,6 @@ const useItems = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
   const { data: items, isLoading, isPending } = useItemsQuery(apiUrl);
-  console.log(items);
 
   const [query, setQuery] = useState('');
 

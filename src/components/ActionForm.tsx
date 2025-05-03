@@ -10,7 +10,7 @@ import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import FormLayout from '../layouts/FormLayout';
 import useCreateActionMutation from '../hooks/useCreateActionMutation/useCreateActionMutation';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import Loading from './Loading';
 import useDeleteActionMutation from '../hooks/useDeleteActionMutation/useDeleteActionMutation';
 import useActions from '../hooks/useActions';
@@ -18,11 +18,14 @@ import { Action, ActionCosts } from 'src/types/action';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 
-const ActionForm = ({ mode }: { mode?: string }) => {
+const ActionForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { actionId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const actions = useActions();
 
@@ -121,7 +124,7 @@ const ActionForm = ({ mode }: { mode?: string }) => {
         }}
       >
         <h1 className="text-center">
-          {action ? 'Update Action' : 'Create Action'}
+          {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Action'}
         </h1>
         <Divider />
         <ArrowHeader2 title="Action Information" />
@@ -432,7 +435,7 @@ const ActionForm = ({ mode }: { mode?: string }) => {
           </actionForm.Field>
         </div>
         <BtnRect
-          ariaLabel="Create or update action"
+          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
           type="submit"
           className="group w-full"
         >
@@ -441,10 +444,8 @@ const ActionForm = ({ mode }: { mode?: string }) => {
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : action ? (
-            'Update'
           ) : (
-            'Create'
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>

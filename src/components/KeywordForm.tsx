@@ -8,18 +8,21 @@ import SelectField from './SelectField';
 import useCreateKeywordMutation from '../hooks/useCreateKeywordMutation/useCreateKeywordMutation';
 import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import useDeleteKeywordMutation from '../hooks/useDeleteKeywordMutation/useDeleteKeywordMutation';
 import useKeywords from '../hooks/useKeywords';
 import { Keyword } from 'src/types/keyword';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 
-const KeywordForm = ({ mode }: { mode?: string }) => {
+const KeywordForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { keywordId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const keywords = useKeywords();
 
@@ -81,7 +84,7 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
         }}
       >
         <h1 className="text-center">
-          {keyword ? 'Update Trait' : 'Create Trait'}
+          {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Trait'}
         </h1>
         <Divider />
         <ArrowHeader2 title="Trait Information" />
@@ -133,7 +136,7 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
           )}
         </keywordForm.Field>
         <BtnRect
-          ariaLabel="Create or update triat"
+          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
           type="submit"
           className="group w-full"
         >
@@ -142,10 +145,8 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : keyword ? (
-            'Update'
           ) : (
-            'Create'
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>

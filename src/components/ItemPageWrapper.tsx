@@ -3,9 +3,7 @@ import ItemPage from './ItemPage';
 
 const ItemPageWrapper = () => {
   const location = useLocation();
-  const parts = location.pathname.split('/').filter(Boolean); // split into pieces
-
-  // find the last two parts (assuming category and id are last)
+  const parts = location.pathname.split('/').filter(Boolean);
 
   const itemId = Number(parts.pop());
   const category = parts.pop();

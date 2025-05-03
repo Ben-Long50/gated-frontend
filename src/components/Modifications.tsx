@@ -7,21 +7,31 @@ import Loading from './Loading';
 import { Modification } from 'src/types/vehicle';
 import ModCard from './ModCard';
 import useModifications from '../hooks/useModifications';
-import { FetchOptions } from 'src/types/fetchOptions';
 import ArrowHeader2 from './ArrowHeader2';
+import { LayoutContext } from 'src/contexts/LayoutContext';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Modifications = ({
-  title,
-  fetchOptions,
-  mode,
+  modificationList,
 }: {
-  title: string;
-  fetchOptions?: FetchOptions;
-  mode: string;
+  modificationList?: Modification[];
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const { mobile } = useContext(LayoutContext);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const state = location.state;
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 2];
 
-  const modifications = useModifications(fetchOptions);
+  const include = searchParams.getAll('include');
+  const exclude = searchParams.getAll('exclude');
+
+  const modifications = useModifications({
+    itemList: modificationList,
+    includedKeywords: include.length > 0 ? include : undefined,
+    excludedKeywords: exclude.length > 0 ? exclude : undefined,
+  });
 
   const searchForm = useForm({
     defaultValues: {
@@ -42,7 +52,7 @@ const Modifications = ({
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-8">
-      <h1 className="text-center">{title}</h1>
+      <h1 className="text-center">{state.title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

@@ -6,7 +6,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import { useForm } from '@tanstack/react-form';
 import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import useDeleteModificationMutation from '../hooks/useDeleteModificationMutation/useDeleteModificationMutation';
 import useCreateModificationMutation from '../hooks/useCreateModificationMutation/useCreateModificationMutation';
 import useModificationQuery from '../hooks/useModificationQuery/useModificationQuery';
@@ -22,18 +22,15 @@ import Divider from './Divider';
 import ActionLinkField from './form_fields/ActionLinkField';
 import { ThemeContext } from '../contexts/ThemeContext';
 
-const ModificationForm = ({
-  title,
-  mode,
-}: {
-  title: string;
-  mode?: string;
-}) => {
+const ModificationForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { modificationId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const { data: modification } = useModificationQuery(
     apiUrl,
@@ -142,7 +139,9 @@ const ModificationForm = ({
           modificationForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">{title} Modification</h1>
+        <h1 className="text-center">
+          {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Modification'}
+        </h1>
         <div className="flex w-full gap-4 lg:gap-8">
           <modificationForm.Field
             name="name"
@@ -300,7 +299,7 @@ const ModificationForm = ({
           <Divider />
         </div>
         <BtnRect
-          ariaLabel={`${title} modification`}
+          ariaLabel={`${mode.charAt(0).toUpperCase() + mode.slice(1)} modification`}
           type="submit"
           className="group w-full"
         >
@@ -310,7 +309,7 @@ const ModificationForm = ({
               size={1.15}
             />
           ) : (
-            title
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>

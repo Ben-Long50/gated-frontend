@@ -22,7 +22,7 @@ const PerkList = ({
             (accumulator, [_, perkList]) => accumulator + perkList.length,
             0,
           ) > 0 && (
-            <div key={perkType} className="flex flex-col gap-8">
+            <div key={perkType} className="flex flex-col gap-8 p-4 sm:p-8">
               <ArrowHeader2
                 title={perkType.charAt(0).toUpperCase() + perkType.slice(1)}
               />

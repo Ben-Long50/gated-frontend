@@ -12,7 +12,7 @@ import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import useCreateWeaponMutation from '../hooks/useCreateWeaponMutation/useCreateWeaponMutation';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import useDeleteWeaponMutation from '../hooks/useDeleteWeaponMutation/useDeleteWeaponMutation';
 import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
@@ -31,12 +31,15 @@ import WeaponLinkField from './form_fields/WeaponLinkField';
 import KeywordLinkField from './form_fields/KeywordLinkField';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 
-const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
+const WeaponForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { weaponId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const { data: weapon } = useWeaponQuery(apiUrl, Number(weaponId), {
     options: !!weaponId,
@@ -180,7 +183,7 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          <h1>{title} Weapon</h1>
+          <h1>{mode.charAt(0).toUpperCase() + mode.slice(1) + ' Weapon'}</h1>
         </div>
         <Divider />
         <ArrowHeader2 title="Weapon Information" />
@@ -402,14 +405,18 @@ const WeaponForm = ({ title, mode }: { title: string; mode?: string }) => {
           <ActionLinkField form={weaponForm} />
           <Divider />
         </div>
-        <BtnRect ariaLabel={title} type="submit" className="group w-full">
+        <BtnRect
+          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          type="submit"
+          className="group w-full"
+        >
           {createWeapon.isPending || modifyWeapon.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
           ) : (
-            title
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>

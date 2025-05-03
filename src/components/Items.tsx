@@ -4,7 +4,6 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import Loading from './Loading';
-import { FetchOptions } from 'src/types/fetchOptions';
 import useItems from '../hooks/useItems';
 import { Item } from 'src/types/item';
 import MiscItemCard, { MiscItemCardMobile } from './MiscItemCard';
@@ -14,12 +13,14 @@ import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
-const Items = ({ title, mode }: { title: string; mode: string }) => {
+const Items = ({ itemList }: { itemList?: Item[] }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const state = location.state;
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 2];
 
   const include = searchParams.getAll('include');
   const exclude = searchParams.getAll('exclude');
@@ -29,6 +30,7 @@ const Items = ({ title, mode }: { title: string; mode: string }) => {
   );
 
   const items = useItems({
+    itemList,
     includedKeywords: include.length > 0 ? include : undefined,
     excludedKeywords: exclude.length > 0 ? exclude : undefined,
   });
@@ -52,7 +54,7 @@ const Items = ({ title, mode }: { title: string; mode: string }) => {
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-8">
-      <h1 className="text-center">{state.title || title}</h1>
+      <h1 className="text-center">{state.title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

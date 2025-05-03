@@ -15,13 +15,11 @@ import { Keyword } from 'src/types/keyword';
 import InputFieldBasic from './InputFieldBasic';
 
 const Keywords = ({
-  title,
   mode,
   field,
   toggleFormLink,
   keywordType,
 }: {
-  title?: string;
   mode?: string;
   field?: FieldApi;
   toggleFormLink?: (item: ItemObject) => void;
@@ -54,7 +52,7 @@ const Keywords = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">{title || 'Traits'}</h1>
+      <h1 className="text-center">Traits</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

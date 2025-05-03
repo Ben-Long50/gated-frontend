@@ -6,34 +6,42 @@ import { useForm } from '@tanstack/react-form';
 import CyberneticCard, { CyberneticCardMobile } from './CyberneticCard';
 import useCybernetics from '../hooks/useCybernetics';
 import Loading from './Loading';
-import { FetchOptions } from 'src/types/fetchOptions';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
+import { Cybernetic, CyberneticWithKeywords } from 'src/types/cybernetic';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { ItemObject } from 'src/types/global';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Cybernetics = ({
-  title,
-  fetchOptions,
-  mode,
+  cyberneticList,
   toggleFormLink,
 }: {
-  title: string;
-  fetchOptions?: FetchOptions;
-  mode: string;
+  cyberneticList?: Cybernetic[];
   toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const state = location.state;
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 2];
+
+  const include = searchParams.getAll('include');
+  const exclude = searchParams.getAll('exclude');
 
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
   );
 
-  const cybernetics = useCybernetics(fetchOptions);
+  const cybernetics = useCybernetics({
+    itemList: cyberneticList,
+    includedKeywords: include.length > 0 ? include : undefined,
+    excludedKeywords: exclude.length > 0 ? exclude : undefined,
+  });
 
   const searchForm = useForm({
     defaultValues: {
@@ -57,7 +65,7 @@ const Cybernetics = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">{title}</h1>
+      <h1 className="text-center">{state.title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

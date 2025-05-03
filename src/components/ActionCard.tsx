@@ -31,7 +31,7 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
         </div>
       }
     >
-      <div className="flex flex-col gap-4 pt-2">
+      <div className="flex flex-col gap-4">
         {action?.actionSubtypes?.length > 0 && (
           <div className="flex items-center gap-2">
             {action?.actionSubtypes?.map((subtype) => {

@@ -1,7 +1,7 @@
 import { Keyword } from './keyword';
 import { Picture } from './picture';
 
-interface Armor {
+export default interface Armor {
   id: number;
   name: string;
   rarity: string;

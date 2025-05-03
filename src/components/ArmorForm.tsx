@@ -12,7 +12,7 @@ import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import useCreateArmorMutation from '../hooks/useCreateArmorMutation/useCreateArmorMutation';
 import FormLayout from '../layouts/FormLayout';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import useDeleteArmorMutation from '../hooks/useDeleteArmorMutation/useDeleteArmorMutation';
 import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
@@ -32,13 +32,15 @@ import ActionLinkField from './form_fields/ActionLinkField';
 import KeywordLinkField from './form_fields/KeywordLinkField';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 
-const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
+const ArmorForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
-
   const { armorId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const { data: armor } = useArmorPieceQuery(apiUrl, Number(armorId), {
     enabled: !!armorId,
@@ -185,7 +187,7 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
           }}
         >
           <div className="flex items-center justify-center gap-4">
-            <h1>{title} Armor</h1>
+            <h1>{mode.charAt(0).toUpperCase() + mode.slice(1) + ' Armor'}</h1>
           </div>
           <Divider />
           <ArrowHeader2 title="Armor Information" />
@@ -382,14 +384,18 @@ const ArmorForm = ({ title, mode }: { title: string; mode?: string }) => {
             <ActionLinkField form={armorForm} />
             <Divider />
           </div>
-          <BtnRect ariaLabel={title} type="submit" className="group w-full">
+          <BtnRect
+            ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+            type="submit"
+            className="group w-full"
+          >
             {createArmor.isPending || modifyArmor.isPending ? (
               <Loading
                 className="group-hover:text-yellow-300 dark:text-gray-900"
                 size={1.15}
               />
             ) : (
-              title
+              mode.charAt(0).toUpperCase() + mode.slice(1)
             )}
           </BtnRect>
         </form>

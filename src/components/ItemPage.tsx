@@ -86,8 +86,6 @@ const ItemPage = ({
     enabled: category === 'cybernetics',
   });
 
-  console.log(cybernetic);
-
   const {
     data: vehicle,
     isLoading: vehicleLoading,
@@ -134,7 +132,6 @@ const ItemPage = ({
     default:
       break;
   }
-  console.log(item);
 
   const isLoading =
     weaponLoading ||

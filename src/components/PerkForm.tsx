@@ -8,7 +8,7 @@ import useCreatePerkMutation from '../hooks/useCreatePerkMutation/useCreatePerkM
 import { useForm } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
 import FormLayout from '../layouts/FormLayout';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import Loading from './Loading';
 import useDeletePerkMutation from '../hooks/useDeletePerkMutation/useDeletePerkMutation';
 import usePerks from '../hooks/usePerks';
@@ -18,11 +18,14 @@ import ModifierField from './ModifierField';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 
-const PerkForm = ({ mode }: { mode?: string }) => {
+const PerkForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { perkId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const perks = usePerks();
 
@@ -113,7 +116,9 @@ const PerkForm = ({ mode }: { mode?: string }) => {
           perkForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">{perk ? 'Update Perk' : 'Create Perk'}</h1>
+        <h1 className="text-center">
+          {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Perk'}
+        </h1>
         <Divider />
         <ArrowHeader2 title="Perk Information" />
         <perkForm.Field
@@ -163,16 +168,18 @@ const PerkForm = ({ mode }: { mode?: string }) => {
             ),
           )}
         </div>
-        <BtnRect ariaLabel="Create perk" type="submit" className="group w-full">
+        <BtnRect
+          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          type="submit"
+          className="group w-full"
+        >
           {createPerk.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : perk ? (
-            'Update'
           ) : (
-            'Create'
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>

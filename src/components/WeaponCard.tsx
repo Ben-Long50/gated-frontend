@@ -85,7 +85,7 @@ const WeaponCard = ({
   toggleFormLink,
 }: {
   weapon: WeaponWithKeywords;
-  mode: string;
+  mode?: string;
   ownerId?: number;
   toggleFormLink?: (weaponId: ItemObject) => void;
 }) => {

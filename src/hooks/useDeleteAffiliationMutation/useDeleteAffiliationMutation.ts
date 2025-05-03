@@ -28,8 +28,6 @@ const useDeleteAffiliationMutation = (
       });
     },
     onError: (error) => {
-      console.log(error);
-
       setFormMessage(error.message);
     },
     throwOnError: false,

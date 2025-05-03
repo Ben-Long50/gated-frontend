@@ -6,10 +6,9 @@ import InputField from './InputField';
 import TextAreaField from './TextAreaField';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import SelectField from './SelectField';
 import { Modifier } from 'src/types/modifier';
-import ModifierField from './ModifierField';
 import useDeleteItemMutation from '../hooks/useDeleteItemMutation/useDeleteItemMutation';
 import useCreateItemMutation from '../hooks/useCreateItemMutation/useCreateItemMutation';
 import useItemQuery from '../hooks/useItemQuery/useItemQuery';
@@ -27,12 +26,15 @@ import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 import KeywordLinkField from './form_fields/KeywordLinkField';
 import ActionLinkField from './form_fields/ActionLinkField';
 
-const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
+const ItemForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { itemId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const { data: item } = useItemQuery(apiUrl, Number(itemId), {
     enabled: !!itemId,
@@ -174,7 +176,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          <h1>{title} Item</h1>
+          <h1>{mode.charAt(0).toUpperCase() + mode.slice(1) + ' Item'}</h1>
         </div>
         <Divider />
         <ArrowHeader2 title="Item Information" />
@@ -388,7 +390,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
           <Divider />
         </div>
         <BtnRect
-          ariaLabel={`${title} item`}
+          ariaLabel={`${mode.charAt(0).toUpperCase() + mode.slice(1)} item`}
           type="submit"
           className="group w-full"
         >
@@ -398,7 +400,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
               size={1.15}
             />
           ) : (
-            title
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>

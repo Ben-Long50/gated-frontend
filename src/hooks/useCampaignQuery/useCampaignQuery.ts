@@ -6,6 +6,7 @@ const useCampaignQuery = (apiUrl: string, campaignId: number) => {
   return useQuery<Campaign>({
     queryKey: ['campaign', campaignId],
     queryFn: async () => await getCampaign(apiUrl, campaignId),
+    enabled: !!campaignId,
     throwOnError: false,
   });
 };

@@ -6,8 +6,7 @@ import { useForm } from '@tanstack/react-form';
 import useArmor from '../hooks/useArmor';
 import ArmorCard, { ArmorCardMobile } from './ArmorCard';
 import Loading from './Loading';
-import { FetchOptions } from 'src/types/fetchOptions';
-import { ArmorWithKeywords } from 'src/types/armor';
+import ArmorType, { ArmorWithKeywords } from 'src/types/armor';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
@@ -17,12 +16,10 @@ import { ItemObject } from 'src/types/global';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Armor = ({
-  title,
-  mode,
+  armorList,
   toggleFormLink,
 }: {
-  title?: string;
-  mode: string;
+  armorList?: ArmorType[];
   toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
@@ -30,6 +27,8 @@ const Armor = ({
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const state = location.state;
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 2];
 
   const include = searchParams.getAll('include');
   const exclude = searchParams.getAll('exclude');
@@ -38,14 +37,11 @@ const Armor = ({
     mobile ? 'small' : 'large',
   );
 
-  console.log(include, exclude);
-
   const armor = useArmor({
+    itemList: armorList,
     includedKeywords: include.length > 0 ? include : undefined,
     excludedKeywords: exclude.length > 0 ? exclude : undefined,
   });
-
-  console.log(armor);
 
   const searchForm = useForm({
     defaultValues: {
@@ -64,7 +60,7 @@ const Armor = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">{state?.title || title}</h1>
+      <h1 className="text-center">{state.title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

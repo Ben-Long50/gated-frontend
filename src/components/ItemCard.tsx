@@ -17,7 +17,6 @@ import { Modification, VehicleWithWeapons } from 'src/types/vehicle';
 import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
 import SubmodificationCard from './SubmodificationCard';
-import BodyIcon from './icons/BodyIcon';
 import { Item } from 'src/types/item';
 import ModifierTag from './ModifierTag';
 import { Modifier } from 'src/types/modifier';
@@ -40,7 +39,7 @@ const ItemCard = ({
     | VehicleWithWeapons
     | Item;
   category: string;
-  mode: string;
+  mode?: string;
   controls?: ReactNode;
   toggleFormLink?: (id: ItemObject) => void;
 }) => {

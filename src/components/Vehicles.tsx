@@ -6,30 +6,34 @@ import { useForm } from '@tanstack/react-form';
 import Loading from './Loading';
 import useVehicles from '../hooks/useVehicles';
 import VehicleCard, { VehicleCardMobile } from './VehicleCard';
-import { VehicleWithWeapons } from '../types/vehicle';
-import { FetchOptions } from 'src/types/fetchOptions';
+import { Vehicle, VehicleWithWeapons } from '../types/vehicle';
 import ArrowHeader2 from './ArrowHeader2';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
-const Vehicles = ({
-  title,
-  fetchOptions,
-  mode,
-}: {
-  title: string;
-  fetchOptions?: FetchOptions;
-  mode: string;
-}) => {
+const Vehicles = ({ vehicleList }: { vehicleList?: Vehicle[] }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const state = location.state;
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 2];
+
+  const include = searchParams.getAll('include');
+  const exclude = searchParams.getAll('exclude');
 
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
   );
 
-  const vehicles = useVehicles(fetchOptions);
+  const vehicles = useVehicles({
+    itemList: vehicleList,
+    includedKeywords: include.length > 0 ? include : undefined,
+    excludedKeywords: exclude.length > 0 ? exclude : undefined,
+  });
 
   const searchForm = useForm({
     defaultValues: {
@@ -46,7 +50,7 @@ const Vehicles = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">{title}</h1>
+      <h1 className="text-center">{state.title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

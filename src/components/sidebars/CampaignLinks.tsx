@@ -33,7 +33,7 @@ const CampaignLinks = ({
     setModalOpen((prev) => !prev);
   };
 
-  if (isLoading || isPending) return <span></span>;
+  if (isLoading) return <span></span>;
 
   return (
     <>
@@ -48,17 +48,17 @@ const CampaignLinks = ({
           >
             <SubLinkSidebar
               title="Player campaigns"
-              path={`campaigns/player`}
+              path={`campaigns?campaignType=player`}
               setSidebarVisibility={setSidebarVisibility}
             />
             <SubLinkSidebar
               title="Pending campaigns"
-              path={`campaigns/pending`}
+              path={`campaigns?campaignType=pending`}
               setSidebarVisibility={setSidebarVisibility}
             />
             <SubLinkSidebar
               title="Owner campaigns"
-              path={`campaigns/owner`}
+              path={`campaigns?campaignType=owner`}
               setSidebarVisibility={setSidebarVisibility}
             />
             <SubLinkSidebar

@@ -6,7 +6,7 @@ import { useForm } from '@tanstack/react-form';
 import WeaponCard, { WeaponCardMobile } from './WeaponCard';
 import useWeapons from '../hooks/useWeapons';
 import Loading from './Loading';
-import { WeaponWithKeywords } from 'src/types/weapon';
+import { Weapon, WeaponWithKeywords } from 'src/types/weapon';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
@@ -15,12 +15,10 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Weapons = ({
-  title,
-  mode,
+  weaponList,
   toggleFormLink,
 }: {
-  title?: string;
-  mode: string;
+  weaponList?: Weapon[];
   toggleFormLink?: (weaponId: WeaponWithKeywords) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -28,6 +26,8 @@ const Weapons = ({
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const state = location.state;
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 2];
 
   const include = searchParams.getAll('include');
   const exclude = searchParams.getAll('exclude');
@@ -36,9 +36,8 @@ const Weapons = ({
     mobile ? 'small' : 'large',
   );
 
-  console.log(include, exclude);
-
   const weapons = useWeapons({
+    itemList: weaponList,
     includedKeywords: include.length > 0 ? include : undefined,
     excludedKeywords: exclude.length > 0 ? exclude : undefined,
   });
@@ -62,7 +61,7 @@ const Weapons = ({
     <div
       className={`flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8`}
     >
-      <h1 className="text-center">{state?.title || title}</h1>
+      <h1 className="text-center">{state.title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
@@ -147,8 +146,8 @@ const Weapons = ({
           return (
             <WeaponCard
               key={weapon.id}
-              weapon={weapon}
               mode={mode}
+              weapon={weapon}
               toggleFormLink={toggleFormLink}
             />
           );
@@ -159,8 +158,8 @@ const Weapons = ({
             return (
               <WeaponCardMobile
                 key={weapon.id}
-                weapon={weapon}
                 mode={mode}
+                weapon={weapon}
                 toggleFormLink={toggleFormLink}
               />
             );

@@ -11,7 +11,7 @@ import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
 
-const Conditions = ({ mode }: { mode?: string }) => {
+const Conditions = () => {
   const { accentPrimary } = useContext(ThemeContext);
 
   const conditions = useConditions();

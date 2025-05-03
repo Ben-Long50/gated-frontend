@@ -12,7 +12,7 @@ const AccountPicture = ({
     user?.profilePicture ? (
       <img
         key={user.id}
-        className={`${className} size-10 shrink-0 rounded-full`}
+        className={`${className} size-10 shrink-0 rounded-full shadow shadow-black`}
         src={user.profilePicture}
         alt="Profile"
       />

@@ -1,13 +1,13 @@
 import handleResponse from '../handleResponse';
 
-const joinCampaign = async (apiUrl: string, campaignId: string) => {
+const getCampaigns = async (apiUrl: string) => {
   try {
-    const response = await fetch(`${apiUrl}/campaigns/${campaignId}/players`, {
-      method: 'PATCH',
+    const response = await fetch(`${apiUrl}/campaigns`, {
+      method: 'GET',
       credentials: 'include',
     });
-
     const data = await handleResponse(response);
+
     return data;
   } catch (error) {
     if (error instanceof Error) {
@@ -17,4 +17,4 @@ const joinCampaign = async (apiUrl: string, campaignId: string) => {
   }
 };
 
-export default joinCampaign;
+export default getCampaigns;

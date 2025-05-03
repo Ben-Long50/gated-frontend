@@ -10,7 +10,7 @@ import Icon from '@mdi/react';
 import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { WeaponWithKeywords } from '../types/weapon';
 import SelectField from './SelectField';
 import Divider from './Divider';
@@ -28,12 +28,15 @@ import useDeleteDroneMutation from '../hooks/useDeleteDroneMutation/useDeleteDro
 import { DroneStats } from 'src/types/drone';
 import { Modification } from 'src/types/vehicle';
 
-const DroneForm = ({ title, mode }: { title: string; mode: string }) => {
+const DroneForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { droneId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const { data: drone, isLoading } = useDroneQuery(apiUrl, Number(droneId), {
     enabled: !!droneId,
@@ -120,8 +123,6 @@ const DroneForm = ({ title, mode }: { title: string; mode: string }) => {
         keywordIds: extractKeywordListIds(value.keywords),
       };
 
-      console.log(data);
-
       const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {
@@ -174,7 +175,7 @@ const DroneForm = ({ title, mode }: { title: string; mode: string }) => {
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          <h1>{title} Drone</h1>
+          <h1>{mode.charAt(0).toUpperCase() + mode.slice(1) + ' Drone'}</h1>
         </div>
         <Divider />
         <ArrowHeader2 title="Drone Information" />
@@ -375,14 +376,18 @@ const DroneForm = ({ title, mode }: { title: string; mode: string }) => {
             ) : null
           }
         </droneForm.Subscribe>
-        <BtnRect ariaLabel={title} type="submit" className="group w-full">
+        <BtnRect
+          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          type="submit"
+          className="group w-full"
+        >
           {createDrone.isPending || modifyDrone.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
           ) : (
-            title
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>
