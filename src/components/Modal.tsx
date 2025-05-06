@@ -20,7 +20,6 @@ const Modal = ({
       <div
         className={`fixed inset-0 z-20 flex items-center justify-center px-2`}
         onClick={() => {
-          toggleModal();
           if (modalOpen) {
             navigate(-1);
           }

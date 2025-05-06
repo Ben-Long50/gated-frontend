@@ -16,7 +16,7 @@ const useVehicles = (fetchOptions?: FetchOptions) => {
   const filteredVehicles = useMemo(() => {
     if (!list) return [];
     return list?.filter((vehicle: VehicleWithWeapons) =>
-      vehicle.name.toLowerCase().includes(query.toLowerCase()),
+      vehicle.name?.toLowerCase().includes(query.toLowerCase()),
     );
   }, [list, query]);
 

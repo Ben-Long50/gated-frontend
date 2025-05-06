@@ -28,7 +28,7 @@ const SubarmorCard = ({
     >
       <Link
         className="hover:bg-secondary timing flex p-4"
-        to={mode ? `${mode}/armor/${armor.id}` : `armor/${armor.id}`}
+        to={`../../armor/${armor.id}`}
       >
         <div className="my-auto flex max-h-[250px] w-full gap-8">
           {armor.picture?.imageUrl && (

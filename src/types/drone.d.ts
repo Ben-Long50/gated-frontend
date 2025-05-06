@@ -12,6 +12,7 @@ export interface Drone {
   description: string;
   stats: VehicleStats;
   price: number;
+  equipped: boolean;
   weapons: WeaponWithKeywords[];
   actions: Action[];
   keywords: { keyword: Keyword; value?: number }[];

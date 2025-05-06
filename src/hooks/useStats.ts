@@ -11,7 +11,7 @@ import { CharacterInventory } from 'src/types/character';
 import { Item } from 'src/types/item';
 
 const useStats = (
-  inventory: Partial<CharacterInventory>,
+  inventory: CharacterInventory,
   attributTree: Partial<AttributeTree>,
   perks?: Perk[],
 ) => {

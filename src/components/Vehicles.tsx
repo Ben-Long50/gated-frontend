@@ -6,14 +6,14 @@ import { useForm } from '@tanstack/react-form';
 import Loading from './Loading';
 import useVehicles from '../hooks/useVehicles';
 import VehicleCard, { VehicleCardMobile } from './VehicleCard';
-import { Vehicle, VehicleWithWeapons } from '../types/vehicle';
+import { VehicleWithWeapons } from '../types/vehicle';
 import ArrowHeader2 from './ArrowHeader2';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
-const Vehicles = ({ vehicleList }: { vehicleList?: Vehicle[] }) => {
+const Vehicles = ({ vehicleList }: { vehicleList?: VehicleWithWeapons[] }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [searchParams] = useSearchParams();
@@ -28,6 +28,8 @@ const Vehicles = ({ vehicleList }: { vehicleList?: Vehicle[] }) => {
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
   );
+  console.log(mode);
+  console.log(vehicleList);
 
   const vehicles = useVehicles({
     itemList: vehicleList,

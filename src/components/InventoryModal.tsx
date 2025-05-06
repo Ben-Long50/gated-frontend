@@ -14,6 +14,8 @@ import useToggleEquipmentMutation from '../hooks/useEquipmentToggleMutation/useE
 import { AuthContext } from '../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
 import { Character } from 'src/types/character';
+import { VehicleWithWeapons } from 'src/types/vehicle';
+import { Drone } from 'src/types/drone';
 
 const InventoryModal = ({
   character,
@@ -21,14 +23,28 @@ const InventoryModal = ({
   armor,
   cybernetics,
   items,
+  vehicles,
+  drones,
+  active,
+  setActive,
   modalOpen,
   toggleModal,
 }: {
   character: Character;
-  weapons: WeaponWithKeywords[];
-  armor: ArmorWithKeywords[];
-  cybernetics: CyberneticWithKeywords[];
-  items: Item[];
+  weapons?: WeaponWithKeywords[];
+  armor?: ArmorWithKeywords[];
+  cybernetics?: CyberneticWithKeywords[];
+  items?: Item[];
+  vehicles?: VehicleWithWeapons[];
+  drones?: Drone[];
+  active: {
+    id: null | number;
+    category: null | string;
+  };
+  setActive: (activeItem: {
+    id: null | number;
+    category: null | string;
+  }) => void;
   modalOpen: boolean;
   toggleModal: () => void;
 }) => {
@@ -64,7 +80,8 @@ const InventoryModal = ({
           armor={armor}
           cybernetics={cybernetics}
           items={items}
-          mode="inventory"
+          vehicles={vehicles}
+          drones={drones}
         >
           {(item, index, { tab }) => (
             <ThemeContainer
@@ -79,6 +96,9 @@ const InventoryModal = ({
                 key={index}
                 onDoubleClick={() => {
                   if (characterId) {
+                    if (item.id === active.id) {
+                      setActive({ id: null, category: null });
+                    }
                     toggleEquipment.mutate({
                       characterId: character?.id,
                       inventoryId: character?.characterInventory?.id,

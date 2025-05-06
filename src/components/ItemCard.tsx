@@ -65,9 +65,9 @@ const ItemCard = ({
         to={
           mode === 'form'
             ? ''
-            : mode === 'equipment'
-              ? `${category}/${item.id}`
-              : `${item.id}`
+            : mode === 'equipment' || mode === 'deployments'
+              ? `${category}/${item?.id}`
+              : `${item?.id}`
         }
         state={mode}
         className={`hover:bg-secondary timing relative flex w-full flex-col gap-8 p-4`}
@@ -165,7 +165,7 @@ const ItemCard = ({
             )}
           </div>
         </div>
-        {mode === 'equipment' && controls}
+        {(mode === 'equipment' || mode === 'deployments') && controls}
         {item.modifications?.length > 0 && (
           <ThemeContainer chamfer="small" borderColor={accentPrimary}>
             <p className="text-accent absolute -top-3 left-5 z-20 text-base">

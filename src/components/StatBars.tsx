@@ -155,7 +155,7 @@ const StatBars = ({
           <RangeIcon className="text-secondary size-8" />
         </StatBar>
       )}
-      {mode === 'equipment'
+      {mode === 'equipment' || mode === 'deployments'
         ? stats.currentAmmoCount !== undefined &&
           stats.magCapacity && (
             <StatBar
@@ -296,7 +296,7 @@ const StatBars = ({
           <WardIcon className="text-secondary size-8" />
         </StatBar>
       )}
-      {mode === 'equipment'
+      {mode === 'equipment' || mode === 'deployments'
         ? stats.block &&
           stats.currentBlock !== undefined && (
             <StatBar
@@ -319,7 +319,7 @@ const StatBars = ({
               <BlockIcon className="text-secondary size-8" />
             </StatBar>
           )}
-      {mode === 'equipment'
+      {mode === 'equipment' || mode === 'deployments'
         ? stats.power &&
           stats.currentPower !== undefined && (
             <StatBar

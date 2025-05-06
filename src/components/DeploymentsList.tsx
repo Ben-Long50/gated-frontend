@@ -1,43 +1,28 @@
-import { WeaponWithKeywords } from 'src/types/weapon';
-import { ArmorWithKeywords } from 'src/types/armor';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { ReactNode, useContext } from 'react';
-import { Item } from 'src/types/item';
+import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ItemMenu from './ItemMenu';
+import { VehicleWithWeapons } from 'src/types/vehicle';
+import { Drone } from 'src/types/drone';
 
-const EquipmentList = ({
-  weapons,
-  armor,
-  cybernetics,
-  items,
+const DeploymentsList = ({
+  vehicles,
+  drones,
   active,
   setActive,
 }: {
-  weapons: WeaponWithKeywords[];
-  armor: ArmorWithKeywords[];
-  cybernetics: CyberneticWithKeywords[];
-  items: Item[];
+  vehicles: VehicleWithWeapons[];
+  drones: Drone[];
   active: {
     id: null | number;
     category: null | string;
   };
   setActive: (item: { id: null | number; category: null | string }) => void;
-
-  modalOpen: boolean;
-  toggleModal: () => void;
-  children?: ReactNode;
 }) => {
   const { rarityColorMap } = useContext(ThemeContext);
 
   return (
     <div className="flex w-full flex-col gap-8">
-      <ItemMenu
-        weapons={weapons}
-        armor={armor}
-        cybernetics={cybernetics}
-        items={items}
-      >
+      <ItemMenu vehicles={vehicles} drones={drones}>
         {(item, index, { tab }) =>
           item.equipped === true && (
             <div
@@ -101,4 +86,4 @@ const EquipmentList = ({
   );
 };
 
-export default EquipmentList;
+export default DeploymentsList;

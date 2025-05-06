@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import editAmmo from './editAmmo';
 import { useRef } from 'react';
 import { Character } from 'src/types/character';
+import { WeaponWithKeywords } from 'src/types/weapon';
 
 const useEditAmmoMutation = (
   apiUrl: string,
@@ -57,17 +58,31 @@ const useEditAmmoMutation = (
                   }
                 : item,
             ),
+            vehicles: prev.characterInventory.vehicles.map((vehicle) => ({
+              ...vehicle,
+              weapons: vehicle.weapons.map((item: WeaponWithKeywords) =>
+                item.id === weaponId
+                  ? {
+                      ...item,
+                      stats: {
+                        ...item.stats,
+                        currentAmmoCount: item.stats.currentAmmoCount
+                          ? item.stats.currentAmmoCount + value
+                          : value,
+                      },
+                    }
+                  : item,
+              ),
+            })),
           },
         }),
       );
 
       return { prevCharacterData };
     },
-
     onSuccess: () => {
       return queryClient.invalidateQueries({
         queryKey: ['character', characterId],
-        exact: false,
       });
     },
     throwOnError: false,

@@ -26,7 +26,7 @@ const Inventory = () => {
   if (isLoading || isPending) return <Loading />;
 
   return (
-    <div className="flex w-full max-w-5xl flex-col gap-8">
+    <div className="flex w-full max-w-6xl flex-col gap-8">
       {category === 'weapons' ? (
         <Weapons
           weaponList={character?.characterInventory?.weapons}
@@ -49,8 +49,8 @@ const Inventory = () => {
         />
       ) : category === 'vehicles' ? (
         <Vehicles
-          vehicleList={character?.characterInventory?.vehciles}
-          key={character?.id + ' ' + 'vehicle weapons'}
+          vehicleList={character?.characterInventory?.vehicles}
+          key={character?.id + ' ' + 'vehicles'}
         />
       ) : category === 'modifications' ? (
         <Modifications
@@ -59,8 +59,8 @@ const Inventory = () => {
         />
       ) : category === 'drones' ? (
         <Drones
-          droneList={character?.characterInventory?.vehicles}
-          key={character?.id + ' ' + 'vehicles'}
+          droneList={character?.characterInventory?.drones}
+          key={character?.id + ' ' + 'drones'}
         />
       ) : (
         <h1>Invalid category</h1>

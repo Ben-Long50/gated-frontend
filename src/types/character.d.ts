@@ -1,7 +1,9 @@
+import { Action } from './action';
 import { ArmorWithKeywords } from './armor';
 import { AttributeTree } from './attributeTree';
 import { Campaign } from './campaign';
 import { CyberneticWithKeywords } from './cybernetic';
+import { Drone } from './drone';
 import { Gang } from './gang';
 import { Perk } from './perk';
 import { Picture } from './picture';
@@ -62,5 +64,7 @@ interface CharacterInventory {
   armor: Armor[];
   cybernetics: Cybernetic[];
   vehicles: Vehicle[];
+  drones: Drone[];
   items: Item[];
+  actions: Action[];
 }

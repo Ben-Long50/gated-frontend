@@ -51,7 +51,7 @@ const Modifications = ({
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-8">
+    <div className="flex w-full max-w-6xl flex-col items-center gap-8">
       <h1 className="text-center">{state.title}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}

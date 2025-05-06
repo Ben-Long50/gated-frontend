@@ -73,8 +73,8 @@ const CharacterLinks = ({
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Deployment"
-          path={`characters/${character?.id}/deployment`}
+          title="Deployments"
+          path={`characters/${character?.id}/deployments`}
           setSidebarVisibility={setSidebarVisibility}
         />
       </LinkListSidebar>
@@ -177,6 +177,11 @@ const CharacterLinks = ({
         <SubLinkSidebar
           title="Vehicle Weapons"
           path={`characters/${character?.id}/inventory/weapons?include=Vehicle Weapon`}
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <SubLinkSidebar
+          title="Drone Weapons"
+          path={`characters/${character?.id}/inventory/weapons?include=Drone Weapon`}
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar

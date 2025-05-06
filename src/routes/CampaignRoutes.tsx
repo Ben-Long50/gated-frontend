@@ -40,8 +40,8 @@ const CampaignRoutes = () => {
             <Route index element={<CharacterSheet />} />
             <Route path="equipment" element={<Equipment />} />
             <Route path="resume" element={<Resume />} />
+            <Route path="update" element={<CharacterUpdateForm />} />
           </Route>
-          <Route path="update" element={<CharacterUpdateForm />} />
         </Route>
         {SessionRoutes()}
         <Route path="rollSimulator" element={<RollSimulator />} />

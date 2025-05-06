@@ -31,7 +31,7 @@ const SubweaponCard = ({
     >
       <Link
         className="hover:bg-secondary timing flex p-4"
-        to={mode ? `${mode}/weapons/${weapon.id}` : `weapons/${weapon.id}`}
+        to={`../../weapons/${weapon.id}`}
       >
         <div className="my-auto flex max-h-[250px] w-full gap-8">
           {weapon.picture?.imageUrl && (

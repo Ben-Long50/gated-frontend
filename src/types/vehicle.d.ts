@@ -17,6 +17,7 @@ export interface Vehicle {
 
 export interface VehicleWithWeapons {
   id: number;
+  ownerId: number;
   name: string;
   rarity: string;
   grade: number;
@@ -24,6 +25,7 @@ export interface VehicleWithWeapons {
   description: string;
   stats: VehicleStats;
   price: number;
+  equipped: boolean;
   weapons: WeaponWithKeywords[];
   actions: Action[];
   modifications: Modification[];

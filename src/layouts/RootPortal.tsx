@@ -20,8 +20,7 @@ const RootPortal = ({
     const handlePopstate = (e) => {
       if (modalOpen) {
         e.preventDefault();
-        toggleModal();
-        // navigate(-1);
+        navigate(-1);
       }
     };
 

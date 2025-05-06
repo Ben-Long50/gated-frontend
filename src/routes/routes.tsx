@@ -12,7 +12,6 @@ import SignupForm from '../components/SignupForm';
 import MainLayout from '../layouts/MainLayout';
 import ErrorReport from '../components/ErrorReport';
 import ErrorReports from '../components/ErrorReports';
-import ItemPageWrapper from '../components/ItemPageWrapper';
 import AccountRoutes from './AccountRoutes';
 import CampaignRoutes from './CampaignRoutes';
 import CharacterRoutes from './CharacterRoutes';
@@ -35,7 +34,6 @@ const router = createBrowserRouter(
           element={<MainLayout />}
           errorElement={<ErrorPage />}
         >
-          <Route path="*" element={<ItemPageWrapper />} />
           <Route path="error">
             <Route index element={<ErrorReports />} />
           </Route>

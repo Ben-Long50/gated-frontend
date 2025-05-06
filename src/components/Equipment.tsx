@@ -3,11 +3,6 @@ import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import StatBar from './StatBar';
-import HealthIcon from './icons/HealthIcon';
-import SanityIcon from './icons/SanityIcon';
-import CyberIcon from './icons/CyberIcon';
-import EquipIcon from './icons/EquipIcon';
 import { LayoutContext } from '../contexts/LayoutContext';
 import useWeapons from '../hooks/useWeapons';
 import { WeaponWithKeywords } from 'src/types/weapon';
@@ -15,7 +10,7 @@ import useArmor from '../hooks/useArmor';
 import useCybernetics from '../hooks/useCybernetics';
 import { ArmorWithKeywords } from 'src/types/armor';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import useStats from '../hooks/useStats';
 import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
@@ -29,8 +24,6 @@ import EquipmentList from './EquipmentList';
 import ActionCard from './ActionCard';
 import { Action } from 'src/types/action';
 import DieIcon from './icons/DieIcon';
-import useCurrentHealthMutation from '../hooks/useCurrentHealthMutation/useCurrentHealthMutation';
-import useCurrentSanityMutation from '../hooks/useCurrentSanityMutation/useCurrentSanityMutation';
 import WeaponCard, { WeaponCardMobile } from './WeaponCard';
 import ArmorCard, { ArmorCardMobile } from './ArmorCard';
 import CyberneticCard, { CyberneticCardMobile } from './CyberneticCard';
@@ -46,23 +39,22 @@ import InventoryModal from './InventoryModal';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import StatBars from './StatBars';
 
-const Equipment = ({ mode }: { mode?: string }) => {
+const Equipment = () => {
   const { apiUrl, user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { mobile } = useContext(LayoutContext);
   const { characterId } = useParams();
+  const location = useLocation();
+  const modalOpen = location.pathname.endsWith('inventory');
+  const path = location.pathname.split('/');
+  const mode = path[path.length - 1];
 
   const [active, setActive] = useState<{
     id: null | number;
     category: null | string;
   }>({ id: null, category: null });
-  const [modalOpen, setModalOpen] = useState(false);
 
   const cardRef = useRef(null);
-
-  const toggleModal = () => {
-    setModalOpen((prev) => !prev);
-  };
 
   const {
     data: character,
@@ -72,11 +64,11 @@ const Equipment = ({ mode }: { mode?: string }) => {
 
   const { filteredWeapons: weapons } = useWeapons({
     itemList: character?.characterInventory?.weapons,
-    excludedKeywords: ['Vehicle', 'Cybernetic'],
+    excludedKeywords: ['Vehicle Weapon', 'CyberWeapon'],
   });
   const { filteredArmor: armor } = useArmor({
     itemList: character?.characterInventory?.armor,
-    excludedKeywords: ['Cybernetic'],
+    excludedKeywords: ['Cyber Armor'],
   });
   const { filteredCybernetics: cybernetics } = useCybernetics({
     itemList: character?.characterInventory?.cybernetics,
@@ -105,7 +97,7 @@ const Equipment = ({ mode }: { mode?: string }) => {
   const activeItem = useMemo(() => {
     switch (active?.category) {
       case 'weapon':
-        return equippedWeapons.filter(
+        return equippedWeapons?.filter(
           (weapon: WeaponWithKeywords) => weapon.id === active.id,
         )[0];
       case 'armor':
@@ -186,14 +178,14 @@ const Equipment = ({ mode }: { mode?: string }) => {
                 <WeaponCardMobile
                   key={active.id}
                   weapon={activeItem}
-                  mode="equipment"
+                  mode={mode}
                   ownerId={character?.userId}
                 />
               ) : (
                 <WeaponCard
                   key={active.id}
                   weapon={activeItem}
-                  mode="equipment"
+                  mode={mode}
                   ownerId={character?.userId}
                 />
               )
@@ -202,14 +194,14 @@ const Equipment = ({ mode }: { mode?: string }) => {
                 <ArmorCardMobile
                   key={active.id}
                   armor={activeItem}
-                  mode="equipment"
+                  mode={mode}
                   ownerId={character?.userId}
                 />
               ) : (
                 <ArmorCard
                   key={active.id}
                   armor={activeItem}
-                  mode="equipment"
+                  mode={mode}
                   ownerId={character?.userId}
                 />
               )
@@ -218,14 +210,14 @@ const Equipment = ({ mode }: { mode?: string }) => {
                 <CyberneticCardMobile
                   key={active.id}
                   cybernetic={activeItem}
-                  mode="equipment"
+                  mode={mode}
                   ownerId={character?.userId}
                 />
               ) : (
                 <CyberneticCard
                   key={active.id}
                   cybernetic={activeItem}
-                  mode="equipment"
+                  mode={mode}
                   ownerId={character?.userId}
                 />
               )
@@ -235,35 +227,34 @@ const Equipment = ({ mode }: { mode?: string }) => {
                 <MiscItemCardMobile
                   key={active.id}
                   item={activeItem}
-                  mode="equipment"
+                  mode={mode}
                   ownerId={character?.userId}
                 />
               ) : (
                 <MiscItemCard
                   key={active.id}
                   item={activeItem}
-                  mode="equipment"
+                  mode={mode}
                   ownerId={character?.userId}
                 />
               ))
             ))}
           <div className="flex items-center justify-between">
             <ArrowHeader2 title="Equipped Items" />
-            <BtnRect
-              onClick={toggleModal}
-              ariaLabel="Open inventory"
-              type="button"
-            >
-              Open Inventory
-            </BtnRect>
+            <Link to="inventory">
+              <BtnRect ariaLabel="Open inventory" type="button">
+                Open Inventory
+              </BtnRect>
+            </Link>
             <InventoryModal
               character={character}
               weapons={weapons}
               armor={armor}
               cybernetics={cybernetics}
               items={items}
+              active={active}
+              setActive={setActive}
               modalOpen={modalOpen}
-              toggleModal={toggleModal}
             />
           </div>
           <EquipmentList
@@ -274,7 +265,6 @@ const Equipment = ({ mode }: { mode?: string }) => {
             active={active}
             setActive={setActive}
             modalOpen={modalOpen}
-            toggleModal={toggleModal}
           />
         </div>
 
