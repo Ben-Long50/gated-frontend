@@ -1,32 +1,37 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import refreshAmmo from './refreshAmmo';
 import { useRef } from 'react';
 import { Character } from 'src/types/character';
-import { WeaponWithKeywords } from 'src/types/weapon';
+import editPass from './editPass';
 
-const useRefreshAmmoMutation = (
+const useEditPassMutation = (
   apiUrl: string,
-  weaponId: number,
+  vehicleId: number,
   characterId: number,
 ) => {
   const queryClient = useQueryClient();
+  const updateBuffer = useRef(0);
   const timeoutRef = useRef(0);
 
   return useMutation({
-    mutationFn: () => {
+    mutationFn: (value: number) => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
 
+      updateBuffer.current += value;
+
       return new Promise((resolve) => {
         timeoutRef.current = setTimeout(async () => {
-          await refreshAmmo(apiUrl, weaponId);
-          resolve(weaponId);
+          const finalValue = updateBuffer.current;
+
+          updateBuffer.current = 0;
+          await editPass(apiUrl, vehicleId, finalValue);
+          resolve(finalValue);
         }, 1000);
       });
     },
 
-    onMutate: () => {
+    onMutate: (value) => {
       queryClient.cancelQueries({ queryKey: ['character', characterId] });
 
       const prevCharacterData: Character | undefined = queryClient.getQueryData(
@@ -39,33 +44,19 @@ const useRefreshAmmoMutation = (
           ...prev,
           characterInventory: {
             ...prev.characterInventory,
-            weapons: prev.characterInventory.weapons.map((item) =>
-              item.id === weaponId
+            vehicles: prev.characterInventory.vehicles.map((item) =>
+              item.id === vehicleId
                 ? {
                     ...item,
                     stats: {
                       ...item.stats,
-                      currentAmmoCount: item.stats.magCapacity,
-                      currentMagCount: item.stats.magCount - 1,
+                      currentPass: item.stats.currentPass
+                        ? item.stats.currentPass + value
+                        : value,
                     },
                   }
                 : item,
             ),
-            vehicles: prev.characterInventory.vehicles.map((vehicle) => ({
-              ...vehicle,
-              weapons: vehicle.weapons.map((item: WeaponWithKeywords) =>
-                item.id === weaponId
-                  ? {
-                      ...item,
-                      stats: {
-                        ...item.stats,
-                        currentAmmoCount: item.stats.magCapacity,
-                        currentMagCount: item.stats.magCount - 1,
-                      },
-                    }
-                  : item,
-              ),
-            })),
           },
         }),
       );
@@ -83,4 +74,4 @@ const useRefreshAmmoMutation = (
   });
 };
 
-export default useRefreshAmmoMutation;
+export default useEditPassMutation;

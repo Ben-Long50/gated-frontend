@@ -26,9 +26,8 @@ const InventoryModal = ({
   vehicles,
   drones,
   active,
-  setActive,
+  toggleActive,
   modalOpen,
-  toggleModal,
 }: {
   character: Character;
   weapons?: WeaponWithKeywords[];
@@ -41,12 +40,8 @@ const InventoryModal = ({
     id: null | number;
     category: null | string;
   };
-  setActive: (activeItem: {
-    id: null | number;
-    category: null | string;
-  }) => void;
+  toggleActive: (id: null | number, category: null | string) => void;
   modalOpen: boolean;
-  toggleModal: () => void;
 }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary, rarityColorMap } = useContext(ThemeContext);
@@ -58,7 +53,7 @@ const InventoryModal = ({
   );
 
   return (
-    <Modal modalOpen={modalOpen} toggleModal={toggleModal}>
+    <Modal modalOpen={modalOpen}>
       <div
         className="flex w-full max-w-4xl flex-col gap-8"
         onClick={(e) => e.stopPropagation()}
@@ -97,7 +92,7 @@ const InventoryModal = ({
                 onDoubleClick={() => {
                   if (characterId) {
                     if (item.id === active.id) {
-                      setActive({ id: null, category: null });
+                      toggleActive(null, null);
                     }
                     toggleEquipment.mutate({
                       characterId: character?.id,

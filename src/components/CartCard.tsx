@@ -15,7 +15,7 @@ const CartCard = ({
   handleRemove,
   children,
 }: {
-  className: string;
+  className?: string;
   item:
     | WeaponWithKeywords
     | ArmorWithKeywords

@@ -90,7 +90,7 @@ const DroneForm = () => {
       picture: drone?.picture || '',
       description: drone?.description || '',
       stats: {
-        health: drone?.stats?.health || '',
+        hull: drone?.stats?.hull || '',
         armor: drone?.stats?.armor || '',
         power: drone?.stats?.power || '',
         speed: drone?.stats?.speed || '',
@@ -104,7 +104,7 @@ const DroneForm = () => {
         drone?.keywords || ([] as { keyword: Keyword; value?: number }[]),
     },
     onSubmit: async ({ value }) => {
-      value.stats.currentHealth = value.stats.health;
+      value.stats.currentHull = value.stats.hull;
       value.stats.currentPower = value.stats.power;
 
       const filteredStats = Object.fromEntries(
@@ -122,6 +122,7 @@ const DroneForm = () => {
         modificationIds: extractItemListIds(value.modifications),
         keywordIds: extractKeywordListIds(value.keywords),
       };
+      console.log(data);
 
       const formData = new FormData();
 
@@ -197,7 +198,7 @@ const DroneForm = () => {
             name="price"
             validators={{
               onChange: ({ value }) =>
-                value < 0 ? 'Price cannot be negative' : undefined,
+                value && value < 0 ? 'Price cannot be negative' : undefined,
             }}
           >
             {(field) => (
@@ -309,12 +310,12 @@ const DroneForm = () => {
         </div>
         <div>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
-            <droneForm.Field name="stats.health">
+            <droneForm.Field name="stats.hull">
               {(field) => (
                 <InputField
                   className="grow"
                   type="number"
-                  label="Health"
+                  label="Hull"
                   field={field}
                 />
               )}

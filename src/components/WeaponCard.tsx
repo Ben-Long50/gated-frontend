@@ -33,47 +33,54 @@ const WeaponControls = ({
   const refreshAmmo = useRefreshMutation(apiUrl, weaponId, Number(characterId));
 
   return (
-    <div className="col-span-2 flex w-full flex-col items-center justify-start gap-2 sm:gap-4">
-      {stats.currentAmmoCount && stats.currentAmmoCount > 0 ? (
+    <div className="col-span-2 grid grid-cols-1 items-center justify-start gap-2 sm:grid-cols-2 sm:gap-4">
+      {stats.currentAmmoCount !== undefined && (
         <BtnControl
           title="Single Shot"
           icon={<DamageIcon className="size-8 text-inherit" />}
-          mutation={
-            stats.currentAmmoCount &&
-            stats.currentAmmoCount > 0 &&
-            editCurrentAmmo
-          }
+          mutation={stats.currentAmmoCount > 0 ? editCurrentAmmo : null}
           value={-1}
         />
-      ) : null}
-      {stats.currentAmmoCount && stats.currentAmmoCount > stats.salvo ? (
+      )}
+      {stats.currentAmmoCount !== undefined &&
+        stats.currentMagCount !== undefined &&
+        stats.magCapacity !== undefined && (
+          <BtnControl
+            title="Reload"
+            icon={<MagCapacityIcon className="size-8 text-inherit" />}
+            mutation={
+              stats.currentMagCount > 0 &&
+              stats.currentAmmoCount < stats.magCapacity
+                ? reloadAmmo
+                : null
+            }
+          />
+        )}
+      {stats.currentAmmoCount !== undefined && stats.salvo !== undefined && (
         <BtnControl
           title="Salvo"
           icon={<SalvoIcon className="size-8 text-inherit" />}
           mutation={
-            stats.currentAmmoCount &&
-            stats.currentAmmoCount > 0 &&
-            editCurrentAmmo
+            stats.currentAmmoCount > stats.salvo ? editCurrentAmmo : null
           }
           value={-stats.salvo}
         />
-      ) : null}
-      {stats.currentMagCount && stats.currentMagCount > 0 ? (
-        <BtnControl
-          title="Reload"
-          icon={<MagCapacityIcon className="size-8 text-inherit" />}
-          mutation={
-            stats.currentMagCount && stats.currentMagCount > 0 && reloadAmmo
-          }
-        />
-      ) : null}
-      {stats.magCapacity && (
-        <BtnControl
-          title="Refresh"
-          icon={<SpareAmmoIcon className="size-8 text-inherit" />}
-          mutation={refreshAmmo}
-        />
       )}
+      {stats.currentAmmoCount !== undefined &&
+        stats.currentMagCount !== undefined &&
+        stats.magCapacity !== undefined &&
+        stats.magCount !== undefined && (
+          <BtnControl
+            title="Refresh"
+            icon={<SpareAmmoIcon className="size-8 text-inherit" />}
+            mutation={
+              stats.currentAmmoCount < stats.magCapacity ||
+              stats.currentMagCount < stats.magCount - 1
+                ? refreshAmmo
+                : null
+            }
+          />
+        )}
     </div>
   );
 };

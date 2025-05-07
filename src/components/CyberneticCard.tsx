@@ -1,16 +1,12 @@
-import CyberIcon from './icons/CyberIcon';
 import ItemCard from './ItemCard';
 import { CyberneticStats, CyberneticWithKeywords } from 'src/types/cybernetic';
 import LightningIcon from './icons/LightningIcon';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useEditCyberneticPowerMutation from '../hooks/cyberneticStatHooks/useEditCyberneticPowerMutation/useEditCyberneticPowerMutation';
-import useRefreshCyberneticPowerMutation from '../hooks/cyberneticStatHooks/useRefreshCyberneticPowerMutation/useRefreshCyberneticPowerMutation';
 import BtnControl from './buttons/BtnControl';
 import PowerIcon from './icons/PowerIcon';
-import StatBar from './StatBar';
 import { useParams } from 'react-router-dom';
-import StatBars from './StatBars';
 import ItemCardMobile from './ItemCardMobile';
 import { ItemObject } from 'src/types/global';
 
@@ -29,32 +25,28 @@ const CyberneticControls = ({
     cyberneticId,
     Number(characterId),
   );
-  const refreshPower = useRefreshCyberneticPowerMutation(
-    apiUrl,
-    cyberneticId,
-    Number(characterId),
-  );
 
   return (
-    <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
-      {stats.currentPower && stats.currentPower > 0 ? (
+    <div className="col-span-2 grid grid-cols-1 items-center justify-start gap-4 sm:grid-cols-2">
+      {stats.currentPower !== undefined && (
         <BtnControl
           title="Activate"
-          icon={
-            <LightningIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={editCurrentPower}
+          icon={<LightningIcon className="size-8 text-inherit" />}
+          mutation={stats.currentPower > 0 ? editCurrentPower : null}
           value={-1}
         />
-      ) : null}
+      )}
 
-      {stats.power && (
+      {stats.currentPower !== undefined && stats.power !== undefined && (
         <BtnControl
-          title="Recharge"
-          icon={
-            <PowerIcon className="text-secondary group-hover:text-accent size-8" />
+          title="Use Power Cell"
+          icon={<PowerIcon className="size-8 text-inherit" />}
+          mutation={stats.currentPower < stats.power ? editCurrentPower : null}
+          value={
+            stats.power - stats.currentPower < 3
+              ? stats.power - stats.currentPower
+              : 3
           }
-          mutation={refreshPower}
         />
       )}
     </div>

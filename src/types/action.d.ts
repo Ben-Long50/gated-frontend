@@ -7,6 +7,7 @@ interface Action {
   description: string;
   costs: ActionCosts;
   roll: ActionRoll[];
+  equipped: boolean;
   actionType: ActionType;
   actionSubtypes: string[];
   duration: { unit: string; value: number | null };

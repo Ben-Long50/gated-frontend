@@ -20,7 +20,11 @@ const RootPortal = ({
     const handlePopstate = (e) => {
       if (modalOpen) {
         e.preventDefault();
-        navigate(-1);
+        if (toggleModal) {
+          toggleModal();
+        } else {
+          navigate(-1);
+        }
       }
     };
 
@@ -43,7 +47,6 @@ const RootPortal = ({
       <button
         aria-label="Close window"
         className="text-primary absolute right-4 top-0 z-30 p-2"
-        onClick={toggleModal}
       >
         <Icon path={mdiClose} size={1.3} />
       </button>

@@ -81,10 +81,10 @@ const ItemMenu = ({
 
   switch (mode) {
     case 'equipment':
-      listLayoutClasses = 'grid grid-cols-2';
+      listLayoutClasses = 'grid grid-cols-1 sm:grid-cols-2';
       break;
     case 'deployments':
-      listLayoutClasses = 'grid grid-cols-1';
+      listLayoutClasses = 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3';
       break;
     case 'inventory':
       listLayoutClasses = 'grid grid-cols-3 sm:grid-cols-6';
@@ -147,7 +147,7 @@ const ItemMenu = ({
         <div
           className={`${listLayoutClasses} scrollbar-secondary-2 gap-2 sm:gap-4`}
         >
-          {itemList.map((item, index) => children(item, index, { tab }))}
+          {itemList?.map((item, index) => children(item, index, { tab }))}
         </div>
       </div>
     </ThemeContainer>

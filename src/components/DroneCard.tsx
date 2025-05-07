@@ -7,11 +7,73 @@ import { AuthContext } from '../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
 import LightningIcon from './icons/LightningIcon';
 import PowerIcon from './icons/PowerIcon';
-import HealthIcon from './icons/HealthIcon';
 import HullIcon from './icons/HullIcon';
-import useRefreshDronePowerMutation from '../hooks/droneStatHooks/useRefreshDronePowerMutation/useRefreshDronePowerMutation';
 import useEditDronePowerMutation from '../hooks/droneStatHooks/useEditDronePowerMutation/useEditDronePowerMutation';
-import useDroneHealthMutation from '../hooks/droneStatHooks/useDroneHealthMutation/useDroneHealthMutation';
+import useDroneHealthMutation from '../hooks/droneStatHooks/useDroneHullMutation/useDroneHullMutation';
+import DamageIcon from './icons/DamageIcon';
+
+export const DroneControls = ({
+  stats,
+  droneId,
+}: {
+  stats: DroneStats;
+  droneId: number;
+}) => {
+  const { apiUrl } = useContext(AuthContext);
+  const { characterId } = useParams();
+
+  const editDroneHull = useDroneHealthMutation(
+    apiUrl,
+    droneId,
+    Number(characterId),
+  );
+  const editDronePower = useEditDronePowerMutation(
+    apiUrl,
+    droneId,
+    Number(characterId),
+  );
+
+  return (
+    <div className="col-span-2 grid grid-cols-1 items-center justify-start gap-4 sm:grid-cols-2">
+      {stats.currentHull !== undefined && (
+        <BtnControl
+          title="Take Damage"
+          icon={<DamageIcon className="size-8 text-inherit" />}
+          mutation={stats.currentHull > 0 ? editDroneHull : null}
+          value={-1}
+        />
+      )}
+      {stats.currentHull !== undefined && stats.hull !== undefined && (
+        <BtnControl
+          title="Repair Drone"
+          icon={<HullIcon className="size-8 text-inherit" />}
+          mutation={stats.currentHull < stats.hull ? editDroneHull : null}
+          value={stats.hull - stats.currentHull}
+        />
+      )}
+      {stats.currentPower !== undefined && (
+        <BtnControl
+          title="Activate"
+          icon={<LightningIcon className="size-8 text-inherit" />}
+          mutation={stats.currentPower > 0 ? editDronePower : null}
+          value={-1}
+        />
+      )}
+      {stats.currentPower !== undefined && stats.power !== undefined && (
+        <BtnControl
+          title="Use Power Cell"
+          icon={<PowerIcon className="size-8 text-inherit" />}
+          mutation={stats.currentPower < stats.power ? editDronePower : null}
+          value={
+            stats.power - stats.currentPower < 3
+              ? stats.power - stats.currentPower
+              : 3
+          }
+        />
+      )}
+    </div>
+  );
+};
 
 const DroneCard = ({
   drone,
@@ -60,77 +122,6 @@ export const DroneCardMobile = ({
         ) : null
       }
     />
-  );
-};
-
-const DroneControls = ({
-  stats,
-  droneId,
-}: {
-  stats: DroneStats;
-  droneId: number;
-}) => {
-  const { apiUrl } = useContext(AuthContext);
-  const { characterId } = useParams();
-
-  const editDroneHealth = useDroneHealthMutation(
-    apiUrl,
-    droneId,
-    Number(characterId),
-  );
-  const editCurrentPower = useEditDronePowerMutation(
-    apiUrl,
-    droneId,
-    Number(characterId),
-  );
-  const refreshDronePower = useRefreshDronePowerMutation(
-    apiUrl,
-    droneId,
-    Number(characterId),
-  );
-
-  return (
-    <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
-      {stats.currentHealth && stats.currentHealth > 0 ? (
-        <BtnControl
-          title="Take Damage"
-          icon={
-            <HealthIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={editDroneHealth}
-          value={-1}
-        />
-      ) : null}
-      {stats.currentPower && stats.currentPower > 0 ? (
-        <BtnControl
-          title="Activate"
-          icon={
-            <LightningIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={editCurrentPower}
-          value={-1}
-        />
-      ) : null}
-      {stats.currentHealth ? (
-        <BtnControl
-          title="Repair Drone"
-          icon={
-            <HullIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={editDroneHealth}
-          value={stats.maxHealth}
-        />
-      ) : null}
-      {stats.power && (
-        <BtnControl
-          title="Recharge"
-          icon={
-            <PowerIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={refreshDronePower}
-        />
-      )}
-    </div>
   );
 };
 

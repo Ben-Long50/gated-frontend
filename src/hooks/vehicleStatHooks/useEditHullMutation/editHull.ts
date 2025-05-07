@@ -1,25 +1,20 @@
 import handleResponse from '../../handleResponse';
 
-const editDroneHealth = async (
-  apiUrl: string,
-  droneId: number,
-  value: number,
-) => {
+const editHull = async (apiUrl: string, vehicleId: number, value: number) => {
   try {
     const response = await fetch(
-      `${apiUrl}/drone/${droneId}/stats/currentHealth`,
+      `${apiUrl}/vehicles/${vehicleId}/stats/currentHull`,
       {
         method: 'PATCH',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          value,
-        }),
+        body: JSON.stringify({ value }),
       },
     );
     const data = await handleResponse(response);
+
     return data;
   } catch (error) {
     if (error instanceof Error) {
@@ -29,4 +24,4 @@ const editDroneHealth = async (
   }
 };
 
-export default editDroneHealth;
+export default editHull;

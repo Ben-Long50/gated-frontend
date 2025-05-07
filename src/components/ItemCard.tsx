@@ -45,6 +45,7 @@ const ItemCard = ({
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const [cardWidth, setCardWidth] = useState(0);
+  const [hover, setHover] = useState(false);
 
   useLayoutEffect(() => {
     if (cardRef.current) {
@@ -70,7 +71,7 @@ const ItemCard = ({
               : `${item?.id}`
         }
         state={mode}
-        className={`hover:bg-secondary timing relative flex w-full flex-col gap-8 p-4`}
+        className={`${hover && 'bg-secondary'} timing relative flex w-full flex-col gap-8 p-4`}
       >
         <div
           className="my-auto flex max-h-[300px] w-full gap-8"
@@ -81,6 +82,8 @@ const ItemCard = ({
                 }
               : undefined
           }
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
         >
           {item.picture?.imageUrl && (
             <ItemPicture
@@ -110,11 +113,7 @@ const ItemCard = ({
               <div className="flex items-start gap-4">
                 <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
                 {mode === 'codex' && (
-                  <CartButton
-                    price={item?.price}
-                    category={category}
-                    itemId={item?.id}
-                  />
+                  <CartButton category={category} itemId={item?.id} />
                 )}
               </div>
             </div>

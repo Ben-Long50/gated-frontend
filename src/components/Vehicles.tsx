@@ -28,8 +28,6 @@ const Vehicles = ({ vehicleList }: { vehicleList?: VehicleWithWeapons[] }) => {
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
   );
-  console.log(mode);
-  console.log(vehicleList);
 
   const vehicles = useVehicles({
     itemList: vehicleList,

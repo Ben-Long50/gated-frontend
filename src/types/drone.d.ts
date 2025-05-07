@@ -20,8 +20,8 @@ export interface Drone {
 }
 
 interface DroneStats {
-  health?: number;
-  currentHealth?: number;
+  hull?: number;
+  currentHull?: number;
   power?: number;
   currentPower?: number;
   armor?: number;

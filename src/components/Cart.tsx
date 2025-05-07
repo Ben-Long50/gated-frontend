@@ -60,6 +60,7 @@ const Cart = () => {
     itemList: character?.characterCart?.modifications,
   });
   const items = useItems({ itemList: character?.characterCart?.items });
+  const drones = useItems({ itemList: character.characterCart.drones });
 
   const cartForm = useForm({
     defaultValues: {
@@ -83,6 +84,9 @@ const Cart = () => {
           return { vehicleId: vehicle.id, price: vehicle.price, quantity: 1 };
         },
       ),
+      drones: drones?.filteredItems?.map((drone: Item) => {
+        return { droneId: drone.id, price: drone.price, quantity: 1 };
+      }),
       modifications: modifications?.filteredMods?.map((mod: Modification) => {
         return { modId: mod.id, price: mod.price, quantity: 1 };
       }),
@@ -184,11 +188,13 @@ const Cart = () => {
               )}
             </div>
             <BtnRect
+              ariaLabel="Complete purchase"
+              type="submit"
               className="group min-w-64 self-end"
               onClick={(e) => {
-                if (completePurchase.isPending) return;
                 e.stopPropagation();
                 e.preventDefault();
+                if (completePurchase.isPending) return;
                 cartForm.handleSubmit();
               }}
             >
@@ -240,6 +246,9 @@ const Cart = () => {
                         break;
                       case 'vehicles':
                         item = vehicles?.filteredVehicles[i];
+                        break;
+                      case 'drones':
+                        item = drones?.filteredItems[i];
                         break;
                       case 'modifications':
                         item = modifications?.filteredMods[i];

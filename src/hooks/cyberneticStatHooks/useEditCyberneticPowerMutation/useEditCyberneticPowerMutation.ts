@@ -1,4 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRef } from 'react';
+import { Character } from 'src/types/character';
 import editCyberneticPower from './editCyberneticPower';
 
 const useEditCyberneticPowerMutation = (
@@ -7,15 +9,62 @@ const useEditCyberneticPowerMutation = (
   characterId: number,
 ) => {
   const queryClient = useQueryClient();
+  const updateBuffer = useRef(0);
+  const timeoutRef = useRef(0);
+
   return useMutation({
     mutationFn: (value: number) => {
-      return editCyberneticPower(apiUrl, cyberneticId, value);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['equipment'],
-        exact: false,
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      updateBuffer.current += value;
+
+      return new Promise((resolve) => {
+        timeoutRef.current = setTimeout(async () => {
+          const finalValue = updateBuffer.current;
+
+          updateBuffer.current = 0;
+          await editCyberneticPower(apiUrl, cyberneticId, finalValue);
+          resolve(finalValue);
+        }, 1000);
       });
+    },
+
+    onMutate: (value) => {
+      queryClient.cancelQueries({ queryKey: ['character', characterId] });
+
+      const prevCharacterData: Character | undefined = queryClient.getQueryData(
+        ['character', characterId],
+      );
+
+      queryClient.setQueryData(
+        ['character', characterId],
+        (prev: Character) => ({
+          ...prev,
+          characterInventory: {
+            ...prev.characterInventory,
+            cybernetics: prev.characterInventory.cybernetics.map((item) =>
+              item.id === cyberneticId
+                ? {
+                    ...item,
+                    stats: {
+                      ...item.stats,
+                      currentPower: item.stats.currentPower
+                        ? item.stats.currentPower + value
+                        : value,
+                    },
+                  }
+                : item,
+            ),
+          },
+        }),
+      );
+
+      return { prevCharacterData };
+    },
+
+    onSuccess: () => {
       return queryClient.invalidateQueries({
         queryKey: ['character', characterId],
         exact: false,

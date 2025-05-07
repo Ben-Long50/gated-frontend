@@ -52,7 +52,22 @@ const Equipment = () => {
   const [active, setActive] = useState<{
     id: null | number;
     category: null | string;
-  }>({ id: null, category: null });
+  }>(() => {
+    const store = localStorage.getItem('activeItem');
+    if (store) {
+      return JSON.parse(store);
+    } else {
+      return {
+        id: null,
+        category: null,
+      };
+    }
+  });
+
+  const toggleActive = (id: number | null, category: string | null) => {
+    localStorage.setItem('activeItem', JSON.stringify({ id, category }));
+    setActive({ id, category });
+  };
 
   const cardRef = useRef(null);
 
@@ -77,39 +92,48 @@ const Equipment = () => {
     itemList: character?.characterInventory?.items,
   });
 
-  const { equippedWeapons, equippedArmor, equippedCybernetics, equippedItems } =
-    useEquipment(character?.characterInventory);
-
   const {
-    stats,
-    rollBonuses,
-    isLoading: statsLoading,
-    isPending: statsPending,
-  } = useStats(
+    equippedWeapons,
+    equippedArmor,
+    equippedCybernetics,
+    equippedItems,
+    equippedActions,
+  } = useEquipment(character?.characterInventory);
+
+  const { stats, rollBonuses } = useStats(
     character?.characterInventory,
     character?.attributes,
     character?.perks,
   );
 
-  const isLoading = characterLoading || statsLoading;
-  const isPending = characterPending || statsPending;
+  const isLoading = characterLoading;
+  const isPending = characterPending;
 
   const activeItem = useMemo(() => {
     switch (active?.category) {
       case 'weapon':
-        return equippedWeapons?.filter(
-          (weapon: WeaponWithKeywords) => weapon.id === active.id,
-        )[0];
+        return (
+          equippedWeapons?.filter(
+            (weapon: WeaponWithKeywords) => weapon.id === active.id,
+          )[0] || null
+        );
       case 'armor':
-        return equippedArmor.filter(
-          (armor: ArmorWithKeywords) => armor.id === active.id,
-        )[0];
+        return (
+          equippedArmor?.filter(
+            (armor: ArmorWithKeywords) => armor.id === active.id,
+          )[0] || null
+        );
       case 'cybernetic':
-        return equippedCybernetics.filter(
-          (cybernetic: CyberneticWithKeywords) => cybernetic.id === active.id,
-        )[0];
+        return (
+          equippedCybernetics?.filter(
+            (cybernetic: CyberneticWithKeywords) => cybernetic.id === active.id,
+          )[0] || null
+        );
       case 'item':
-        return equippedItems.filter((item: Item) => item.id === active.id)[0];
+        return (
+          equippedItems?.filter((item: Item) => item.id === active.id)[0] ||
+          null
+        );
       default:
         break;
     }
@@ -121,19 +145,11 @@ const Equipment = () => {
     equippedItems,
   ]);
 
-  const actionList =
-    [
-      ...equippedWeapons,
-      ...equippedArmor,
-      ...equippedCybernetics,
-      ...equippedItems,
-    ]
-      ?.map((cybernetic: CyberneticWithKeywords) => cybernetic.actions)
-      .flat() || [];
-
   const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
 
   if (isLoading || isPending) return <Loading />;
+
+  if (!character) return <h1>Character not found</h1>;
 
   return (
     <div className="relative flex w-full max-w-9xl flex-col items-center gap-8">
@@ -144,6 +160,7 @@ const Equipment = () => {
             className="size mx-auto mb-auto aspect-square w-full max-w-60"
             chamfer="medium"
             borderColor={accentPrimary}
+            overflowHidden={true}
           >
             <img
               className="clip-6"
@@ -172,7 +189,7 @@ const Equipment = () => {
       </div>
       <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-[2fr_1fr] xl:grid-cols-[2.5fr_1fr]">
         <div className="flex w-full flex-col gap-8">
-          {active.id !== null &&
+          {activeItem !== null &&
             (active.category === 'weapon' ? (
               mobile ? (
                 <WeaponCardMobile
@@ -253,7 +270,7 @@ const Equipment = () => {
               cybernetics={cybernetics}
               items={items}
               active={active}
-              setActive={setActive}
+              toggleActive={toggleActive}
               modalOpen={modalOpen}
             />
           </div>
@@ -263,7 +280,7 @@ const Equipment = () => {
             cybernetics={equippedCybernetics}
             items={equippedItems}
             active={active}
-            setActive={setActive}
+            toggleActive={toggleActive}
             modalOpen={modalOpen}
           />
         </div>
@@ -411,11 +428,11 @@ const Equipment = () => {
                 )}
               </>
             )}
-            {actionList.length > 0 && (
+            {equippedActions?.length > 0 && (
               <>
                 <Divider />
                 <ArrowHeader3 title="Unique Actions" />
-                {actionList.map((action: Action) => (
+                {equippedActions.map((action: Action) => (
                   <ActionCard key={action?.id} action={action} />
                 ))}
               </>

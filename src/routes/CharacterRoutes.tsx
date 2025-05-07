@@ -36,9 +36,31 @@ const CharacterRoutes = () => {
         <Route path="equipment" element={<Equipment />}>
           <Route path="inventory" element={<Equipment />} />
         </Route>
+        <Route
+          path="equipment/weapons/:weaponId"
+          element={<ItemPageWrapper />}
+        />
+        <Route path="equipment/armor/:armorId" element={<ItemPageWrapper />} />
+        <Route
+          path="equipment/cybernetics/:cyberneticId"
+          element={<ItemPageWrapper />}
+        />
+        <Route path="equipment/items/:itemId" element={<ItemPageWrapper />} />
         <Route path="deployments" element={<Deployments />}>
           <Route path="inventory" element={<Equipment />} />
         </Route>
+        <Route
+          path="deployments/vehicles/:vehicleId"
+          element={<ItemPageWrapper />}
+        />
+        <Route
+          path="deployments/weapons/:weaponId"
+          element={<ItemPageWrapper />}
+        />
+        <Route
+          path="deployments/drones/:droneId"
+          element={<ItemPageWrapper />}
+        />
         <Route path="inventory">
           <Route path="weapons">
             <Route index element={<Inventory />} />

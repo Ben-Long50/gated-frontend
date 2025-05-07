@@ -1,32 +1,37 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import refreshAmmo from './refreshAmmo';
 import { useRef } from 'react';
 import { Character } from 'src/types/character';
-import { WeaponWithKeywords } from 'src/types/weapon';
+import editDroneHull from './editDroneHull';
 
-const useRefreshAmmoMutation = (
+const useDroneHullMutation = (
   apiUrl: string,
-  weaponId: number,
+  droneId: number,
   characterId: number,
 ) => {
   const queryClient = useQueryClient();
+  const updateBuffer = useRef(0);
   const timeoutRef = useRef(0);
 
-  return useMutation({
-    mutationFn: () => {
+  const editDroneHullMutation = useMutation({
+    mutationFn: async (value: number) => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
 
+      updateBuffer.current += value;
+
       return new Promise((resolve) => {
         timeoutRef.current = setTimeout(async () => {
-          await refreshAmmo(apiUrl, weaponId);
-          resolve(weaponId);
+          const finalValue = updateBuffer.current;
+
+          updateBuffer.current = 0;
+          await editDroneHull(apiUrl, droneId, finalValue);
+          resolve(finalValue);
         }, 1000);
       });
     },
 
-    onMutate: () => {
+    onMutate: (value) => {
       queryClient.cancelQueries({ queryKey: ['character', characterId] });
 
       const prevCharacterData: Character | undefined = queryClient.getQueryData(
@@ -39,48 +44,36 @@ const useRefreshAmmoMutation = (
           ...prev,
           characterInventory: {
             ...prev.characterInventory,
-            weapons: prev.characterInventory.weapons.map((item) =>
-              item.id === weaponId
+            drones: prev.characterInventory.drones.map((item) =>
+              item.id === droneId
                 ? {
                     ...item,
                     stats: {
                       ...item.stats,
-                      currentAmmoCount: item.stats.magCapacity,
-                      currentMagCount: item.stats.magCount - 1,
+                      currentHull: item.stats.currentHull
+                        ? item.stats.currentHull + value
+                        : value,
                     },
                   }
                 : item,
             ),
-            vehicles: prev.characterInventory.vehicles.map((vehicle) => ({
-              ...vehicle,
-              weapons: vehicle.weapons.map((item: WeaponWithKeywords) =>
-                item.id === weaponId
-                  ? {
-                      ...item,
-                      stats: {
-                        ...item.stats,
-                        currentAmmoCount: item.stats.magCapacity,
-                        currentMagCount: item.stats.magCount - 1,
-                      },
-                    }
-                  : item,
-              ),
-            })),
           },
         }),
       );
 
       return { prevCharacterData };
     },
-
     onSuccess: () => {
+      // queryClient.invalidateQueries({
+      //   queryKey: ['drone', droneId],
+      // });
       return queryClient.invalidateQueries({
         queryKey: ['character', characterId],
-        exact: false,
       });
     },
     throwOnError: false,
   });
+  return editDroneHullMutation;
 };
 
-export default useRefreshAmmoMutation;
+export default useDroneHullMutation;

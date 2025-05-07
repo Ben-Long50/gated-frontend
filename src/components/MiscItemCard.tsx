@@ -45,43 +45,20 @@ const ItemControls = ({
   );
 
   return (
-    <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
-      {stats.currentStacks && stats.currentStacks > 0 ? (
-        <BtnControl
-          title="Use"
-          icon={
-            <StackIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={editCurrentStacks}
-          value={-1}
-        />
-      ) : null}
-      {stats.maxStacks && (
-        <BtnControl
-          title="Refill"
-          icon={
-            <StackIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={refreshStacks}
-        />
-      )}
-      {stats.currentPower && stats.currentPower > 0 ? (
+    <div className="col-span-2 grid grid-cols-1 items-center justify-start gap-4 sm:grid-cols-2">
+      {stats.currentPower !== undefined && (
         <BtnControl
           title="Activate"
-          icon={
-            <LightningIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={editCurrentPower}
+          icon={<LightningIcon className="size-8 text-inherit" />}
+          mutation={stats.currentPower > 0 ? editCurrentPower : null}
           value={-1}
         />
-      ) : null}
-      {stats.power && (
+      )}
+      {stats.currentPower !== undefined && stats.power !== undefined && (
         <BtnControl
           title="Recharge"
-          icon={
-            <PowerIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={refreshPower}
+          icon={<PowerIcon className="size-8 text-inherit" />}
+          mutation={stats.currentPower < stats.power ? refreshPower : null}
         />
       )}
     </div>

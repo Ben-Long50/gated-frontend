@@ -6,13 +6,10 @@ import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useEditArmorPowerMutation from '../hooks/armorStatHooks/useEditArmorPowerMutation/useEditArmorPowerMutation';
 import useEditArmorBlockMutation from '../hooks/armorStatHooks/useEditArmorBlockMutation/useEditArmorBlockMutation';
-import useRefreshArmorPowerMutation from '../hooks/armorStatHooks/useRefreshArmorBlockMutation/useRefreshArmorPowerMutation';
-import useRefreshArmorBlockMutation from '../hooks/armorStatHooks/useRefreshArmorPowerMutation/useRefreshArmorBlockMutation';
 import BtnControl from './buttons/BtnControl';
 import HullIcon from './icons/HullIcon';
 import PowerIcon from './icons/PowerIcon';
 import { useParams } from 'react-router-dom';
-import StatBars from './StatBars';
 import ItemCardMobile from './ItemCardMobile';
 import { ItemObject } from 'src/types/global';
 
@@ -26,63 +23,53 @@ const ArmorControls = ({
   const { apiUrl } = useContext(AuthContext);
   const { characterId } = useParams();
 
-  const editCurrentPower = useEditArmorPowerMutation(
+  const editArmorPower = useEditArmorPowerMutation(
     apiUrl,
     armorId,
     Number(characterId),
   );
-  const editCurrentBlock = useEditArmorBlockMutation(
-    apiUrl,
-    armorId,
-    Number(characterId),
-  );
-  const refreshPower = useRefreshArmorPowerMutation(
-    apiUrl,
-    armorId,
-    Number(characterId),
-  );
-  const refreshBlock = useRefreshArmorBlockMutation(
+  const editArmorBlock = useEditArmorBlockMutation(
     apiUrl,
     armorId,
     Number(characterId),
   );
 
   return (
-    <div className="col-span-2 flex flex-wrap items-center justify-start gap-4">
-      {stats.block && stats.currentBlock > 0 ? (
+    <div className="col-span-2 grid grid-cols-1 items-center justify-start gap-4 sm:grid-cols-2">
+      {stats.currentBlock !== undefined && (
         <BtnControl
           title="Block"
-          icon={
-            <BlockIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={editCurrentBlock}
+          icon={<BlockIcon className="size-8 text-inherit" />}
+          mutation={stats.currentBlock > 0 ? editArmorBlock : null}
           value={-1}
         />
-      ) : null}
-      {stats.currentPower && stats.currentPower > 0 ? (
+      )}
+      {stats.currentBlock !== undefined && stats.block !== undefined && (
+        <BtnControl
+          title="Repair"
+          icon={<HullIcon className="size-8 text-inherit" />}
+          mutation={stats.currentBlock < stats.block ? editArmorBlock : null}
+          value={stats.block - stats.currentBlock}
+        />
+      )}
+      {stats.currentPower !== undefined && (
         <BtnControl
           title="Activate"
-          icon={
-            <LightningIcon className="text-secondary group-hover:text-accent size-8" />
-          }
-          mutation={editCurrentPower}
+          icon={<LightningIcon className="size-8 text-inherit" />}
+          mutation={stats.currentPower > 0 ? editArmorPower : null}
           value={-1}
         />
-      ) : null}
-      <BtnControl
-        title="Repair"
-        icon={
-          <HullIcon className="text-secondary group-hover:text-accent size-8" />
-        }
-        mutation={refreshBlock}
-      />
-      {stats.power && (
+      )}
+      {stats.currentPower !== undefined && stats.power !== undefined && (
         <BtnControl
-          title="Recharge"
-          icon={
-            <PowerIcon className="text-secondary group-hover:text-accent size-8" />
+          title="Use Power Cell"
+          icon={<PowerIcon className="size-8 text-inherit" />}
+          mutation={stats.currentPower < stats.power ? editArmorPower : null}
+          value={
+            stats.power - stats.currentPower < 3
+              ? stats.power - stats.currentPower
+              : 3
           }
-          mutation={refreshPower}
         />
       )}
     </div>

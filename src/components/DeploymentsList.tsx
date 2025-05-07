@@ -8,7 +8,7 @@ const DeploymentsList = ({
   vehicles,
   drones,
   active,
-  setActive,
+  toggleActive,
 }: {
   vehicles: VehicleWithWeapons[];
   drones: Drone[];
@@ -16,7 +16,7 @@ const DeploymentsList = ({
     id: null | number;
     category: null | string;
   };
-  setActive: (item: { id: null | number; category: null | string }) => void;
+  toggleActive: (id: null | number, category: null | string) => void;
 }) => {
   const { rarityColorMap } = useContext(ThemeContext);
 
@@ -33,12 +33,7 @@ const DeploymentsList = ({
                 <button
                   className="group relative h-24 w-28 shrink-0 overflow-hidden pl-1 lg:h-28 lg:w-32"
                   style={{ backgroundColor: rarityColorMap[item.rarity] }}
-                  onClick={() =>
-                    setActive({
-                      id: item.id,
-                      category: tab,
-                    })
-                  }
+                  onClick={() => toggleActive(item.id, tab)}
                 >
                   {item.picture?.imageUrl ? (
                     <img
@@ -59,19 +54,14 @@ const DeploymentsList = ({
                   {active?.id === item?.id ? (
                     <button
                       className="text-error text-lg hover:underline"
-                      onClick={() => setActive({ id: null, category: null })}
+                      onClick={() => toggleActive(null, null)}
                     >
                       Disarm
                     </button>
                   ) : (
                     <button
                       className="text-accent text-lg hover:underline"
-                      onClick={() =>
-                        setActive({
-                          id: item.id,
-                          category: tab,
-                        })
-                      }
+                      onClick={() => toggleActive(item.id, tab)}
                     >
                       Activate
                     </button>

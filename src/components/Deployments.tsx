@@ -1,4 +1,4 @@
-import { useContext, useMemo, useRef, useState } from 'react';
+import { useContext, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -8,15 +8,18 @@ import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
 import InventoryModal from './InventoryModal';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
-import useVehicles from 'src/hooks/useVehicles';
-import useDrones from 'src/hooks/useDrones';
 import DeploymentsList from './DeploymentsList';
-import DroneCard, { DroneCardMobile } from './DroneCard';
-import VehicleCard, { VehicleCardMobile } from './VehicleCard';
 import { Drone } from 'src/types/drone';
 import { VehicleWithWeapons } from 'src/types/vehicle';
 import WeaponCard from './WeaponCard';
 import { WeaponWithKeywords } from 'src/types/weapon';
+import useEquipment from 'src/hooks/useEquipment';
+import ThemeContainer from './ThemeContainer';
+import ItemPicture from './ItemPicture';
+import StatBars from './StatBars';
+import { VehicleControls } from './VehicleCard';
+import { DroneControls } from './DroneCard';
+import ArrowHeader1 from './ArrowHeader1';
 
 const Deployments = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -30,9 +33,17 @@ const Deployments = () => {
   const [active, setActive] = useState<{
     id: null | number;
     category: null | string;
-  }>({ id: null, category: null });
-
-  const cardRef = useRef(null);
+  }>(() => {
+    const store = localStorage.getItem('activeDeployment');
+    if (store) {
+      return JSON.parse(store);
+    } else {
+      return {
+        id: null,
+        category: null,
+      };
+    }
+  });
 
   const {
     data: character,
@@ -40,142 +51,139 @@ const Deployments = () => {
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, Number(characterId));
 
-  const { filteredVehicles: vehicles } = useVehicles({
-    itemList: character?.characterInventory?.vehicles,
-  });
-  const { filteredDrones: drones } = useDrones({
-    itemList: character?.characterInventory?.drones,
-  });
-
-  const equippedVehicles = vehicles.filter(
-    (vehicle: VehicleWithWeapons) => vehicle.equipped === true,
+  const { equippedVehicles, equippedDrones } = useEquipment(
+    character?.characterInventory,
   );
-  const equippedDrones = drones.filter(
-    (drone: Drone) => drone.equipped === true,
-  );
-
-  const isLoading = characterLoading;
-  const isPending = characterPending;
 
   const activeItem = useMemo(() => {
     switch (active?.category) {
       case 'vehicle':
-        return equippedVehicles.filter(
-          (vehicle: VehicleWithWeapons) => vehicle.id === active.id,
-        )[0];
+        return (
+          equippedVehicles?.filter(
+            (vehicle: VehicleWithWeapons) => vehicle.id === active.id,
+          )[0] || null
+        );
       case 'drone':
-        return equippedDrones.filter(
-          (drone: Drone) => drone.id === active.id,
-        )[0];
+        return (
+          equippedDrones?.filter((drone: Drone) => drone.id === active.id)[0] ||
+          null
+        );
       default:
-        break;
+        return null;
     }
   }, [active, equippedVehicles, equippedDrones]);
+
+  const cardRef = useRef(null);
+  const [cardHeight, setCardHeight] = useState<number | null>(null);
+
+  useLayoutEffect(() => {
+    if (cardRef.current) {
+      setCardHeight(cardRef.current.offsetHeight);
+    }
+  }, [activeItem]);
+
+  const toggleActive = (id: number | null, category: string | null) => {
+    localStorage.setItem('activeDeployment', JSON.stringify({ id, category }));
+    setActive({ id, category });
+  };
+
+  const isLoading = characterLoading;
+  const isPending = characterPending;
 
   const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
 
   if (isLoading || isPending) return <Loading />;
 
+  if (!character) return <h1>Character not found</h1>;
+
   return (
     <div className="relative flex w-full max-w-9xl flex-col items-center gap-8">
-      <h1 className="text-center">{namePrefix + ' ' + 'Deployments'}</h1>
+      <div className="flex items-center gap-4">
+        <h1 className="text-center">Deployment</h1>
+        {activeItem && <ArrowHeader1 title={activeItem.name} />}
+      </div>
+
       <div className="flex w-full flex-col items-start gap-8">
         <div className="flex w-full flex-col gap-8">
-          {active.id !== null &&
-            (active.category === 'drone' ? (
-              mobile ? (
-                <DroneCardMobile
-                  key={active.id}
-                  drone={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              ) : (
-                <DroneCard
-                  key={active.id}
-                  drone={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              )
-            ) : (
-              active.category === 'vehicle' &&
-              (mobile ? (
-                <VehicleCardMobile
-                  key={active.id}
-                  vehicle={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              ) : (
-                <VehicleCard
-                  key={active.id}
-                  vehicle={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              ))
-            ))}
-
-          <div className="grid grid-cols-[1fr_2fr] gap-8">
-            <div className="flex flex-col gap-8">
-              <div className="flex items-center justify-between">
-                <ArrowHeader2 title="Deployable Items" />
-                <Link to="inventory">
-                  <BtnRect ariaLabel="Open inventory" type="button">
-                    Open Garage
-                  </BtnRect>
-                </Link>
-                <InventoryModal
-                  character={character}
-                  vehicles={vehicles}
-                  drones={drones}
-                  active={active}
-                  setActive={setActive}
-                  modalOpen={modalOpen}
+          {activeItem !== null && (
+            <div className="flex w-full flex-col justify-between gap-8 lg:flex-row">
+              {activeItem.picture?.imageUrl && (
+                <ThemeContainer
+                  className={`mx-auto mb-auto aspect-square`}
+                  style={
+                    cardHeight
+                      ? {
+                          maxWidth: cardHeight,
+                        }
+                      : undefined
+                  }
+                  chamfer="medium"
+                  borderColor={accentPrimary}
+                  overflowHidden={true}
+                >
+                  <ItemPicture className="clip-6" item={activeItem} />
+                </ThemeContainer>
+              )}
+              <div
+                ref={cardRef}
+                className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
+              >
+                <StatBars
+                  cardWidth={cardRef.current?.offsetWidth}
+                  stats={{
+                    ...activeItem.stats,
+                  }}
                 />
               </div>
-              <DeploymentsList
-                vehicles={vehicles}
-                drones={drones}
-                active={active}
-                setActive={setActive}
-              />
             </div>
-
-            {activeItem && (
-              <div className="flex flex-col gap-8">
-                <ArrowHeader2 title="Weapons" />
-                <div className="flex flex-row gap-8">
-                  {activeItem.weapons?.map((weapon: WeaponWithKeywords) => (
-                    <WeaponCard
-                      key={weapon.id}
-                      weapon={weapon}
-                      ownerId={character?.userId}
-                      mode={mode}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* <ThemeContainer
-          className="mb-auto w-full"
-          chamfer="medium"
-          borderColor={accentPrimary}
-        >
-          {actionList.length > 0 && (
-            <>
-              <Divider />
-              <ArrowHeader3 title="Unique Actions" />
-              {actionList.map((action: Action) => (
-                <ActionCard key={action?.id} action={action} />
-              ))}
-            </>
           )}
-        </ThemeContainer> */}
+          {activeItem !== null && active.category === 'vehicle' && (
+            <VehicleControls
+              stats={activeItem.stats}
+              vehicleId={activeItem.id}
+            />
+          )}
+          {activeItem !== null && active.category === 'drone' && (
+            <DroneControls stats={activeItem.stats} droneId={activeItem.id} />
+          )}
+          {activeItem.weapons.length > 0 && (
+            <div className="flex flex-col gap-8">
+              <ArrowHeader2 title="Weapons" />
+              <div className="grid grid-cols-2 gap-8">
+                {activeItem.weapons?.map((weapon: WeaponWithKeywords) => (
+                  <WeaponCard
+                    key={weapon.id}
+                    weapon={weapon}
+                    ownerId={character?.userId}
+                    mode={mode}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="flex items-center justify-between">
+            <ArrowHeader2 title="Deployed Items" />
+            <Link to="inventory">
+              <BtnRect ariaLabel="Open inventory" type="button">
+                Open Garage
+              </BtnRect>
+            </Link>
+            <InventoryModal
+              character={character}
+              vehicles={character.characterInventory?.vehicles}
+              drones={character.characterInventory?.drones}
+              active={active}
+              toggleActive={toggleActive}
+              modalOpen={modalOpen}
+            />
+          </div>
+          <DeploymentsList
+            vehicles={equippedVehicles}
+            drones={equippedDrones}
+            active={active}
+            toggleActive={toggleActive}
+          />
+        </div>
       </div>
     </div>
   );

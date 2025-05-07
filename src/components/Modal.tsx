@@ -21,7 +21,11 @@ const Modal = ({
         className={`fixed inset-0 z-20 flex items-center justify-center px-2`}
         onClick={() => {
           if (modalOpen) {
-            navigate(-1);
+            if (toggleModal) {
+              toggleModal();
+            } else {
+              navigate(-1);
+            }
           }
         }}
       >

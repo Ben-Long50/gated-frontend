@@ -5,7 +5,6 @@ import { Modifier } from 'src/types/modifier';
 import useAttributeTree from './useAttributeTree';
 import { AttributeTree } from 'src/types/attributeTree';
 import { Perk } from 'src/types/perk';
-import useActions from './useActions';
 import useEquipment from './useEquipment';
 import { CharacterInventory } from 'src/types/character';
 import { Item } from 'src/types/item';
@@ -16,8 +15,6 @@ const useStats = (
   perks?: Perk[],
 ) => {
   const tree = useAttributeTree(attributTree);
-
-  const actions = useActions();
 
   const { equippedWeapons, equippedArmor, equippedCybernetics, equippedItems } =
     useEquipment(inventory);
@@ -186,8 +183,6 @@ const useStats = (
   return {
     stats,
     rollBonuses,
-    isLoading: actions.isLoading,
-    isPending: actions.isPending,
   };
 };
 

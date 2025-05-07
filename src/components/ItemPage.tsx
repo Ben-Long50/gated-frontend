@@ -158,7 +158,7 @@ const ItemPage = ({
   if (isLoading) return <Loading />;
 
   return (
-    <div className="flex w-full max-w-6xl flex-col items-center gap-8 sm:gap-12">
+    <div className="flex w-full max-w-6xl flex-col items-center gap-8">
       <div className="grid w-full grid-cols-[1fr_auto_1fr]">
         <h1 className="col-start-2 text-center">{item.name}</h1>
         {mode === 'codex' && (
