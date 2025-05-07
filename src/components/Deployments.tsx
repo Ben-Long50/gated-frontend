@@ -146,7 +146,7 @@ const Deployments = () => {
           {activeItem !== null && active.category === 'drone' && (
             <DroneControls stats={activeItem.stats} droneId={activeItem.id} />
           )}
-          {activeItem.weapons.length > 0 && (
+          {activeItem !== null && activeItem.weapons?.length > 0 && (
             <div className="flex flex-col gap-8">
               <ArrowHeader2 title="Weapons" />
               <div className="grid grid-cols-2 gap-8">
