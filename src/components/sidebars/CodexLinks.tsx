@@ -139,18 +139,18 @@ const CodexLinks = ({
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Basic Armor"
-          path="codex/armor/?include=Armor&exclude=Power"
+          title="Head Armor"
+          path="codex/armor/?include=Head"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Power Armor"
-          path="codex/armor/?include=Power"
+          title="Body Armor"
+          path="codex/armor/?include=Body"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Sanity Armor"
-          path="codex/armor/?include=Sanity"
+          title="Cloak Armor"
+          path="codex/armor/?include=Cloak"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
@@ -193,7 +193,7 @@ const CodexLinks = ({
         />
         <SubLinkSidebar
           title="Vehicle Weapons"
-          path="codex/weapons?include=Vehicle"
+          path="codex/weapons?include=Vehicle Weapon"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
@@ -218,7 +218,7 @@ const CodexLinks = ({
         />
         <SubLinkSidebar
           title="Drone Weapons"
-          path="codex/weapons?include=Drone"
+          path="codex/weapons?include=Drone Weapon"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
