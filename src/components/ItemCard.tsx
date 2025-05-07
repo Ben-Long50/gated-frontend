@@ -58,7 +58,7 @@ const ItemCard = ({
   return (
     <ThemeContainer
       chamfer="medium"
-      className="w-full"
+      className="mb-auto w-full"
       borderColor={accentPrimary}
       overflowHidden={true}
     >

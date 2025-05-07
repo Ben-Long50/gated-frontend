@@ -106,14 +106,14 @@ const Deployments = () => {
       <div className="flex w-full flex-col items-start gap-8">
         <div className="flex w-full flex-col gap-8">
           {activeItem !== null && (
-            <div className="flex w-full flex-col justify-between gap-8 lg:flex-row">
+            <div className="grid grid-rows-[auto_auto] justify-between gap-8 lg:grid-cols-[auto_1fr]">
               {activeItem.picture?.imageUrl && (
                 <ThemeContainer
-                  className={`mx-auto mb-auto aspect-square`}
+                  className={`mx-auto mb-auto aspect-square min-w-[300px]`}
                   style={
                     cardHeight
                       ? {
-                          maxWidth: cardHeight,
+                          width: cardHeight,
                         }
                       : undefined
                   }
@@ -121,7 +121,7 @@ const Deployments = () => {
                   borderColor={accentPrimary}
                   overflowHidden={true}
                 >
-                  <ItemPicture className="clip-6" item={activeItem} />
+                  <ItemPicture className="w-full clip-6" item={activeItem} />
                 </ThemeContainer>
               )}
               <div

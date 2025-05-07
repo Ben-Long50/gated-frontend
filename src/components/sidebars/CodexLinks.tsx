@@ -107,17 +107,17 @@ const CodexLinks = ({
         />
         <SubLinkSidebar
           title="Ranged Weapons"
-          path="codex/weapons?include=Ranged"
+          path="codex/weapons?include=Ranged&exclude=Vehicle Weapon&exclude=Drone Weapon"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Melee Weapons"
-          path="codex/weapons/?include=Melee"
+          path="codex/weapons/?include=Melee&exclude=Vehicle Weapon&exclude=Drone Weapon"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Consumable Weapons"
-          path="codex/weapons?include=Grenade&include=Mine"
+          path="codex/weapons?include=Grenade&include=Mine&exclude=Vehicle Weapon&exclude=Drone Weapon"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
