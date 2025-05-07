@@ -32,7 +32,7 @@ const ActionLinkField = ({ form }: { form: FormApi }) => {
                     {({ toggleFormLink }) => (
                       <Actions
                         title="Link Actions"
-                        mode="form"
+                        forcedMode="form"
                         field={field}
                         toggleFormLink={toggleFormLink}
                       />

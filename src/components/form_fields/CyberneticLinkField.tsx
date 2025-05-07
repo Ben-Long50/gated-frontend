@@ -32,7 +32,7 @@ const CyberneticLinkField = ({ form }: { form: FormApi }) => {
                     {({ toggleFormLink }) => (
                       <Cybernetics
                         title="Link Cybernetics"
-                        mode="form"
+                        forcedMode="form"
                         toggleFormLink={toggleFormLink}
                       />
                     )}

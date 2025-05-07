@@ -16,10 +16,12 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Weapons = ({
   title,
+  forcedMode,
   weaponList,
   toggleFormLink,
 }: {
   title?: string;
+  forcedMode?: string;
   weaponList?: Weapon[];
   toggleFormLink?: (weaponId: WeaponWithKeywords) => void;
 }) => {
@@ -29,7 +31,7 @@ const Weapons = ({
   const location = useLocation();
   const state = location.state;
   const parts = location.pathname.split('/').filter(Boolean);
-  const mode = parts[parts.length - 2];
+  const mode = forcedMode || parts[parts.length - 2];
 
   const heading = state ? state.title : title;
 

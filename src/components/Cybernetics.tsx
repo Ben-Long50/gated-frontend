@@ -17,10 +17,12 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Cybernetics = ({
   title,
+  forcedMode,
   cyberneticList,
   toggleFormLink,
 }: {
   title?: string;
+  forcedMode?: string;
   cyberneticList?: Cybernetic[];
   toggleFormLink?: (item: ItemObject) => void;
 }) => {
@@ -30,7 +32,7 @@ const Cybernetics = ({
   const location = useLocation();
   const state = location.state;
   const parts = location.pathname.split('/').filter(Boolean);
-  const mode = parts[parts.length - 2];
+  const mode = forcedMode || parts[parts.length - 2];
 
   const heading = state ? state.title : title;
 

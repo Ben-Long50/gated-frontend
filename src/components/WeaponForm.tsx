@@ -6,7 +6,6 @@ import ThemeContainer from './ThemeContainer';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
-import useKeywords from '../hooks/useKeywords';
 import Icon from '@mdi/react';
 import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import useCreateWeaponMutation from '../hooks/useCreateWeaponMutation/useCreateWeaponMutation';

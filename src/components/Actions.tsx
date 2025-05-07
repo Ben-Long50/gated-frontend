@@ -14,15 +14,18 @@ import { ItemObject } from 'src/types/global';
 import { Action } from 'src/types/action';
 
 const Actions = ({
-  mode,
+  title,
+  forcedMode,
   field,
   toggleFormLink,
 }: {
-  mode?: string;
+  title?: string;
+  forcedMode?: string;
   field?: FieldApi;
   toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const mode = forcedMode;
 
   const actions = useActions();
 
@@ -45,7 +48,7 @@ const Actions = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">Actions</h1>
+      <h1 className="text-center">{title || 'Actions'}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

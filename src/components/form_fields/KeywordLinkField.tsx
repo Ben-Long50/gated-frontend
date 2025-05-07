@@ -44,7 +44,7 @@ const KeywordLinkField = ({
                     {({ toggleFormLink }) => (
                       <Keywords
                         title="Link Traits"
-                        mode="form"
+                        forcedMode="form"
                         field={field}
                         toggleFormLink={toggleFormLink}
                         keywordType={keywordType}

@@ -15,12 +15,14 @@ import { Keyword } from 'src/types/keyword';
 import InputFieldBasic from './InputFieldBasic';
 
 const Keywords = ({
-  mode,
+  title,
+  forcedMode,
   field,
   toggleFormLink,
   keywordType,
 }: {
-  mode?: string;
+  title?: string;
+  forcedMode?: string;
   field?: FieldApi;
   toggleFormLink?: (item: ItemObject) => void;
   keywordType?:
@@ -32,6 +34,7 @@ const Keywords = ({
     | 'networked';
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const mode = forcedMode;
 
   const keywords = useKeywords(keywordType || undefined);
 
@@ -52,7 +55,7 @@ const Keywords = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">Traits</h1>
+      <h1 className="text-center">{title || 'Traits'}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

@@ -30,7 +30,7 @@ const WeaponLinkField = ({ form }: { form: FormApi }) => {
                     {({ toggleFormLink }) => (
                       <Weapons
                         title="Link Weapons"
-                        mode="form"
+                        forcedMode="form"
                         toggleFormLink={toggleFormLink}
                       />
                     )}

@@ -30,7 +30,7 @@ const ArmorLinkField = ({ form }: { form: FormApi }) => {
                     {({ toggleFormLink }) => (
                       <Armor
                         title="Link Armor"
-                        mode="form"
+                        forcedMode="form"
                         toggleFormLink={toggleFormLink}
                       />
                     )}
