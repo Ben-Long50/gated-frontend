@@ -121,7 +121,11 @@ const Deployments = () => {
                   borderColor={accentPrimary}
                   overflowHidden={true}
                 >
-                  <ItemPicture className="w-full clip-6" item={activeItem} />
+                  <ItemPicture
+                    key={activeItem.id}
+                    className="w-full clip-6"
+                    item={activeItem}
+                  />
                 </ThemeContainer>
               )}
               <div
