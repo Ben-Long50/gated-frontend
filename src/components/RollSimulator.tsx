@@ -34,7 +34,6 @@ import { AttributeName, SkillName } from 'src/types/attributeTree';
 import InputSelectField from './InputSelectField';
 import { useParams } from 'react-router-dom';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
-import { Character } from 'src/types/character';
 import { LayoutContext } from '../contexts/LayoutContext';
 
 const RollSimulator = ({
@@ -49,17 +48,13 @@ const RollSimulator = ({
   const { accentPrimary } = useContext(ThemeContext);
   const { campaignId } = useParams();
 
-  const {
-    data: campaign,
-    isLoading: campaignLoading,
-    isPending: campaignPending,
-  } = useCampaignQuery(apiUrl, campaignId);
+  const { data: campaign, isLoading: campaignLoading } = useCampaignQuery(
+    apiUrl,
+    Number(campaignId),
+  );
 
-  const {
-    data: character,
-    isLoading: characterLoading,
-    isPending: characterPending,
-  } = useActiveCharacterQuery(apiUrl);
+  const { data: character, isLoading: characterLoading } =
+    useActiveCharacterQuery(apiUrl);
 
   const { filteredActions: actions } = useActions();
 
@@ -68,13 +63,13 @@ const RollSimulator = ({
 
   const rollForm = useForm({
     defaultValues: {
-      character: user.id === campaign?.ownerId ? '' : character,
+      character: user?.id === campaign?.ownerId ? '' : character,
       action: '',
       rollType: 'recommended' as 'recommended' | 'custom',
-      attribute: '' as AttributeName | '',
-      skill: '' as SkillName | '',
+      attribute: '' as AttributeName,
+      skill: '' as SkillName,
       modifiers: [] as string[],
-      diceCount: null as number | null,
+      diceCount: 0,
     },
     onSubmit: ({ value }) => {
       const diceCount =
@@ -96,14 +91,7 @@ const RollSimulator = ({
     selectedCharacter?.attributes,
   );
 
-  if (
-    campaignLoading ||
-    campaignPending ||
-    characterLoading ||
-    characterPending
-  ) {
-    return <Loading />;
-  }
+  if (campaignLoading || characterLoading) return <Loading />;
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-8">
@@ -121,18 +109,17 @@ const RollSimulator = ({
             <rollForm.Field
               name="character"
               listeners={{
-                onChange: ({ value }) => {
+                onChange: () => {
                   rollForm.setFieldValue('action', '');
                   rollForm.setFieldValue('rollType', 'recommended');
                   rollForm.setFieldValue('modifiers', []);
-                  setSelectedCharacter(value);
                   setDiceArray([]);
                 },
               }}
             >
               {(field) => (
                 <div className="flex w-full flex-col gap-8">
-                  {user.id === campaign?.ownerId && (
+                  {user?.id === campaign?.ownerId && (
                     <InputSelectField
                       field={field}
                       options={campaign?.characters}
