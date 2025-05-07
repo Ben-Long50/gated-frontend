@@ -16,9 +16,11 @@ import { ItemObject } from 'src/types/global';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Cybernetics = ({
+  title,
   cyberneticList,
   toggleFormLink,
 }: {
+  title?: string;
   cyberneticList?: Cybernetic[];
   toggleFormLink?: (item: ItemObject) => void;
 }) => {
@@ -29,6 +31,8 @@ const Cybernetics = ({
   const state = location.state;
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 2];
+
+  const heading = state ? state.title : title;
 
   const include = searchParams.getAll('include');
   const exclude = searchParams.getAll('exclude');
@@ -54,18 +58,11 @@ const Cybernetics = ({
     },
   });
 
-  if (
-    cybernetics.isLoading ||
-    cybernetics.isPending ||
-    cybernetics.keywordsLoading ||
-    cybernetics.keywordsPending
-  ) {
-    return <Loading />;
-  }
+  if (cybernetics.isLoading || cybernetics.isPending) return <Loading />;
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">{state.title}</h1>
+      <h1 className="text-center">{heading}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

@@ -13,7 +13,13 @@ import { Drone } from 'src/types/drone';
 import DroneCard, { DroneCardMobile } from './DroneCard';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
-const Drones = ({ droneList }: { droneList?: Drone[] }) => {
+const Drones = ({
+  title,
+  droneList,
+}: {
+  title?: string;
+  droneList?: Drone[];
+}) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [searchParams] = useSearchParams();
@@ -21,6 +27,8 @@ const Drones = ({ droneList }: { droneList?: Drone[] }) => {
   const state = location.state;
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 2];
+
+  const heading = state ? state.title : title;
 
   const include = searchParams.getAll('include');
   const exclude = searchParams.getAll('exclude');
@@ -50,7 +58,7 @@ const Drones = ({ droneList }: { droneList?: Drone[] }) => {
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">{state.title}</h1>
+      <h1 className="text-center">{heading}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

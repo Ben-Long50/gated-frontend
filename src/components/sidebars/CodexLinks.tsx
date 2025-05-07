@@ -102,7 +102,7 @@ const CodexLinks = ({
       >
         <SubLinkSidebar
           title="All Weapons"
-          path="codex/weapons"
+          path="codex/weapons?exclude=Vehicle Weapon&exclude=Drone Weapon"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar

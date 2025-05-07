@@ -6,7 +6,7 @@ import { useForm } from '@tanstack/react-form';
 import useArmor from '../hooks/useArmor';
 import ArmorCard, { ArmorCardMobile } from './ArmorCard';
 import Loading from './Loading';
-import ArmorType, { ArmorWithKeywords } from 'src/types/armor';
+import { ArmorWithKeywords } from 'src/types/armor';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
@@ -16,10 +16,12 @@ import { ItemObject } from 'src/types/global';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
 const Armor = ({
+  title,
   armorList,
   toggleFormLink,
 }: {
-  armorList?: ArmorType[];
+  title?: string;
+  armorList?: ArmorWithKeywords[];
   toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
@@ -29,6 +31,8 @@ const Armor = ({
   const state = location.state;
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 2];
+
+  const heading = state ? state.title : title;
 
   const include = searchParams.getAll('include');
   const exclude = searchParams.getAll('exclude');
@@ -60,7 +64,7 @@ const Armor = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">{state.title}</h1>
+      <h1 className="text-center">{heading}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
