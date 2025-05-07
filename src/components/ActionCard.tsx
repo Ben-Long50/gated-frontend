@@ -38,7 +38,11 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
               return (
                 <Tag
                   key={subtype}
-                  label={subtype[0].toUpperCase() + subtype.slice(1)}
+                  label={
+                    subtype
+                      ? subtype.charAt(0).toUpperCase() + subtype.slice(1)
+                      : undefined
+                  }
                 />
               );
             })}
@@ -50,7 +54,10 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
               <div key={index} className="flex items-center gap-4">
                 <DieIcon className="text-secondary size-8" />
                 <p className="font-semibold">
-                  {roll.attribute[0].toUpperCase() + roll.attribute.slice(1)}
+                  {roll.attribute
+                    ? roll.attribute.charAt(0).toUpperCase() +
+                      roll.attribute.slice(1)
+                    : undefined}
                 </p>
                 {roll.skill && (
                   <>
@@ -60,7 +67,12 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
                       size={0.35}
                       rotate={-90}
                     />
-                    <p>{roll.skill[0].toUpperCase() + roll.skill.slice(1)}</p>{' '}
+                    <p>
+                      {roll.skill
+                        ? roll.skill.charAt(0).toUpperCase() +
+                          roll.skill.slice(1)
+                        : undefined}
+                    </p>
                   </>
                 )}
               </div>
