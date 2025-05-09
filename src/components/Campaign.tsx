@@ -5,7 +5,7 @@ import Loading from './Loading';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import { ThemeContext } from '../contexts/ThemeContext';
 import Icon from '@mdi/react';
-import { mdiCircle, mdiCrown, mdiTriangleDown } from '@mdi/js';
+import { mdiCircle, mdiCrown } from '@mdi/js';
 import { format } from 'date-fns';
 import LocationIcon from './icons/LocationIcon';
 import { Session } from 'src/types/campaign';
@@ -14,8 +14,6 @@ import ArrowHeader2 from './ArrowHeader2';
 import { Character } from 'src/types/character';
 import CharacterCard from './CharacterCard';
 import Divider from './Divider';
-import NoblebloodIcon from './icons/NoblebloodIcon';
-import FederalIcon from './icons/FederalIcon';
 import BtnAuth from './buttons/BtnAuth';
 import AccountPicture from './AccountPicture';
 import ThemeContainer from './ThemeContainer';
@@ -48,7 +46,7 @@ const Campaign = () => {
       (character: Character) => character.playerCharacter === false,
     ) || [];
 
-  const joinCampaign = useJoinCampaignMutation(apiUrl, campaignId);
+  const joinCampaign = useJoinCampaignMutation(apiUrl, Number(campaignId));
 
   const pendingIds = campaign?.pendingPlayers.map((player: User) => player.id);
 
@@ -103,7 +101,7 @@ const Campaign = () => {
             {campaign.location}
           </h2>
         </div>
-        {pendingIds?.includes(user.id) && (
+        {pendingIds?.includes(user?.id) && (
           <BtnRect
             type="button"
             ariaLabel="Join campaign"
@@ -112,7 +110,14 @@ const Campaign = () => {
               joinCampaign.mutate();
             }}
           >
-            Join Campaign
+            {joinCampaign.isPending ? (
+              <Loading
+                className="group-hover:text-yellow-300 dark:text-gray-900"
+                size={1.15}
+              />
+            ) : (
+              'Join Campaign'
+            )}
           </BtnRect>
         )}
         <div
