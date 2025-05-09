@@ -76,7 +76,7 @@ const NotificationCard = ({ notification }: { notification: Notification }) => {
           </span>
           {notificationMessage}
         </p>
-        <Link className="self-end" to={`/glam/campaigns/pending`}>
+        <Link className="self-end" to={`/glam/campaigns?campaignType=pending`}>
           <BtnRect type="button" ariaLabel="Navigate to pending campaigns">
             Pending Campaigns
           </BtnRect>
