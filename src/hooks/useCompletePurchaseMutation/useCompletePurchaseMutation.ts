@@ -8,8 +8,8 @@ const useCompletePurchaseMutation = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (formData: object) => {
-      return completePurchase(formData, apiUrl, characterId, inventoryId);
+    mutationFn: () => {
+      return completePurchase(apiUrl, characterId, inventoryId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

@@ -1,17 +1,106 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import editCart from './editCart';
+import { useRef } from 'react';
+import { Character } from 'src/types/character';
 
-const useEditCartMutation = (apiUrl: string) => {
+const useEditCartMutation = (
+  apiUrl: string,
+  characterId: number,
+  cartId: number,
+) => {
   const queryClient = useQueryClient();
+  const updateBuffer = useRef(0);
+  const timeoutRef = useRef(0);
+
   return useMutation({
     mutationFn: (formData: {
-      characterId: number;
-      cartId: number;
       category: string;
       itemId: number;
+      value: number;
+      referenceId?: number;
     }) => {
-      return editCart(apiUrl, formData);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      updateBuffer.current += formData.value;
+
+      return new Promise((resolve) => {
+        timeoutRef.current = setTimeout(async () => {
+          const finalValue = updateBuffer.current;
+
+          updateBuffer.current = 0;
+
+          await editCart(apiUrl, characterId, cartId, {
+            category: formData.category,
+            itemId: formData.itemId,
+            value: finalValue,
+          });
+          resolve(finalValue);
+        }, 1000);
+      });
     },
+
+    onMutate: (value) => {
+      queryClient.cancelQueries({ queryKey: ['activeCharacter'] });
+
+      const prevCharacterData: Character | undefined = queryClient.getQueryData(
+        ['activeCharacter'],
+      );
+
+      queryClient.setQueryData(['activeCharacter'], (prev: Character) => {
+        const targetItem = prev.characterCart[value.category].find(
+          (item) =>
+            Object.values(item).find((value) => typeof value === 'object')
+              .id === value.itemId,
+        );
+
+        if (targetItem && targetItem.quantity + value.value <= 0) {
+          return {
+            ...prev,
+            characterCart: {
+              ...prev.characterCart,
+              [value.category]: prev.characterCart[value.category].filter(
+                (item) => item.id !== targetItem.id,
+              ),
+            },
+          };
+        }
+
+        return !targetItem
+          ? {
+              ...prev,
+              characterCart: {
+                ...prev.characterCart,
+                [value.category]: [
+                  ...prev.characterCart[value.category],
+                  {
+                    quantity: value.value,
+                    item: { id: value.itemId },
+                  },
+                ],
+              },
+            }
+          : {
+              ...prev,
+              characterCart: {
+                ...prev.characterCart,
+                [value.category]: prev.characterCart[value.category].map(
+                  (item) =>
+                    item.id === targetItem.id
+                      ? {
+                          ...item,
+                          quantity: item.quantity + value.value,
+                        }
+                      : item,
+                ),
+              },
+            };
+      });
+
+      return { prevCharacterData };
+    },
+
     onSuccess: () => {
       return queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],

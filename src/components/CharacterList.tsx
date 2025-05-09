@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useCharactersQuery from '../hooks/useCharactersQuery/useCharactersQuery';
 import CharacterCard from './CharacterCard';
@@ -6,29 +6,28 @@ import BtnRect from './buttons/BtnRect';
 import { Link } from 'react-router-dom';
 import Loading from './Loading';
 import ThemeContainer from './ThemeContainer';
-import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import useSetActiveCharacterMutation from '../hooks/useSetActiveCharacterMutation/useSetActiveCharacterMutation';
 import { useForm } from '@tanstack/react-form';
 import SelectField from './SelectField';
 import { Character } from 'src/types/character';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ArrowHeader2 from './ArrowHeader2';
-import { useQueryClient } from '@tanstack/react-query';
 
 const CharacterList = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
-  const queryClient = useQueryClient();
 
   const { data: characters, isLoading, isPending } = useCharactersQuery(apiUrl);
 
-  const { data: activeCharacter } = useActiveCharacterQuery(apiUrl);
-
   const setActiveCharacter = useSetActiveCharacterMutation(apiUrl);
+
+  const activeCharacter = characters?.find(
+    (character) => character.active === true,
+  );
 
   const activeForm = useForm({
     defaultValues: {
-      character: activeCharacter?.id ?? '',
+      character: activeCharacter?.id || '',
     },
     onSubmit: ({ value }) => {
       setActiveCharacter.mutate(value.character);

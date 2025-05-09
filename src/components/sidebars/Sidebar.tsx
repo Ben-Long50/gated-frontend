@@ -1,10 +1,19 @@
 import useActiveCharacterQuery from '../../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
-import { ReactNode, RefObject, useContext, useEffect, useRef } from 'react';
+import {
+  ReactNode,
+  RefObject,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import LinkSidebar from './LinkSidebar';
 import { LayoutContext } from '../../contexts/LayoutContext';
 import { mdiCartOutline } from '@mdi/js';
 import Icon from '@mdi/react';
+import { useQueryClient } from '@tanstack/react-query';
+import useCartLength from 'src/hooks/useCartLength';
 
 const Sidebar = ({
   sidebarVisibility,
@@ -30,6 +39,13 @@ const Sidebar = ({
     isLoading,
   } = useActiveCharacterQuery(apiUrl);
 
+  const cartLength = useMemo(() => {
+    return Object.values(character?.characterCart || {})
+      .filter(Array.isArray)
+      .flat()
+      .reduce((sum, item) => sum + item.quantity, 0);
+  }, [character]);
+
   useEffect(() => {
     const closeSidebar = (e: Event) => {
       if (
@@ -49,12 +65,6 @@ const Sidebar = ({
       document.removeEventListener('click', closeSidebar);
     };
   }, [mobile, setSidebarVisibility, sidebarVisibility, sidebarRef]);
-
-  const cartLength = Object.values(character?.characterCart || {})
-    .filter((value) => Array.isArray(value))
-    .flat().length;
-
-  if (isPending || isLoading) return <span></span>;
 
   const navStyle = mobile
     ? sidebarVisibility
@@ -80,44 +90,52 @@ const Sidebar = ({
       }}
     >
       <div className="scrollbar-secondary flex grow flex-col gap-4 overflow-y-auto overflow-x-hidden px-2 py-4">
-        {character && (
-          <LinkSidebar
-            title={character.firstName + ' ' + character.lastName}
-            icon={
-              <img
-                className="bg-secondary z-10 size-12 shrink-0 rounded-full p-1"
-                src={character.picture.imageUrl}
-                alt={
-                  character.firstName +
-                  ' ' +
-                  character.lastName +
-                  "'s profile picture"
-                }
-              />
-            }
-            path={`/glam/characters/${character.id}`}
-            sidebarVisibility={sidebarVisibility}
-            setSidebarVisibility={setSidebarVisibility}
-          />
-        )}
-        {cartLength > 0 && (
-          <LinkSidebar
-            title={character.firstName + "'s cart"}
-            icon={
-              <div className="relative">
-                <Icon
-                  className="bg-secondary group-hover:text-accent timing size-12 shrink-0 p-2"
-                  path={mdiCartOutline}
+        {isLoading || isPending ? (
+          <span></span>
+        ) : (
+          character && (
+            <LinkSidebar
+              title={character.firstName + ' ' + character.lastName}
+              icon={
+                <img
+                  className="bg-secondary z-10 size-12 shrink-0 rounded-full p-1"
+                  src={character.picture.imageUrl}
+                  alt={
+                    character.firstName +
+                    ' ' +
+                    character.lastName +
+                    "'s profile picture"
+                  }
                 />
-                <p className="absolute right-0 top-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-yellow-300 pt-1 text-center text-base font-semibold dark:text-gray-950">
-                  {cartLength}
-                </p>
-              </div>
-            }
-            path={`/glam/characters/${character.id}/cart`}
-            sidebarVisibility={sidebarVisibility}
-            setSidebarVisibility={setSidebarVisibility}
-          />
+              }
+              path={`/glam/characters/${character.id}`}
+              sidebarVisibility={sidebarVisibility}
+              setSidebarVisibility={setSidebarVisibility}
+            />
+          )
+        )}
+        {isLoading || isPending ? (
+          <span></span>
+        ) : (
+          cartLength > 0 && (
+            <LinkSidebar
+              title={character.firstName + "'s cart"}
+              icon={
+                <div className="relative">
+                  <Icon
+                    className="bg-secondary group-hover:text-accent timing size-12 shrink-0 p-2"
+                    path={mdiCartOutline}
+                  />
+                  <p className="absolute right-0 top-0 flex h-6 min-w-6 items-center justify-center rounded-full bg-yellow-300 pt-0.5 text-center text-base font-semibold shadow-md shadow-black dark:text-gray-950">
+                    {cartLength}
+                  </p>
+                </div>
+              }
+              path={`/glam/characters/${character.id}/cart`}
+              sidebarVisibility={sidebarVisibility}
+              setSidebarVisibility={setSidebarVisibility}
+            />
+          )
         )}
         {children}
       </div>

@@ -3,16 +3,22 @@ import Icon from '@mdi/react';
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 
-const Loading = (props) => {
+const Loading = ({
+  className,
+  size,
+}: {
+  className?: string;
+  size?: number;
+}) => {
   const { theme } = useContext(ThemeContext);
   return (
     <div
       className={`${theme} flex h-full flex-col items-center justify-center bg-transparent md:gap-8`}
     >
       <Icon
-        className={`spin text-accent ${props.className}`}
+        className={`spin ${className ? className : 'text-accent'}`}
         path={mdiLoading}
-        size={props.size || 5}
+        size={size || 5}
       />
     </div>
   );

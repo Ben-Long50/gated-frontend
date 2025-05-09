@@ -110,7 +110,13 @@ const ItemCardMobile = ({
         overflowHidden={true}
       >
         <Link
-          to={mode === 'form' ? '' : `${category}/${item.id}`}
+          to={
+            mode === 'form'
+              ? ''
+              : mode === 'equipment' || mode === 'deployments'
+                ? `${category}/${item?.id}`
+                : `${item?.id}`
+          }
           className="timing hover:bg-secondary relative flex cursor-pointer flex-col gap-8"
         >
           <div
@@ -132,11 +138,7 @@ const ItemCardMobile = ({
                 <div className="flex flex-wrap items-start justify-end gap-4 gap-y-2">
                   <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
                   {mode === 'codex' && (
-                    <CartButton
-                      price={item?.price}
-                      category={category}
-                      itemId={item?.id}
-                    />
+                    <CartButton category={category} itemId={item?.id} />
                   )}
                 </div>
               </div>
