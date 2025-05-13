@@ -26,7 +26,7 @@ const AccountPicture = ({
       </div>
     )
   ) : (
-    <CharacterIcon className="size-10" />
+    <CharacterIcon className="text-secondary size-10" />
   );
 };
 

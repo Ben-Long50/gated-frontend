@@ -33,6 +33,7 @@ export default {
       maxHeight: {
         '50dvh': '50dvh',
         '75dvh': '75dvh',
+        '85dvh': '85dvh',
       },
       maxWidth: {
         '1/3': '33%',

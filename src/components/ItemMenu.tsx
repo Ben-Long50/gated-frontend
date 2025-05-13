@@ -95,8 +95,12 @@ const ItemMenu = ({
   }
 
   return (
-    <ThemeContainer borderColor={accentPrimary} chamfer="medium">
-      <div className="scrollbar-secondary-2 flex max-h-75dvh w-full flex-col gap-2 p-4">
+    <ThemeContainer
+      borderColor={accentPrimary}
+      chamfer="medium"
+      overflowHidden={true}
+    >
+      <div className="scrollbar-secondary-2 flex max-h-75dvh w-full flex-col gap-2 overflow-y-auto p-4">
         <div className="col-span-2 grid grid-flow-col gap-2 sm:gap-4">
           {(category === 'equipment' || mode === 'equipment') && (
             <>

@@ -104,7 +104,7 @@ const InventoryModal = ({
                 }}
               >
                 {item.equipped === true && (
-                  <div className="absolute inset-0 flex h-full items-center justify-center bg-slate-950 bg-opacity-65">
+                  <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
                     <Icon
                       className="text-tertiary group-hover:text-secondary h-full"
                       path={mdiCheckCircle}
@@ -114,7 +114,7 @@ const InventoryModal = ({
                 )}
                 {item.picture?.imageUrl ? (
                   <img
-                    className="aspect-square h-full hover:opacity-80"
+                    className="aspect-square hover:opacity-80"
                     src={item.picture?.imageUrl}
                     alt={item.name}
                   />
