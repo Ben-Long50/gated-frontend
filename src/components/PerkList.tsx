@@ -39,6 +39,9 @@ const PerkList = ({
                         </div>
                         <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
                           {perkList.map((perk: Perk) => {
+                            const perkIds = field.state.value.map(
+                              (perk: Perk) => perk.id,
+                            );
                             return (
                               <div
                                 key={perk.id}
@@ -49,21 +52,17 @@ const PerkList = ({
                                   <input
                                     className="size-6"
                                     type="checkbox"
-                                    checked={field.state.value.includes(
-                                      perk.id,
-                                    )}
+                                    checked={perkIds.includes(perk.id)}
                                     onChange={() => {
-                                      if (
-                                        !field.state.value?.includes(perk.id)
-                                      ) {
+                                      if (!perkIds?.includes(perk.id)) {
                                         field.handleChange([
                                           ...field.state.value,
-                                          perk.id,
+                                          perk,
                                         ]);
                                       } else {
                                         field.handleChange(
                                           field.state.value.filter(
-                                            (id: number) => id !== perk.id,
+                                            (item: Perk) => item.id !== perk.id,
                                           ),
                                         );
                                       }

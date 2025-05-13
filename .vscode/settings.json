@@ -11,5 +11,13 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
-  "tailwindCSS.emmetCompletions": true
+  "tailwindCSS.emmetCompletions": true,
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true
+  }
 }

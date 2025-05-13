@@ -38,6 +38,7 @@ import ArrowHeader3 from './ArrowHeader3';
 import { AttributeName, SkillName } from 'src/types/attributeTree';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
+import PerkLinkField from './form_fields/PerkLinkField';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -94,17 +95,6 @@ const CharacterUpdateForm = () => {
     characterUpdateForm.reset();
   };
 
-  const searchForm = useForm({
-    defaultValues: {
-      attribute: '' as AttributeName | 'general',
-      skill: '' as SkillName,
-      query: '',
-    },
-    onSubmit: ({ value }) => {
-      perks.filterPerks(value.query);
-    },
-  });
-
   const characterUpdateForm = useForm({
     defaultValues: {
       playerCharacter: character?.playerCharacter ?? '',
@@ -125,15 +115,17 @@ const CharacterUpdateForm = () => {
       age: character?.age ?? '',
       sex: character?.sex ?? '',
       attributes: character?.attributes ?? '',
-      perks: character?.perks.map((perk: Perk) => perk.id) ?? ([] as number[]),
+      perks: character?.perks ?? ([] as Perk[]),
     },
     onSubmit: async ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
-
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, val]) => {
-        if (key === 'picture') {
+        if (key === 'perks') {
+          const perkIds = val.map((perk: Perk) => perk.id) || [];
+          formData.append(key, JSON.stringify(perkIds));
+        } else if (key === 'picture') {
           if (val instanceof File) {
             formData.append(key, val);
           } else {
@@ -543,100 +535,18 @@ const CharacterUpdateForm = () => {
           )}
         </div>
         <Divider />
-        <ArrowHeader2 title="Available Perks" />
+        <ArrowHeader2 title="Manage Perks" />
         <p className="text-tertiary border-l border-gray-400 pl-4">
-          Available perks are only shown if you meet the attribute and skill
-          point requirements
+          Select the perks associated with your character. Available perks are
+          only shown if you meet the attribute and skill point requirements
         </p>
-        <div className="flex w-full flex-col gap-4">
-          <div className="grid w-full items-center gap-4 max-sm:grid-cols-1 max-sm:grid-rows-[auto_1fr_1fr_auto] sm:grid-cols-[auto_1fr_1fr_auto] sm:gap-8">
-            <ArrowHeader3 title="Filter Options" />
-            <searchForm.Field
-              name="attribute"
-              listeners={{
-                onChange: () => {
-                  searchForm.setFieldValue('skill', '');
-                  perks.filterBySkill('');
-                },
-              }}
-            >
-              {(field) => (
-                <InputSelectField
-                  className="w-full"
-                  field={field}
-                  label="Attribute"
-                  options={[
-                    'general',
-                    'cybernetica',
-                    'esoterica',
-                    'peace',
-                    'violence',
-                  ]}
-                  onChange={() => perks.filterByAttribute(field.state.value)}
-                />
-              )}
-            </searchForm.Field>
-            <searchForm.Subscribe
-              selector={(state) => [state.values.attribute]}
-            >
-              {([selectedAttribute]) => (
-                <searchForm.Field name="skill">
-                  {(field) => (
-                    <InputSelectField
-                      field={field}
-                      label="Skill"
-                      options={
-                        selectedAttribute && selectedAttribute !== 'general'
-                          ? Object.keys(
-                              attributeTree.emptyAttributeTree[
-                                selectedAttribute
-                              ].skills,
-                            )
-                          : []
-                      }
-                      onChange={() => perks.filterBySkill(field.state.value)}
-                    />
-                  )}
-                </searchForm.Field>
-              )}
-            </searchForm.Subscribe>
-            <button
-              type="button"
-              className="text-accent hover:underline"
-              onClick={(e) => {
-                e.preventDefault();
-                searchForm.setFieldValue('skill', '');
-                perks.filterBySkill('');
-                searchForm.setFieldValue('attribute', '');
-                perks.filterByAttribute('');
-              }}
-            >
-              Reset
-            </button>
-          </div>
-          <searchForm.Field name="query">
-            {(field) => (
-              <InputField
-                label="Search perks"
-                field={field}
-                onChange={() => {
-                  searchForm.handleSubmit();
-                }}
-              />
-            )}
-          </searchForm.Field>
+        <div className="flex flex-col gap-4">
+          <PerkLinkField
+            form={characterUpdateForm}
+            perkTree={perks.filteredPerkTree}
+          />
         </div>
-        <characterUpdateForm.Field name="perks">
-          {(field) => (
-            <PerkList
-              field={field}
-              className="scrollbar-primary-2 max-h-[500px] overflow-y-auto py-4 pr-4"
-              perkTree={perks.filteredPerkTree}
-              mode="form"
-            />
-          )}
-        </characterUpdateForm.Field>
-
+        <Divider />
         <div className="flex flex-col gap-4 sm:gap-8">
           <BtnRect
             ariaLabel="Update character"

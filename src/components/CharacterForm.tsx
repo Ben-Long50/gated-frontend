@@ -8,7 +8,6 @@ import { AuthContext } from '../contexts/AuthContext';
 import { useForm, useStore, ValidationError } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
 import StatBar from './StatBar';
-import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';
 import useCreateCharacterMutation from '../hooks/useCreateCharacterMutation/useCreateCharacterMutation';
 import Icon from '@mdi/react';
@@ -31,8 +30,8 @@ import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import InputFieldRadio from './InputFieldRadio';
 import InputSelectField from './InputSelectField';
-import { AttributeName, SkillName } from 'src/types/attributeTree';
-import ArrowHeader3 from './ArrowHeader3';
+import PerkLinkField from './form_fields/PerkLinkField';
+import { Perk } from 'src/types/perk';
 
 const CharacterForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -52,17 +51,6 @@ const CharacterForm = () => {
 
   const createCharacter = useCreateCharacterMutation(apiUrl, setFormMessage);
 
-  const searchForm = useForm({
-    defaultValues: {
-      attribute: '' as AttributeName | 'general',
-      skill: '' as SkillName,
-      query: '',
-    },
-    onSubmit: ({ value }) => {
-      perks.filterPerks(value.query);
-    },
-  });
-
   const characterForm = useForm({
     defaultValues: {
       playerCharacter: '' as string | boolean,
@@ -79,7 +67,7 @@ const CharacterForm = () => {
         currentSanity: 0,
       },
       attributes: attributeTree.tree,
-      perks: [] as number[],
+      perks: [] as Perk[],
     },
     onSubmit: ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
@@ -87,7 +75,10 @@ const CharacterForm = () => {
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, value]) => {
-        if (key === 'picture' && value instanceof File) {
+        if (key === 'perks') {
+          const perkIds = value.map((perk: Perk) => perk.id) || [];
+          formData.append(key, JSON.stringify(perkIds));
+        } else if (key === 'picture' && value instanceof File) {
           formData.append(key, value);
         } else {
           formData.append(key, JSON.stringify(value));
@@ -97,14 +88,24 @@ const CharacterForm = () => {
     },
   });
 
-  const perkIds = useStore(characterForm.store, (state) => state.values.perks);
+  const perkIds = useStore(characterForm.store, (state) =>
+    state.values.perks.map((perk) => perk.id),
+  );
 
   const selectedPerks = perks
     .flattenPerkTree(perks.filteredPerkTree)
     .filter((perk) => perkIds.includes(perk.id));
 
   const { stats } = useStats(
-    { weapons: [], armor: [], cybernetics: [], vehicles: [], items: [] },
+    {
+      weapons: [],
+      armor: [],
+      cybernetics: [],
+      vehicles: [],
+      drones: [],
+      modifications: [],
+      items: [],
+    } as unknown as CharacterInventory,
     attributeTree?.tree,
     selectedPerks,
   );
@@ -428,94 +429,13 @@ const CharacterForm = () => {
           Select a starting perk for your character. Available perks are only
           shown if you meet the attribute and skill point requirements
         </p>
-        <div className="flex w-full flex-col gap-4">
-          <div className="grid w-full items-center gap-4 max-sm:grid-cols-1 max-sm:grid-rows-[auto_1fr_1fr_auto] sm:grid-cols-[auto_1fr_1fr_auto] sm:gap-8">
-            <ArrowHeader3 title="Filter Options" />
-            <searchForm.Field
-              name="attribute"
-              listeners={{
-                onChange: () => {
-                  searchForm.setFieldValue('skill', '');
-                  perks.filterBySkill('');
-                },
-              }}
-            >
-              {(field) => (
-                <InputSelectField
-                  className="w-full"
-                  field={field}
-                  label="Attribute"
-                  options={[
-                    'general',
-                    'cybernetica',
-                    'esoterica',
-                    'peace',
-                    'violence',
-                  ]}
-                  onChange={() => perks.filterByAttribute(field.state.value)}
-                />
-              )}
-            </searchForm.Field>
-            <searchForm.Subscribe
-              selector={(state) => [state.values.attribute]}
-            >
-              {([selectedAttribute]) => (
-                <searchForm.Field name="skill">
-                  {(field) => (
-                    <InputSelectField
-                      field={field}
-                      label="Skill"
-                      options={
-                        selectedAttribute && selectedAttribute !== 'general'
-                          ? Object.keys(
-                              attributeTree.emptyAttributeTree[
-                                selectedAttribute
-                              ].skills,
-                            )
-                          : []
-                      }
-                      onChange={() => perks.filterBySkill(field.state.value)}
-                    />
-                  )}
-                </searchForm.Field>
-              )}
-            </searchForm.Subscribe>
-            <button
-              type="button"
-              className="text-accent hover:underline"
-              onClick={(e) => {
-                e.preventDefault();
-                searchForm.setFieldValue('skill', '');
-                perks.filterBySkill('');
-                searchForm.setFieldValue('attribute', '');
-                perks.filterByAttribute('');
-              }}
-            >
-              Reset
-            </button>
-          </div>
-          <searchForm.Field name="query">
-            {(field) => (
-              <InputField
-                label="Search perks"
-                field={field}
-                onChange={() => {
-                  searchForm.handleSubmit();
-                }}
-              />
-            )}
-          </searchForm.Field>
+        <div className="flex flex-col gap-4">
+          <PerkLinkField
+            form={characterForm}
+            perkTree={perks.filteredPerkTree}
+          />
         </div>
-        <characterForm.Field name="perks">
-          {(field) => (
-            <PerkList
-              field={field}
-              className="scrollbar-primary-2 max-h-[500px] overflow-y-auto py-4 pr-4"
-              perkTree={perks.filteredPerkTree}
-              mode="form"
-            />
-          )}
-        </characterForm.Field>
+        <Divider />
         <BtnRect
           ariaLabel="Create character"
           type="submit"
