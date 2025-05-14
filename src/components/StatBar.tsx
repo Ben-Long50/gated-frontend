@@ -37,7 +37,9 @@ const StatBar = ({
       divider = 5;
     }
     if (total) {
-      return Math.floor(divider ? total / divider : total);
+      return total > current
+        ? Math.floor(divider ? total / divider : total)
+        : Math.floor(divider ? current / divider : current);
     } else {
       return Math.floor(divider ? current / divider : current);
     }
@@ -50,15 +52,13 @@ const StatBar = ({
       <div
         className={`${small ? 'col-span-3 gap-2' : 'col-span-2 gap-4'} flex w-full items-center justify-between`}
       >
-        <div
-          className={`flex w-full items-center gap-0.5 justify-self-start overflow-hidden`}
-        >
+        <div className={`flex w-full items-center gap-0.5 justify-self-start`}>
           {Array.from({
             length: arrayLength,
           }).map((_, index) => (
             <div
               key={index}
-              className={`${index === 0 && 'rounded-l-sm'} ${index === arrayLength - 1 && 'rounded-r-sm'} h-3.5 w-full max-w-8`}
+              className={`${index === 0 && 'rounded-l-sm'} ${index === arrayLength - 1 && 'rounded-r-sm'} ${total && index >= total && 'ring-[3px] ring-inset ring-red-600'} h-3.5 w-full max-w-8`}
               style={{
                 backgroundImage:
                   index < current
@@ -73,7 +73,7 @@ const StatBar = ({
           <div
             className={`${small ? 'gap-1' : 'gap-2'} text-tertiary flex items-center justify-self-end whitespace-nowrap text-xl`}
           >
-            <button
+            <div
               className="text-secondary hover:text-accent grid h-6 min-w-6 place-content-center"
               onClick={mutation ? () => mutation(-1) : undefined}
             >
@@ -82,16 +82,16 @@ const StatBar = ({
               >
                 {current}
               </p>
-            </button>
+            </div>
             {(reserve || total) && (
               <>
                 <p>/</p>
-                <button
+                <div
                   className="text-secondary hover:text-accent grid h-6 min-w-6 place-content-center"
                   onClick={mutation ? () => mutation(1) : undefined}
                 >
                   <p className="!text-inherit">{reserve ? reserve : total}</p>
-                </button>
+                </div>
               </>
             )}
           </div>

@@ -70,7 +70,18 @@ const Deployments = () => {
       default:
         return null;
     }
-  }, [active, filteredCharacter]);
+  }, [active, character]);
+
+  const weapons = useMemo(() => {
+    return (
+      character?.characterInventory.weapons.filter(
+        (weapon: WeaponWithKeywords) =>
+          activeItem?.weapons.some(
+            (item: WeaponWithKeywords) => item.id === weapon.id,
+          ),
+      ) || []
+    );
+  }, [activeItem, character]);
 
   const cardRef = useRef(null);
   const [cardHeight, setCardHeight] = useState<number | null>(null);
@@ -151,7 +162,7 @@ const Deployments = () => {
             <div className="flex flex-col gap-8">
               <ArrowHeader2 title="Weapons" />
               <div className="grid gap-8 xl:grid-cols-2">
-                {activeItem.weapons?.map((weapon: WeaponWithKeywords) => (
+                {weapons?.map((weapon: WeaponWithKeywords) => (
                   <WeaponCard
                     key={weapon.id}
                     weapon={weapon}

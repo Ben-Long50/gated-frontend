@@ -18,7 +18,6 @@ const useEditAmmoMutation = (
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-
       updateBuffer.current += value;
 
       return new Promise((resolve) => {
@@ -58,22 +57,6 @@ const useEditAmmoMutation = (
                   }
                 : item,
             ),
-            vehicles: prev.characterInventory.vehicles.map((vehicle) => ({
-              ...vehicle,
-              weapons: vehicle.weapons.map((item: WeaponWithKeywords) =>
-                item.id === weaponId
-                  ? {
-                      ...item,
-                      stats: {
-                        ...item.stats,
-                        currentAmmoCount: item.stats.currentAmmoCount
-                          ? item.stats.currentAmmoCount + value
-                          : value,
-                      },
-                    }
-                  : item,
-              ),
-            })),
           },
         }),
       );
