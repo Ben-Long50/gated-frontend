@@ -81,7 +81,7 @@ const Weapons = ({
                 <InputSelectField
                   field={field}
                   className=""
-                  label="Keyword"
+                  label="Trait"
                   options={weapons.filteredKeywords || []}
                   onChange={() => {
                     weapons.filterByCategory(field.state.value);

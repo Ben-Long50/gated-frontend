@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useArmorQuery from './useArmorQuery/useArmorQuery';
 import { ArmorWithKeywords } from '../types/armor';
@@ -6,10 +6,6 @@ import { FetchOptions } from 'src/types/fetchOptions';
 
 const useArmor = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
-
-  useEffect(() => {
-    setCategory('');
-  }, [fetchOptions]);
 
   const { data: armor, isLoading, isPending } = useArmorQuery(apiUrl);
 

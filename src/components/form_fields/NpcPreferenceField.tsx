@@ -29,12 +29,13 @@ const NpcPreferenceField = ({ form }: { form: FormApi }) => {
             </BtnRect>
             <Modal modalOpen={preferencesOpen} toggleModal={togglePreferences}>
               <ThemeContainer
-                className="w-full max-w-3xl"
+                className="h-80dvh w-full max-w-3xl"
                 chamfer="large"
                 borderColor={accentPrimary}
+                overflowHidden={true}
               >
                 <div
-                  className="flex w-full flex-col items-center gap-8 p-4 sm:p-8"
+                  className="flex h-full w-full flex-col items-center gap-8 overflow-y-auto p-4 sm:p-8"
                   onClick={(e) => {
                     e.stopPropagation();
                   }}
