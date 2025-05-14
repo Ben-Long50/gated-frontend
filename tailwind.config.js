@@ -56,6 +56,7 @@ export default {
         'zinc-150': 'rgb(236, 236, 238)',
       },
       clipPath: {
+        1: 'polygon(0.25rem 0px, 100% 0px, 100% calc(100% - 0.25rem), calc(100% - 0.25rem) 100%, 0px 100%, 0px 0.25rem)',
         2: 'polygon(0.5rem 0px, 100% 0px, 100% calc(100% - 0.5rem), calc(100% - 0.5rem) 100%, 0px 100%, 0px 0.5rem)',
         3: 'polygon(0.75rem 0px, 100% 0px, 100% calc(100% - 0.75rem), calc(100% - 0.75rem) 100%, 0px 100%, 0px 0.75rem)',
         4: 'polygon(1rem 0px, 100% 0px, 100% calc(100% - 1rem), calc(100% - 1rem) 100%, 0px 100%, 0px 1rem)',

@@ -1,11 +1,3 @@
-import {
-  mdiChevronDown,
-  mdiChevronUp,
-  mdiCircle,
-  mdiClose,
-  mdiRectangle,
-} from '@mdi/js';
-import Icon from '@mdi/react';
 import { ReactNode } from 'react';
 
 const StatBar = ({
@@ -13,7 +5,7 @@ const StatBar = ({
   total,
   current,
   reserve,
-  divider,
+  // divider,
   color,
   mode,
   children,
@@ -24,7 +16,7 @@ const StatBar = ({
   total?: number;
   reserve?: number;
   current: number;
-  divider?: number;
+  // divider?: number;
   color: string;
   mode?: string;
   children: ReactNode;
@@ -33,107 +25,74 @@ const StatBar = ({
 }) => {
   const small = cardWidth < 500;
 
+  const arrayLength = (() => {
+    let divider = 1;
+    if (current > 50 && current <= 100) {
+      divider = 2;
+    } else if (current > 100 && current <= 150) {
+      divider = 3;
+    } else if (current > 150 && current <= 250) {
+      divider = 4;
+    } else if (current > 250) {
+      divider = 5;
+    }
+    if (total) {
+      return Math.floor(divider ? total / divider : total);
+    } else {
+      return Math.floor(divider ? current / divider : current);
+    }
+  })();
+
   return (
     <>
-      {title && <h4>{title}</h4>}
+      {title && (small ? null : <h4>{title}</h4>)}
       {children}
-      <div className="col-span-2 flex w-full items-center justify-between gap-2">
+      <div
+        className={`${small ? 'col-span-3 gap-2' : 'col-span-2 gap-4'} flex w-full items-center justify-between`}
+      >
         <div
-          className={`${small ? 'gap-1' : 'gap-2'} flex flex-wrap items-center justify-self-start`}
+          className={`flex w-full items-center gap-0.5 justify-self-start overflow-hidden`}
         >
           {Array.from({
-            length: divider
-              ? total > current
-                ? total / divider
-                : current / divider
-              : total > current
-                ? total
-                : current,
-          }).map((_, index) =>
-            index < current ? (
-              small ? (
-                <div key={index} className="relative">
-                  <Icon path={mdiCircle} size={0.5} color={color} />
-                  {index > total - 1 && (
-                    <Icon
-                      path={mdiClose}
-                      className="absolute right-1/2 top-1/2 -translate-y-1/2 translate-x-1/2 text-red-600"
-                      size={1}
-                    />
-                  )}
-                </div>
-              ) : (
-                <div key={index} className="relative">
-                  <Icon
-                    className="-my-2 scale-x-150 scale-y-75"
-                    path={mdiRectangle}
-                    size={1}
-                    color={color}
-                  />
-
-                  {index > total - 1 && (
-                    <Icon
-                      path={mdiClose}
-                      className="absolute right-1/2 top-1/2 -translate-y-1/2 translate-x-1/2 text-red-600"
-                      size={1.5}
-                    />
-                  )}
-                </div>
-              )
-            ) : small ? (
-              <div key={index} className="relative">
-                <Icon className="text-gray-500" path={mdiCircle} size={0.5} />
-                {index > total - 1 && (
-                  <Icon
-                    path={mdiClose}
-                    className="absolute right-1/2 top-1/2 -translate-y-1/2 translate-x-1/2 text-red-600"
-                    size={1}
-                  />
-                )}
-              </div>
-            ) : (
-              <div key={index} className="relative">
-                <Icon
-                  className="-my-2 scale-x-150 scale-y-75 text-gray-500"
-                  path={mdiRectangle}
-                  size={1}
-                />
-                {index > total - 1 && (
-                  <Icon
-                    path={mdiClose}
-                    className="absolute right-1/2 top-1/2 -translate-y-1/2 translate-x-1/2 text-red-600"
-                    size={1}
-                  />
-                )}
-              </div>
-            ),
-          )}
+            length: arrayLength,
+          }).map((_, index) => (
+            <div
+              key={index}
+              className={`${index === 0 && 'rounded-l-sm'} ${index === arrayLength - 1 && 'rounded-r-sm'} h-3.5 w-full max-w-8`}
+              style={{
+                backgroundImage:
+                  index < current
+                    ? `linear-gradient(to bottom, rgb(160, 160, 160), ${color}, rgb(50, 50, 50)`
+                    : 'none',
+                backgroundColor: index < current ? undefined : 'gray',
+              }}
+            />
+          ))}
         </div>
         {mode !== 'edit' && (
           <div
-            className={`text-tertiary flex items-center gap-2 justify-self-end whitespace-nowrap text-xl`}
+            className={`${small ? 'gap-1' : 'gap-2'} text-tertiary flex items-center justify-self-end whitespace-nowrap text-xl`}
           >
-            <p className={`${current > total && 'text-error'}`}>{current}</p>
-            {typeof reserve === 'number' ? (
-              <p>/ {reserve}</p>
-            ) : (
-              total && <p>/ {total}</p>
-            )}
-            {mode === 'adjustable' && (
-              <div className="flex flex-col">
+            <button
+              className="text-secondary hover:text-accent grid h-6 min-w-6 place-content-center"
+              onClick={mutation ? () => mutation(-1) : undefined}
+            >
+              <p
+                className={`${total && current > total ? 'text-error' : '!text-inherit'}`}
+              >
+                {current}
+              </p>
+            </button>
+            {(reserve || total) && (
+              <>
+                <p>/</p>
                 <button
-                  className="text-tertiary hover:text-accent"
+                  className="text-secondary hover:text-accent grid h-6 min-w-6 place-content-center"
                   onClick={mutation ? () => mutation(1) : undefined}
                 >
-                  <Icon path={mdiChevronUp} size={1} />
+                  <p className="!text-inherit">{reserve ? reserve : total}</p>
                 </button>
-                <button
-                  className="text-tertiary hover:text-accent"
-                  onClick={mutation ? () => mutation(-1) : undefined}
-                >
-                  <Icon path={mdiChevronDown} size={1} />
-                </button>
-              </div>
+              </>
             )}
           </div>
         )}

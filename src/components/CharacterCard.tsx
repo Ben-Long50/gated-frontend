@@ -38,10 +38,7 @@ const CharacterCard = ({
       borderColor={accentPrimary}
       overflowHidden={true}
     >
-      <div
-        ref={cardRef}
-        className="relative grid grid-flow-row sm:grid-flow-col sm:grid-cols-[1fr_3fr] md:flex-row"
-      >
+      <div ref={cardRef} className="relative grid sm:grid-cols-[1fr_3fr]">
         <div className="absolute left-0 top-0 h-full w-[425px]">
           <CloudinaryImage
             className="bg-primary absolute aspect-square w-full"
@@ -53,8 +50,7 @@ const CharacterCard = ({
           )}
           <div className="absolute inset-0 h-full w-full bg-gradient-to-l from-zinc-900 to-transparent" />
         </div>
-
-        <div className="z-10 col-start-2 flex h-full w-full flex-col justify-between gap-4 p-6 md:gap-6">
+        <div className="z-10 flex h-full w-full flex-col justify-between gap-4 p-4 sm:col-start-2 md:gap-6 md:p-6">
           <div className="flex w-full items-center justify-between">
             <ArrowHeader1
               title={
@@ -67,7 +63,7 @@ const CharacterCard = ({
             </p>
           </div>
           <div
-            className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
+            className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2' : 'gap-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
           >
             <StatBars
               stats={{

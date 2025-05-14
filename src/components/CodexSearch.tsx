@@ -266,7 +266,7 @@ const CodexSearch = () => {
               {(field) => (
                 <InputSelectField
                   field={field}
-                  label="Keyword"
+                  label="Trait"
                   options={keywordList}
                   onChange={() => {
                     setCategory(field.state.value);
@@ -280,7 +280,7 @@ const CodexSearch = () => {
           <searchForm.Field name="nameQuery">
             {(field) => (
               <InputField
-                label="Search by name"
+                label="Search by Name"
                 field={field}
                 onChange={() => {
                   filterByNameQuery(field.state.value);
@@ -293,7 +293,7 @@ const CodexSearch = () => {
               {(field) => (
                 <InputField
                   className="w-full"
-                  label="Search by description"
+                  label="Search by Description"
                   field={field}
                   onChange={() => {
                     filterByDescriptionQuery(field.state.value);
