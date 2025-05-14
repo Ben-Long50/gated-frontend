@@ -12,6 +12,8 @@ import FactionForm from 'src/components/FactionForm';
 import Resume from 'src/components/Resume';
 import RollSimulator from 'src/components/RollSimulator';
 import SessionRoutes from './SessionRoutes';
+import ItemPageWrapper from 'src/components/ItemPageWrapper';
+import Deployments from 'src/components/Deployments';
 
 const CampaignRoutes = () => {
   return (
@@ -38,7 +40,20 @@ const CampaignRoutes = () => {
           <Route index element={<CampaignCharacterList />} />
           <Route path=":characterId">
             <Route index element={<CharacterSheet />} />
-            <Route path="equipment" element={<Equipment />} />
+            <Route path="equipment" element={<Equipment />}>
+              <Route path="inventory" element={<Equipment />} />
+            </Route>
+            <Route
+              path="equipment/:category/:itemId"
+              element={<ItemPageWrapper />}
+            />
+            <Route path="deployments" element={<Deployments />}>
+              <Route path="inventory" element={<Equipment />} />
+            </Route>
+            <Route
+              path="deployments/:category/:itemId"
+              element={<ItemPageWrapper />}
+            />
             <Route path="resume" element={<Resume />} />
             <Route path="update" element={<CharacterUpdateForm />} />
           </Route>

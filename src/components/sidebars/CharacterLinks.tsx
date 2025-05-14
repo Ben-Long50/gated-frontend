@@ -3,13 +3,10 @@ import LinkListSidebar from './LinkListSidebar';
 import SubLinkSidebar from './SubLinkSidebar';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
-import Loading from '../Loading';
 import useActiveCharacterQuery from '../../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import InventoryIcon from '../../components/icons/InventoryIcon';
 import EquipmentIcon from '../../components/icons/EquipmentIcon';
-import VehicleIcon from '../../components/icons/VehicleIcon';
 import LinkSublistSidebar from './LinkSublistSidebar';
-import LinkSidebar from './LinkSidebar';
 import AffiliationIcon from '../icons/AffiliationIcon';
 import HangarIcon from '../icons/HangarIcon';
 
@@ -22,13 +19,7 @@ const CharacterLinks = ({
 }) => {
   const { apiUrl } = useContext(AuthContext);
 
-  const {
-    data: character,
-    isPending,
-    isLoading,
-  } = useActiveCharacterQuery(apiUrl);
-
-  if (isLoading || isPending) return <span></span>;
+  const { data: character } = useActiveCharacterQuery(apiUrl);
 
   return (
     <>

@@ -95,7 +95,7 @@ const Weapons = ({
               {(field) => (
                 <InputField
                   className="w-full"
-                  label="Search weapons"
+                  label="Search Weapons"
                   field={field}
                   onChange={() => {
                     weapons.filterByQuery(field.state.value);

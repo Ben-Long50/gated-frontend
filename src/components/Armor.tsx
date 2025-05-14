@@ -80,7 +80,7 @@ const Armor = ({
                 <InputSelectField
                   field={field}
                   className=""
-                  label="Keyword"
+                  label="Trait"
                   options={armor.filteredKeywords || []}
                   onChange={() => {
                     armor.filterByCategory(field.state.value);
@@ -94,7 +94,7 @@ const Armor = ({
               {(field) => (
                 <InputField
                   className="w-full"
-                  label="Search weapons"
+                  label="Search Armor"
                   field={field}
                   onChange={() => {
                     armor.filterByQuery(field.state.value);

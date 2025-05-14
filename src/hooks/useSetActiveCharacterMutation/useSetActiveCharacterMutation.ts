@@ -4,7 +4,7 @@ import updateCharacter from './setActiveCharacter';
 const useSetActiveCharacterMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (characterId: string) => {
+    mutationFn: (characterId: number) => {
       return updateCharacter(apiUrl, characterId);
     },
     onSuccess: () => {

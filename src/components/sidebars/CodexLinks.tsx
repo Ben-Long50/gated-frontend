@@ -29,15 +29,7 @@ const CodexLinks = ({
 }) => {
   const { apiUrl, user } = useContext(AuthContext);
 
-  const {
-    data: bookSections,
-    isLoading,
-    isPending,
-  } = useBookSectionsQuery(apiUrl);
-
-  if (isLoading || isPending) {
-    return <span></span>;
-  }
+  const { data: bookSections } = useBookSectionsQuery(apiUrl);
 
   return (
     <>

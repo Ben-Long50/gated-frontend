@@ -73,7 +73,7 @@ const Vehicles = ({
               {(field) => (
                 <InputField
                   className="w-full"
-                  label="Search vehicles"
+                  label="Search Vehicles"
                   field={field}
                   onChange={() => {
                     searchForm.handleSubmit();

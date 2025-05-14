@@ -99,7 +99,7 @@ const Cybernetics = ({
               {(field) => (
                 <InputField
                   className="w-full"
-                  label="Search cybernetics"
+                  label="Search Cybernetics"
                   field={field}
                   onChange={() => {
                     cybernetics.filterByQuery(field.state.value);
