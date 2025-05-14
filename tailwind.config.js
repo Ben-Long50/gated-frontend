@@ -26,10 +26,12 @@ export default {
       },
       height: {
         '70dvh': '70dvh',
+        '80dvh': '80dvh',
       },
       width: {
         '75vw': '75vw',
       },
+
       maxHeight: {
         '50dvh': '50dvh',
         '75dvh': '75dvh',
@@ -42,6 +44,9 @@ export default {
         '9xl': '96rem',
         '10xl': '104rem',
         '75dvw': '75dvw',
+      },
+      minHeight: {
+        '50dvh': '50dvh',
       },
       minWidth: {
         '1/2': '50%',

@@ -420,12 +420,14 @@ const RollSimulator = ({
         toggleModal={resetDice}
       >
         <ThemeContainer
-          className="max-h-85dvh h-full w-full max-w-4xl"
+          className="min-h-50dvh h-80dvh w-full max-w-3xl"
           chamfer="medium"
           borderColor={accentPrimary}
         >
-          <div className={`flex h-full flex-col justify-between gap-4 p-4`}>
-            <div className="scrollbar-primary-2 grid grid-cols-3 place-items-start overflow-y-auto sm:grid-cols-4">
+          <div
+            className={`flex h-full flex-col justify-between gap-4 p-4 sm:p-8`}
+          >
+            <div className="scrollbar-primary-2 grid grid-cols-3 place-items-start overflow-y-auto">
               {diceArray.map((number: number, index) => {
                 const modifiers = rollForm.getFieldValue('modifiers');
                 const lucky =
