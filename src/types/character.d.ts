@@ -34,6 +34,7 @@ interface Character {
   lastName: string;
   active: boolean;
   playerCharacter: boolean;
+  preferences: CharacterPreferences;
   perks: Perk[];
   characterCart: CharacterCart;
   characterInventory: CharacterInventory;
@@ -44,6 +45,22 @@ interface CharacterStats {
   currentSanity: number;
   injuries: number;
   insanities: number;
+}
+
+interface CharacterPreferences {
+  firstName: boolean;
+  lastName: boolean;
+  age: boolean;
+  height: boolean;
+  weight: boolean;
+  sex: boolean;
+  picture: boolean;
+  level: boolean;
+  profits: boolean;
+  stats: boolean;
+  attributes: boolean;
+  perks: boolean;
+  equipment: boolean;
 }
 
 interface CharacterCart {
@@ -61,10 +78,10 @@ interface CharacterCart {
 interface CharacterInventory {
   id: number;
   characterId: number;
-  weapons: Weapon[];
-  armor: Armor[];
-  cybernetics: Cybernetic[];
-  vehicles: Vehicle[];
+  weapons: WeaponWithKeywords[];
+  armor: ArmorWithKeywords[];
+  cybernetics: CyberneticWithKeywords[];
+  vehicles: VehicleWithWeapons[];
   drones: Drone[];
   items: Item[];
   actions: Action[];

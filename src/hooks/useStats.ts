@@ -16,10 +16,9 @@ const useStats = (
 ) => {
   const tree = useAttributeTree(attributTree);
 
-  const { equippedWeapons, equippedArmor, equippedCybernetics, equippedItems } =
-    useEquipment(inventory);
+  const { weapons, armor, cybernetics, items } = useEquipment(inventory);
 
-  const weaponWeight = equippedWeapons?.reduce(
+  const weaponWeight = weapons?.reduce(
     (sum: number, weapon: WeaponWithKeywords) => {
       if (weapon.stats.weight) {
         return sum + weapon.stats.weight;
@@ -29,23 +28,20 @@ const useStats = (
     0,
   );
 
-  const armorWeight = equippedArmor?.reduce(
-    (sum: number, armor: ArmorWithKeywords) => {
-      if (
-        armor.stats.weight &&
-        armor.stats.currentPower !== null &&
-        armor.stats.currentPower === 0
-      ) {
-        return sum + armor.stats.weight;
-      } else if (armor.stats.weight && !armor.stats.power) {
-        return sum + armor.stats.weight;
-      }
-      return sum;
-    },
-    0,
-  );
+  const armorWeight = armor?.reduce((sum: number, armor: ArmorWithKeywords) => {
+    if (
+      armor.stats.weight &&
+      armor.stats.currentPower !== null &&
+      armor.stats.currentPower === 0
+    ) {
+      return sum + armor.stats.weight;
+    } else if (armor.stats.weight && !armor.stats.power) {
+      return sum + armor.stats.weight;
+    }
+    return sum;
+  }, 0);
 
-  const itemWeight = equippedItems?.reduce((sum: number, item: Item) => {
+  const itemWeight = items?.reduce((sum: number, item: Item) => {
     if (item.stats.currentStacks && item.stats.weight) {
       return sum + item.stats.currentStacks * item.stats.weight;
     } else if (item.stats.currentStacks === 0) {
@@ -56,27 +52,21 @@ const useStats = (
     return sum;
   }, 0);
 
-  const armorValue = equippedArmor?.reduce(
-    (sum: number, armor: ArmorWithKeywords) => {
-      if (armor.stats.armor) {
-        return sum + armor.stats.armor;
-      }
-      return sum;
-    },
-    0,
-  );
+  const armorValue = armor?.reduce((sum: number, armor: ArmorWithKeywords) => {
+    if (armor.stats.armor) {
+      return sum + armor.stats.armor;
+    }
+    return sum;
+  }, 0);
 
-  const wardValue = equippedArmor?.reduce(
-    (sum: number, armor: ArmorWithKeywords) => {
-      if (armor.stats.ward) {
-        return sum + armor.stats.ward;
-      }
-      return sum;
-    },
-    0,
-  );
+  const wardValue = armor?.reduce((sum: number, armor: ArmorWithKeywords) => {
+    if (armor.stats.ward) {
+      return sum + armor.stats.ward;
+    }
+    return sum;
+  }, 0);
 
-  const equippedCyber = equippedCybernetics?.reduce(
+  const equippedCyber = cybernetics?.reduce(
     (sum: number, cybernetic: CyberneticWithKeywords) => {
       if (cybernetic.stats.cyber) {
         return sum + cybernetic.stats.cyber;
@@ -156,7 +146,7 @@ const useStats = (
     }
   };
 
-  equippedCybernetics?.forEach((cybernetic: CyberneticWithKeywords) => {
+  cybernetics?.forEach((cybernetic: CyberneticWithKeywords) => {
     if (!cybernetic.modifiers) return;
 
     cybernetic.modifiers.forEach((modifier: Modifier) => {
@@ -164,7 +154,7 @@ const useStats = (
     });
   });
 
-  equippedItems?.forEach((item: Item) => {
+  items?.forEach((item: Item) => {
     if (!item.modifiers) return;
 
     item.modifiers?.forEach((modifier: Modifier) => {

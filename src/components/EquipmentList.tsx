@@ -1,29 +1,19 @@
-import { WeaponWithKeywords } from 'src/types/weapon';
-import { ArmorWithKeywords } from 'src/types/armor';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import { ReactNode, useContext } from 'react';
-import { Item } from 'src/types/item';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ItemMenu from './ItemMenu';
+import { CharacterInventory } from 'src/types/character';
 
 const EquipmentList = ({
-  weapons,
-  armor,
-  cybernetics,
-  items,
+  equipment,
   active,
   toggleActive,
 }: {
-  weapons: WeaponWithKeywords[];
-  armor: ArmorWithKeywords[];
-  cybernetics: CyberneticWithKeywords[];
-  items: Item[];
+  equipment: CharacterInventory | null;
   active: {
     id: null | number;
     category: null | string;
   };
   toggleActive: (id: null | number, category: null | string) => void;
-
   modalOpen: boolean;
   toggleModal: () => void;
   children?: ReactNode;
@@ -32,14 +22,9 @@ const EquipmentList = ({
 
   return (
     <div className="flex w-full flex-col gap-8">
-      <ItemMenu
-        weapons={weapons}
-        armor={armor}
-        cybernetics={cybernetics}
-        items={items}
-      >
-        {(item, index, { tab }) =>
-          item.equipped === true && (
+      <ItemMenu equipment={equipment}>
+        {(item, index, { tab }) => {
+          return (
             <div
               key={index}
               className="flex flex-col rounded-br-4xl rounded-tl-4xl shadow-md shadow-black"
@@ -84,8 +69,8 @@ const EquipmentList = ({
                 </div>
               </div>
             </div>
-          )
-        }
+          );
+        }}
       </ItemMenu>
     </div>
   );

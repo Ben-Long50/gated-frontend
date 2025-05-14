@@ -13,7 +13,7 @@ export interface Weapon {
   equipped: boolean;
   cyberneticId: number | null;
   vehicleId: number | null;
-  keywords: { keywordId: number; value?: number }[];
+  keywords: { keywordId: Keyword; value?: number }[];
 }
 
 export interface WeaponWithKeywords {

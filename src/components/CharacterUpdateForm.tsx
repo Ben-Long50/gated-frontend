@@ -9,7 +9,6 @@ import { useForm, ValidationError } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
 import SelectField from './SelectField';
 import StatBar from './StatBar';
-import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';
 import Icon from '@mdi/react';
 import {
@@ -34,11 +33,10 @@ import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import useCampaignsQuery from '../hooks/useCampaignsQuery/useCampaignsQuery';
 import InputSelectField from './InputSelectField';
-import ArrowHeader3 from './ArrowHeader3';
-import { AttributeName, SkillName } from 'src/types/attributeTree';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 import PerkLinkField from './form_fields/PerkLinkField';
+import NpcPreferenceField from './form_fields/NpcPreferenceField';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -60,7 +58,7 @@ const CharacterUpdateForm = () => {
     data: character,
     isLoading: characterLoading,
     isPending: characterPending,
-  } = useCharacterQuery(apiUrl, characterId);
+  } = useCharacterQuery(apiUrl, Number(characterId));
 
   const isLoading = characterLoading || campaignsLoading;
   const isPending = characterPending || campaignsPending;
@@ -78,7 +76,7 @@ const CharacterUpdateForm = () => {
 
   const updateCharacter = useUpdateCharacterMutation(
     apiUrl,
-    characterId,
+    Number(characterId),
     setFormMessage,
   );
   const deleteCharacter = useDeleteCharacterMutation(apiUrl, characterId);
@@ -99,6 +97,21 @@ const CharacterUpdateForm = () => {
     defaultValues: {
       playerCharacter: character?.playerCharacter ?? '',
       campaignId: character?.campaign ?? null,
+      preferences: {
+        firstName: character?.preferences?.firstName ?? true,
+        lastName: character?.preferences?.lastName ?? true,
+        age: character?.preferences?.age ?? true,
+        height: character?.preferences?.height ?? true,
+        weight: character?.preferences?.weight ?? true,
+        sex: character?.preferences?.sex ?? true,
+        picture: character?.preferences?.picture ?? true,
+        level: character?.preferences?.level ?? true,
+        profits: character?.preferences?.profits ?? true,
+        stats: character?.preferences?.stats ?? true,
+        attributes: character?.preferences?.attributes ?? true,
+        perks: character?.preferences?.perks ?? true,
+        equipment: character?.preferences?.equipment ?? true,
+      },
       firstName: character?.firstName ?? '',
       lastName: character?.lastName ?? '',
       level: character?.level ?? '',
@@ -120,7 +133,6 @@ const CharacterUpdateForm = () => {
     onSubmit: async ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
       const formData = new FormData();
-
       Object.entries(value).forEach(([key, val]) => {
         if (key === 'perks') {
           const perkIds = val.map((perk: Perk) => perk.id) || [];
@@ -147,12 +159,11 @@ const CharacterUpdateForm = () => {
   }, [attributeTree, characterUpdateForm]);
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // Get the selected file
+    const selectedFile = e.target.files[0];
 
     if (selectedFile) {
       characterUpdateForm.setFieldValue('picture', selectedFile);
 
-      // Create a URL for the selected file to preview
       const fileUrl = URL.createObjectURL(selectedFile);
       setImagePreview(fileUrl);
     }
@@ -231,6 +242,7 @@ const CharacterUpdateForm = () => {
             />
           )}
         </characterUpdateForm.Field>
+        <NpcPreferenceField form={characterUpdateForm} />
         <Divider />
         <ArrowHeader2 title="Character Information" />
         <div className="flex w-full flex-col gap-8 sm:flex-row">

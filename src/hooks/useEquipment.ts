@@ -8,42 +8,44 @@ import { VehicleWithWeapons } from 'src/types/vehicle';
 import { Drone } from 'src/types/drone';
 
 const useEquipment = (inventory: CharacterInventory) => {
-  const equippedWeapons = inventory?.weapons?.filter(
-    (weapon: WeaponWithKeywords) => weapon.equipped === true,
-  );
+  const equippedWeapons =
+    inventory?.weapons?.filter(
+      (weapon: WeaponWithKeywords) => weapon.equipped === true,
+    ) || [];
 
-  const equippedArmor = inventory?.armor?.filter(
-    (armor: ArmorWithKeywords) => armor.equipped === true,
-  );
+  const equippedArmor =
+    inventory?.armor?.filter(
+      (armor: ArmorWithKeywords) => armor.equipped === true,
+    ) || [];
 
-  const equippedCybernetics = inventory?.cybernetics?.filter(
-    (cybernetic: CyberneticWithKeywords) => cybernetic.equipped === true,
-  );
+  const equippedCybernetics =
+    inventory?.cybernetics?.filter(
+      (cybernetic: CyberneticWithKeywords) => cybernetic.equipped === true,
+    ) || [];
 
-  const equippedItems = inventory?.items?.filter(
-    (item: Item) => item.equipped === true,
-  );
+  const equippedItems =
+    inventory?.items?.filter((item: Item) => item.equipped === true) || [];
 
-  const equippedActions = inventory?.actions?.filter(
-    (action: Action) => action.equipped === true,
-  );
+  const equippedActions =
+    inventory?.actions?.filter((action: Action) => action.equipped === true) ||
+    [];
 
-  const equippedVehicles = inventory?.vehicles?.filter(
-    (vehicle: VehicleWithWeapons) => vehicle.equipped === true,
-  );
+  const equippedVehicles =
+    inventory?.vehicles?.filter(
+      (vehicle: VehicleWithWeapons) => vehicle.equipped === true,
+    ) || [];
 
-  const equippedDrones = inventory?.drones?.filter(
-    (drone: Drone) => drone.equipped === true,
-  );
+  const equippedDrones =
+    inventory?.drones?.filter((drone: Drone) => drone.equipped === true) || [];
 
   return {
-    equippedWeapons,
-    equippedArmor,
-    equippedCybernetics,
-    equippedItems,
-    equippedActions,
-    equippedVehicles,
-    equippedDrones,
+    weapons: equippedWeapons,
+    armor: equippedArmor,
+    cybernetics: equippedCybernetics,
+    items: equippedItems,
+    actions: equippedActions,
+    vehicles: equippedVehicles,
+    drones: equippedDrones,
   };
 };
 

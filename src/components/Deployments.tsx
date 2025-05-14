@@ -13,13 +13,13 @@ import { Drone } from 'src/types/drone';
 import { VehicleWithWeapons } from 'src/types/vehicle';
 import WeaponCard from './WeaponCard';
 import { WeaponWithKeywords } from 'src/types/weapon';
-import useEquipment from 'src/hooks/useEquipment';
 import ThemeContainer from './ThemeContainer';
 import ItemPicture from './ItemPicture';
 import StatBars from './StatBars';
 import { VehicleControls } from './VehicleCard';
 import { DroneControls } from './DroneCard';
 import ArrowHeader1 from './ArrowHeader1';
+import useCharacter from 'src/hooks/useCharacter';
 
 const Deployments = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -51,27 +51,26 @@ const Deployments = () => {
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, Number(characterId));
 
-  const { equippedVehicles, equippedDrones } = useEquipment(
-    character?.characterInventory,
-  );
+  const filteredCharacter = useCharacter(character);
 
   const activeItem = useMemo(() => {
     switch (active?.category) {
       case 'vehicle':
         return (
-          equippedVehicles?.filter(
+          character?.characterInventory?.vehicles.filter(
             (vehicle: VehicleWithWeapons) => vehicle.id === active.id,
           )[0] || null
         );
       case 'drone':
         return (
-          equippedDrones?.filter((drone: Drone) => drone.id === active.id)[0] ||
-          null
+          character?.characterInventory?.drones.filter(
+            (drone: Drone) => drone.id === active.id,
+          )[0] || null
         );
       default:
         return null;
     }
-  }, [active, equippedVehicles, equippedDrones]);
+  }, [active, filteredCharacter]);
 
   const cardRef = useRef(null);
   const [cardHeight, setCardHeight] = useState<number | null>(null);
@@ -89,8 +88,6 @@ const Deployments = () => {
 
   const isLoading = characterLoading;
   const isPending = characterPending;
-
-  const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
 
   if (isLoading || isPending) return <Loading />;
 
@@ -130,7 +127,7 @@ const Deployments = () => {
               )}
               <div
                 ref={cardRef}
-                className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
+                className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} col-start-2 grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
               >
                 <StatBars
                   cardWidth={cardRef.current?.offsetWidth}
@@ -153,7 +150,7 @@ const Deployments = () => {
           {activeItem !== null && activeItem.weapons?.length > 0 && (
             <div className="flex flex-col gap-8">
               <ArrowHeader2 title="Weapons" />
-              <div className="grid grid-cols-2 gap-8">
+              <div className="grid gap-8 xl:grid-cols-2">
                 {activeItem.weapons?.map((weapon: WeaponWithKeywords) => (
                   <WeaponCard
                     key={weapon.id}
@@ -174,16 +171,14 @@ const Deployments = () => {
             </Link>
             <InventoryModal
               character={character}
-              vehicles={character.characterInventory?.vehicles}
-              drones={character.characterInventory?.drones}
+              equipment={filteredCharacter.equipment}
               active={active}
               toggleActive={toggleActive}
               modalOpen={modalOpen}
             />
           </div>
           <DeploymentsList
-            vehicles={equippedVehicles}
-            drones={equippedDrones}
+            equipment={filteredCharacter.equipment}
             active={active}
             toggleActive={toggleActive}
           />

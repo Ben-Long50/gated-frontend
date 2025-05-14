@@ -70,7 +70,7 @@ const SelectField = ({
         </select>
         <label
           htmlFor={field.name}
-          className={` ${field.state.meta.errors?.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-30 transform cursor-text transition-all`}
+          className={` ${field.state.meta.errors?.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-10 transform cursor-text transition-all`}
         >
           {label}
         </label>

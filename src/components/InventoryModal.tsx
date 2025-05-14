@@ -2,10 +2,6 @@ import { useContext } from 'react';
 import ArrowHeader2 from './ArrowHeader2';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { WeaponWithKeywords } from 'src/types/weapon';
-import { ArmorWithKeywords } from 'src/types/armor';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { Item } from 'src/types/item';
 import Icon from '@mdi/react';
 import { mdiCheckCircle } from '@mdi/js';
 import Modal from './Modal';
@@ -14,28 +10,14 @@ import useToggleEquipmentMutation from '../hooks/useEquipmentToggleMutation/useE
 import { AuthContext } from '../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
 import { Character } from 'src/types/character';
-import { VehicleWithWeapons } from 'src/types/vehicle';
-import { Drone } from 'src/types/drone';
 
 const InventoryModal = ({
   character,
-  weapons,
-  armor,
-  cybernetics,
-  items,
-  vehicles,
-  drones,
   active,
   toggleActive,
   modalOpen,
 }: {
   character: Character;
-  weapons?: WeaponWithKeywords[];
-  armor?: ArmorWithKeywords[];
-  cybernetics?: CyberneticWithKeywords[];
-  items?: Item[];
-  vehicles?: VehicleWithWeapons[];
-  drones?: Drone[];
   active: {
     id: null | number;
     category: null | string;
@@ -70,14 +52,7 @@ const InventoryModal = ({
             </p>
           </div>
         </ThemeContainer>
-        <ItemMenu
-          weapons={weapons}
-          armor={armor}
-          cybernetics={cybernetics}
-          items={items}
-          vehicles={vehicles}
-          drones={drones}
-        >
+        <ItemMenu equipment={character.characterInventory}>
           {(item, index, { tab }) => (
             <ThemeContainer
               key={index}

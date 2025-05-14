@@ -2,10 +2,6 @@ import { ReactNode, useContext, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import BtnAuth from './buttons/BtnAuth';
-import { WeaponWithKeywords } from 'src/types/weapon';
-import { ArmorWithKeywords } from 'src/types/armor';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { Item } from 'src/types/item';
 import Divider from './Divider';
 import { LayoutContext } from '../contexts/LayoutContext';
 import WeaponIcon from './icons/WeaponIcon';
@@ -13,26 +9,15 @@ import ArmorIcon from './icons/ArmorIcon';
 import CyberIcon from './icons/CyberIcon';
 import InventoryIcon from './icons/InventoryIcon';
 import { useLocation } from 'react-router-dom';
-import { VehicleWithWeapons } from 'src/types/vehicle';
-import { Drone } from 'src/types/drone';
 import VehicleIcon from './icons/VehicleIcon';
 import DroneIcon from './icons/DroneIcon';
+import { CharacterInventory } from 'src/types/character';
 
 const ItemMenu = ({
-  weapons,
-  armor,
-  cybernetics,
-  items,
-  vehicles,
-  drones,
+  equipment,
   children,
 }: {
-  weapons?: WeaponWithKeywords[];
-  armor?: ArmorWithKeywords[];
-  cybernetics?: CyberneticWithKeywords[];
-  items?: Item[];
-  vehicles?: VehicleWithWeapons[];
-  drones?: Drone[];
+  equipment: CharacterInventory | null;
   children: (item: any, index: number, props: { tab: string }) => ReactNode;
 }) => {
   const { mobile } = useContext(LayoutContext);
@@ -55,22 +40,22 @@ const ItemMenu = ({
 
   switch (tab) {
     case 'weapon':
-      itemList = weapons;
+      itemList = equipment?.weapons;
       break;
     case 'armor':
-      itemList = armor;
+      itemList = equipment?.armor;
       break;
     case 'cybernetic':
-      itemList = cybernetics;
+      itemList = equipment?.cybernetics;
       break;
     case 'item':
-      itemList = items;
+      itemList = equipment?.items;
       break;
     case 'vehicle':
-      itemList = vehicles;
+      itemList = equipment?.vehicles;
       break;
     case 'drone':
-      itemList = drones;
+      itemList = equipment?.drones;
       break;
     default:
       itemList = [];
@@ -151,7 +136,11 @@ const ItemMenu = ({
         <div
           className={`${listLayoutClasses} scrollbar-secondary-2 gap-2 sm:gap-4`}
         >
-          {itemList?.map((item, index) => children(item, index, { tab }))}
+          {itemList ? (
+            itemList.map((item, index) => children(item, index, { tab }))
+          ) : (
+            <h2 className="pl-4">???</h2>
+          )}
         </div>
       </div>
     </ThemeContainer>

@@ -8,7 +8,7 @@ const Modal = ({
   children,
 }: {
   modalOpen: boolean;
-  toggleModal: () => void;
+  toggleModal?: () => void;
   children: ReactNode;
 }) => {
   const navigate = useNavigate();

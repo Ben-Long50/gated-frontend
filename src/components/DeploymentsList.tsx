@@ -1,17 +1,14 @@
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ItemMenu from './ItemMenu';
-import { VehicleWithWeapons } from 'src/types/vehicle';
-import { Drone } from 'src/types/drone';
+import { CharacterInventory } from 'src/types/character';
 
 const DeploymentsList = ({
-  vehicles,
-  drones,
+  equipment,
   active,
   toggleActive,
 }: {
-  vehicles: VehicleWithWeapons[];
-  drones: Drone[];
+  equipment: CharacterInventory | null;
   active: {
     id: null | number;
     category: null | string;
@@ -22,7 +19,7 @@ const DeploymentsList = ({
 
   return (
     <div className="flex w-full flex-col gap-8">
-      <ItemMenu vehicles={vehicles} drones={drones}>
+      <ItemMenu equipment={equipment}>
         {(item, index, { tab }) =>
           item.equipped === true && (
             <div

@@ -16,8 +16,6 @@ import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
-import Icon from '@mdi/react';
-import { mdiCircle, mdiCircleOutline, mdiClose } from '@mdi/js';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 import EquipmentList from './EquipmentList';
@@ -27,7 +25,6 @@ import DieIcon from './icons/DieIcon';
 import WeaponCard, { WeaponCardMobile } from './WeaponCard';
 import ArmorCard, { ArmorCardMobile } from './ArmorCard';
 import CyberneticCard, { CyberneticCardMobile } from './CyberneticCard';
-import useEquipment from '../hooks/useEquipment';
 import { Item } from 'src/types/item';
 import useItems from '../hooks/useItems';
 import MiscItemCard, { MiscItemCardMobile } from './MiscItemCard';
@@ -38,6 +35,7 @@ import BtnRect from './buttons/BtnRect';
 import InventoryModal from './InventoryModal';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import StatBars from './StatBars';
+import useCharacter from 'src/hooks/useCharacter';
 
 const Equipment = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -77,6 +75,8 @@ const Equipment = () => {
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, Number(characterId));
 
+  const filteredCharacter = useCharacter(character);
+
   const { filteredWeapons: weapons } = useWeapons({
     itemList: character?.characterInventory?.weapons,
     excludedKeywords: ['Vehicle Weapon', 'CyberWeapon'],
@@ -92,14 +92,6 @@ const Equipment = () => {
     itemList: character?.characterInventory?.items,
   });
 
-  const {
-    equippedWeapons,
-    equippedArmor,
-    equippedCybernetics,
-    equippedItems,
-    equippedActions,
-  } = useEquipment(character?.characterInventory);
-
   const { stats, rollBonuses } = useStats(
     character?.characterInventory,
     character?.attributes,
@@ -113,39 +105,35 @@ const Equipment = () => {
     switch (active?.category) {
       case 'weapon':
         return (
-          equippedWeapons?.filter(
+          filteredCharacter.equipment?.weapons.filter(
             (weapon: WeaponWithKeywords) => weapon.id === active.id,
           )[0] || null
         );
       case 'armor':
         return (
-          equippedArmor?.filter(
+          filteredCharacter.equipment?.armor.filter(
             (armor: ArmorWithKeywords) => armor.id === active.id,
           )[0] || null
         );
       case 'cybernetic':
         return (
-          equippedCybernetics?.filter(
+          filteredCharacter.equipment?.cybernetics.filter(
             (cybernetic: CyberneticWithKeywords) => cybernetic.id === active.id,
           )[0] || null
         );
       case 'item':
         return (
-          equippedItems?.filter((item: Item) => item.id === active.id)[0] ||
-          null
+          filteredCharacter.equipment?.items.filter(
+            (item: Item) => item.id === active.id,
+          )[0] || null
         );
       default:
         break;
     }
-  }, [
-    active,
-    equippedWeapons,
-    equippedArmor,
-    equippedCybernetics,
-    equippedItems,
-  ]);
+  }, [active, filteredCharacter]);
 
-  const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
+  const namePrefix =
+    filteredCharacter.firstName + ' ' + filteredCharacter.lastName + "'s";
 
   if (isLoading || isPending) return <Loading />;
 
@@ -155,7 +143,7 @@ const Equipment = () => {
     <div className="relative flex w-full max-w-9xl flex-col items-center gap-8">
       <h1 className="text-center">{namePrefix + ' ' + 'Equipment'}</h1>
       <div className="flex w-full flex-col justify-between gap-8 lg:flex-row">
-        {character.picture.imageUrl && (
+        {filteredCharacter.picture.imageUrl && (
           <ThemeContainer
             className="size mx-auto mb-auto aspect-square w-full max-w-60"
             chamfer="medium"
@@ -164,7 +152,7 @@ const Equipment = () => {
           >
             <img
               className="clip-6"
-              src={character.picture.imageUrl}
+              src={filteredCharacter.picture.imageUrl}
               alt="Preview"
             />
           </ThemeContainer>
@@ -176,13 +164,14 @@ const Equipment = () => {
           <StatBars
             cardWidth={cardRef.current?.offsetWidth}
             stats={{
-              ...character.stats,
-              maxCyber: stats.maxCyber,
-              cyber: stats.cyber,
-              weight: stats.weight,
-              maxWeight: stats.maxWeight,
-              maxHealth: stats.maxHealth,
-              maxSanity: stats.maxSanity,
+              maxHealth: filteredCharacter.stats.maxHealth,
+              maxSanity: filteredCharacter.stats.maxSanity,
+              currentHealth: filteredCharacter.stats.currentHealth,
+              currentSanity: filteredCharacter.stats.currentSanity,
+              maxCyber: filteredCharacter.stats.maxCyber,
+              cyber: filteredCharacter.stats.cyber,
+              weight: filteredCharacter.stats.weight,
+              maxWeight: filteredCharacter.stats.maxWeight,
             }}
           />
         </div>
@@ -258,33 +247,30 @@ const Equipment = () => {
             ))}
           <div className="flex items-center justify-between">
             <ArrowHeader2 title="Equipped Items" />
-            <Link to="inventory">
-              <BtnRect ariaLabel="Open inventory" type="button">
-                Open Inventory
-              </BtnRect>
-            </Link>
-            <InventoryModal
-              character={character}
-              weapons={weapons}
-              armor={armor}
-              cybernetics={cybernetics}
-              items={items}
-              active={active}
-              toggleActive={toggleActive}
-              modalOpen={modalOpen}
-            />
+            {character.userId === user?.id && (
+              <>
+                <Link to="inventory">
+                  <BtnRect ariaLabel="Open inventory" type="button">
+                    Open Inventory
+                  </BtnRect>
+                </Link>
+                <InventoryModal
+                  character={character}
+                  equipment={filteredCharacter.equipment}
+                  active={active}
+                  toggleActive={toggleActive}
+                  modalOpen={modalOpen}
+                />
+              </>
+            )}
           </div>
           <EquipmentList
-            weapons={equippedWeapons}
-            armor={equippedArmor}
-            cybernetics={equippedCybernetics}
-            items={equippedItems}
+            equipment={filteredCharacter.equipment}
             active={active}
             toggleActive={toggleActive}
             modalOpen={modalOpen}
           />
         </div>
-
         <ThemeContainer
           className="mb-auto w-full"
           chamfer="medium"
@@ -300,7 +286,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                {stats.speed}
+                {filteredCharacter.stats.speed}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -311,7 +297,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                {stats.evasion}
+                {filteredCharacter.stats.evasion}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -322,7 +308,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                {stats.armor}
+                {filteredCharacter.stats.armor}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -333,74 +319,30 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                {stats.ward}
+                {filteredCharacter.stats.ward}
               </p>
             </div>
-            <div className="flex justify-between gap-2 sm:flex-col sm:items-start">
+            <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
                 <InjuryIcon className="text-secondary size-8" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Injuries
                 </h3>
               </div>
-              <div className="flex flex-wrap items-center gap-1 sm:pl-12">
-                {Array.from({ length: stats.permanentInjuries }).map(
-                  (_, index) => (
-                    <div className="relative" key={index}>
-                      <Icon
-                        key={index}
-                        className="text-gray-400"
-                        path={
-                          index < character.stats.injuries
-                            ? mdiCircleOutline
-                            : mdiCircle
-                        }
-                        size={0.75}
-                      />
-                      {index < character.stats.injuries && (
-                        <Icon
-                          path={mdiClose}
-                          className="absolute right-1/2 top-1/2 -translate-y-1/2 translate-x-1/2 text-red-600"
-                          size={1}
-                        />
-                      )}
-                    </div>
-                  ),
-                )}
-              </div>
+              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                {filteredCharacter.stats.injuries}
+              </p>
             </div>
-            <div className="flex justify-between gap-2 sm:flex-col sm:items-start">
+            <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
                 <InsanityIcon className="text-secondary size-8" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Insanities
                 </h3>
               </div>
-              <div className="flex flex-wrap items-center gap-1 sm:pl-12">
-                {Array.from({ length: stats.permanentInsanities }).map(
-                  (_, index) => (
-                    <div className="relative" key={index}>
-                      <Icon
-                        key={index}
-                        className="text-gray-400"
-                        path={
-                          index < character.stats.insanities
-                            ? mdiCircleOutline
-                            : mdiCircle
-                        }
-                        size={0.75}
-                      />
-                      {index < character.stats.insanities && (
-                        <Icon
-                          path={mdiClose}
-                          className="absolute right-1/2 top-1/2 -translate-y-1/2 translate-x-1/2 text-red-600"
-                          size={1}
-                        />
-                      )}
-                    </div>
-                  ),
-                )}
-              </div>
+              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                {filteredCharacter.stats.insanities}
+              </p>
             </div>
             {Object.keys(rollBonuses).length > 0 && (
               <>
@@ -428,15 +370,18 @@ const Equipment = () => {
                 )}
               </>
             )}
-            {equippedActions?.length > 0 && (
-              <>
-                <Divider />
-                <ArrowHeader3 title="Unique Actions" />
-                {equippedActions.map((action: Action) => (
-                  <ActionCard key={action?.id} action={action} />
-                ))}
-              </>
-            )}
+            {filteredCharacter.equipment?.actions &&
+              filteredCharacter.equipment?.actions.length > 0 && (
+                <>
+                  <Divider />
+                  <ArrowHeader3 title="Unique Actions" />
+                  {filteredCharacter.equipment?.actions.map(
+                    (action: Action) => (
+                      <ActionCard key={action?.id} action={action} />
+                    ),
+                  )}
+                </>
+              )}
           </div>
         </ThemeContainer>
       </div>

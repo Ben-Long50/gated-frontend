@@ -4,7 +4,7 @@ import updateCharacter from './updateCharacter';
 
 const useUpdateCharacterMutation = (
   apiUrl: string,
-  characterId: string,
+  characterId: number,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
@@ -20,8 +20,7 @@ const useUpdateCharacterMutation = (
         exact: false,
       });
       queryClient.invalidateQueries({
-        queryKey: ['character'],
-        exact: false,
+        queryKey: ['character', characterId],
       });
       return queryClient.invalidateQueries({
         queryKey: ['characters'],

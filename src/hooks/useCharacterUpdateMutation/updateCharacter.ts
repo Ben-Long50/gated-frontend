@@ -3,7 +3,7 @@ import handleResponse from '../handleResponse';
 const updateCharacter = async (
   formData: FormData,
   apiUrl: string,
-  characterId?: string,
+  characterId: number,
 ) => {
   try {
     const response = await fetch(`${apiUrl}/characters/${characterId}`, {

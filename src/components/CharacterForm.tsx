@@ -32,6 +32,7 @@ import InputFieldRadio from './InputFieldRadio';
 import InputSelectField from './InputSelectField';
 import PerkLinkField from './form_fields/PerkLinkField';
 import { Perk } from 'src/types/perk';
+import NpcPreferenceField from './form_fields/NpcPreferenceField';
 
 const CharacterForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -55,6 +56,21 @@ const CharacterForm = () => {
     defaultValues: {
       playerCharacter: '' as string | boolean,
       campaignId: null,
+      preferences: {
+        firstName: true,
+        lastName: true,
+        age: true,
+        height: true,
+        weight: true,
+        sex: true,
+        picture: true,
+        level: true,
+        profits: true,
+        stats: true,
+        attributes: true,
+        perks: true,
+        equipment: true,
+      },
       firstName: '',
       lastName: '',
       picture: '',
@@ -191,6 +207,7 @@ const CharacterForm = () => {
             />
           )}
         </characterForm.Field>
+        <NpcPreferenceField form={characterForm} />
         <Divider />
         <ArrowHeader2 title="Character Information" />
         <div className="flex w-full flex-col gap-8 sm:flex-row">
