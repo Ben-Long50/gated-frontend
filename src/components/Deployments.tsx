@@ -76,7 +76,7 @@ const Deployments = () => {
     return (
       character?.characterInventory.weapons.filter(
         (weapon: WeaponWithKeywords) =>
-          activeItem?.weapons.some(
+          activeItem?.weapons?.some(
             (item: WeaponWithKeywords) => item.id === weapon.id,
           ),
       ) || []

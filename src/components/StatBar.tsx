@@ -90,7 +90,9 @@ const StatBar = ({
                   className="text-secondary hover:text-accent grid h-6 min-w-6 place-content-center"
                   onClick={mutation ? () => mutation(1) : undefined}
                 >
-                  <p className="!text-inherit">{reserve ? reserve : total}</p>
+                  <p className="!text-inherit">
+                    {reserve !== undefined ? reserve : total}
+                  </p>
                 </div>
               </>
             )}

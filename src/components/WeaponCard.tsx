@@ -61,7 +61,7 @@ const WeaponControls = ({
           title="Salvo"
           icon={<SalvoIcon className="size-8 text-inherit" />}
           mutation={
-            stats.currentAmmoCount > stats.salvo ? editCurrentAmmo : null
+            stats.currentAmmoCount >= stats.salvo ? editCurrentAmmo : null
           }
           value={-stats.salvo}
         />

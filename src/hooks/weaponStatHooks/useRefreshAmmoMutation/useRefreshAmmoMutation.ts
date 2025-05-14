@@ -51,21 +51,6 @@ const useRefreshAmmoMutation = (
                   }
                 : item,
             ),
-            vehicles: prev.characterInventory.vehicles.map((vehicle) => ({
-              ...vehicle,
-              weapons: vehicle.weapons.map((item: WeaponWithKeywords) =>
-                item.id === weaponId
-                  ? {
-                      ...item,
-                      stats: {
-                        ...item.stats,
-                        currentAmmoCount: item.stats.magCapacity,
-                        currentMagCount: item.stats.magCount - 1,
-                      },
-                    }
-                  : item,
-              ),
-            })),
           },
         }),
       );
