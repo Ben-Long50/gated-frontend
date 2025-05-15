@@ -50,20 +50,24 @@ const StatBar = ({
       {title && (small ? null : <h4>{title}</h4>)}
       {children}
       <div
-        className={`${small ? 'col-span-3 gap-2' : 'col-span-2 gap-4'} flex w-full items-center justify-between`}
+        className={`${small ? 'col-span-3 gap-2' : 'col-span-2 gap-4'} grid w-full grid-cols-[1fr_auto] items-center justify-between`}
       >
-        <div className={`flex w-full items-center gap-0.5 justify-self-start`}>
+        <div className={`flex w-full items-center rounded`} style={{}}>
           {Array.from({
             length: arrayLength,
           }).map((_, index) => (
             <div
               key={index}
-              className={`${index === 0 && 'rounded-l-sm'} ${index === arrayLength - 1 && 'rounded-r-sm'} ${total && index >= total && 'ring-[3px] ring-inset ring-red-600'} h-3.5 w-full max-w-8`}
+              className={`${index === 0 && 'rounded-l-sm'} ${index === arrayLength - 1 && 'rounded-r-sm'} ${total && index >= total && 'ring-[3px] ring-inset ring-red-600'} h-4 w-full min-w-[1px] max-w-8 grow border-b-[1px] border-l-[0.5px] border-r-[0.5px] border-t-[1px] border-black`}
               style={{
                 backgroundImage:
                   index < current
                     ? `linear-gradient(to bottom, rgb(160, 160, 160), ${color}, rgb(50, 50, 50)`
                     : 'none',
+                // boxShadow:
+                //   arrayLength > 0 && index < current
+                //     ? `0 -3px 4px -1px ${color}, 0 2px 4px -1px ${color}`
+                //     : 'none',
                 backgroundColor: index < current ? undefined : 'gray',
               }}
             />
@@ -71,7 +75,7 @@ const StatBar = ({
         </div>
         {mode !== 'edit' && (
           <div
-            className={`${small ? 'gap-1' : 'gap-2'} text-tertiary flex items-center justify-self-end whitespace-nowrap text-xl`}
+            className={`${small ? 'gap-1' : 'gap-2'} text-tertiary flex items-center whitespace-nowrap text-xl`}
           >
             <div
               className="text-secondary hover:text-accent grid h-6 min-w-6 place-content-center"
