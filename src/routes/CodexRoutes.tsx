@@ -33,6 +33,7 @@ const CodexRoutes = () => {
   return (
     <Route path="codex">
       <Route path="search" element={<CodexSearch />} />
+      <Route path="search/:category/:itemId" element={<ItemPageWrapper />} />
       <Route index element={<PatchNotes />} />
       <Route path="patchNotes">
         <Route path="create" element={<PatchNoteForm />} />

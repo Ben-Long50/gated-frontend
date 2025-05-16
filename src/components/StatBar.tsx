@@ -78,7 +78,7 @@ const StatBar = ({
             className={`${small ? 'gap-1' : 'gap-2'} text-tertiary flex items-center whitespace-nowrap text-xl`}
           >
             <div
-              className="text-secondary hover:text-accent grid h-6 min-w-6 place-content-center"
+              className={`${mutation && 'hover:text-accent cursor-pointer'} text-secondary grid h-6 min-w-6 place-content-center`}
               onClick={mutation ? () => mutation(-1) : undefined}
             >
               <p
@@ -91,7 +91,7 @@ const StatBar = ({
               <>
                 <p>/</p>
                 <div
-                  className="text-secondary hover:text-accent grid h-6 min-w-6 place-content-center"
+                  className={`${mutation && 'hover:text-accent cursor-pointer'} text-secondary grid h-6 min-w-6 place-content-center`}
                   onClick={mutation ? () => mutation(1) : undefined}
                 >
                   <p className="!text-inherit">

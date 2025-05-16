@@ -13,6 +13,7 @@ import { mdiSync } from '@mdi/js';
 import { ItemObject } from 'src/types/global';
 import { Keyword } from 'src/types/keyword';
 import InputFieldBasic from './InputFieldBasic';
+import { useLocation } from 'react-router-dom';
 
 const Keywords = ({
   title,
@@ -34,7 +35,9 @@ const Keywords = ({
     | 'networked';
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const mode = forcedMode;
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = forcedMode || parts[parts.length - 2];
 
   const keywords = useKeywords(keywordType || undefined);
 

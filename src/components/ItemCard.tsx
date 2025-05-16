@@ -66,7 +66,9 @@ const ItemCard = ({
         to={
           mode === 'form'
             ? ''
-            : mode === 'equipment' || mode === 'deployments'
+            : mode === 'equipment' ||
+                mode === 'deployments' ||
+                mode === 'search'
               ? `${category}/${item?.id}`
               : `${item?.id}`
         }

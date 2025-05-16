@@ -138,7 +138,11 @@ const Perks = ({
         className="w-full"
         borderColor={accentPrimary}
       >
-        <PerkList perkTree={perkTree} mode={forcedMode} field={field} />
+        <PerkList
+          perkTree={perks.filteredPerkTree}
+          mode={forcedMode}
+          field={field}
+        />
       </ThemeContainer>
     </div>
   );

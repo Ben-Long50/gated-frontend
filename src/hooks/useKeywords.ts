@@ -35,6 +35,7 @@ const useKeywords = (initialCategory?: string) => {
   };
 
   return {
+    keywords,
     filteredKeywords,
     filterByQuery,
     filterByCategory,

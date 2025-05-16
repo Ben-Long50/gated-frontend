@@ -103,7 +103,7 @@ const VehicleCard = ({
 }: {
   vehicle: VehicleWithWeapons;
   mode: string;
-  ownerId: number;
+  ownerId?: number;
 }) => {
   const { user } = useContext(AuthContext);
   return (
@@ -127,7 +127,7 @@ export const VehicleCardMobile = ({
 }: {
   vehicle: VehicleWithWeapons;
   mode: string;
-  ownerId: number;
+  ownerId?: number;
 }) => {
   const { user } = useContext(AuthContext);
   return (

@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import RootPortal from '../layouts/RootPortal';
 import { ReactNode } from 'react';
 
@@ -11,28 +10,12 @@ const Modal = ({
   toggleModal?: () => void;
   children: ReactNode;
 }) => {
-  const navigate = useNavigate();
-
   if (!modalOpen) return;
 
   return (
-    <>
-      <div
-        className={`fixed inset-0 z-20 flex items-center justify-center px-2`}
-        onClick={() => {
-          if (modalOpen) {
-            if (toggleModal) {
-              toggleModal();
-            } else {
-              navigate(-1);
-            }
-          }
-        }}
-      >
-        {children}
-      </div>
-      <RootPortal modalOpen={modalOpen} toggleModal={toggleModal} />
-    </>
+    <RootPortal modalOpen={modalOpen} toggleModal={toggleModal}>
+      {children}
+    </RootPortal>
   );
 };
 

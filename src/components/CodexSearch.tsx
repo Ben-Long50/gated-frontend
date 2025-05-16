@@ -1,8 +1,7 @@
 import { useForm } from '@tanstack/react-form';
 import ThemeContainer from './ThemeContainer';
-import { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { useContext, useMemo, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
-import SelectField from './SelectField';
 import InputField from './InputField';
 import useWeapons from '../hooks/useWeapons';
 import WeaponCard, { WeaponCardMobile } from './WeaponCard';
@@ -36,6 +35,9 @@ import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
+import DroneCard, { DroneCardMobile } from './DroneCard';
+import useDrones from 'src/hooks/useDrones';
+import { Drone } from 'src/types/drone';
 
 const CodexSearch = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -76,6 +78,12 @@ const CodexSearch = () => {
     isLoading: vehiclesLoading,
     isPending: vehiclesPending,
   } = useVehicles();
+
+  const {
+    filteredDrones: drones,
+    isLoading: dronesLoading,
+    isPending: dronesPending,
+  } = useDrones();
 
   const {
     filteredMods: modifications,
@@ -129,6 +137,10 @@ const CodexSearch = () => {
         type: 'vehicle',
         item: vehicle,
       })),
+      ...drones.map((drone: Drone) => ({
+        type: 'drone',
+        item: drone,
+      })),
       ...modifications.map((mod: Modification) => ({
         type: 'modification',
         item: mod,
@@ -169,6 +181,7 @@ const CodexSearch = () => {
     armor,
     cybernetics,
     vehicles,
+    drones,
     modifications,
     keywords,
     perkArray,
@@ -179,7 +192,7 @@ const CodexSearch = () => {
     category,
   ]);
 
-  const keywordList = [weaponKeywords, armorKeywords].flat();
+  const keywordList = keywords.map((keyword) => keyword.name);
 
   const isLoading =
     weaponsLoading ||
@@ -187,6 +200,7 @@ const CodexSearch = () => {
     cyberneticsLoading ||
     keywordsLoading ||
     vehiclesLoading ||
+    dronesLoading ||
     modificationsLoading ||
     perksLoading ||
     actionsLoading ||
@@ -197,6 +211,7 @@ const CodexSearch = () => {
     cyberneticsPending ||
     keywordsPending ||
     vehiclesPending ||
+    dronesPending ||
     modificationsPending ||
     perksPending ||
     actionsPending ||
@@ -356,13 +371,13 @@ const CodexSearch = () => {
               <WeaponCard
                 key={item.item.name + item.item.id}
                 weapon={item.item}
-                mode="codex"
+                mode="search"
               />
             ) : (
               <WeaponCardMobile
                 key={item.item.name + item.item.id}
                 weapon={item.item}
-                mode="codex"
+                mode="search"
               />
             )
           ) : item.type === 'armor' ? (
@@ -370,13 +385,13 @@ const CodexSearch = () => {
               <ArmorCard
                 key={item.item.name + item.item.id}
                 armor={item.item}
-                mode={'codex'}
+                mode={'search'}
               />
             ) : (
               <ArmorCardMobile
                 key={item.item.name + item.item.id}
                 armor={item.item}
-                mode={'codex'}
+                mode={'search'}
               />
             )
           ) : item.type === 'cybernetic' ? (
@@ -384,28 +399,42 @@ const CodexSearch = () => {
               <CyberneticCard
                 key={item.item.name + item.item.id}
                 cybernetic={item.item}
-                mode="codex"
+                mode="search"
               />
             ) : (
               <CyberneticCardMobile
                 key={item.item.name + item.item.id}
                 cybernetic={item.item}
-                mode="codex"
+                mode="search"
               />
             )
-          ) : (
-            item.type === 'vehicle' &&
-            (cardType === 'large' ? (
+          ) : item.type === 'vehicle' ? (
+            cardType === 'large' ? (
               <VehicleCard
                 key={item.item.name + item.item.id}
                 vehicle={item.item}
-                mode="codex"
+                mode="search"
               />
             ) : (
               <VehicleCardMobile
                 key={item.item.name + item.item.id}
                 vehicle={item.item}
-                mode="codex"
+                mode="search"
+              />
+            )
+          ) : (
+            item.type === 'drone' &&
+            (cardType === 'large' ? (
+              <DroneCard
+                key={item.item.name + item.item.id}
+                drone={item.item}
+                mode="search"
+              />
+            ) : (
+              <DroneCardMobile
+                key={item.item.name + item.item.id}
+                drone={item.item}
+                mode="search"
               />
             ))
           );

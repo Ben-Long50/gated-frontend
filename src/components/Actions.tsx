@@ -12,6 +12,7 @@ import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
 import { ItemObject } from 'src/types/global';
 import { Action } from 'src/types/action';
+import { useLocation } from 'react-router-dom';
 
 const Actions = ({
   title,
@@ -25,7 +26,9 @@ const Actions = ({
   toggleFormLink?: (item: ItemObject) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const mode = forcedMode;
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = forcedMode || parts[parts.length - 2];
 
   const actions = useActions();
 
