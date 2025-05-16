@@ -24,11 +24,15 @@ import useCharacter from 'src/hooks/useCharacter';
 const Deployments = () => {
   const { apiUrl, user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
-  const { mobile } = useContext(LayoutContext);
   const { characterId } = useParams();
-  const modalOpen = location.pathname.endsWith('inventory');
   const path = location.pathname.split('/');
   const mode = path[path.length - 1];
+
+  const [inventoryOpen, setInventoryOpen] = useState(false);
+
+  const toggleInventoryOpen = () => {
+    setInventoryOpen((prev) => !prev);
+  };
 
   const [active, setActive] = useState<{
     id: null | number;
@@ -175,18 +179,25 @@ const Deployments = () => {
           )}
           <div className="flex items-center justify-between">
             <ArrowHeader2 title="Deployed Items" />
-            <Link to="inventory">
-              <BtnRect ariaLabel="Open inventory" type="button">
-                Open Garage
-              </BtnRect>
-            </Link>
-            <InventoryModal
-              character={character}
-              equipment={filteredCharacter.equipment}
-              active={active}
-              toggleActive={toggleActive}
-              modalOpen={modalOpen}
-            />
+            {character.userId === user?.id && (
+              <>
+                <BtnRect
+                  ariaLabel="Open inventory"
+                  type="button"
+                  onClick={() => toggleInventoryOpen()}
+                >
+                  Open Garage
+                </BtnRect>
+                <InventoryModal
+                  character={character}
+                  equipment={filteredCharacter.equipment}
+                  active={active}
+                  toggleModal={toggleInventoryOpen}
+                  toggleActive={toggleActive}
+                  modalOpen={inventoryOpen}
+                />
+              </>
+            )}
           </div>
           <DeploymentsList
             equipment={filteredCharacter.equipment}

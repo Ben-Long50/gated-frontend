@@ -15,17 +15,21 @@ import { CharacterInventory } from 'src/types/character';
 
 const ItemMenu = ({
   equipment,
+  forcedMode,
   children,
 }: {
   equipment: CharacterInventory | null;
+  forcedMode?: string;
   children: (item: any, index: number, props: { tab: string }) => ReactNode;
 }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
   const location = useLocation();
   const parts = location.pathname.split('/');
-  const mode = parts[parts.length - 1];
-  const category = parts[parts.length - 2];
+  const mode = forcedMode || parts[parts.length - 1];
+  const category = forcedMode
+    ? parts[parts.length - 1]
+    : parts[parts.length - 2];
 
   const [tab, setTab] = useState(() => {
     if (category === 'equipment' || mode === 'equipment') {

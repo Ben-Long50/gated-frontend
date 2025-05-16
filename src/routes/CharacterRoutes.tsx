@@ -33,16 +33,12 @@ const CharacterRoutes = () => {
         <Route path="cart" element={<Cart />} />
         <Route path="resume" element={<Resume />} />
         <Route path="resume/update" element={<ResumeForm />} />
-        <Route path="equipment" element={<Equipment />}>
-          <Route path="inventory" element={<Equipment />} />
-        </Route>
+        <Route path="equipment" element={<Equipment />} />
         <Route
           path="equipment/:category/:itemId"
           element={<ItemPageWrapper />}
         />
-        <Route path="deployments" element={<Deployments />}>
-          <Route path="inventory" element={<Equipment />} />
-        </Route>
+        <Route path="deployments" element={<Deployments />} />
         <Route
           path="deployments/:category/:itemId"
           element={<ItemPageWrapper />}

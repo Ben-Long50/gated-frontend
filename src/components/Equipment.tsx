@@ -43,7 +43,7 @@ const Equipment = () => {
   const { mobile } = useContext(LayoutContext);
   const { characterId } = useParams();
   const location = useLocation();
-  const modalOpen = location.pathname.endsWith('inventory');
+  const [inventoryOpen, setInventoryOpen] = useState(false);
   const path = location.pathname.split('/');
   const mode = path[path.length - 1];
 
@@ -62,6 +62,10 @@ const Equipment = () => {
     }
   });
 
+  const toggleInventory = () => {
+    setInventoryOpen((prev) => !prev);
+  };
+
   const toggleActive = (id: number | null, category: string | null) => {
     localStorage.setItem('activeItem', JSON.stringify({ id, category }));
     setActive({ id, category });
@@ -76,21 +80,6 @@ const Equipment = () => {
   } = useCharacterQuery(apiUrl, Number(characterId));
 
   const filteredCharacter = useCharacter(character);
-
-  const { filteredWeapons: weapons } = useWeapons({
-    itemList: character?.characterInventory?.weapons,
-    excludedKeywords: ['Vehicle Weapon', 'CyberWeapon'],
-  });
-  const { filteredArmor: armor } = useArmor({
-    itemList: character?.characterInventory?.armor,
-    excludedKeywords: ['Cyber Armor'],
-  });
-  const { filteredCybernetics: cybernetics } = useCybernetics({
-    itemList: character?.characterInventory?.cybernetics,
-  });
-  const { filteredItems: items } = useItems({
-    itemList: character?.characterInventory?.items,
-  });
 
   const { stats, rollBonuses } = useStats(
     character?.characterInventory,
@@ -249,17 +238,23 @@ const Equipment = () => {
             <ArrowHeader2 title="Equipped Items" />
             {character.userId === user?.id && (
               <>
-                <Link to="inventory">
-                  <BtnRect ariaLabel="Open inventory" type="button">
-                    Open Inventory
-                  </BtnRect>
-                </Link>
+                <BtnRect
+                  ariaLabel="Open inventory"
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleInventory();
+                  }}
+                >
+                  Open Inventory
+                </BtnRect>
                 <InventoryModal
                   character={character}
                   equipment={filteredCharacter.equipment}
                   active={active}
                   toggleActive={toggleActive}
-                  modalOpen={modalOpen}
+                  toggleModal={toggleInventory}
+                  modalOpen={inventoryOpen}
                 />
               </>
             )}
@@ -268,7 +263,6 @@ const Equipment = () => {
             equipment={filteredCharacter.equipment}
             active={active}
             toggleActive={toggleActive}
-            modalOpen={modalOpen}
           />
         </div>
         <ThemeContainer

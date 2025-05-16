@@ -15,6 +15,7 @@ const InventoryModal = ({
   character,
   active,
   toggleActive,
+  toggleModal,
   modalOpen,
 }: {
   character: Character;
@@ -23,6 +24,7 @@ const InventoryModal = ({
     category: null | string;
   };
   toggleActive: (id: null | number, category: null | string) => void;
+  toggleModal: () => void;
   modalOpen: boolean;
 }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -35,7 +37,7 @@ const InventoryModal = ({
   );
 
   return (
-    <Modal modalOpen={modalOpen}>
+    <Modal modalOpen={modalOpen} toggleModal={toggleModal}>
       <div
         className="flex w-full max-w-4xl flex-col gap-8"
         onClick={(e) => e.stopPropagation()}
@@ -47,12 +49,13 @@ const InventoryModal = ({
         >
           <div className="flex items-center justify-between gap-8 p-4">
             <ArrowHeader2 title="Inventory" />
-            <p className="text-tertiary italic">
-              (Double click to equip / unequip)
-            </p>
+            <p className="text-tertiary">(Double click to equip / unequip)</p>
           </div>
         </ThemeContainer>
-        <ItemMenu equipment={character.characterInventory}>
+        <ItemMenu
+          forcedMode="inventory"
+          equipment={character.characterInventory}
+        >
           {(item, index, { tab }) => (
             <ThemeContainer
               key={index}
