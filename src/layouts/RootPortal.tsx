@@ -21,7 +21,9 @@ const RootPortal = ({
         if (toggleModal) {
           toggleModal();
         }
-        navigate(-1);
+        if (import.meta.env.MODE === 'development') {
+          navigate(-1);
+        }
       }
     };
 
@@ -45,7 +47,11 @@ const RootPortal = ({
           if (toggleModal) {
             toggleModal();
           }
-          navigate(-2);
+          if (import.meta.env.MODE === 'development') {
+            navigate(-2);
+          } else {
+            navigate(-1);
+          }
         }
       }}
     >
