@@ -117,18 +117,13 @@ const CharacterLinks = ({
         </LinkSublistSidebar>
         <LinkSublistSidebar title="Augmentations">
           <SubLinkSidebar
-            title="All Augmentations"
-            path={`characters/${character?.id}/inventory/cybernetics`}
-            setSidebarVisibility={setSidebarVisibility}
-          />
-          <SubLinkSidebar
             title="Cybernetics"
-            path={`characters/${character?.id}/inventory/cybernetics`}
+            path={`characters/${character?.id}/inventory/augmentations?augmentType=cybernetic`}
             setSidebarVisibility={setSidebarVisibility}
           />
           <SubLinkSidebar
             title="Mutations"
-            path={`characters/${character?.id}/inventory/mutations`}
+            path={`characters/${character?.id}/inventory/augmentations?augmentType=mutation`}
             setSidebarVisibility={setSidebarVisibility}
           />
         </LinkSublistSidebar>

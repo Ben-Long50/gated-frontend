@@ -7,7 +7,7 @@ const useInventory = (inventory: CharacterInventory) => {
         weapons: inventory.items.filter((item) => item.itemType === 'weapon'),
         armor: inventory.items.filter((item) => item.itemType === 'armor'),
         cybernetics: inventory.items.filter(
-          (item) => item.itemType === 'cybernetic',
+          (item) => item.itemType === 'augmentation',
         ),
         items: inventory.items.filter(
           (item) =>
@@ -28,7 +28,7 @@ const useInventory = (inventory: CharacterInventory) => {
           (item) => item.itemType === 'armor' && item.equipped === true,
         ),
         cybernetics: inventory.items.filter(
-          (item) => item.itemType === 'cybernetic' && item.equipped === true,
+          (item) => item.itemType === 'augmentation' && item.equipped === true,
         ),
         items: inventory.items.filter(
           (item) =>

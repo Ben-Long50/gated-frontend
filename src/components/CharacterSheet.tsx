@@ -6,7 +6,6 @@ import { mdiCircleOutline, mdiTriangleDown } from '@mdi/js';
 import Icon from '@mdi/react';
 import PerkCard from './PerkCard';
 import AttributeCard from './AttributeCard';
-import useAttributeTree from '../hooks/useAttributeTree';
 import { LayoutContext } from '../contexts/LayoutContext';
 import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';

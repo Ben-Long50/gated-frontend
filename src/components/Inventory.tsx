@@ -40,7 +40,7 @@ const Inventory = () => {
           armorList={inventory?.armor}
           key={character?.id + ' ' + 'armor'}
         />
-      ) : category === 'cybernetics' ? (
+      ) : category === 'augmentations' ? (
         <Cybernetics
           cyberneticList={inventory?.cybernetics}
           key={character?.id + ' ' + 'cybernetics'}

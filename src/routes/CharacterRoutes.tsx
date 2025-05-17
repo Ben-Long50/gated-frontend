@@ -59,7 +59,7 @@ const CharacterRoutes = () => {
             <Route path=":armorId" element={<ItemPageWrapper />} />
             <Route path=":armorId/modify" element={<ItemModifyForm />} />
           </Route>
-          <Route path="cybernetics">
+          <Route path="augmentations">
             <Route index element={<Inventory />} />
             <Route path=":cyberneticId" element={<ItemPageWrapper />} />
             <Route path=":cyberneticId/modify" element={<ItemModifyForm />} />

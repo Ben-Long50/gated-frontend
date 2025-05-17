@@ -61,7 +61,7 @@ interface Stats {
 enum ItemType {
   weapon = 'weapon',
   armor = 'armor',
-  cybernetic = 'cybernetic',
+  augmentation = 'augmentation',
   vehicle = 'vehicle',
   drone = 'drone',
   modification = 'modification',
