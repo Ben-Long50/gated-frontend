@@ -1,17 +1,14 @@
-import { mdiCartMinus, mdiCartPlus } from '@mdi/js';
+import { mdiCartPlus } from '@mdi/js';
 import Icon from '@mdi/react';
 import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import Loading from './Loading';
 import useEditCartMutation from '../hooks/useEditCartMutation/useEditCartMutation';
 
 const CartButton = ({
-  category,
   itemId,
   handleRemove,
 }: {
-  category: string;
   itemId: number;
   handleRemove?: () => void;
 }) => {
@@ -34,7 +31,6 @@ const CartButton = ({
         if (character) {
           editCart.mutate(
             {
-              category,
               itemId,
               value: 1,
             },

@@ -44,7 +44,7 @@ const useEditCyberneticPowerMutation = (
           ...prev,
           characterInventory: {
             ...prev.characterInventory,
-            cybernetics: prev.characterInventory.cybernetics.map((item) =>
+            items: prev.characterInventory.items.map((item) =>
               item.id === cyberneticId
                 ? {
                     ...item,

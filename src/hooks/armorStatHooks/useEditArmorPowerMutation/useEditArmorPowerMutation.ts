@@ -44,7 +44,7 @@ const useEditArmorPowerMutation = (
           ...prev,
           characterInventory: {
             ...prev.characterInventory,
-            armor: prev.characterInventory.armor.map((item) =>
+            items: prev.characterInventory.items.map((item) =>
               item.id === armorId
                 ? {
                     ...item,

@@ -3,7 +3,7 @@ import { AuthContext } from 'src/contexts/AuthContext';
 import { Character } from 'src/types/character';
 import useStats from './useStats';
 import useAttributeTree from './useAttributeTree';
-import useEquipment from './useEquipment';
+import useInventory from './useInventory';
 
 const useCharacter = (character: Character) => {
   const { user } = useContext(AuthContext);
@@ -16,7 +16,7 @@ const useCharacter = (character: Character) => {
 
   const { tree, emptyAttributeTree } = useAttributeTree(character?.attributes);
 
-  const equipment = useEquipment(character?.characterInventory);
+  const { inventory, equipment } = useInventory(character?.characterInventory);
 
   const filterByPreferences = (character: Character) => {
     const characterOwner = character?.userId === user?.id;
@@ -73,6 +73,7 @@ const useCharacter = (character: Character) => {
           : null,
       equipment:
         characterOwner || character?.preferences?.equipment ? equipment : null,
+      inventory,
     };
   };
 

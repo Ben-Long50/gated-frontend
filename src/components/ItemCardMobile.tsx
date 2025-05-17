@@ -1,8 +1,4 @@
 import {
-  Children,
-  cloneElement,
-  isValidElement,
-  ReactNode,
   useContext,
   useEffect,
   useLayoutEffect,
@@ -14,41 +10,35 @@ import ThemeContainer from './ThemeContainer';
 import { Link } from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
-import { WeaponWithKeywords } from 'src/types/weapon';
-import { ArmorWithKeywords } from 'src/types/armor';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { VehicleWithWeapons } from 'src/types/vehicle';
 import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
 import { Item } from 'src/types/item';
-import StopwatchIcon from './icons/StopwatchIcon';
-import ModifierTag from './ModifierTag';
-import { Modifier } from 'src/types/modifier';
 import ItemPicture from './ItemPicture';
 import ArrowHeader2 from './ArrowHeader2';
-import { ItemObject } from 'src/types/global';
 import StatBars from './StatBars';
+import {
+  ArmorControls,
+  CyberneticControls,
+  DroneControls,
+  ItemControls,
+  VehicleControls,
+  WeaponControls,
+} from './ItemCardControls';
+import { AuthContext } from 'src/contexts/AuthContext';
 
 const ItemCardMobile = ({
   item,
-  category,
   mode,
-  controls,
   toggleFormLink,
+  ownerId,
 }: {
-  item:
-    | WeaponWithKeywords
-    | ArmorWithKeywords
-    | CyberneticWithKeywords
-    | VehicleWithWeapons
-    | Item;
-  category: string;
+  item: Item;
   mode: string;
-  controls?: ReactNode;
-  toggleFormLink?: (id: ItemObject) => void;
+  toggleFormLink?: (item: Item) => void;
+  ownerId?: number;
 }) => {
+  const { user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
-  const [imageHeight, setImageHeight] = useState(0);
   const [toolTip, setToolTip] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
 
@@ -71,35 +61,6 @@ const ItemCardMobile = ({
   }, [toolTip]);
 
   const cardRef = useRef(null);
-  const imageRef = useRef(null);
-  const detailRef = useRef(null);
-
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (imageRef.current) {
-        setImageHeight(Math.floor(imageRef.current.offsetHeight));
-      }
-    };
-
-    const observer = new ResizeObserver(updateDimensions);
-
-    if (imageRef.current) {
-      observer.observe(imageRef.current);
-    }
-
-    return () => {
-      if (imageRef.current) {
-        observer.unobserve(imageRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (detailRef.current) {
-      const rect = detailRef.current.offsetHeight;
-      setDetailHeight(rect);
-    }
-  }, [detailRef.current]);
 
   return (
     <div ref={cardRef} className="w-full">
@@ -114,7 +75,7 @@ const ItemCardMobile = ({
             mode === 'form'
               ? ''
               : mode === 'equipment' || mode === 'deployments'
-                ? `${category}/${item?.id}`
+                ? `${item.itemType}s/${item?.id}`
                 : `${item?.id}`
           }
           className="timing hover:bg-secondary relative flex cursor-pointer flex-col gap-8"
@@ -132,38 +93,17 @@ const ItemCardMobile = ({
             <div className="flex h-full flex-col gap-2">
               <div className="flex items-start justify-between gap-4">
                 <ArrowHeader2 title={item.name} />
-                {category === 'weapons' && item.vehicleId && (
-                  <h4 className="text-error italic">(Currently equipped)</h4>
-                )}
                 <div className="flex flex-wrap items-start justify-end gap-4 gap-y-2">
                   <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
-                  {mode === 'codex' && (
-                    <CartButton category={category} itemId={item?.id} />
-                  )}
+                  {mode === 'codex' && <CartButton itemId={item?.id} />}
                 </div>
               </div>
-              <div className="col-span-2 flex w-full items-center justify-between gap-4">
-                {item.cyberneticType && (
-                  <p className="text-tertiary">
-                    (
-                    {item.cyberneticType[0].toUpperCase() +
-                      item.cyberneticType.slice(1)}
-                    )
-                  </p>
-                )}
-                {item?.category && (
-                  <p className="text-tertiary">
-                    ({item.category[0].toUpperCase() + item.category.slice(1)})
-                  </p>
-                )}
-              </div>
             </div>
-
             <div className="flex w-full items-center justify-between">
               {item?.keywords && item.keywords.length > 0 && (
                 <div className="col-span-2 flex w-full flex-wrap items-center gap-1 justify-self-start">
                   {item.keywords.map(
-                    (item: { keyword: Keyword; value?: number }) => {
+                    (item: { keyword: Keyword; value: number | null }) => {
                       return <Tag key={item.keyword?.id} keyword={item} />;
                     },
                   )}
@@ -176,11 +116,9 @@ const ItemCardMobile = ({
                 cardWidth={cardWidth}
               />
             </div>
-
             {item.picture && (
               <ItemPicture className={`timing mx-8 shrink-0`} item={item} />
             )}
-
             <div className="flex w-full flex-col items-center gap-4 pr-1">
               <div
                 className={`${cardWidth && cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
@@ -191,25 +129,24 @@ const ItemCardMobile = ({
                   mode={mode}
                 />
               </div>
-              {item.modifiers && item.modifiers?.length > 0 && (
-                <div className="flex w-full items-center gap-2">
-                  {item.modifiers?.map((modifier: Modifier, index: number) => (
-                    <ModifierTag key={index} modifier={modifier} />
-                  ))}
-                </div>
-              )}
             </div>
-            {item.modifiers && item.modifiers[0]?.duration && (
-              <div className="flex items-center gap-4">
-                <StopwatchIcon className="text-secondary size-8" />
-                <p>{item.modifiers[0].duration?.value}</p>
-                <p>
-                  {item.modifiers[0].duration?.unit[0].toUpperCase() +
-                    item.modifiers[0].duration?.unit.slice(1)}
-                </p>
-              </div>
-            )}
-            {mode === 'equipment' && controls}
+            {(mode === 'equipment' || mode === 'deployments') &&
+              ownerId === user?.id &&
+              (item.itemType === 'weapon' ? (
+                <WeaponControls weaponId={item.id} stats={item.stats} />
+              ) : item.itemType === 'armor' ? (
+                <ArmorControls armorId={item.id} stats={item.stats} />
+              ) : item.itemType === 'cybernetic' ? (
+                <CyberneticControls cyberneticId={item.id} stats={item.stats} />
+              ) : item.itemType === 'vehicle' ? (
+                <VehicleControls vehicleId={item.id} stats={item.stats} />
+              ) : item.itemType === 'drone' ? (
+                <DroneControls droneId={item.id} stats={item.stats} />
+              ) : (
+                item.itemType === 'reusable' && (
+                  <ItemControls itemId={item.id} stats={item.stats} />
+                )
+              ))}
           </div>
         </Link>
       </ThemeContainer>

@@ -6,7 +6,9 @@ const ItemPageWrapper = () => {
   const parts = location.pathname.split('/').filter(Boolean);
 
   const itemId = Number(parts.pop());
-  const category = parts.pop();
+  const category = parts.pop()?.slice(0, -1);
+  console.log(category);
+
   const mode = parts.pop();
 
   if (!category || !itemId) {

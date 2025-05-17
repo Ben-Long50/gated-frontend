@@ -16,18 +16,15 @@ import { WeaponWithKeywords } from '../types/weapon';
 import useCreateVehicleMutation from '../hooks/useCreateVehicleMutation/useCreateVehicleMutation';
 import useDeleteVehicleMutation from '../hooks/useDeleteVehicleMutation/useDeleteVehicleMutation';
 import SelectField from './SelectField';
-import useVehicleQuery from '../hooks/useVehicleQuery/useVehicleQuery';
 import useModifyVehicleMutation from '../hooks/useModifyVehicleMutation/useModifyVehicleMutation';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 import { Keyword } from 'src/types/keyword';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
-import { ArmorWithKeywords } from 'src/types/armor';
-import { Action } from 'src/types/action';
 import KeywordLinkField from './form_fields/KeywordLinkField';
 import WeaponLinkField from './form_fields/WeaponLinkField';
-import ArmorLinkField from './form_fields/ArmorLinkField';
-import ActionLinkField from './form_fields/ActionLinkField';
+import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
+import { Item } from 'src/types/item';
 
 const VehicleForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -39,12 +36,10 @@ const VehicleForm = () => {
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
 
-  const { data: vehicle, isLoading } = useVehicleQuery(
+  const { data: vehicle, isLoading } = useItemQuery(
     apiUrl,
     Number(vehicleId),
-    {
-      enabled: !!vehicleId,
-    },
+    'vehicle',
   );
 
   const [imagePreview, setImagePreview] = useState(
@@ -111,10 +106,14 @@ const VehicleForm = () => {
         currentWeapon: vehicle?.stats?.currentWeapon || '',
       } as VehicleStats,
       price: vehicle?.price || null,
-      weapons: vehicle?.weapons || ([] as WeaponWithKeywords[]),
-      armor: vehicle?.armor || ([] as ArmorWithKeywords[]),
-      actions: vehicle?.actions || ([] as Action[]),
-      modifications: vehicle?.modifications || ([] as Modification[]),
+      weapons:
+        vehicle?.itemLinkReference?.items.filter(
+          (item: Item) => item.itemType === 'weapon',
+        ) || ([] as Item[]),
+      modifications:
+        vehicle?.itemLinkReference?.items.filter(
+          (item: Item) => item.itemType === 'modification',
+        ) || ([] as Item[]),
       keywords:
         vehicle?.keywords || ([] as { keyword: Keyword; value?: number }[]),
     },
@@ -132,15 +131,11 @@ const VehicleForm = () => {
       if (value.stats.hangar) value.stats.currentHangar = 0;
       if (value.stats.pass) value.stats.currentPass = 0;
 
-      const { weapons, armor, actions, modifications, keywords, ...rest } =
-        value;
+      const { weapons, modifications, keywords, ...rest } = value;
 
       const data = {
         ...rest,
-        weaponIds: extractItemListIds(value.weapons),
-        armorIds: extractItemListIds(value.armor),
-        actionIds: extractItemListIds(value.actions),
-        modificationIds: extractItemListIds(value.modifications),
+        items: extractItemListIds([...value.weapons, ...value.modifications]),
         keywordIds: extractKeywordListIds(value.keywords),
       };
 
@@ -438,10 +433,6 @@ const VehicleForm = () => {
           <KeywordLinkField form={vehicleForm} keywordType="vehicle" />
           <Divider />
           <WeaponLinkField form={vehicleForm} />
-          <Divider />
-          <ArmorLinkField form={vehicleForm} />
-          <Divider />
-          <ActionLinkField form={vehicleForm} />
           <Divider />
         </div>
         <vehicleForm.Subscribe selector={(state) => state.errorMap}>

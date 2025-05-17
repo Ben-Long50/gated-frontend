@@ -96,22 +96,22 @@ const CharacterLinks = ({
         <LinkSublistSidebar title="Armor">
           <SubLinkSidebar
             title="All Armor"
-            path={`characters/${character?.id}/inventory/armor`}
+            path={`characters/${character?.id}/inventory/armors`}
             setSidebarVisibility={setSidebarVisibility}
           />
           <SubLinkSidebar
             title="Head Armor"
-            path={`characters/${character?.id}/inventory/armor?include=Head`}
+            path={`characters/${character?.id}/inventory/armors?include=Head`}
             setSidebarVisibility={setSidebarVisibility}
           />
           <SubLinkSidebar
             title="Body Armor"
-            path={`characters/${character?.id}/inventory/armor?include=Body`}
+            path={`characters/${character?.id}/inventory/armors?include=Body`}
             setSidebarVisibility={setSidebarVisibility}
           />
           <SubLinkSidebar
             title="Cloak Armor"
-            path={`characters/${character?.id}/inventory/armor?include=Cloak`}
+            path={`characters/${character?.id}/inventory/armors?include=Cloak`}
             setSidebarVisibility={setSidebarVisibility}
           />
         </LinkSublistSidebar>

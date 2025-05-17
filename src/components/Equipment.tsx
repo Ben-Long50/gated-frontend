@@ -4,13 +4,7 @@ import Loading from './Loading';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { LayoutContext } from '../contexts/LayoutContext';
-import useWeapons from '../hooks/useWeapons';
-import { WeaponWithKeywords } from 'src/types/weapon';
-import useArmor from '../hooks/useArmor';
-import useCybernetics from '../hooks/useCybernetics';
-import { ArmorWithKeywords } from 'src/types/armor';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import useStats from '../hooks/useStats';
 import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
@@ -22,12 +16,7 @@ import EquipmentList from './EquipmentList';
 import ActionCard from './ActionCard';
 import { Action } from 'src/types/action';
 import DieIcon from './icons/DieIcon';
-import WeaponCard, { WeaponCardMobile } from './WeaponCard';
-import ArmorCard, { ArmorCardMobile } from './ArmorCard';
-import CyberneticCard, { CyberneticCardMobile } from './CyberneticCard';
 import { Item } from 'src/types/item';
-import useItems from '../hooks/useItems';
-import MiscItemCard, { MiscItemCardMobile } from './MiscItemCard';
 import ArrowHeader3 from './ArrowHeader3';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
@@ -36,6 +25,8 @@ import InventoryModal from './InventoryModal';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
+import ItemCard from './ItemCard';
+import ItemCardMobile from './ItemCardMobile';
 
 const Equipment = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -62,7 +53,7 @@ const Equipment = () => {
     }
   });
 
-  const toggleInventory = () => {
+  const toggleInventoryOpen = () => {
     setInventoryOpen((prev) => !prev);
   };
 
@@ -95,19 +86,19 @@ const Equipment = () => {
       case 'weapon':
         return (
           filteredCharacter.equipment?.weapons.filter(
-            (weapon: WeaponWithKeywords) => weapon.id === active.id,
+            (weapon: Item) => weapon.id === active.id,
           )[0] || null
         );
       case 'armor':
         return (
           filteredCharacter.equipment?.armor.filter(
-            (armor: ArmorWithKeywords) => armor.id === active.id,
+            (armor: Item) => armor.id === active.id,
           )[0] || null
         );
       case 'cybernetic':
         return (
           filteredCharacter.equipment?.cybernetics.filter(
-            (cybernetic: CyberneticWithKeywords) => cybernetic.id === active.id,
+            (cybernetic: Item) => cybernetic.id === active.id,
           )[0] || null
         );
       case 'item':
@@ -117,7 +108,7 @@ const Equipment = () => {
           )[0] || null
         );
       default:
-        break;
+        return;
     }
   }, [active, filteredCharacter]);
 
@@ -167,72 +158,21 @@ const Equipment = () => {
       </div>
       <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-[2fr_1fr] xl:grid-cols-[2.5fr_1fr]">
         <div className="flex w-full flex-col gap-8">
-          {activeItem !== null &&
-            (active.category === 'weapon' ? (
-              mobile ? (
-                <WeaponCardMobile
-                  key={active.id}
-                  weapon={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              ) : (
-                <WeaponCard
-                  key={active.id}
-                  weapon={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              )
-            ) : active.category === 'armor' ? (
-              mobile ? (
-                <ArmorCardMobile
-                  key={active.id}
-                  armor={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              ) : (
-                <ArmorCard
-                  key={active.id}
-                  armor={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              )
-            ) : active.category === 'cybernetic' ? (
-              mobile ? (
-                <CyberneticCardMobile
-                  key={active.id}
-                  cybernetic={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              ) : (
-                <CyberneticCard
-                  key={active.id}
-                  cybernetic={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              )
+          {activeItem &&
+            (mobile ? (
+              <ItemCardMobile
+                key={active.id}
+                item={activeItem}
+                mode={mode}
+                ownerId={character?.userId}
+              />
             ) : (
-              active.category === 'item' &&
-              (mobile ? (
-                <MiscItemCardMobile
-                  key={active.id}
-                  item={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              ) : (
-                <MiscItemCard
-                  key={active.id}
-                  item={activeItem}
-                  mode={mode}
-                  ownerId={character?.userId}
-                />
-              ))
+              <ItemCard
+                key={active.id}
+                item={activeItem}
+                mode={mode}
+                ownerId={character?.userId}
+              />
             ))}
           <div className="flex items-center justify-between">
             <ArrowHeader2 title="Equipped Items" />
@@ -243,17 +183,17 @@ const Equipment = () => {
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
-                    toggleInventory();
+                    toggleInventoryOpen();
                   }}
                 >
                   Open Inventory
                 </BtnRect>
                 <InventoryModal
                   character={character}
-                  equipment={filteredCharacter.equipment}
+                  inventory={filteredCharacter.inventory}
                   active={active}
                   toggleActive={toggleActive}
-                  toggleModal={toggleInventory}
+                  toggleModal={toggleInventoryOpen}
                   modalOpen={inventoryOpen}
                 />
               </>

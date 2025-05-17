@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import refreshAmmo from './refreshAmmo';
 import { useRef } from 'react';
 import { Character } from 'src/types/character';
-import { WeaponWithKeywords } from 'src/types/weapon';
 
 const useRefreshAmmoMutation = (
   apiUrl: string,
@@ -39,14 +38,16 @@ const useRefreshAmmoMutation = (
           ...prev,
           characterInventory: {
             ...prev.characterInventory,
-            weapons: prev.characterInventory.weapons.map((item) =>
+            items: prev.characterInventory.items.map((item) =>
               item.id === weaponId
                 ? {
                     ...item,
                     stats: {
                       ...item.stats,
                       currentAmmoCount: item.stats.magCapacity,
-                      currentMagCount: item.stats.magCount - 1,
+                      currentMagCount: item.stats.magCount
+                        ? item.stats.magCount - 1
+                        : undefined,
                     },
                   }
                 : item,

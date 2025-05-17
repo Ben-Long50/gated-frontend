@@ -127,28 +127,28 @@ const CodexLinks = ({
       >
         <SubLinkSidebar
           title="All Armor"
-          path="codex/armor"
+          path="codex/armors"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Head Armor"
-          path="codex/armor/?include=Head"
+          path="codex/armors/?include=Head"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Body Armor"
-          path="codex/armor/?include=Body"
+          path="codex/armors/?include=Body"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Cloak Armor"
-          path="codex/armor/?include=Cloak"
+          path="codex/armors/?include=Cloak"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
             title="Create New Armor"
-            path="codex/armor/create"
+            path="codex/armors/create"
             setSidebarVisibility={setSidebarVisibility}
           />
         )}

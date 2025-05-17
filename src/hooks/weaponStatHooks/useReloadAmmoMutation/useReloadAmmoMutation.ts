@@ -39,14 +39,16 @@ const useReloadAmmoMutation = (
           ...prev,
           characterInventory: {
             ...prev.characterInventory,
-            weapons: prev.characterInventory.weapons.map((item) =>
+            items: prev.characterInventory.items.map((item) =>
               item.id === weaponId
                 ? {
                     ...item,
                     stats: {
                       ...item.stats,
                       currentAmmoCount: item.stats.magCapacity,
-                      currentMagCount: item.stats.currentMagCount - 1,
+                      currentMagCount: item.stats.currentMagCount
+                        ? item.stats.currentMagCount - 1
+                        : undefined,
                     },
                   }
                 : item,

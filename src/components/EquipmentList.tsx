@@ -1,14 +1,14 @@
 import { ReactNode, useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ItemMenu from './ItemMenu';
-import { CharacterInventory } from 'src/types/character';
+import { SortedInventory } from 'src/types/character';
 
 const EquipmentList = ({
   equipment,
   active,
   toggleActive,
 }: {
-  equipment: CharacterInventory | null;
+  equipment: SortedInventory | null;
   active: {
     id: null | number;
     category: null | string;

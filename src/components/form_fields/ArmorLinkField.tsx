@@ -6,6 +6,8 @@ import { ArmorWithKeywords } from 'src/types/armor';
 import ArmorCard from '../ArmorCard';
 import Armor from '../Armor';
 import ArrowHeader2 from '../ArrowHeader2';
+import { Item } from 'src/types/item';
+import ItemCard from '../ItemCard';
 
 const ArmorLinkField = ({ form }: { form: FormApi }) => {
   const [armorOpen, setArmorOpen] = useState(false);
@@ -15,7 +17,7 @@ const ArmorLinkField = ({ form }: { form: FormApi }) => {
   return (
     <>
       <form.Subscribe selector={(state: FieldState) => state.values.armor}>
-        {(armor: ArmorWithKeywords[]) => (
+        {(armor: Item[]) => (
           <>
             {armor.length > 0 && <ArrowHeader2 title="Linked Armor" />}
             <form.Field name="armor">
@@ -35,19 +37,19 @@ const ArmorLinkField = ({ form }: { form: FormApi }) => {
                       />
                     )}
                   </FormLinkModal>
-                  {armor.map((armor: ArmorWithKeywords) => {
+                  {armor.map((armor: Item) => {
                     return (
                       <button
                         key={armor.id}
                         onClick={() => {
                           field.handleChange(
                             field.state.value.filter(
-                              (item: ArmorWithKeywords) => item.id !== armor.id,
+                              (item: Item) => item.id !== armor.id,
                             ),
                           );
                         }}
                       >
-                        <ArmorCard armor={armor} mode="form" />
+                        <ItemCard item={armor} mode="form" />
                       </button>
                     );
                   })}

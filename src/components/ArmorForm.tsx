@@ -23,14 +23,14 @@ import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import { Action } from 'src/types/action';
 import { WeaponWithKeywords } from 'src/types/weapon';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
 
 import WeaponLinkField from './form_fields/WeaponLinkField';
 import ArmorLinkField from './form_fields/ArmorLinkField';
-import CyberneticLinkField from './form_fields/CyberneticLinkField';
 import ActionLinkField from './form_fields/ActionLinkField';
 import KeywordLinkField from './form_fields/KeywordLinkField';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
+import { Item } from 'src/types/item';
+import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 
 const ArmorForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -42,9 +42,7 @@ const ArmorForm = () => {
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
 
-  const { data: armor } = useArmorPieceQuery(apiUrl, Number(armorId), {
-    enabled: !!armorId,
-  });
+  const { data: armor } = useItemQuery(apiUrl, Number(armorId), 'armor');
 
   const keywords = useKeywords('armor');
 
@@ -105,10 +103,15 @@ const ArmorForm = () => {
         currentPower: armor?.stats.currentPower || '',
         weight: armor?.stats.weight || '',
       } as ArmorStats,
-      weapons: armor?.weapons || ([] as WeaponWithKeywords[]),
-      armor: armor?.armor || ([] as ArmorWithKeywords[]),
-      cybernetics: armor?.cybernetics || ([] as CyberneticWithKeywords[]),
-      actions: armor?.actions || ([] as Action[]),
+      weapons:
+        armor?.itemLinkReference?.items.filter(
+          (item: Item) => item.itemType === 'weapon',
+        ) || ([] as Item[]),
+      armor:
+        armor?.itemLinkReference?.items.filter(
+          (item: Item) => item.itemType === 'armor',
+        ) || ([] as Item[]),
+      actions: armor?.itemLinkReference?.actions || ([] as Action[]),
       keywords:
         armor?.keywords || ([] as { keyword: Keyword; value?: number }[]),
     },
@@ -122,13 +125,11 @@ const ArmorForm = () => {
 
       value.stats = { ...filteredStats };
 
-      const { weapons, armor, cybernetics, actions, keywords, ...rest } = value;
+      const { weapons, armor, actions, keywords, ...rest } = value;
 
       const data = {
         ...rest,
-        weaponIds: extractItemListIds(value.weapons),
-        armorIds: extractItemListIds(value.armor),
-        cyberneticIds: extractItemListIds(value.cybernetics),
+        itemIds: extractItemListIds([...value.weapons, ...value.armor]),
         actionIds: extractItemListIds(value.actions),
         keywordIds: extractKeywordListIds(value.keywords),
       };
@@ -378,8 +379,6 @@ const ArmorForm = () => {
             <WeaponLinkField form={armorForm} />
             <Divider />
             <ArmorLinkField form={armorForm} />
-            <Divider />
-            <CyberneticLinkField form={armorForm} />
             <Divider />
             <ActionLinkField form={armorForm} />
             <Divider />

@@ -3,16 +3,17 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
-import WeaponCard, { WeaponCardMobile } from './WeaponCard';
 import useWeapons from '../hooks/useWeapons';
 import Loading from './Loading';
-import { Weapon, WeaponWithKeywords } from 'src/types/weapon';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import ItemCard from './ItemCard';
+import ItemCardMobile from './ItemCardMobile';
+import { Item } from 'src/types/item';
 
 const Weapons = ({
   title,
@@ -22,8 +23,8 @@ const Weapons = ({
 }: {
   title?: string;
   forcedMode?: string;
-  weaponList?: Weapon[];
-  toggleFormLink?: (weaponId: WeaponWithKeywords) => void;
+  weaponList?: Item[];
+  toggleFormLink?: (item: Item) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { mobile } = useContext(LayoutContext);
@@ -148,24 +149,24 @@ const Weapons = ({
         </div>
       </ThemeContainer>
       {cardType === 'large' ? (
-        weapons.filteredWeapons?.map((weapon: WeaponWithKeywords) => {
+        weapons.filteredWeapons?.map((weapon: Item) => {
           return (
-            <WeaponCard
+            <ItemCard
               key={weapon.id}
               mode={mode}
-              weapon={weapon}
+              item={weapon}
               toggleFormLink={toggleFormLink}
             />
           );
         })
       ) : (
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-          {weapons.filteredWeapons?.map((weapon: WeaponWithKeywords) => {
+          {weapons.filteredWeapons?.map((weapon: Item) => {
             return (
-              <WeaponCardMobile
+              <ItemCardMobile
                 key={weapon.id}
                 mode={mode}
-                weapon={weapon}
+                item={weapon}
                 toggleFormLink={toggleFormLink}
               />
             );

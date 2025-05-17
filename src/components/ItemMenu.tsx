@@ -11,14 +11,15 @@ import InventoryIcon from './icons/InventoryIcon';
 import { useLocation } from 'react-router-dom';
 import VehicleIcon from './icons/VehicleIcon';
 import DroneIcon from './icons/DroneIcon';
-import { CharacterInventory } from 'src/types/character';
+import { SortedInventory } from 'src/types/character';
+import { Item } from 'src/types/item';
 
 const ItemMenu = ({
   equipment,
   forcedMode,
   children,
 }: {
-  equipment: CharacterInventory | null;
+  equipment: SortedInventory | null;
   forcedMode?: string;
   children: (item: any, index: number, props: { tab: string }) => ReactNode;
 }) => {
@@ -40,26 +41,26 @@ const ItemMenu = ({
     return '';
   });
 
-  let itemList;
+  let itemList = [] as Item[];
 
   switch (tab) {
     case 'weapon':
-      itemList = equipment?.weapons;
+      itemList = equipment?.weapons || [];
       break;
     case 'armor':
-      itemList = equipment?.armor;
+      itemList = equipment?.armor || [];
       break;
     case 'cybernetic':
-      itemList = equipment?.cybernetics;
+      itemList = equipment?.cybernetics || [];
       break;
     case 'item':
-      itemList = equipment?.items;
+      itemList = equipment?.items || [];
       break;
     case 'vehicle':
-      itemList = equipment?.vehicles;
+      itemList = equipment?.vehicles || [];
       break;
     case 'drone':
-      itemList = equipment?.drones;
+      itemList = equipment?.drones || [];
       break;
     default:
       itemList = [];

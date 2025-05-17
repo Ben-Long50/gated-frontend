@@ -44,7 +44,7 @@ const useEditAmmoMutation = (
           ...prev,
           characterInventory: {
             ...prev.characterInventory,
-            weapons: prev.characterInventory.weapons.map((item) =>
+            items: prev.characterInventory.items.map((item) =>
               item.id === weaponId
                 ? {
                     ...item,

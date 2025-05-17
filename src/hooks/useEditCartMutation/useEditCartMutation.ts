@@ -14,7 +14,6 @@ const useEditCartMutation = (
 
   return useMutation({
     mutationFn: (formData: {
-      category: string;
       itemId: number;
       value: number;
       referenceId?: number;
@@ -32,7 +31,6 @@ const useEditCartMutation = (
           updateBuffer.current = 0;
 
           await editCart(apiUrl, characterId, cartId, {
-            category: formData.category,
             itemId: formData.itemId,
             value: finalValue,
           });
@@ -49,7 +47,7 @@ const useEditCartMutation = (
       );
 
       queryClient.setQueryData(['activeCharacter'], (prev: Character) => {
-        const targetItem = prev.characterCart[value.category].find(
+        const targetItem = prev.characterCart.items.find(
           (item) =>
             Object.values(item).find((value) => typeof value === 'object')
               .id === value.itemId,
@@ -60,7 +58,7 @@ const useEditCartMutation = (
             ...prev,
             characterCart: {
               ...prev.characterCart,
-              [value.category]: prev.characterCart[value.category].filter(
+              items: prev.characterCart.items.filter(
                 (item) => item.id !== targetItem.id,
               ),
             },
@@ -72,8 +70,8 @@ const useEditCartMutation = (
               ...prev,
               characterCart: {
                 ...prev.characterCart,
-                [value.category]: [
-                  ...prev.characterCart[value.category],
+                items: [
+                  ...prev.characterCart.items,
                   {
                     quantity: value.value,
                     item: { id: value.itemId },
@@ -85,14 +83,13 @@ const useEditCartMutation = (
               ...prev,
               characterCart: {
                 ...prev.characterCart,
-                [value.category]: prev.characterCart[value.category].map(
-                  (item) =>
-                    item.id === targetItem.id
-                      ? {
-                          ...item,
-                          quantity: item.quantity + value.value,
-                        }
-                      : item,
+                items: prev.characterCart.items.map((item) =>
+                  item.id === targetItem.id
+                    ? {
+                        ...item,
+                        quantity: item.quantity + value.value,
+                      }
+                    : item,
                 ),
               },
             };

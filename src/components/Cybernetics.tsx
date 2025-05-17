@@ -6,7 +6,7 @@ import { useForm } from '@tanstack/react-form';
 import CyberneticCard, { CyberneticCardMobile } from './CyberneticCard';
 import useCybernetics from '../hooks/useCybernetics';
 import Loading from './Loading';
-import { Cybernetic, CyberneticWithKeywords } from 'src/types/cybernetic';
+import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import { LayoutContext } from '../contexts/LayoutContext';
@@ -14,6 +14,9 @@ import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { ItemObject } from 'src/types/global';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import { Item } from 'src/types/item';
+import ItemCard from './ItemCard';
+import ItemCardMobile from './ItemCardMobile';
 
 const Cybernetics = ({
   title,
@@ -23,8 +26,8 @@ const Cybernetics = ({
 }: {
   title?: string;
   forcedMode?: string;
-  cyberneticList?: Cybernetic[];
-  toggleFormLink?: (item: ItemObject) => void;
+  cyberneticList?: Item[];
+  toggleFormLink?: (item: Item) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
@@ -153,32 +156,28 @@ const Cybernetics = ({
       </ThemeContainer>
 
       {cardType === 'large' ? (
-        cybernetics.filteredCybernetics.map(
-          (cybernetic: CyberneticWithKeywords) => {
+        cybernetics.filteredCybernetics.map((cybernetic: Item) => {
+          return (
+            <ItemCard
+              key={cybernetic.id}
+              item={cybernetic}
+              mode={mode}
+              toggleFormLink={toggleFormLink}
+            />
+          );
+        })
+      ) : (
+        <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
+          {cybernetics.filteredCybernetics.map((cybernetic: Item) => {
             return (
-              <CyberneticCard
+              <ItemCardMobile
                 key={cybernetic.id}
-                cybernetic={cybernetic}
+                item={cybernetic}
                 mode={mode}
                 toggleFormLink={toggleFormLink}
               />
             );
-          },
-        )
-      ) : (
-        <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-          {cybernetics.filteredCybernetics.map(
-            (cybernetic: CyberneticWithKeywords) => {
-              return (
-                <CyberneticCardMobile
-                  key={cybernetic.id}
-                  cybernetic={cybernetic}
-                  mode={mode}
-                  toggleFormLink={toggleFormLink}
-                />
-              );
-            },
-          )}
+          })}
         </div>
       )}
     </div>

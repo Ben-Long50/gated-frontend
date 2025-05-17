@@ -1,11 +1,11 @@
 import { FormApi, FormState } from '@tanstack/react-form';
 import FormLinkModal from './FormLinkModal';
-import { WeaponWithKeywords } from 'src/types/weapon';
 import { useState } from 'react';
 import Weapons from '../Weapons';
-import WeaponCard from '../WeaponCard';
 import BtnRect from '../buttons/BtnRect';
 import ArrowHeader2 from '../ArrowHeader2';
+import { Item } from 'src/types/item';
+import ItemCard from '../ItemCard';
 
 const WeaponLinkField = ({ form }: { form: FormApi }) => {
   const [weaponsOpen, setWeaponsOpen] = useState(false);
@@ -15,7 +15,7 @@ const WeaponLinkField = ({ form }: { form: FormApi }) => {
   return (
     <>
       <form.Subscribe selector={(state: FormState) => state.values.weapons}>
-        {(weapons: WeaponWithKeywords[]) => (
+        {(weapons: Item[]) => (
           <>
             {weapons.length > 0 && <ArrowHeader2 title="Linked Weapons" />}
             <form.Field name="weapons">
@@ -35,20 +35,19 @@ const WeaponLinkField = ({ form }: { form: FormApi }) => {
                       />
                     )}
                   </FormLinkModal>
-                  {weapons.map((weapon: WeaponWithKeywords) => {
+                  {weapons.map((weapon: Item) => {
                     return (
                       <button
                         key={weapon.id}
                         onClick={() => {
                           field.handleChange(
                             field.state.value.filter(
-                              (item: WeaponWithKeywords) =>
-                                item.id !== weapon.id,
+                              (item: Item) => item.id !== weapon.id,
                             ),
                           );
                         }}
                       >
-                        <WeaponCard weapon={weapon} mode="form" />
+                        <ItemCard item={weapon} mode="form" />
                       </button>
                     );
                   })}

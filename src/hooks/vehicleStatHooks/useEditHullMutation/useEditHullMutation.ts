@@ -44,7 +44,7 @@ const useEditHullMutation = (
           ...prev,
           characterInventory: {
             ...prev.characterInventory,
-            vehicles: prev.characterInventory.vehicles.map((item) =>
+            items: prev.characterInventory.items.map((item) =>
               item.id === vehicleId
                 ? {
                     ...item,

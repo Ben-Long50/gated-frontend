@@ -44,7 +44,7 @@ const useEditDronePowerMutation = (
           ...prev,
           characterInventory: {
             ...prev.characterInventory,
-            drones: prev.characterInventory.drones.map((item) =>
+            items: prev.characterInventory.items.map((item) =>
               item.id === droneId
                 ? {
                     ...item,

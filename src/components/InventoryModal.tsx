@@ -9,16 +9,22 @@ import ItemMenu from './ItemMenu';
 import useToggleEquipmentMutation from '../hooks/useEquipmentToggleMutation/useEquipmentToggleMutation';
 import { AuthContext } from '../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
-import { Character } from 'src/types/character';
+import {
+  Character,
+  CharacterInventory,
+  SortedInventory,
+} from 'src/types/character';
 
 const InventoryModal = ({
   character,
+  inventory,
   active,
   toggleActive,
   toggleModal,
   modalOpen,
 }: {
   character: Character;
+  inventory: SortedInventory | null;
   active: {
     id: null | number;
     category: null | string;
@@ -52,11 +58,8 @@ const InventoryModal = ({
             <p className="text-tertiary">(Double click to equip / unequip)</p>
           </div>
         </ThemeContainer>
-        <ItemMenu
-          forcedMode="inventory"
-          equipment={character.characterInventory}
-        >
-          {(item, index, { tab }) => (
+        <ItemMenu forcedMode="inventory" equipment={inventory}>
+          {(item, index) => (
             <ThemeContainer
               key={index}
               chamfer="small"
@@ -75,7 +78,7 @@ const InventoryModal = ({
                     toggleEquipment.mutate({
                       characterId: character?.id,
                       inventoryId: character?.characterInventory?.id,
-                      category: tab,
+                      category: item.itemType,
                       itemId: item.id,
                     });
                   }

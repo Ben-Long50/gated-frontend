@@ -5,7 +5,7 @@ const Tag = ({
   className,
   label,
 }: {
-  keyword?: { keyword: Keyword; value?: number };
+  keyword?: { keyword: Keyword; value: number | null };
   className?: string;
   label?: string;
 }) => {

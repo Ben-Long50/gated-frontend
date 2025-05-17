@@ -15,22 +15,19 @@ import SelectField from './SelectField';
 import FormLayout from '../layouts/FormLayout';
 import { useLocation, useParams } from 'react-router-dom';
 import useDeleteCyberneticMutation from '../hooks/useDeleteCyberneticMutation/useDeleteCyberneticMutation';
-import ModifierField from './ModifierField';
-import { Modifier } from 'src/types/modifier';
 import useCyberneticQuery from '../hooks/useCyberneticQuery/useCyberneticQuery';
 import { Keyword } from 'src/types/keyword';
-import { WeaponWithKeywords } from 'src/types/weapon';
-import { ArmorWithKeywords } from 'src/types/armor';
 import { Action } from 'src/types/action';
 import useModifyCyberneticMutation from '../hooks/useModifyCyberneticMutation/useModifyCyberneticMutation';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import WeaponLinkField from './form_fields/WeaponLinkField';
 import ArmorLinkField from './form_fields/ArmorLinkField';
 import ActionLinkField from './form_fields/ActionLinkField';
 import KeywordLinkField from './form_fields/KeywordLinkField';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
+import { Item } from 'src/types/item';
+import InputSelectField from './InputSelectField';
 
 const CyberneticForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -95,7 +92,7 @@ const CyberneticForm = () => {
       name: cybernetic?.name || '',
       rarity: cybernetic?.rarity || '',
       grade: cybernetic?.grade || 1,
-      cyberneticType: cybernetic?.cyberneticType || '',
+      itemSubtype: cybernetic?.itemSubtype || '',
       picture: cybernetic?.picture || '',
       description: cybernetic?.description || '',
       price: cybernetic?.price || '',
@@ -104,24 +101,17 @@ const CyberneticForm = () => {
         power: cybernetic?.stats.power || '',
         currentPower: cybernetic?.stats.currentPower || '',
       } as { cyber: number; power?: number; currentPower?: number },
-      weapons: cybernetic?.weapons || ([] as WeaponWithKeywords[]),
-      armor: cybernetic?.armor || ([] as ArmorWithKeywords[]),
-      cybernetics: cybernetic?.cybernetics || ([] as CyberneticWithKeywords[]),
-      actions: cybernetic?.actions || ([] as Action[]),
+      weapons:
+        cybernetic?.itemLinkReference?.items.filter(
+          (item: Item) => item.itemType === 'weapon',
+        ) || ([] as Item[]),
+      armor:
+        cybernetic?.itemLinkReference?.items.filter(
+          (item: Item) => item.itemType === 'armor',
+        ) || ([] as Item[]),
+      actions: cybernetic?.itemLinkReference?.actions || ([] as Action[]),
       keywords:
         cybernetic?.keywords || ([] as { keyword: Keyword; value?: number }[]),
-      modifiers:
-        cybernetic?.modifiers?.map((modifier: Modifier) => ({
-          type: modifier.type,
-          actionId: modifier.action?.id || null,
-          stat: modifier.stat || null,
-          operator: modifier.operator,
-          valueType: modifier.valueType,
-          attribute: modifier.attribute,
-          skill: modifier.skill,
-          value: modifier.value,
-          duration: modifier.duration,
-        })) || ([] as Modifier[]),
     },
     onSubmit: async ({ value }) => {
       value.stats.currentPower = value.stats.power;
@@ -132,13 +122,11 @@ const CyberneticForm = () => {
 
       value.stats = { ...filteredStats };
 
-      const { weapons, armor, cybernetics, actions, keywords, ...rest } = value;
+      const { weapons, armor, actions, keywords, ...rest } = value;
 
       const data = {
         ...rest,
-        weaponIds: extractItemListIds(value.weapons),
-        armorIds: extractItemListIds(value.armor),
-        cyberneticIds: extractItemListIds(value.cybernetics),
+        itemIds: extractItemListIds([...value.weapons, ...value.armor]),
         actionIds: extractItemListIds(value.actions),
         keywordIds: extractKeywordListIds(value.keywords),
       };
@@ -189,7 +177,7 @@ const CyberneticForm = () => {
       setDeleteMode={setDeleteMode}
     >
       <form
-        className="flex flex-col gap-8"
+        className="flex flex-col gap-4 sm:gap-8"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -198,28 +186,23 @@ const CyberneticForm = () => {
       >
         <div className="flex items-center justify-center gap-4">
           <h1>
-            {' '}
             {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Augmentation'}
           </h1>
         </div>
         <Divider />
-        <ArrowHeader2 title="Cybernetic Information" />
-        <div className="flex w-full gap-4 sm:gap-6 lg:gap-8">
+        <ArrowHeader2 title="Augment Information" />
+        <div className="flex w-full gap-4 sm:gap-8">
           <cyberneticForm.Field
             name="name"
             validators={{
               onChange: ({ value }) =>
                 value.length < 2
-                  ? 'Cybernetic name must be at least 2 characters long'
+                  ? 'Augment name must be at least 2 characters long'
                   : undefined,
             }}
           >
             {(field) => (
-              <InputField
-                className="grow"
-                label="Cybernetic name"
-                field={field}
-              />
+              <InputField className="grow" label="Augment Name" field={field} />
             )}
           </cyberneticForm.Field>
           <cyberneticForm.Field name="price">
@@ -262,15 +245,15 @@ const CyberneticForm = () => {
               <InputField
                 className="w-full max-w-28"
                 type="number"
-                label="Item grade"
+                label="Item Grade"
                 field={field}
               />
             )}
           </cyberneticForm.Field>
         </div>
-        <div className="flex w-full flex-wrap gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid w-full gap-4 max-sm:grid-rows-2 sm:grid-cols-2 sm:flex-row sm:gap-8">
           <cyberneticForm.Field
-            name="cyberneticType"
+            name="itemSubtype"
             listeners={{
               onChange: ({ value }) => {
                 if (value !== 'offensive') {
@@ -295,41 +278,35 @@ const CyberneticForm = () => {
             }}
           >
             {(field) => (
-              <SelectField
-                className="grow"
-                type="select"
-                label="Cybernetic type"
+              <InputSelectField
                 field={field}
-              >
-                <option defaultValue="" disabled></option>
-                <option value="roll">Roll</option>
-                <option value="stat">Stat</option>
-                <option value="offensive">Offensive</option>
-                <option value="defensive">Defensive</option>
-                <option value="function">Function</option>
-              </SelectField>
-            )}
-          </cyberneticForm.Field>
-          <cyberneticForm.Field name="stats.cyber">
-            {(field) => (
-              <InputField
-                className="max-w-28"
-                type="number"
-                label="Cyber"
-                field={field}
+                label="Augment Type"
+                options={['cybernetic', 'mutation']}
               />
             )}
           </cyberneticForm.Field>
-          <cyberneticForm.Field name="stats.power">
-            {(field) => (
-              <InputField
-                className="max-w-28"
-                type="number"
-                label="Power"
-                field={field}
-              />
-            )}
-          </cyberneticForm.Field>
+          <div className="flex gap-4 sm:gap-8">
+            <cyberneticForm.Field name="stats.cyber">
+              {(field) => (
+                <InputField
+                  className="sm:max-w-28"
+                  type="number"
+                  label="Cyber"
+                  field={field}
+                />
+              )}
+            </cyberneticForm.Field>
+            <cyberneticForm.Field name="stats.power">
+              {(field) => (
+                <InputField
+                  className="sm:max-w-28"
+                  type="number"
+                  label="Power"
+                  field={field}
+                />
+              )}
+            </cyberneticForm.Field>
+          </div>
         </div>
         <div className="flex flex-col gap-8 sm:flex-row">
           <ThemeContainer
@@ -389,49 +366,18 @@ const CyberneticForm = () => {
             }}
           >
             {(field) => (
-              <TextAreaField label="Cybernetic description" field={field} />
+              <TextAreaField label="Cybernetic Description" field={field} />
             )}
           </cyberneticForm.Field>
         </div>
         <div className="flex flex-col gap-4">
           <KeywordLinkField form={cyberneticForm} keywordType="chromebits" />
-          <cyberneticForm.Subscribe
-            selector={(state) => [state.values.cyberneticType]}
-          >
-            {([cyberneticType]) => (
-              <>
-                {(cyberneticType === 'stat' || cyberneticType === 'roll') && (
-                  <cyberneticForm.Field name="modifiers" mode="array">
-                    {(field) => {
-                      return (
-                        <ModifierField form={cyberneticForm} field={field} />
-                      );
-                    }}
-                  </cyberneticForm.Field>
-                )}
-                {cyberneticType === 'offensive' && (
-                  <>
-                    <Divider />
-                    <WeaponLinkField form={cyberneticForm} />
-                  </>
-                )}
-                {cyberneticType === 'defensive' && (
-                  <>
-                    <Divider />
-                    <ArmorLinkField form={cyberneticForm} />
-                  </>
-                )}
-                {(cyberneticType === 'offensive' ||
-                  cyberneticType === 'defensive' ||
-                  cyberneticType === 'function') && (
-                  <>
-                    <Divider />
-                    <ActionLinkField form={cyberneticForm} />
-                  </>
-                )}
-              </>
-            )}
-          </cyberneticForm.Subscribe>
+          <Divider />
+          <WeaponLinkField form={cyberneticForm} />
+          <Divider />
+          <ArmorLinkField form={cyberneticForm} />
+          <Divider />
+          <ActionLinkField form={cyberneticForm} />
           <Divider />
         </div>
         <BtnRect

@@ -10,6 +10,7 @@ import Vehicles from './Vehicles';
 import Items from './Items';
 import { useLocation } from 'react-router-dom';
 import Drones from './Drones';
+import useInventory from 'src/hooks/useInventory';
 
 const Inventory = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -23,43 +24,45 @@ const Inventory = () => {
     isLoading,
   } = useActiveCharacterQuery(apiUrl);
 
+  const { inventory } = useInventory(character?.characterInventory);
+
   if (isLoading || isPending) return <Loading />;
 
   return (
     <div className="flex w-full max-w-6xl flex-col gap-8">
       {category === 'weapons' ? (
         <Weapons
-          weaponList={character?.characterInventory?.weapons}
+          weaponList={inventory?.weapons}
           key={character?.id + ' ' + 'weapons'}
         />
-      ) : category === 'armor' ? (
+      ) : category === 'armors' ? (
         <Armor
-          armorList={character?.characterInventory?.armor}
+          armorList={inventory?.armor}
           key={character?.id + ' ' + 'armor'}
         />
       ) : category === 'cybernetics' ? (
         <Cybernetics
-          cyberneticList={character?.characterInventory?.cybernetics}
+          cyberneticList={inventory?.cybernetics}
           key={character?.id + ' ' + 'cybernetics'}
         />
       ) : category === 'items' ? (
         <Items
-          itemList={character?.characterInventory?.items}
+          itemList={inventory?.items}
           key={character?.id + ' ' + 'items'}
         />
       ) : category === 'vehicles' ? (
         <Vehicles
-          vehicleList={character?.characterInventory?.vehicles}
+          vehicleList={inventory?.vehicles}
           key={character?.id + ' ' + 'vehicles'}
         />
       ) : category === 'modifications' ? (
         <Modifications
-          modificationList={character?.characterInventory?.modifications}
+          modificationList={inventory?.modifications}
           key={character?.id + ' ' + 'vehicle modifications'}
         />
       ) : category === 'drones' ? (
         <Drones
-          droneList={character?.characterInventory?.drones}
+          droneList={inventory?.drones}
           key={character?.id + ' ' + 'drones'}
         />
       ) : (

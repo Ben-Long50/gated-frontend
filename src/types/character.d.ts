@@ -66,73 +66,23 @@ interface CharacterPreferences {
 interface CharacterCart {
   id: number;
   characterId: number;
-  weapons: CartWeaponReference[];
-  armor: CartArmorReference[];
-  cybernetics: CartCyberneticReference[];
-  vehicles: CartVehicleReference[];
-  drones: CartDroneReference[];
-  modifications: CartModificationReference[];
   items: CartItemReference[];
 }
 
 interface CharacterInventory {
   id: number;
   characterId: number;
-  weapons: WeaponWithKeywords[];
-  armor: ArmorWithKeywords[];
-  cybernetics: CyberneticWithKeywords[];
-  vehicles: VehicleWithWeapons[];
-  drones: Drone[];
   items: Item[];
   actions: Action[];
 }
 
-interface CartWeaponReference {
-  id: number;
-  characterCartId: number;
-  weaponId: number;
-  weapon: WeaponWithKeywords;
-  quantity: number;
-}
-
-interface CartArmorReference {
-  id: number;
-  characterCartId: number;
-  armorId: number;
-  armor: ArmorWithKeywords;
-  quantity: number;
-}
-
-interface CartCyberneticReference {
-  id: number;
-  characterCartId: number;
-  cyberneticId: number;
-  cybernetic: CyberneticWithKeywords;
-  quantity: number;
-}
-
-interface CartVehicleReference {
-  id: number;
-  characterCartId: number;
-  vehicleId: number;
-  vehicle: Vehicle;
-  quantity: number;
-}
-
-interface CartDroneReference {
-  id: number;
-  characterCartId: number;
-  droneId: number;
-  drone: Drone;
-  quantity: number;
-}
-
-interface CartModificationReference {
-  id: number;
-  characterCartId: number;
-  modificationId: number;
-  modification: Modification;
-  quantity: number;
+interface SortedInventory {
+  weapons: Item[];
+  armor: Item[];
+  cybernetics: Item[];
+  vehicles: Item[];
+  drones: Item[];
+  items: Item[];
 }
 
 interface CartItemReference {

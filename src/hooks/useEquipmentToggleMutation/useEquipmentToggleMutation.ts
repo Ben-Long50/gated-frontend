@@ -22,69 +22,27 @@ const useToggleEquipmentMutation = (apiUrl: string, characterId: number) => {
         ['character', characterId],
       );
 
-      const updateInventory = () => {
-        switch (mutationInfo.category) {
-          case 'weapon':
-            return {
-              ...prevCharacterData?.characterInventory,
-              weapons: prevCharacterData?.characterInventory.weapons.map(
-                (weapon) =>
-                  weapon.id === mutationInfo.itemId
-                    ? { ...weapon, equipped: !weapon.equipped }
-                    : weapon,
-              ),
-            };
-          case 'armor':
-            return {
-              ...prevCharacterData?.characterInventory,
-              armor: prevCharacterData?.characterInventory.armor.map((armor) =>
-                armor.id === mutationInfo.itemId
-                  ? { ...armor, equipped: !armor.equipped }
-                  : armor,
-              ),
-            };
-          case 'cybernetic':
-            return {
-              ...prevCharacterData?.characterInventory,
-              cybernetics:
-                prevCharacterData?.characterInventory.cybernetics.map(
-                  (cybernetic) =>
-                    cybernetic.id === mutationInfo.itemId
-                      ? { ...cybernetic, equipped: !cybernetic.equipped }
-                      : cybernetic,
-                ),
-            };
-          case 'item':
-            return {
-              ...prevCharacterData?.characterInventory,
-              items: prevCharacterData?.characterInventory.items.map((item) =>
-                item.id === mutationInfo.itemId
-                  ? { ...item, equipped: !item.equipped }
-                  : item,
-              ),
-            };
-          default:
-            return;
-        }
-      };
-
-      const newInventory = updateInventory();
-
-      // Optimistically update to the new value
       queryClient.setQueryData(
         ['character', characterId],
         (prev: Character) => ({
           ...prev,
-          characterInventory: newInventory,
+          characterInventory: {
+            ...prevCharacterData?.characterInventory,
+            items: prevCharacterData?.characterInventory.items.map((item) =>
+              item.id === mutationInfo.itemId
+                ? { ...item, equipped: !item.equipped }
+                : item,
+            ),
+          },
         }),
       );
-      // Return a context object with the snapshotted value
+
       return { prevCharacterData };
     },
+
     onSuccess: () => {
       return queryClient.invalidateQueries({
         queryKey: ['character', characterId],
-        exact: false,
       });
     },
     throwOnError: false,

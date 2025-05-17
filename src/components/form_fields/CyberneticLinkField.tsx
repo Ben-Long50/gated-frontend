@@ -6,6 +6,8 @@ import { Cybernetic, CyberneticWithKeywords } from 'src/types/cybernetic';
 import Cybernetics from '../Cybernetics';
 import CyberneticCard from '../CyberneticCard';
 import ArrowHeader2 from '../ArrowHeader2';
+import { Item } from 'src/types/item';
+import ItemCard from '../ItemCard';
 
 const CyberneticLinkField = ({ form }: { form: FormApi }) => {
   const [cyberneticsOpen, setCyberneticsOpen] = useState(false);
@@ -15,7 +17,7 @@ const CyberneticLinkField = ({ form }: { form: FormApi }) => {
   return (
     <>
       <form.Subscribe selector={(state: FormState) => state.values.cybernetics}>
-        {(cybernetics: CyberneticWithKeywords[]) => (
+        {(cybernetics: Item[]) => (
           <>
             {cybernetics.length > 0 && (
               <ArrowHeader2 title="Linked Cybernetics" />
@@ -37,19 +39,19 @@ const CyberneticLinkField = ({ form }: { form: FormApi }) => {
                       />
                     )}
                   </FormLinkModal>
-                  {cybernetics.map((cybernetic: CyberneticWithKeywords) => {
+                  {cybernetics.map((cybernetic: Item) => {
                     return (
                       <button
                         key={cybernetic.id}
                         onClick={() => {
                           field.handleChange(
                             field.state.value.filter(
-                              (item: Cybernetic) => item.id !== cybernetic.id,
+                              (item: Item) => item.id !== cybernetic.id,
                             ),
                           );
                         }}
                       >
-                        <CyberneticCard cybernetic={cybernetic} mode="form" />
+                        <ItemCard item={cybernetic} mode="form" />
                       </button>
                     );
                   })}

@@ -5,12 +5,13 @@ const editCart = async (
   characterId: number,
   cartId: number,
   formData: {
-    category: string;
     itemId: number;
     value: number;
   },
 ) => {
   try {
+    console.log(formData);
+
     const response = await fetch(
       `${apiUrl}/characters/${characterId}/cart/${cartId}`,
       {
@@ -20,7 +21,6 @@ const editCart = async (
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          category: formData.category,
           itemId: formData.itemId,
           value: formData.value,
         }),

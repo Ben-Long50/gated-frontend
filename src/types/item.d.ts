@@ -1,32 +1,69 @@
 import { Action } from './action';
-import { Modifier } from './modifier';
+import { Keyword } from './keyword';
 import { Picture } from './picture';
 
 interface Item {
   id: number;
   name: string;
+  itemType: ItemType;
   rarity: string;
   grade: number;
   picture: Picture;
-  price: number;
+  price: number | null;
   equipped: boolean;
-  category: ItemCategory;
   description: string;
-  stats: Partial<ItemStats>;
-  actions: Action[];
-  modifiers: Modifier[];
+  stats: Stats;
+  keywords: { keyword: Keyword; value: number | null }[];
+  itemLinkReference?: LinkReference;
+  // modifiers: Modifier[];
 }
 
-interface ItemStats {
+interface LinkReference {
+  id: number;
+  itemId: number;
+  items: Item[];
+  actions: Action[];
+}
+
+interface Stats {
+  damage?: number;
+  salvo?: number;
+  flurry?: number;
   range?: number;
+  currentAmmoCount?: number;
+  magCapacity?: number;
+  currentMagCount?: number;
+  magCount?: number;
+  armor?: number;
+  ward?: number;
+  currentBlock?: number;
+  block?: number;
+  cyber?: number;
   currentPower?: number;
   power?: number;
   weight?: number;
-  currentStacks?: number;
-  maxStacks?: number;
+  size?: number;
+  speed?: number;
+  agility?: number;
+  hull?: number;
+  currentHull?: number;
+  cargo?: number;
+  currentCargo?: number;
+  hangar?: number;
+  currentHangar?: number;
+  pass?: number;
+  currentPass?: number;
+  weapon?: number;
+  currentWeapon?: number;
 }
 
-enum ItemCategory {
+enum ItemType {
+  weapon = 'weapon',
+  armor = 'armor',
+  cybernetic = 'cybernetic',
+  vehicle = 'vehicle',
+  drone = 'drone',
+  modification = 'modification',
   reusable = 'reusable',
   consumable = 'consumable',
 }

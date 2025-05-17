@@ -54,7 +54,7 @@ const CodexRoutes = () => {
           element={<WeaponForm key="update weapon" />}
         />
       </Route>
-      <Route path="armor">
+      <Route path="armors">
         <Route index element={<Armor key="armor" />} />
         <Route path=":armorId" element={<ItemPageWrapper />} />
         <Route path="create" element={<ArmorForm key="create armor" />} />

@@ -1,6 +1,5 @@
 import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
-import { ArmorWithKeywords } from 'src/types/armor';
 import StatBars from './StatBars';
 import ArrowHeader3 from './ArrowHeader3';
 import { useContext } from 'react';
@@ -8,13 +7,14 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
 import { Link } from 'react-router-dom';
 import ItemPicture from './ItemPicture';
+import { Item } from 'src/types/item';
 
 const SubarmorCard = ({
   armor,
   mode,
   cardWidth,
 }: {
-  armor: ArmorWithKeywords;
+  armor: Item;
   mode?: string;
   cardWidth: number;
 }) => {

@@ -1,6 +1,5 @@
 import { Keyword } from 'src/types/keyword';
 import Tag from './Tag';
-import { WeaponWithKeywords } from 'src/types/weapon';
 import StatBars from './StatBars';
 import ArrowHeader3 from './ArrowHeader3';
 import ThemeContainer from './ThemeContainer';
@@ -8,6 +7,7 @@ import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 import ItemPicture from './ItemPicture';
+import { Item } from 'src/types/item';
 
 const SubweaponCard = ({
   vehicleId,
@@ -16,7 +16,7 @@ const SubweaponCard = ({
   cardWidth,
 }: {
   vehicleId?: number;
-  weapon: WeaponWithKeywords;
+  weapon: Item;
   quantity?: number;
   mode?: string;
   cardWidth: number;

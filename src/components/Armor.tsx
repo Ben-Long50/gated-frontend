@@ -14,6 +14,7 @@ import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
 import { ItemObject } from 'src/types/global';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import { Item } from 'src/types/item';
 
 const Armor = ({
   title,
@@ -23,8 +24,8 @@ const Armor = ({
 }: {
   title?: string;
   forcedMode?: string;
-  armorList?: ArmorWithKeywords[];
-  toggleFormLink?: (item: ItemObject) => void;
+  armorList?: Item[];
+  toggleFormLink?: (item: Item) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);

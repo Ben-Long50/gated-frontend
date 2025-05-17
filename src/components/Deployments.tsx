@@ -2,17 +2,12 @@ import { useContext, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { LayoutContext } from '../contexts/LayoutContext';
-import { Link, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
 import InventoryModal from './InventoryModal';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import DeploymentsList from './DeploymentsList';
-import { Drone } from 'src/types/drone';
-import { VehicleWithWeapons } from 'src/types/vehicle';
-import WeaponCard from './WeaponCard';
-import { WeaponWithKeywords } from 'src/types/weapon';
 import ThemeContainer from './ThemeContainer';
 import ItemPicture from './ItemPicture';
 import StatBars from './StatBars';
@@ -20,19 +15,20 @@ import { VehicleControls } from './VehicleCard';
 import { DroneControls } from './DroneCard';
 import ArrowHeader1 from './ArrowHeader1';
 import useCharacter from 'src/hooks/useCharacter';
+import { Item } from 'src/types/item';
+import ItemCard from './ItemCard';
+import ItemCardMobile from './ItemCardMobile';
+import { LayoutContext } from 'src/contexts/LayoutContext';
 
 const Deployments = () => {
   const { apiUrl, user } = useContext(AuthContext);
+  const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { characterId } = useParams();
+  const location = useLocation();
+  const [inventoryOpen, setInventoryOpen] = useState(false);
   const path = location.pathname.split('/');
   const mode = path[path.length - 1];
-
-  const [inventoryOpen, setInventoryOpen] = useState(false);
-
-  const toggleInventoryOpen = () => {
-    setInventoryOpen((prev) => !prev);
-  };
 
   const [active, setActive] = useState<{
     id: null | number;
@@ -49,10 +45,19 @@ const Deployments = () => {
     }
   });
 
+  const toggleInventoryOpen = () => {
+    setInventoryOpen((prev) => !prev);
+  };
+
+  const toggleActive = (id: number | null, category: string | null) => {
+    localStorage.setItem('activeDeployment', JSON.stringify({ id, category }));
+    setActive({ id, category });
+  };
+
   const {
     data: character,
-    isLoading: characterLoading,
-    isPending: characterPending,
+    isLoading,
+    isPending,
   } = useCharacterQuery(apiUrl, Number(characterId));
 
   const filteredCharacter = useCharacter(character);
@@ -61,31 +66,30 @@ const Deployments = () => {
     switch (active?.category) {
       case 'vehicle':
         return (
-          character?.characterInventory?.vehicles.filter(
-            (vehicle: VehicleWithWeapons) => vehicle.id === active.id,
+          filteredCharacter?.equipment?.vehicles.filter(
+            (vehicle: Item) => vehicle.id === active.id,
           )[0] || null
         );
       case 'drone':
         return (
-          character?.characterInventory?.drones.filter(
-            (drone: Drone) => drone.id === active.id,
+          filteredCharacter?.equipment?.drones.filter(
+            (drone: Item) => drone.id === active.id,
           )[0] || null
         );
       default:
         return null;
     }
-  }, [active, character]);
+  }, [active, filteredCharacter]);
 
   const weapons = useMemo(() => {
     return (
-      character?.characterInventory.weapons.filter(
-        (weapon: WeaponWithKeywords) =>
-          activeItem?.weapons?.some(
-            (item: WeaponWithKeywords) => item.id === weapon.id,
-          ),
+      filteredCharacter?.equipment?.weapons.filter((weapon: Item) =>
+        activeItem?.itemLinkReference?.items.some(
+          (item: Item) => item.id === weapon.id,
+        ),
       ) || []
     );
-  }, [activeItem, character]);
+  }, [activeItem, filteredCharacter]);
 
   const cardRef = useRef(null);
   const [cardHeight, setCardHeight] = useState<number | null>(null);
@@ -95,14 +99,6 @@ const Deployments = () => {
       setCardHeight(cardRef.current.offsetHeight);
     }
   }, [activeItem]);
-
-  const toggleActive = (id: number | null, category: string | null) => {
-    localStorage.setItem('activeDeployment', JSON.stringify({ id, category }));
-    setActive({ id, category });
-  };
-
-  const isLoading = characterLoading;
-  const isPending = characterPending;
 
   if (isLoading || isPending) return <Loading />;
 
@@ -166,14 +162,23 @@ const Deployments = () => {
             <div className="flex flex-col gap-8">
               <ArrowHeader2 title="Weapons" />
               <div className="grid gap-8 xl:grid-cols-2">
-                {weapons?.map((weapon: WeaponWithKeywords) => (
-                  <WeaponCard
-                    key={weapon.id}
-                    weapon={weapon}
-                    ownerId={character?.userId}
-                    mode={mode}
-                  />
-                ))}
+                {weapons?.map((weapon: Item) =>
+                  mobile ? (
+                    <ItemCardMobile
+                      key={weapon.id}
+                      item={weapon}
+                      mode={mode}
+                      ownerId={character?.userId}
+                    />
+                  ) : (
+                    <ItemCard
+                      key={weapon.id}
+                      item={weapon}
+                      mode={mode}
+                      ownerId={character?.userId}
+                    />
+                  ),
+                )}
               </div>
             </div>
           )}
@@ -190,7 +195,7 @@ const Deployments = () => {
                 </BtnRect>
                 <InventoryModal
                   character={character}
-                  equipment={filteredCharacter.equipment}
+                  inventory={filteredCharacter.inventory}
                   active={active}
                   toggleModal={toggleInventoryOpen}
                   toggleActive={toggleActive}
