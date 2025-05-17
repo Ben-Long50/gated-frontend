@@ -107,6 +107,7 @@ const WeaponForm = () => {
         magCount: weapon?.stats.magCount || '',
         currentMagCount: weapon?.stats.currentMagCount || '',
         weight: weapon?.stats.weight || '',
+        power: weapon?.stats.power || '',
       } as WeaponStats,
       weapons:
         weapon?.itemLinkReference?.items.filter(
@@ -125,6 +126,10 @@ const WeaponForm = () => {
       value.stats.currentMagCount = value.stats.magCount
         ? value.stats.magCount - 1
         : 0;
+
+      value.stats.currentPower = value.stats.power
+        ? value.stats.power
+        : undefined;
 
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
@@ -395,6 +400,16 @@ const WeaponForm = () => {
                   className="grow"
                   type="number"
                   label="Weight"
+                  field={field}
+                />
+              )}
+            </weaponForm.Field>
+            <weaponForm.Field name="stats.power">
+              {(field) => (
+                <InputField
+                  className="grow"
+                  type="number"
+                  label="Power"
                   field={field}
                 />
               )}

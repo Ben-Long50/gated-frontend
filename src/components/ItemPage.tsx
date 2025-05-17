@@ -69,11 +69,9 @@ const ItemPage = ({
     }
   }, [isLoading]);
 
-  console.log(item);
+  if (isLoading) return <Loading />;
 
   if (!item) return <h1>No item found</h1>;
-
-  if (isLoading) return <Loading />;
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-8">

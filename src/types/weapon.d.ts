@@ -41,4 +41,6 @@ interface WeaponStats {
   currentMagCount?: number;
   magCount?: number;
   weight?: number;
+  power?: number;
+  currentPower?: number;
 }
