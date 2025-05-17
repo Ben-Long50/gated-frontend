@@ -43,6 +43,8 @@ const CharacterSheet = () => {
     isError: characterError,
   } = useCharacterQuery(apiUrl, Number(characterId));
 
+  console.log(character);
+
   const filteredCharacter = useCharacter(character);
 
   const isLoading = characterLoading;

@@ -64,6 +64,7 @@ const CharacterForm = () => {
         weight: true,
         sex: true,
         picture: true,
+        backstory: true,
         level: true,
         profits: true,
         stats: true,

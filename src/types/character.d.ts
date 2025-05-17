@@ -55,6 +55,7 @@ interface CharacterPreferences {
   weight: boolean;
   sex: boolean;
   picture: boolean;
+  backstory: boolean;
   level: boolean;
   profits: boolean;
   stats: boolean;

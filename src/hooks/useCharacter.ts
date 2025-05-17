@@ -54,6 +54,18 @@ const useCharacter = (character: Character) => {
         characterOwner || character?.preferences?.sex
           ? character?.sex.charAt(0).toUpperCase() + character?.sex.slice(1)
           : '???',
+      backstory:
+        characterOwner || character?.preferences.backstory
+          ? character?.backstory
+          : { html: '<h1>?????</h1>' },
+      firstTaste:
+        characterOwner || character?.preferences.backstory
+          ? character?.firstTaste
+          : { html: '<h1>?????</h1>' },
+      badMedicine:
+        characterOwner || character?.preferences.backstory
+          ? character?.badMedicine
+          : { html: '<h1>?????</h1>' },
       stats: Object.fromEntries(
         Object.entries(characterStats).map(([stat, value]) => {
           if (characterOwner || character?.preferences?.stats) {

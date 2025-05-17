@@ -6,6 +6,7 @@ import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import BtnRect from './buttons/BtnRect';
 import BtnAuth from './buttons/BtnAuth';
 import { LayoutContext } from '../contexts/LayoutContext';
+import useCharacter from 'src/hooks/useCharacter';
 
 const Resume = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -21,19 +22,21 @@ const Resume = () => {
     isLoading,
     isPending,
     isError,
-  } = useCharacterQuery(apiUrl, characterId);
+  } = useCharacterQuery(apiUrl, Number(characterId));
+
+  const filteredCharacter = useCharacter(character);
 
   let content;
 
   switch (resume) {
     case 'Backstory':
-      content = character?.backstory?.html;
+      content = filteredCharacter?.backstory?.html;
       break;
     case 'First Taste':
-      content = character?.firstTaste?.html;
+      content = filteredCharacter?.firstTaste?.html;
       break;
     case 'Bad Medicine':
-      content = character?.badMedicine?.html;
+      content = filteredCharacter?.badMedicine?.html;
       break;
     default:
       content = null;

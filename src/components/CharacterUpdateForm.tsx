@@ -105,6 +105,7 @@ const CharacterUpdateForm = () => {
         weight: character?.preferences?.weight ?? true,
         sex: character?.preferences?.sex ?? true,
         picture: character?.preferences?.picture ?? true,
+        backstory: character?.preferences?.backstory ?? true,
         level: character?.preferences?.level ?? true,
         profits: character?.preferences?.profits ?? true,
         stats: character?.preferences?.stats ?? true,
