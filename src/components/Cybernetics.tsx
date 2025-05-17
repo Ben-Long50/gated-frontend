@@ -38,16 +38,34 @@ const Cybernetics = ({
 
   const include = searchParams.getAll('include');
   const exclude = searchParams.getAll('exclude');
+  const augmentType = searchParams.get('augmentType');
 
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
   );
 
-  const cybernetics = useCybernetics({
+  const {
+    filteredCybernetics: cybernetics,
+    filteredMutations: mutations,
+    filterByQuery,
+    filterByCategory,
+    isLoading,
+  } = useCybernetics({
     itemList: cyberneticList,
     includedKeywords: include.length > 0 ? include : undefined,
     excludedKeywords: exclude.length > 0 ? exclude : undefined,
   });
+
+  const augmentList = (() => {
+    switch (augmentType) {
+      case 'cybernetic':
+        return cybernetics;
+      case 'mutation':
+        return mutations;
+      default:
+        return [];
+    }
+  })();
 
   const searchForm = useForm({
     defaultValues: {
@@ -55,12 +73,12 @@ const Cybernetics = ({
       query: '',
     },
     onSubmit: () => {
-      cybernetics.filterByQuery('');
-      cybernetics.filterByCategory('');
+      filterByQuery('');
+      filterByCategory('');
     },
   });
 
-  if (cybernetics.isLoading || cybernetics.isPending) return <Loading />;
+  if (isLoading) return <Loading />;
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
@@ -88,7 +106,7 @@ const Cybernetics = ({
                   initialValue=""
                   label="Augment Type"
                   onChange={() => {
-                    cybernetics.filterByCategory(field.state.value);
+                    filterByCategory(field.state.value);
                   }}
                 />
               )}
@@ -102,7 +120,7 @@ const Cybernetics = ({
                   label="Search Cybernetics"
                   field={field}
                   onChange={() => {
-                    cybernetics.filterByQuery(field.state.value);
+                    filterByQuery(field.state.value);
                   }}
                 />
               )}
@@ -153,7 +171,7 @@ const Cybernetics = ({
       </ThemeContainer>
 
       {cardType === 'large' ? (
-        cybernetics.filteredCybernetics.map((cybernetic: Item) => {
+        augmentList.map((cybernetic: Item) => {
           return (
             <ItemCard
               key={cybernetic.id}
@@ -165,7 +183,7 @@ const Cybernetics = ({
         })
       ) : (
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-          {cybernetics.filteredCybernetics.map((cybernetic: Item) => {
+          {augmentList.map((cybernetic: Item) => {
             return (
               <ItemCardMobile
                 key={cybernetic.id}

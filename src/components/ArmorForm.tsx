@@ -16,13 +16,11 @@ import { useLocation, useParams } from 'react-router-dom';
 import useDeleteArmorMutation from '../hooks/useDeleteArmorMutation/useDeleteArmorMutation';
 import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
-import useArmorPieceQuery from '../hooks/useArmorPieceQuery/useArmorPieceQuery';
-import { ArmorStats, ArmorWithKeywords } from 'src/types/armor';
+import { ArmorStats } from 'src/types/armor';
 import useModifyArmorMutation from '../hooks/useModifyArmorMutation/useModifyArmorMutation';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import { Action } from 'src/types/action';
-import { WeaponWithKeywords } from 'src/types/weapon';
 
 import WeaponLinkField from './form_fields/WeaponLinkField';
 import ArmorLinkField from './form_fields/ArmorLinkField';
@@ -31,6 +29,8 @@ import KeywordLinkField from './form_fields/KeywordLinkField';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 import { Item } from 'src/types/item';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
+import useWeapons from 'src/hooks/useWeapons';
+import useArmor from 'src/hooks/useArmor';
 
 const ArmorForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -43,6 +43,14 @@ const ArmorForm = () => {
   const mode = parts[parts.length - 1];
 
   const { data: armor } = useItemQuery(apiUrl, Number(armorId), 'armor');
+
+  const { filteredWeapons: weapons } = useWeapons({
+    excludedKeywords: ['Cyber Weapon', 'Vehicle Weapon', 'Drone Weapon'],
+  });
+
+  const { filteredArmor: armors } = useArmor({
+    excludedKeywords: ['Cyber Armor'],
+  });
 
   const keywords = useKeywords('armor');
 
@@ -376,9 +384,9 @@ const ArmorForm = () => {
           <div className="flex flex-col gap-4">
             <KeywordLinkField form={armorForm} keywordType="armor" />
             <Divider />
-            <WeaponLinkField form={armorForm} />
+            <WeaponLinkField form={armorForm} weaponList={weapons} />
             <Divider />
-            <ArmorLinkField form={armorForm} />
+            <ArmorLinkField form={armorForm} armorList={armors} />
             <Divider />
             <ActionLinkField form={armorForm} />
             <Divider />

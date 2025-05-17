@@ -27,6 +27,7 @@ import useModifyDroneMutation from '../hooks/useModifyDroneMutation/useModifyDro
 import useDeleteDroneMutation from '../hooks/useDeleteDroneMutation/useDeleteDroneMutation';
 import { DroneStats } from 'src/types/drone';
 import { Modification } from 'src/types/vehicle';
+import useWeapons from 'src/hooks/useWeapons';
 
 const DroneForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -40,6 +41,10 @@ const DroneForm = () => {
 
   const { data: drone, isLoading } = useDroneQuery(apiUrl, Number(droneId), {
     enabled: !!droneId,
+  });
+
+  const { filteredWeapons: weapons } = useWeapons({
+    includedKeywords: ['Drone Weapon'],
   });
 
   const [imagePreview, setImagePreview] = useState(
@@ -365,7 +370,7 @@ const DroneForm = () => {
         <div className="flex flex-col gap-4">
           <KeywordLinkField form={droneForm} keywordType="hardwired" />
           <Divider />
-          <WeaponLinkField form={droneForm} />
+          <WeaponLinkField form={droneForm} weaponList={weapons} />
           <Divider />
           <ActionLinkField form={droneForm} />
           <Divider />

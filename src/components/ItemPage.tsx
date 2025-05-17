@@ -1,14 +1,8 @@
-import {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
 import Icon from '@mdi/react';
@@ -109,24 +103,6 @@ const ItemPage = ({
             />
             <h4>Cost {item.price ? <span>{`${item.price}p`}</span> : 'N/A'}</h4>
           </div>
-          {/* {(item.cyberneticType || item.body) && (
-            <div className="flex items-center justify-between">
-              {item.cyberneticType && (
-                <h3>
-                  {item.cyberneticType[0].toUpperCase() +
-                    item.cyberneticType.slice(1)}{' '}
-                  Augment
-                </h3>
-              )}
-            </div>
-          )} */}
-          {/* {item.modifiers && item.modifiers?.length > 0 && (
-            <div className="flex w-full items-center justify-start gap-2 sm:gap-4">
-              {item.modifiers?.map((modifier: Modifier, index: number) => (
-                <ModifierTag key={index} modifier={modifier} />
-              ))}
-            </div>
-          )} */}
           {item.keywords?.length > 0 && (
             <div
               className={` ${mode !== 'codex' && 'col-span-2'} col-start-1 row-start-2 flex flex-wrap items-center gap-1`}
@@ -183,35 +159,8 @@ const ItemPage = ({
                     },
                   )}
               </div>
-              {/* {item?.category && (
-                <div className="flex items-center gap-4">
-                  <h4>{subcategoryMap[item.subcategory]}</h4>
-                  <p className="text-tertiary italic">
-                    ({item.category[0].toUpperCase() + item.category.slice(1)})
-                  </p>
-                  <Icon
-                    className="text-secondary"
-                    path={mdiTriangleDown}
-                    size={0.35}
-                    rotate={-90}
-                  />
-                  <p>{item.itemType}</p>
-                </div>
-              )} */}
             </div>
           )}
-          {/* {mode !== 'equipment' &&
-            item.modifiers &&
-            item.modifiers[0]?.duration && (
-              <div className="flex items-center gap-4">
-                <StopwatchIcon className="text-secondary size-8" />
-                <p>{item.modifiers[0].duration?.value}</p>
-                <p>
-                  {item.modifiers[0].duration?.unit[0].toUpperCase() +
-                    item.modifiers[0].duration?.unit.slice(1)}
-                </p>
-              </div>
-            )} */}
         </div>
       </div>
       <div

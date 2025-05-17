@@ -15,13 +15,11 @@ import { useLocation, useParams } from 'react-router-dom';
 import useDeleteWeaponMutation from '../hooks/useDeleteWeaponMutation/useDeleteWeaponMutation';
 import { Keyword } from 'src/types/keyword';
 import SelectField from './SelectField';
-import useWeaponQuery from '../hooks/useWeaponQuery/useWeaponQuery';
-import { WeaponStats, WeaponWithKeywords } from 'src/types/weapon';
+import { WeaponStats } from 'src/types/weapon';
 import useModifyWeaponMutation from '../hooks/useModifyWeaponMutation/useModifyWeaponMutation';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import { Action } from 'src/types/action';
-import { ArmorWithKeywords } from 'src/types/armor';
 import ActionLinkField from './form_fields/ActionLinkField';
 import ArmorLinkField from './form_fields/ArmorLinkField';
 import WeaponLinkField from './form_fields/WeaponLinkField';
@@ -29,6 +27,8 @@ import KeywordLinkField from './form_fields/KeywordLinkField';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import { Item } from 'src/types/item';
+import useWeapons from 'src/hooks/useWeapons';
+import useArmor from 'src/hooks/useArmor';
 
 const WeaponForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -41,6 +41,14 @@ const WeaponForm = () => {
   const mode = parts[parts.length - 1];
 
   const { data: weapon } = useItemQuery(apiUrl, Number(weaponId), 'weapon');
+
+  const { filteredWeapons: weapons } = useWeapons({
+    excludedKeywords: ['Cyber Weapon', 'Vehicle Weapon', 'Drone Weapon'],
+  });
+
+  const { filteredArmor: armors } = useArmor({
+    excludedKeywords: ['Cyber Armor'],
+  });
 
   const [imagePreview, setImagePreview] = useState(
     weapon?.picture?.imageUrl || '',
@@ -396,9 +404,9 @@ const WeaponForm = () => {
         <div className="flex flex-col gap-4">
           <KeywordLinkField form={weaponForm} keywordType="weapon" />
           <Divider />
-          <WeaponLinkField form={weaponForm} />
+          <WeaponLinkField form={weaponForm} weaponList={weapons} />
           <Divider />
-          <ArmorLinkField form={weaponForm} />
+          <ArmorLinkField form={weaponForm} armorList={armors} />
           <Divider />
           <ActionLinkField form={weaponForm} />
           <Divider />

@@ -28,6 +28,8 @@ import KeywordLinkField from './form_fields/KeywordLinkField';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 import { Item } from 'src/types/item';
 import InputSelectField from './InputSelectField';
+import useWeapons from 'src/hooks/useWeapons';
+import useArmor from 'src/hooks/useArmor';
 
 const CyberneticForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -44,6 +46,14 @@ const CyberneticForm = () => {
     Number(cyberneticId),
     { enabled: !!cyberneticId },
   );
+
+  const { filteredWeapons: weapons } = useWeapons({
+    includedKeywords: ['Cyber Weapon'],
+  });
+
+  const { filteredArmor: armors } = useArmor({
+    includedKeywords: ['Cyber Armor'],
+  });
 
   const keywords = useKeywords();
 
@@ -373,9 +383,9 @@ const CyberneticForm = () => {
         <div className="flex flex-col gap-4">
           <KeywordLinkField form={cyberneticForm} keywordType="chromebits" />
           <Divider />
-          <WeaponLinkField form={cyberneticForm} />
+          <WeaponLinkField form={cyberneticForm} weaponList={weapons} />
           <Divider />
-          <ArmorLinkField form={cyberneticForm} />
+          <ArmorLinkField form={cyberneticForm} armorList={armors} />
           <Divider />
           <ActionLinkField form={cyberneticForm} />
           <Divider />

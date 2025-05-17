@@ -17,7 +17,7 @@ const useItemQuery = (apiUrl: string, itemId: number, category: string) => {
           return await getWeaponById(apiUrl, itemId);
         case 'armor':
           return await getArmorById(apiUrl, itemId);
-        case 'cybernetic':
+        case 'augmentation':
           return await getCyberneticById(apiUrl, itemId);
         case 'vehicle':
           return await getVehicleById(apiUrl, itemId);

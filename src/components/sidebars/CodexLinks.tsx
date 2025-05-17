@@ -156,16 +156,21 @@ const CodexLinks = ({
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
         icon={<CyberIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
-        title="Cybernetics"
+        title="Augmentations"
       >
         <SubLinkSidebar
-          title="All Cybernetics"
-          path="codex/cybernetics"
+          title="Cybernetics"
+          path="codex/augmentations?augmentType=cybernetic"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        <SubLinkSidebar
+          title="Mutations"
+          path="codex/augmentations?augmentType=mutation"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
-            title="Create a New Cybernetic"
+            title="Create a New Augmentation"
             path="codex/cybernetics/create"
             setSidebarVisibility={setSidebarVisibility}
           />

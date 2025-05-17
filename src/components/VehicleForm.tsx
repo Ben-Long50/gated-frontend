@@ -25,6 +25,7 @@ import KeywordLinkField from './form_fields/KeywordLinkField';
 import WeaponLinkField from './form_fields/WeaponLinkField';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import { Item } from 'src/types/item';
+import useWeapons from 'src/hooks/useWeapons';
 
 const VehicleForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -41,6 +42,10 @@ const VehicleForm = () => {
     Number(vehicleId),
     'vehicle',
   );
+
+  const { filteredWeapons: weapons } = useWeapons({
+    includedKeywords: ['Vehicle Weapon'],
+  });
 
   const [imagePreview, setImagePreview] = useState(
     vehicle?.picture?.imageUrl || '',
@@ -432,7 +437,7 @@ const VehicleForm = () => {
         <div className="flex flex-col gap-4">
           <KeywordLinkField form={vehicleForm} keywordType="vehicle" />
           <Divider />
-          <WeaponLinkField form={vehicleForm} />
+          <WeaponLinkField form={vehicleForm} weaponList={weapons} />
           <Divider />
         </div>
         <vehicleForm.Subscribe selector={(state) => state.errorMap}>

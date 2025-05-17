@@ -4,6 +4,7 @@ import useCyberneticsQuery from './useCyberneticsQuery/useCyberneticsQuery';
 import { CyberneticWithKeywords } from 'src/types/cybernetic';
 
 import { FetchOptions } from 'src/types/fetchOptions';
+import { Item } from 'src/types/item';
 
 const useCybernetics = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
@@ -21,14 +22,11 @@ const useCybernetics = (fetchOptions?: FetchOptions) => {
 
   const filteredCybernetics = category
     ? list
-        ?.filter(
-          (cybernetic: CyberneticWithKeywords) =>
-            cybernetic.cyberneticType === category,
-        )
-        .filter((cybernetic: CyberneticWithKeywords) =>
+        ?.filter((cybernetic: Item) => cybernetic.itemSubtype === category)
+        .filter((cybernetic: Item) =>
           cybernetic.name.toLowerCase().includes(query.toLowerCase()),
         )
-    : (list?.filter((cybernetic: CyberneticWithKeywords) =>
+    : (list?.filter((cybernetic: Item) =>
         cybernetic.name.toLowerCase().includes(query.toLowerCase()),
       ) ?? []);
 
@@ -45,7 +43,12 @@ const useCybernetics = (fetchOptions?: FetchOptions) => {
   };
 
   return {
-    filteredCybernetics,
+    filteredCybernetics: filteredCybernetics.filter(
+      (augment) => augment.itemSubtype === 'cybernetic',
+    ),
+    filteredMutations: filteredCybernetics.filter(
+      (augment) => augment.itemSubtype === 'mutation',
+    ),
     filterByQuery,
     filterByCategory,
     resetList,

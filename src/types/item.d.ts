@@ -6,6 +6,7 @@ interface Item {
   id: number;
   name: string;
   itemType: ItemType;
+  itemSubtype?: string;
   rarity: string;
   grade: number;
   picture: Picture;

@@ -7,7 +7,13 @@ import ArrowHeader2 from '../ArrowHeader2';
 import { Item } from 'src/types/item';
 import ItemCard from '../ItemCard';
 
-const ArmorLinkField = ({ form }: { form: FormApi }) => {
+const ArmorLinkField = ({
+  form,
+  armorList,
+}: {
+  form: FormApi;
+  armorList?: Item[];
+}) => {
   const [armorOpen, setArmorOpen] = useState(false);
 
   const toggleArmor = () => setArmorOpen((prev) => !prev);
@@ -30,6 +36,7 @@ const ArmorLinkField = ({ form }: { form: FormApi }) => {
                     {({ toggleFormLink }) => (
                       <Armor
                         title="Link Armor"
+                        armorList={armorList}
                         forcedMode="form"
                         toggleFormLink={toggleFormLink}
                       />

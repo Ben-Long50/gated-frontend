@@ -63,7 +63,7 @@ const CodexRoutes = () => {
           element={<ArmorForm key="update armor" />}
         />
       </Route>
-      <Route path="cybernetics">
+      <Route path="augmentations">
         <Route index element={<Cybernetics key="cybernetics" />} />
         <Route path=":cyberneticId" element={<ItemPageWrapper />} />
         <Route
