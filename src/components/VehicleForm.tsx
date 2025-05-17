@@ -140,7 +140,7 @@ const VehicleForm = () => {
 
       const data = {
         ...rest,
-        items: extractItemListIds([...value.weapons, ...value.modifications]),
+        itemIds: extractItemListIds([...value.weapons, ...value.modifications]),
         keywordIds: extractKeywordListIds(value.keywords),
       };
 

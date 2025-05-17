@@ -122,9 +122,8 @@ const DroneForm = () => {
 
       const data = {
         ...rest,
-        weaponIds: extractItemListIds(value.weapons),
+        itemIds: extractItemListIds([...value.weapons, ...value.modifications]),
         actionIds: extractItemListIds(value.actions),
-        modificationIds: extractItemListIds(value.modifications),
         keywordIds: extractKeywordListIds(value.keywords),
       };
       console.log(data);
