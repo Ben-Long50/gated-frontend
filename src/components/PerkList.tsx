@@ -39,9 +39,9 @@ const PerkList = ({
                         </div>
                         <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
                           {perkList.map((perk: Perk) => {
-                            const perkIds = field.state.value.map(
-                              (perk: Perk) => perk.id,
-                            );
+                            const perkIds = field
+                              ? field.state.value.map((perk: Perk) => perk.id)
+                              : [];
                             return (
                               <div
                                 key={perk.id}

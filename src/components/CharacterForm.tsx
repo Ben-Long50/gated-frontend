@@ -114,13 +114,8 @@ const CharacterForm = () => {
 
   const { stats } = useStats(
     {
-      weapons: [],
-      armor: [],
-      cybernetics: [],
-      vehicles: [],
-      drones: [],
-      modifications: [],
       items: [],
+      actions: [],
     } as unknown as CharacterInventory,
     attributeTree?.tree,
     selectedPerks,

@@ -13,6 +13,7 @@ import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
 import { PerkTree } from 'src/types/perk';
 import { ItemObject } from 'src/types/global';
+import { useLocation } from 'react-router-dom';
 
 const Perks = ({
   title,
@@ -28,6 +29,9 @@ const Perks = ({
   toggleFormLink?: (mode: ItemObject) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = forcedMode || parts[parts.length - 2];
 
   const perks = usePerks();
 
@@ -138,11 +142,7 @@ const Perks = ({
         className="w-full"
         borderColor={accentPrimary}
       >
-        <PerkList
-          perkTree={perks.filteredPerkTree}
-          mode={forcedMode}
-          field={field}
-        />
+        <PerkList perkTree={perks.filteredPerkTree} mode={mode} field={field} />
       </ThemeContainer>
     </div>
   );
