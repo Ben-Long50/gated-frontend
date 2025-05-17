@@ -14,6 +14,7 @@ import Drones from 'src/components/Drones';
 import Equipment from 'src/components/Equipment';
 import Inventory from 'src/components/Inventory';
 import ItemForm from 'src/components/ItemForm';
+import ItemModifyForm from 'src/components/ItemModifyForm';
 import ItemPageWrapper from 'src/components/ItemPageWrapper';
 import Resume from 'src/components/Resume';
 import ResumeForm from 'src/components/ResumeForm';
@@ -51,36 +52,42 @@ const CharacterRoutes = () => {
           <Route path="weapons">
             <Route index element={<Inventory />} />
             <Route path=":weaponId" element={<ItemPageWrapper />} />
-            <Route path=":weaponId/modify" element={<WeaponForm />} />
+            <Route path=":weaponId/modify" element={<ItemModifyForm />} />
           </Route>
           <Route path="armors">
             <Route index element={<Inventory />} />
             <Route path=":armorId" element={<ItemPageWrapper />} />
-            <Route path=":armorId/modify" element={<ArmorForm />} />
+            <Route path=":armorId/modify" element={<ItemModifyForm />} />
           </Route>
           <Route path="cybernetics">
             <Route index element={<Inventory />} />
             <Route path=":cyberneticId" element={<ItemPageWrapper />} />
-            <Route path=":cyberneticId/modify" element={<CyberneticForm />} />
+            <Route path=":cyberneticId/modify" element={<ItemModifyForm />} />
           </Route>
           <Route path="items">
             <Route index element={<Inventory />} />
             <Route path=":itemId" element={<ItemPageWrapper />} />
-            <Route path=":itemId/modify" element={<ItemForm />} />
+            <Route path=":itemId/modify" element={<ItemModifyForm />} />
           </Route>
           <Route path="vehicles">
             <Route index element={<Inventory />} />
             <Route path=":vehicleId" element={<ItemPageWrapper />} />
-            <Route path=":vehicleId/modify" element={<VehicleForm />} />
+            <Route path=":vehicleId/modify" element={<ItemModifyForm />} />
             <Route path="weapons" element={<Inventory />} />
-            <Route path="weapons/:weaponId/modify" element={<WeaponForm />} />
+            <Route
+              path="weapons/:weaponId/modify"
+              element={<ItemModifyForm />}
+            />
           </Route>
           <Route path="drones">
             <Route index element={<Inventory />} />
             <Route path=":droneId" element={<ItemPageWrapper />} />
-            <Route path=":droneId/modify" element={<DroneForm />} />
+            <Route path=":droneId/modify" element={<ItemModifyForm />} />
             <Route path="weapons" element={<Inventory />} />
-            <Route path="weapons/:weaponId/modify" element={<WeaponForm />} />
+            <Route
+              path="weapons/:weaponId/modify"
+              element={<ItemModifyForm />}
+            />
           </Route>
           <Route path="modifications" element={<Inventory />} />
         </Route>
