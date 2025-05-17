@@ -38,6 +38,8 @@ const Items = ({ title, itemList }: { title?: string; itemList?: Item[] }) => {
     excludedKeywords: exclude.length > 0 ? exclude : undefined,
   });
 
+  console.log(items);
+
   const searchForm = useForm({
     defaultValues: {
       query: '',

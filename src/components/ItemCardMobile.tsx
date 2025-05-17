@@ -62,6 +62,16 @@ const ItemCardMobile = ({
 
   const cardRef = useRef(null);
 
+  const linkedWeapons =
+    item.itemLinkReference?.items.filter(
+      (item: Item) => item.itemType === 'weapon',
+    ) || [];
+  const linkedArmors =
+    item.itemLinkReference?.items.filter(
+      (item: Item) => item.itemType === 'armor',
+    ) || [];
+  const uniqueActions = item.itemLinkReference?.actions || [];
+
   return (
     <div ref={cardRef} className="w-full">
       <ThemeContainer
@@ -128,6 +138,30 @@ const ItemCardMobile = ({
                   stats={item.stats}
                   mode={mode}
                 />
+                {linkedWeapons.length > 0 && (
+                  <>
+                    <h4 className="col-span-3 justify-self-start">
+                      Integrated Weapons
+                    </h4>
+                    <p>{linkedWeapons.length}</p>
+                  </>
+                )}
+                {linkedArmors.length > 0 && (
+                  <>
+                    <h4 className="col-span-3 justify-self-start">
+                      Integrated Armors
+                    </h4>
+                    <p>{linkedArmors.length}</p>
+                  </>
+                )}
+                {uniqueActions.length > 0 && (
+                  <>
+                    <h4 className="col-span-3 justify-self-start">
+                      Unique Actions
+                    </h4>
+                    <p>{uniqueActions.length}</p>
+                  </>
+                )}
               </div>
             </div>
             {(mode === 'equipment' || mode === 'deployments') &&
