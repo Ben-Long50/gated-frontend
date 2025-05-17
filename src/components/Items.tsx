@@ -6,12 +6,13 @@ import { useForm } from '@tanstack/react-form';
 import Loading from './Loading';
 import useItems from '../hooks/useItems';
 import { Item } from 'src/types/item';
-import MiscItemCard, { MiscItemCardMobile } from './MiscItemCard';
 import ArrowHeader2 from './ArrowHeader2';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import ItemCard from './ItemCard';
+import ItemCardMobile from './ItemCardMobile';
 
 const Items = ({ title, itemList }: { title?: string; itemList?: Item[] }) => {
   const { mobile } = useContext(LayoutContext);
@@ -125,12 +126,12 @@ const Items = ({ title, itemList }: { title?: string; itemList?: Item[] }) => {
       </ThemeContainer>
       {cardType === 'large' ? (
         items.filteredItems?.map((item: Item) => {
-          return <MiscItemCard key={item.id} item={item} mode={mode} />;
+          return <ItemCard key={item.id} item={item} mode={mode} />;
         })
       ) : (
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
           {items.filteredItems?.map((item: Item) => {
-            return <MiscItemCardMobile key={item.id} item={item} mode={mode} />;
+            return <ItemCardMobile key={item.id} item={item} mode={mode} />;
           })}
         </div>
       )}

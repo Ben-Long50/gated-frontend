@@ -11,7 +11,7 @@ const useKeywords = (initialCategory?: string) => {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(initialCategory || '');
 
-  const filteredKeywords: Keyword[] =
+  const filteredKeywords =
     category.length > 0
       ? keywords?.filter(
           (keyword: Keyword) =>

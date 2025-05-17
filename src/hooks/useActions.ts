@@ -14,7 +14,7 @@ const useActions = () => {
   const [category, setCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
 
-  const filteredActions: Action[] =
+  const filteredActions =
     category.length > 0
       ? subCategory.length > 0
         ? list?.filter(

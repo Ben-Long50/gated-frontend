@@ -1,45 +1,25 @@
 import { useForm } from '@tanstack/react-form';
 import ThemeContainer from './ThemeContainer';
-import { useContext, useMemo, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
-import useWeapons from '../hooks/useWeapons';
-import { WeaponWithKeywords } from 'src/types/weapon';
-import useArmor from '../hooks/useArmor';
 import { Keyword } from 'src/types/keyword';
-import useCybernetics from '../hooks/useCybernetics';
 import Loading from './Loading';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { ArmorWithKeywords } from 'src/types/armor';
-import ArmorCard, { ArmorCardMobile } from './ArmorCard';
-import CyberneticCard, { CyberneticCardMobile } from './CyberneticCard';
 import useKeywords from '../hooks/useKeywords';
 import KeywordCard from './KeywordCard';
-import VehicleCard, { VehicleCardMobile } from './VehicleCard';
-import useVehicles from '../hooks/useVehicles';
-import { Modification, VehicleWithWeapons } from 'src/types/vehicle';
 import PerkCard from './PerkCard';
 import usePerks from '../hooks/usePerks';
-import { Perk } from 'src/types/perk';
-import useModifications from '../hooks/useModifications';
 import useActions from '../hooks/useActions';
 import useConditions from '../hooks/useConditions';
-import { Condition } from 'src/types/condition';
-import { Action } from 'src/types/action';
 import ActionCard from './ActionCard';
 import ConditionCard from './ConditionCard';
-import ModCard from './ModCard';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
-import DroneCard, { DroneCardMobile } from './DroneCard';
-import useDrones from 'src/hooks/useDrones';
-import { Drone } from 'src/types/drone';
 import ItemCard from './ItemCard';
 import ItemCardMobile from './ItemCardMobile';
-import { Item } from 'src/types/item';
 import useWeaponsQuery from 'src/hooks/useWeaponsQuery/useWeaponsQuery';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useArmorQuery from 'src/hooks/useArmorQuery/useArmorQuery';
@@ -47,6 +27,9 @@ import useCyberneticsQuery from 'src/hooks/useCyberneticsQuery/useCyberneticsQue
 import useVehiclesQuery from 'src/hooks/useVehiclsQuery/useVehiclesQuery';
 import useDronesQuery from 'src/hooks/useDronesQuery/useDronesQuery';
 import useItemsQuery from 'src/hooks/useItemsQuery/useItemsQuery';
+import { Item } from 'src/types/item';
+import { Action } from 'src/types/action';
+import { Condition } from 'src/types/condition';
 
 const CodexSearch = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -86,23 +69,31 @@ const CodexSearch = () => {
     .map((item) => Object.values(item).flat())
     .flat();
 
-  const filterItems = (itemArray: any[]) => {
+  const filterItems = (
+    itemArray: Item[] | Keyword[] | Action[] | Condition[] | undefined,
+  ) => {
     const nameFilter = nameQuery?.toLowerCase() ?? null;
     const descFilter = descriptionQuery?.toLowerCase() ?? null;
     const hasCategoryFilter = category !== '';
 
-    return itemArray.filter((item) => {
-      const nameMatch = item.name?.toLowerCase().includes(nameFilter);
-      const descMatch = item.description?.toLowerCase().includes(descFilter);
+    return itemArray
+      ? itemArray.filter((item) => {
+          const nameMatch = item.name?.toLowerCase().includes(nameFilter);
+          const descMatch = item.description
+            ?.toLowerCase()
+            .includes(descFilter);
 
-      const categoryMatch =
-        !hasCategoryFilter ||
-        item.keywords?.some(
-          (keyword: { keyword: Keyword }) => category === keyword.keyword?.name,
-        );
+          const categoryMatch = item.keywords
+            ? !hasCategoryFilter ||
+              item.keywords?.some(
+                (keyword: { keyword: Keyword }) =>
+                  category === keyword.keyword?.name,
+              )
+            : true;
 
-      return nameMatch && descMatch && categoryMatch;
-    });
+          return nameMatch && descMatch && categoryMatch;
+        })
+      : [];
   };
 
   const filteredWeapons = filterItems(weapons);

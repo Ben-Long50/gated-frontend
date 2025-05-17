@@ -1,4 +1,4 @@
-import { mdiCircle, mdiSquare, mdiTriangleSmallUp } from '@mdi/js';
+import { mdiCircle, mdiSquare } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';

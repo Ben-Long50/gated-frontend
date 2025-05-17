@@ -11,14 +11,13 @@ import DeploymentsList from './DeploymentsList';
 import ThemeContainer from './ThemeContainer';
 import ItemPicture from './ItemPicture';
 import StatBars from './StatBars';
-import { VehicleControls } from './VehicleCard';
-import { DroneControls } from './DroneCard';
 import ArrowHeader1 from './ArrowHeader1';
 import useCharacter from 'src/hooks/useCharacter';
 import { Item } from 'src/types/item';
 import ItemCard from './ItemCard';
 import ItemCardMobile from './ItemCardMobile';
 import { LayoutContext } from 'src/contexts/LayoutContext';
+import { DroneControls, VehicleControls } from './ItemCardControls';
 
 const Deployments = () => {
   const { apiUrl, user } = useContext(AuthContext);

@@ -5,13 +5,15 @@ import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import Loading from './Loading';
 import useVehicles from '../hooks/useVehicles';
-import VehicleCard, { VehicleCardMobile } from './VehicleCard';
 import { VehicleWithWeapons } from '../types/vehicle';
 import ArrowHeader2 from './ArrowHeader2';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import ItemCard from './ItemCard';
+import ItemCardMobile from './ItemCardMobile';
+import { Item } from 'src/types/item';
 
 const Vehicles = ({
   title,
@@ -127,18 +129,14 @@ const Vehicles = ({
       </ThemeContainer>
 
       {cardType === 'large' ? (
-        vehicles.filteredVehicles.map((vehicle: VehicleWithWeapons) => {
-          return <VehicleCard key={vehicle.id} vehicle={vehicle} mode={mode} />;
+        vehicles.filteredVehicles.map((vehicle: Item) => {
+          return <ItemCard key={vehicle.id} item={vehicle} mode={mode} />;
         })
       ) : (
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-          {vehicles.filteredVehicles.map((vehicle: VehicleWithWeapons) => {
+          {vehicles.filteredVehicles.map((vehicle: Item) => {
             return (
-              <VehicleCardMobile
-                key={vehicle.id}
-                vehicle={vehicle}
-                mode={mode}
-              />
+              <ItemCardMobile key={vehicle.id} item={vehicle} mode={mode} />
             );
           })}
         </div>

@@ -10,8 +10,10 @@ import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import useDrones from '../hooks/useDrones';
 import { Drone } from 'src/types/drone';
-import DroneCard, { DroneCardMobile } from './DroneCard';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import ItemCard from './ItemCard';
+import ItemCardMobile from './ItemCardMobile';
+import { Item } from 'src/types/item';
 
 const Drones = ({
   title,
@@ -127,13 +129,13 @@ const Drones = ({
       </ThemeContainer>
 
       {cardType === 'large' ? (
-        drones.filteredDrones.map((drone: Drone) => {
-          return <DroneCard key={drone.id} drone={drone} mode={mode} />;
+        drones.filteredDrones.map((drone: Item) => {
+          return <ItemCard key={drone.id} item={drone} mode={mode} />;
         })
       ) : (
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-          {drones.filteredDrones.map((drone: Drone) => {
-            return <DroneCardMobile key={drone.id} drone={drone} mode={mode} />;
+          {drones.filteredDrones.map((drone: Item) => {
+            return <ItemCardMobile key={drone.id} item={drone} mode={mode} />;
           })}
         </div>
       )}

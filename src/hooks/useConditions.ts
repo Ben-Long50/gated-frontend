@@ -11,7 +11,7 @@ const useConditions = () => {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('');
 
-  const filteredConditions: Condition[] =
+  const filteredConditions =
     category.length > 0
       ? conditions?.filter(
           (condition: Condition) =>

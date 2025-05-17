@@ -1,12 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import getWeapons from './getWeapons';
-import { Weapon } from 'src/types/weapon';
 import { useEffect } from 'react';
+import { Item } from 'src/types/item';
 
 const useWeaponsQuery = (apiUrl: string) => {
   const queryClient = useQueryClient();
 
-  const weapons = useQuery<Weapon[]>({
+  const weapons = useQuery<Item[]>({
     queryKey: ['weapons'],
     queryFn: async () => await getWeapons(apiUrl),
     throwOnError: false,

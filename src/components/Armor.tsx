@@ -4,17 +4,16 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import useArmor from '../hooks/useArmor';
-import ArmorCard, { ArmorCardMobile } from './ArmorCard';
 import Loading from './Loading';
-import { ArmorWithKeywords } from 'src/types/armor';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
-import { ItemObject } from 'src/types/global';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { Item } from 'src/types/item';
+import ItemCard from './ItemCard';
+import ItemCardMobile from './ItemCardMobile';
 
 const Armor = ({
   title,
@@ -148,11 +147,11 @@ const Armor = ({
         </div>
       </ThemeContainer>
       {cardType === 'large' ? (
-        armor.filteredArmor.map((armor: ArmorWithKeywords) => {
+        armor.filteredArmor.map((armor: Item) => {
           return (
-            <ArmorCard
+            <ItemCard
               key={armor.id}
-              armor={armor}
+              item={armor}
               mode={mode}
               toggleFormLink={toggleFormLink}
             />
@@ -160,11 +159,11 @@ const Armor = ({
         })
       ) : (
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-          {armor.filteredArmor.map((armor: ArmorWithKeywords) => {
+          {armor.filteredArmor.map((armor: Item) => {
             return (
-              <ArmorCardMobile
+              <ItemCardMobile
                 key={armor.id}
-                armor={armor}
+                item={armor}
                 mode={mode}
                 toggleFormLink={toggleFormLink}
               />
