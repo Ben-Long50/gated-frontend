@@ -19,7 +19,9 @@ const useCharacter = (character: Character) => {
   const { inventory, equipment } = useInventory(character?.characterInventory);
 
   const filterByPreferences = (character: Character) => {
-    const characterOwner = character?.userId === user?.id;
+    const characterOwner =
+      character?.userId === user?.id ||
+      character?.campaign?.ownerId === user?.id;
     const characterStats = { ...character?.stats, ...stats };
 
     return {
