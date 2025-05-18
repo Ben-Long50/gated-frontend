@@ -14,6 +14,7 @@ import RollSimulator from 'src/components/RollSimulator';
 import SessionRoutes from './SessionRoutes';
 import ItemPageWrapper from 'src/components/ItemPageWrapper';
 import Deployments from 'src/components/Deployments';
+import ResumeForm from 'src/components/ResumeForm';
 
 const CampaignRoutes = () => {
   return (
@@ -55,6 +56,7 @@ const CampaignRoutes = () => {
               element={<ItemPageWrapper />}
             />
             <Route path="resume" element={<Resume />} />
+            <Route path="resume/update" element={<ResumeForm />} />
             <Route path="update" element={<CharacterUpdateForm />} />
           </Route>
         </Route>

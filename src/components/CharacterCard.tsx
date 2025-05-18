@@ -38,10 +38,10 @@ const CharacterCard = ({
       borderColor={accentPrimary}
       overflowHidden={true}
     >
-      <div ref={cardRef} className="relative grid sm:grid-cols-[1fr_3fr]">
-        <div className="absolute left-0 top-0 h-full w-[425px]">
+      <div ref={cardRef} className="relative grid sm:grid-cols-[1fr_4fr]">
+        <div className="absolute left-0 top-0 flex h-full w-[375px] items-center">
           <CloudinaryImage
-            className="bg-primary absolute aspect-square w-full"
+            className="bg-primary w-full"
             url={filteredCharacter.picture?.imageUrl}
             alt={`${filteredCharacter.firstName + ' ' + filteredCharacter.lastName}'s image`}
           />
