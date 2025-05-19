@@ -12,7 +12,7 @@ const CloudinaryImage = ({
   alt,
   onClick,
 }: {
-  className: string;
+  className?: string;
   url: string;
   position: Position;
   alt: string;

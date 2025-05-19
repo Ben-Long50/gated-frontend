@@ -41,7 +41,11 @@ const CharacterCard = ({
     >
       <div ref={cardRef} className="relative grid sm:grid-cols-[1fr_4fr]">
         <div className="absolute left-0 top-0 flex h-full w-[375px] items-center">
-          <CharacterPicture character={character} />
+          <CloudinaryImage
+            url={character.picture?.imageUrl}
+            alt={`${character.firstName} ${character.lastName}'s image`}
+            position={character.picture?.position}
+          />
           {mobile && (
             <div className="absolute inset-0 z-10 bg-zinc-900 bg-opacity-60" />
           )}
