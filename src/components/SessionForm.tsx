@@ -1,5 +1,5 @@
 import { useForm, ValidationError } from '@tanstack/react-form';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
@@ -7,9 +7,8 @@ import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 import { useParams } from 'react-router-dom';
 import LexicalEditor from './lexical/LexicalEditor';
-import { mdiClose, mdiCloseBox, mdiImagePlus } from '@mdi/js';
+import { mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
-import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
@@ -18,6 +17,7 @@ import useCreateSessionMutation from '../hooks/useCreateSessionMutation/useCreat
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import InputSelectField from './InputSelectField';
 import useSessionQuery from '../hooks/useSessionQuery/useSessionQuery';
+import PictureField from './form_fields/PictureField';
 
 const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -25,7 +25,6 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { campaignId, sessionId } = useParams();
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
-  const [imagePreview, setImagePreview] = useState('');
 
   const {
     data: campaign,
@@ -65,12 +64,6 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
   const sessionNonPlayerCharacters =
     session?.characters.filter((character) => !character.playerCharacter) || [];
 
-  useEffect(() => {
-    if (session) {
-      setImagePreview(session.picture?.imageUrl);
-    } else setImagePreview('');
-  }, [session, sessionId]);
-
   const handleReset = async () => {
     sessionForm.reset();
   };
@@ -80,6 +73,7 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
       name: session?.name || '',
       location: session?.location || '',
       picture: session?.picture || '',
+      position: session?.picture?.position || { x: 50, y: 50 },
       playerCharacters:
         sessionPlayerCharacters.length > 0
           ? sessionPlayerCharacters
@@ -115,17 +109,6 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
     },
   });
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      sessionForm.setFieldValue('picture', selectedFile);
-
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
-
   if (isLoading || isPending) return <Loading />;
 
   return (
@@ -149,7 +132,7 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
         <div className="flex items-center justify-center gap-4">
           <h1>{title} Session</h1>
         </div>
-        <p className="ml-4 border-l border-gray-400 px-4">
+        <p className="text-tertiary border-l-2 border-gray-400 border-opacity-50 pl-4">
           Create a new session for your campaign. Provide a name, optional
           starting location and optional cover picture for this gameplay
           session. To create a session, you must add at least 2 player
@@ -172,48 +155,14 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
         <sessionForm.Field name="location">
           {(field) => <InputField label="Session location" field={field} />}
         </sessionForm.Field>
-        <ThemeContainer
-          className="mx-auto w-full"
-          chamfer="medium"
-          borderColor={accentPrimary}
-          overflowHidden={true}
-        >
-          {!imagePreview ? (
-            <label className="bg-secondary flex aspect-[5/2] w-full cursor-pointer flex-col items-center justify-center">
-              <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                <Icon className="text-tertiary" path={mdiImagePlus} size={3} />
-                <p className="text-tertiary font-semibold">
-                  Upload session cover picture
-                </p>
-                <p className="text-tertiary">PNG, JPG, JPEG</p>
-              </div>
-              <input
-                id="file"
-                type="file"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-            </label>
-          ) : (
-            <div className="bg-secondary relative flex aspect-[5/2] w-full items-center justify-center overflow-hidden bg-black clip-6">
-              <img
-                className="fade-in-bottom"
-                src={imagePreview}
-                alt="Preview"
-              />
-              <button
-                className="text-secondary absolute right-2 top-2"
-                onClick={(e) => {
-                  e.preventDefault();
-                  sessionForm.setFieldValue('picture', '');
-                  setImagePreview('');
-                }}
-              >
-                <Icon path={mdiCloseBox} size={1.5} />
-              </button>
-            </div>
-          )}
-        </ThemeContainer>
+        <PictureField
+          form={sessionForm}
+          sizeInfo={{
+            aspectRatio: '10/3',
+            maxHeight: '500px',
+            minHeight: '300px',
+          }}
+        />
         <Divider />
         <div className="flex flex-col gap-8">
           <ArrowHeader2 title="Add Characters" />
@@ -338,7 +287,7 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
         <Divider />
         <div className="flex flex-col gap-8">
           <ArrowHeader2 title="Session Briefing" />
-          <p className="ml-4 border-l border-gray-400 px-4">
+          <p className="text-tertiary border-l-2 border-gray-400 border-opacity-50 pl-4">
             Craft a narrative outline for your upcoming session. This outline
             will serve as a loose guide for your players to follow for the
             duration of the session. You can include events that have happened

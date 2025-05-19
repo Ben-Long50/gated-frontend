@@ -1,21 +1,16 @@
 import { useForm } from '@tanstack/react-form';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { ThemeContext } from '../contexts/ThemeContext';
-import ThemeContainer from './ThemeContainer';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
 import useKeywords from '../hooks/useKeywords';
-import Icon from '@mdi/react';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import useCreateArmorMutation from '../hooks/useCreateArmorMutation/useCreateArmorMutation';
 import FormLayout from '../layouts/FormLayout';
 import { useLocation, useParams } from 'react-router-dom';
 import useDeleteArmorMutation from '../hooks/useDeleteArmorMutation/useDeleteArmorMutation';
 import { Keyword } from 'src/types/keyword';
-import SelectField from './SelectField';
 import { ArmorStats } from 'src/types/armor';
 import useModifyArmorMutation from '../hooks/useModifyArmorMutation/useModifyArmorMutation';
 import ArrowHeader2 from './ArrowHeader2';
@@ -31,10 +26,11 @@ import { Item } from 'src/types/item';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import useWeapons from 'src/hooks/useWeapons';
 import useArmor from 'src/hooks/useArmor';
+import PictureField from './form_fields/PictureField';
+import RarityField from './form_fields/RarityField';
 
 const ArmorForm = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { armorId } = useParams();
@@ -53,10 +49,6 @@ const ArmorForm = () => {
   });
 
   const keywords = useKeywords('armor');
-
-  const [imagePreview, setImagePreview] = useState(
-    armor?.picture?.imageUrl || '',
-  );
 
   const createArmor = useCreateArmorMutation(
     apiUrl,
@@ -87,12 +79,6 @@ const ArmorForm = () => {
     armorForm.reset();
   };
 
-  useEffect(() => {
-    if (armor) {
-      setImagePreview(armor.picture?.imageUrl);
-    } else setImagePreview('');
-  }, [armor, armorId]);
-
   const armorForm = useForm({
     defaultValues: {
       id: armor?.id || null,
@@ -100,6 +86,7 @@ const ArmorForm = () => {
       rarity: armor?.rarity || '',
       grade: armor?.grade || 1,
       picture: armor?.picture || '',
+      position: armor?.picture?.position || { x: 50, y: 50 },
       description: armor?.description || '',
       price: armor?.price || '',
       stats: {
@@ -159,17 +146,6 @@ const ArmorForm = () => {
     },
   });
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      armorForm.setFieldValue('picture', selectedFile);
-
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
-
   if (keywords.isLoading || keywords.isPending) {
     return <Loading />;
   }
@@ -226,28 +202,7 @@ const ArmorForm = () => {
             </armorForm.Field>
           </div>
           <div className="flex w-full items-center gap-4 lg:gap-8">
-            <armorForm.Field
-              name="rarity"
-              validators={{
-                onSubmit: ({ value }) =>
-                  !value ? 'Select a rarity' : undefined,
-              }}
-            >
-              {(field) => (
-                <SelectField
-                  className="w-full"
-                  label="Item rarity"
-                  field={field}
-                >
-                  <option value=""></option>
-                  <option value="common">Common</option>
-                  <option value="uncommon">Uncommon</option>
-                  <option value="rare">Rare</option>
-                  <option value="blackMarket">Black Market</option>
-                  <option value="artifact">Artifact</option>
-                </SelectField>
-              )}
-            </armorForm.Field>
+            <RarityField form={armorForm} />
             <armorForm.Field
               name="grade"
               validators={{
@@ -265,54 +220,11 @@ const ArmorForm = () => {
               )}
             </armorForm.Field>
           </div>
-          <div className="flex flex-col gap-8 sm:flex-row">
-            <ThemeContainer
-              className="mx-auto w-full max-w-sm"
-              chamfer="medium"
-              borderColor={accentPrimary}
-              overflowHidden={true}
-            >
-              {!imagePreview ? (
-                <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
-                  <div className="flex h-full w-full flex-col items-center justify-center gap-2 pb-6 pt-5 clip-6">
-                    <Icon
-                      className="text-tertiary"
-                      path={mdiImagePlus}
-                      size={3}
-                    />
-                    <p className="text-tertiary font-semibold">
-                      Upload armor picture
-                    </p>
-                    <p className="text-tertiary">PNG, JPG, JPEG</p>
-                  </div>
-                  <input
-                    id="file"
-                    type="file"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                </label>
-              ) : (
-                <div className="relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black">
-                  <img
-                    className="fade-in-bottom"
-                    src={imagePreview}
-                    alt="Preview"
-                  />
-                  <button
-                    className="text-secondary absolute right-2 top-2"
-                    onClick={() => {
-                      armorForm.setFieldValue('picture', '');
-                      setImagePreview('');
-                    }}
-                  >
-                    <div className="rounded bg-zinc-950">
-                      <Icon path={mdiCloseBox} size={1.5} />
-                    </div>
-                  </button>
-                </div>
-              )}
-            </ThemeContainer>
+          <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
+            <PictureField
+              form={armorForm}
+              sizeInfo={{ aspectRatio: '1/1', maxHeight: '', minHeight: '' }}
+            />
             <armorForm.Field
               name="description"
               validators={{

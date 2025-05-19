@@ -17,9 +17,11 @@ const AttributeCard = (props) => {
   return (
     <>
       <div className="mb-4 flex w-full flex-wrap items-center justify-between gap-2 sm:gap-4">
-        <h3>
-          {props.attribute.charAt(0).toUpperCase() + props.attribute.slice(1)}{' '}
-        </h3>
+        <ArrowHeader3
+          title={
+            props.attribute.charAt(0).toUpperCase() + props.attribute.slice(1)
+          }
+        />
         <div className="flex gap-2 sm:gap-4">
           {Array.from({ length: 4 }).map((_, index) => (
             <button
@@ -54,15 +56,13 @@ const AttributeCard = (props) => {
           ))}
         </div>
       </div>
-      <div className="flex flex-col gap-3">
+      <ul className="flex flex-col gap-3">
         {Object.entries(props.skills).map(([skill, { points }]) => (
           <li
-            className="flex w-full flex-wrap items-center justify-between gap-1 pl-2"
+            className="flex w-full flex-wrap items-center justify-between gap-1"
             key={skill}
           >
-            <ArrowHeader3
-              title={skill.charAt(0).toUpperCase() + skill.slice(1)}
-            />
+            <h4>{skill.charAt(0).toUpperCase() + skill.slice(1)}</h4>
             <div className="flex gap-2 sm:gap-4">
               {Array.from({ length: 4 }).map((_, index) => (
                 <button
@@ -108,7 +108,7 @@ const AttributeCard = (props) => {
             </div>
           </li>
         ))}
-      </div>
+      </ul>
     </>
   );
 };

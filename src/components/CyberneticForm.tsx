@@ -1,17 +1,12 @@
 import { useForm } from '@tanstack/react-form';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import { ThemeContext } from '../contexts/ThemeContext';
-import ThemeContainer from './ThemeContainer';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
 import useKeywords from '../hooks/useKeywords';
-import Icon from '@mdi/react';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import useCreateCyberneticMutation from '../hooks/useCreateCyberneticMutation/useCreateCyberneticMutation';
-import SelectField from './SelectField';
 import FormLayout from '../layouts/FormLayout';
 import { useLocation, useParams } from 'react-router-dom';
 import useDeleteCyberneticMutation from '../hooks/useDeleteCyberneticMutation/useDeleteCyberneticMutation';
@@ -30,10 +25,11 @@ import { Item } from 'src/types/item';
 import InputSelectField from './InputSelectField';
 import useWeapons from 'src/hooks/useWeapons';
 import useArmor from 'src/hooks/useArmor';
+import PictureField from './form_fields/PictureField';
+import RarityField from './form_fields/RarityField';
 
 const CyberneticForm = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { cyberneticId } = useParams();
@@ -56,10 +52,6 @@ const CyberneticForm = () => {
   });
 
   const keywords = useKeywords();
-
-  const [imagePreview, setImagePreview] = useState(
-    cybernetic?.picture?.imageUrl || '',
-  );
 
   const createCybernetic = useCreateCyberneticMutation(
     apiUrl,
@@ -90,12 +82,6 @@ const CyberneticForm = () => {
     cyberneticForm.reset();
   };
 
-  useEffect(() => {
-    if (cybernetic) {
-      setImagePreview(cybernetic.picture?.imageUrl);
-    }
-  }, [cybernetic]);
-
   const cyberneticForm = useForm({
     defaultValues: {
       id: cybernetic?.id || null,
@@ -104,6 +90,7 @@ const CyberneticForm = () => {
       grade: cybernetic?.grade || 1,
       itemSubtype: cybernetic?.itemSubtype || '',
       picture: cybernetic?.picture || '',
+      position: cybernetic?.picture?.position || { x: 50, y: 50 },
       description: cybernetic?.description || '',
       price: cybernetic?.price || '',
       stats: {
@@ -158,17 +145,6 @@ const CyberneticForm = () => {
       }
     },
   });
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      cyberneticForm.setFieldValue('picture', selectedFile);
-
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
 
   if (keywords.isLoading || keywords.isPending) {
     return <Loading />;
@@ -227,23 +203,7 @@ const CyberneticForm = () => {
           </cyberneticForm.Field>
         </div>
         <div className="flex w-full items-center gap-4 lg:gap-8">
-          <cyberneticForm.Field
-            name="rarity"
-            validators={{
-              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
-            }}
-          >
-            {(field) => (
-              <SelectField className="w-full" label="Item rarity" field={field}>
-                <option value=""></option>
-                <option value="common">Common</option>
-                <option value="uncommon">Uncommon</option>
-                <option value="rare">Rare</option>
-                <option value="blackMarket">Black Market</option>
-                <option value="artifact">Artifact</option>
-              </SelectField>
-            )}
-          </cyberneticForm.Field>
+          <RarityField form={cyberneticForm} />
           <cyberneticForm.Field
             name="grade"
             validators={{
@@ -318,54 +278,11 @@ const CyberneticForm = () => {
             </cyberneticForm.Field>
           </div>
         </div>
-        <div className="flex flex-col gap-8 sm:flex-row">
-          <ThemeContainer
-            className="mx-auto w-full max-w-sm"
-            chamfer="medium"
-            borderColor={accentPrimary}
-            overflowHidden={true}
-          >
-            {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
-                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                  <Icon
-                    className="text-tertiary"
-                    path={mdiImagePlus}
-                    size={3}
-                  />
-                  <p className="text-tertiary font-semibold">
-                    Upload cybernetic picture
-                  </p>
-                  <p className="text-tertiary">PNG, JPG, JPEG</p>
-                </div>
-                <input
-                  id="file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
-                <img
-                  className="fade-in-bottom"
-                  src={imagePreview}
-                  alt="Cybernetic preview"
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2"
-                  onClick={() => {
-                    cyberneticForm.setFieldValue('picture', '');
-                    setImagePreview('');
-                  }}
-                >
-                  <div className="rounded bg-zinc-950">
-                    <Icon path={mdiCloseBox} size={1.5} />
-                  </div>
-                </button>
-              </div>
-            )}
-          </ThemeContainer>
+        <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
+          <PictureField
+            form={cyberneticForm}
+            sizeInfo={{ aspectRatio: '1/1', maxHeight: '', minHeight: '' }}
+          />
           <cyberneticForm.Field
             name="description"
             validators={{

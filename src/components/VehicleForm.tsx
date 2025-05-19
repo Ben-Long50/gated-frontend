@@ -1,21 +1,16 @@
 import { useForm } from '@tanstack/react-form';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
-import ThemeContainer from './ThemeContainer';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
-import Icon from '@mdi/react';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 import { useLocation, useParams } from 'react-router-dom';
-import { Modification, VehicleStats } from '../types/vehicle';
-import { WeaponWithKeywords } from '../types/weapon';
+import { VehicleStats } from '../types/vehicle';
 import useCreateVehicleMutation from '../hooks/useCreateVehicleMutation/useCreateVehicleMutation';
 import useDeleteVehicleMutation from '../hooks/useDeleteVehicleMutation/useDeleteVehicleMutation';
-import SelectField from './SelectField';
 import useModifyVehicleMutation from '../hooks/useModifyVehicleMutation/useModifyVehicleMutation';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
@@ -26,6 +21,8 @@ import WeaponLinkField from './form_fields/WeaponLinkField';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import { Item } from 'src/types/item';
 import useWeapons from 'src/hooks/useWeapons';
+import PictureField from './form_fields/PictureField';
+import RarityField from './form_fields/RarityField';
 
 const VehicleForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -46,10 +43,6 @@ const VehicleForm = () => {
   const { filteredWeapons: weapons } = useWeapons({
     includedKeywords: ['Vehicle Weapon'],
   });
-
-  const [imagePreview, setImagePreview] = useState(
-    vehicle?.picture?.imageUrl || '',
-  );
 
   const createVehicle = useCreateVehicleMutation(
     apiUrl,
@@ -80,12 +73,6 @@ const VehicleForm = () => {
     vehicleForm.reset();
   };
 
-  useEffect(() => {
-    if (vehicle) {
-      setImagePreview(vehicle.picture?.imageUrl);
-    }
-  }, [vehicle]);
-
   const vehicleForm = useForm({
     defaultValues: {
       id: vehicle?.id || null,
@@ -93,6 +80,7 @@ const VehicleForm = () => {
       rarity: vehicle?.rarity || '',
       grade: vehicle?.grade || 1,
       picture: vehicle?.picture || '',
+      position: vehicle?.picture?.position || { x: 50, y: 50 },
       description: vehicle?.description || '',
       stats: {
         size: vehicle?.stats?.size || '',
@@ -174,17 +162,6 @@ const VehicleForm = () => {
     },
   });
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      vehicleForm.setFieldValue('picture', selectedFile);
-
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
-
   if (isLoading) return <Loading />;
 
   return (
@@ -244,23 +221,7 @@ const VehicleForm = () => {
           </vehicleForm.Field>
         </div>
         <div className="flex w-full items-center gap-4 lg:gap-8">
-          <vehicleForm.Field
-            name="rarity"
-            validators={{
-              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
-            }}
-          >
-            {(field) => (
-              <SelectField className="w-full" label="Item rarity" field={field}>
-                <option value=""></option>
-                <option value="common">Common</option>
-                <option value="uncommon">Uncommon</option>
-                <option value="rare">Rare</option>
-                <option value="blackMarket">Black Market</option>
-                <option value="artifact">Artifact</option>
-              </SelectField>
-            )}
-          </vehicleForm.Field>
+          <RarityField form={vehicleForm} />
           <vehicleForm.Field
             name="grade"
             validators={{
@@ -278,54 +239,11 @@ const VehicleForm = () => {
             )}
           </vehicleForm.Field>
         </div>
-        <div className="flex flex-col gap-8 sm:flex-row">
-          <ThemeContainer
-            className="mx-auto w-full max-w-sm"
-            chamfer="medium"
-            borderColor={accentPrimary}
-            overflowHidden={true}
-          >
-            {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
-                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                  <Icon
-                    className="text-tertiary"
-                    path={mdiImagePlus}
-                    size={3}
-                  />
-                  <p className="text-tertiary font-semibold">
-                    Upload vehicle picture
-                  </p>
-                  <p className="text-tertiary">PNG, JPG, JPEG</p>
-                </div>
-                <input
-                  id="file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
-                <img
-                  className="fade-in-bottom"
-                  src={imagePreview}
-                  alt="Preview"
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2"
-                  onClick={() => {
-                    vehicleForm.setFieldValue('picture', '');
-                    setImagePreview('');
-                  }}
-                >
-                  <div className="rounded bg-zinc-950">
-                    <Icon path={mdiCloseBox} size={1.5} />
-                  </div>
-                </button>
-              </div>
-            )}
-          </ThemeContainer>
+        <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
+          <PictureField
+            form={vehicleForm}
+            sizeInfo={{ aspectRatio: '1/1', maxHeight: '', minHeight: '' }}
+          />
           <vehicleForm.Field
             name="description"
             validators={{

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import InputField from './InputField';
 import BtnRect from './buttons/BtnRect';
 import TextAreaField from './TextAreaField';
@@ -14,17 +14,14 @@ import { Action } from 'src/types/action';
 import { Keyword } from 'src/types/keyword';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 import SelectField from './SelectField';
-import Icon from '@mdi/react';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
-import ThemeContainer from './ThemeContainer';
 import KeywordLinkField from './form_fields/KeywordLinkField';
 import Divider from './Divider';
 import ActionLinkField from './form_fields/ActionLinkField';
-import { ThemeContext } from '../contexts/ThemeContext';
+import PictureField from './form_fields/PictureField';
+import RarityField from './form_fields/RarityField';
 
 const ModificationForm = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { modificationId } = useParams();
@@ -35,10 +32,6 @@ const ModificationForm = () => {
   const { data: modification } = useModificationQuery(
     apiUrl,
     Number(modificationId),
-  );
-
-  const [imagePreview, setImagePreview] = useState(
-    modification?.picture?.imageUrl || '',
   );
 
   const createModification = useCreateModificationMutation(
@@ -64,23 +57,6 @@ const ModificationForm = () => {
     modificationForm.reset();
   };
 
-  useEffect(() => {
-    if (modification) {
-      setImagePreview(modification.picture?.imageUrl);
-    } else setImagePreview('');
-  }, [modification, modificationId]);
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      modificationForm.setFieldValue('picture', selectedFile);
-
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
-
   const modificationForm = useForm({
     defaultValues: {
       id: modification?.id || null,
@@ -88,6 +64,7 @@ const ModificationForm = () => {
       rarity: modification?.rarity || '',
       grade: modification?.grade || 1,
       picture: modification?.picture || '',
+      position: modification?.picture?.position || { x: 50, y: 50 },
       description: modification?.description || '',
       category: modification?.category || '',
       price: modification?.price || '',
@@ -178,23 +155,7 @@ const ModificationForm = () => {
           </modificationForm.Field>
         </div>
         <div className="flex w-full items-center gap-4 lg:gap-8">
-          <modificationForm.Field
-            name="rarity"
-            validators={{
-              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
-            }}
-          >
-            {(field) => (
-              <SelectField className="w-full" label="Item rarity" field={field}>
-                <option value=""></option>
-                <option value="common">Common</option>
-                <option value="uncommon">Uncommon</option>
-                <option value="rare">Rare</option>
-                <option value="blackMarket">Black Market</option>
-                <option value="artifact">Artifact</option>
-              </SelectField>
-            )}
-          </modificationForm.Field>
+          <RarityField form={modificationForm} />
           <modificationForm.Field
             name="grade"
             validators={{
@@ -230,54 +191,11 @@ const ModificationForm = () => {
             </SelectField>
           )}
         </modificationForm.Field>
-        <div className="flex flex-col gap-8 sm:flex-row">
-          <ThemeContainer
-            className="mx-auto w-full max-w-sm"
-            chamfer="medium"
-            borderColor={accentPrimary}
-            overflowHidden={true}
-          >
-            {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
-                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                  <Icon
-                    className="text-tertiary"
-                    path={mdiImagePlus}
-                    size={3}
-                  />
-                  <p className="text-tertiary font-semibold">
-                    Upload item picture
-                  </p>
-                  <p className="text-tertiary">PNG, JPG, JPEG</p>
-                </div>
-                <input
-                  id="file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
-                <img
-                  className="fade-in-bottom"
-                  src={imagePreview}
-                  alt="Preview"
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2"
-                  onClick={() => {
-                    modificationForm.setFieldValue('picture', '');
-                    setImagePreview('');
-                  }}
-                >
-                  <div className="rounded bg-zinc-950">
-                    <Icon path={mdiCloseBox} size={1.5} />
-                  </div>
-                </button>
-              </div>
-            )}
-          </ThemeContainer>
+        <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
+          <PictureField
+            form={modificationForm}
+            sizeInfo={{ aspectRatio: '1/1', maxHeight: '', minHeight: '' }}
+          />
           <modificationForm.Field
             name="description"
             validators={{

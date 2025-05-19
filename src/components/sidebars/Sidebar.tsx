@@ -13,6 +13,7 @@ import { LayoutContext } from '../../contexts/LayoutContext';
 import { mdiCartOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import CharacterIcon from '../icons/CharacterIcon';
+import CharacterPictureRound from '../CharacterPictureRound';
 
 const Sidebar = ({
   sidebarVisibility,
@@ -91,18 +92,7 @@ const Sidebar = ({
           character && (
             <LinkSidebar
               title={character.firstName + ' ' + character.lastName}
-              icon={
-                <img
-                  className="bg-secondary z-10 size-12 shrink-0 rounded-full p-1"
-                  src={character.picture.imageUrl}
-                  alt={
-                    character.firstName +
-                    ' ' +
-                    character.lastName +
-                    "'s profile picture"
-                  }
-                />
-              }
+              icon={<CharacterPictureRound character={character} />}
               path={`/glam/characters/${character.id}`}
               sidebarVisibility={sidebarVisibility}
               setSidebarVisibility={setSidebarVisibility}

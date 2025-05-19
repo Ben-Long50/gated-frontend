@@ -1,25 +1,18 @@
 import { Route } from 'react-router-dom';
 import AffiliationForm from 'src/components/AffiliationForm';
 import Affiliations from 'src/components/Affiliations';
-import ArmorForm from 'src/components/ArmorForm';
 import Cart from 'src/components/Cart';
 import CharacterForm from 'src/components/CharacterForm';
 import CharacterList from 'src/components/CharacterList';
 import CharacterSheet from 'src/components/CharacterSheet';
 import CharacterUpdateForm from 'src/components/CharacterUpdateForm';
-import CyberneticForm from 'src/components/CyberneticForm';
 import Deployments from 'src/components/Deployments';
-import DroneForm from 'src/components/DroneForm';
-import Drones from 'src/components/Drones';
 import Equipment from 'src/components/Equipment';
 import Inventory from 'src/components/Inventory';
-import ItemForm from 'src/components/ItemForm';
 import ItemModifyForm from 'src/components/ItemModifyForm';
 import ItemPageWrapper from 'src/components/ItemPageWrapper';
 import Resume from 'src/components/Resume';
 import ResumeForm from 'src/components/ResumeForm';
-import VehicleForm from 'src/components/VehicleForm';
-import WeaponForm from 'src/components/WeaponForm';
 
 const CharacterRoutes = () => {
   return (

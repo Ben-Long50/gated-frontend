@@ -36,6 +36,8 @@ const Campaign = () => {
     isError,
   } = useCampaignQuery(apiUrl, Number(campaignId));
 
+  console.log(campaign);
+
   const playerCharacters =
     campaign?.characters.filter(
       (character: Character) => character.playerCharacter === true,
@@ -58,11 +60,16 @@ const Campaign = () => {
 
   return (
     <>
-      <div className="absolute top-0 -z-10 mx-auto flex aspect-[10/3] min-h-[500px] max-w-9xl justify-center overflow-hidden">
+      <div className="absolute top-0 -z-10 mx-auto aspect-[10/3] h-[500px] w-dvw max-w-9xl overflow-hidden">
         <img
-          className="w-full object-cover object-center"
+          className="h-full w-full object-cover"
           src={`${campaign.picture?.imageUrl}`}
           alt="Campaign cover image"
+          style={{
+            objectPosition: campaign.picture?.position
+              ? `${campaign.picture?.position.x}% ${campaign.picture?.position.y}%`
+              : '50% 50%',
+          }}
         />
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
         <div className="absolute right-6 top-6 flex flex-col items-center gap-4">
@@ -160,7 +167,7 @@ const Campaign = () => {
                           alt={faction.name + "'s picture"}
                         />
                       )}
-                      <ArrowHeader2 title={faction.name} />
+                      <ArrowHeader3 title={faction.name} />
                     </div>
                   </BtnAuth>
                 </Link>

@@ -28,6 +28,8 @@ import useDeleteDroneMutation from '../hooks/useDeleteDroneMutation/useDeleteDro
 import { DroneStats } from 'src/types/drone';
 import { Modification } from 'src/types/vehicle';
 import useWeapons from 'src/hooks/useWeapons';
+import PictureField from './form_fields/PictureField';
+import RarityField from './form_fields/RarityField';
 
 const DroneForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -46,10 +48,6 @@ const DroneForm = () => {
   const { filteredWeapons: weapons } = useWeapons({
     includedKeywords: ['Drone Weapon'],
   });
-
-  const [imagePreview, setImagePreview] = useState(
-    drone?.picture?.imageUrl || '',
-  );
 
   const createDrone = useCreateDroneMutation(
     apiUrl,
@@ -80,12 +78,6 @@ const DroneForm = () => {
     droneForm.reset();
   };
 
-  useEffect(() => {
-    if (drone) {
-      setImagePreview(drone.picture?.imageUrl);
-    }
-  }, [drone]);
-
   const droneForm = useForm({
     defaultValues: {
       id: drone?.id || null,
@@ -93,6 +85,7 @@ const DroneForm = () => {
       rarity: drone?.rarity || '',
       grade: drone?.grade || 1,
       picture: drone?.picture || '',
+      position: drone?.picture?.position || { x: 50, y: 50 },
       description: drone?.description || '',
       stats: {
         hull: drone?.stats?.hull || '',
@@ -145,17 +138,6 @@ const DroneForm = () => {
       }
     },
   });
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      droneForm.setFieldValue('picture', selectedFile);
-
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
 
   if (isLoading) return <Loading />;
 
@@ -216,23 +198,7 @@ const DroneForm = () => {
           </droneForm.Field>
         </div>
         <div className="flex w-full items-center gap-4 lg:gap-8">
-          <droneForm.Field
-            name="rarity"
-            validators={{
-              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
-            }}
-          >
-            {(field) => (
-              <SelectField className="w-full" label="Item rarity" field={field}>
-                <option value=""></option>
-                <option value="common">Common</option>
-                <option value="uncommon">Uncommon</option>
-                <option value="rare">Rare</option>
-                <option value="blackMarket">Black Market</option>
-                <option value="artifact">Artifact</option>
-              </SelectField>
-            )}
-          </droneForm.Field>
+          <RarityField form={droneForm} />
           <droneForm.Field
             name="grade"
             validators={{
@@ -250,54 +216,11 @@ const DroneForm = () => {
             )}
           </droneForm.Field>
         </div>
-        <div className="flex flex-col gap-8 sm:flex-row">
-          <ThemeContainer
-            className="mx-auto w-full max-w-sm"
-            chamfer="medium"
-            borderColor={accentPrimary}
-            overflowHidden={true}
-          >
-            {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
-                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                  <Icon
-                    className="text-tertiary"
-                    path={mdiImagePlus}
-                    size={3}
-                  />
-                  <p className="text-tertiary font-semibold">
-                    Upload drone picture
-                  </p>
-                  <p className="text-tertiary">PNG, JPG, JPEG</p>
-                </div>
-                <input
-                  id="file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
-                <img
-                  className="fade-in-bottom"
-                  src={imagePreview}
-                  alt="Preview"
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2"
-                  onClick={() => {
-                    droneForm.setFieldValue('picture', '');
-                    setImagePreview('');
-                  }}
-                >
-                  <div className="rounded bg-zinc-950">
-                    <Icon path={mdiCloseBox} size={1.5} />
-                  </div>
-                </button>
-              </div>
-            )}
-          </ThemeContainer>
+        <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
+          <PictureField
+            form={droneForm}
+            sizeInfo={{ aspectRatio: '1/1', maxHeight: '', minHeight: '' }}
+          />
           <droneForm.Field
             name="description"
             validators={{

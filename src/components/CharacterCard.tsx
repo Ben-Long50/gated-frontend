@@ -16,6 +16,7 @@ import CharacterIcon from './icons/CharacterIcon';
 import EquipmentIcon from './icons/EquipmentIcon';
 import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
+import CharacterPicture from './CharacterPicture';
 
 const CharacterCard = ({
   character,
@@ -40,11 +41,7 @@ const CharacterCard = ({
     >
       <div ref={cardRef} className="relative grid sm:grid-cols-[1fr_4fr]">
         <div className="absolute left-0 top-0 flex h-full w-[375px] items-center">
-          <CloudinaryImage
-            className="bg-primary w-full"
-            url={filteredCharacter.picture?.imageUrl}
-            alt={`${filteredCharacter.firstName + ' ' + filteredCharacter.lastName}'s image`}
-          />
+          <CharacterPicture character={character} />
           {mobile && (
             <div className="absolute inset-0 z-10 bg-zinc-900 bg-opacity-60" />
           )}

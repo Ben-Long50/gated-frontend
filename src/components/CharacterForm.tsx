@@ -33,13 +33,13 @@ import InputSelectField from './InputSelectField';
 import PerkLinkField from './form_fields/PerkLinkField';
 import { Perk } from 'src/types/perk';
 import NpcPreferenceField from './form_fields/NpcPreferenceField';
+import PictureField from './form_fields/PictureField';
 
 const CharacterForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const [imagePreview, setImagePreview] = useState('');
   const [formMessage, setFormMessage] = useState('');
 
   const cardRef = useRef(null);
@@ -75,6 +75,7 @@ const CharacterForm = () => {
       firstName: '',
       lastName: '',
       picture: '',
+      position: { x: 50, y: 50 },
       height: '',
       weight: '',
       age: '',
@@ -127,18 +128,6 @@ const CharacterForm = () => {
     characterForm.setFieldValue('stats.currentHealth', stats.maxHealth);
     characterForm.setFieldValue('stats.currentSanity', stats.maxSanity);
   }, [attributeTree, characterForm]);
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // Get the selected file
-
-    if (selectedFile) {
-      characterForm.setFieldValue('picture', selectedFile);
-
-      // Create a URL for the selected file to preview
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
 
   if (perks.isPending) return <Loading />;
 
@@ -206,51 +195,11 @@ const CharacterForm = () => {
         <NpcPreferenceField form={characterForm} />
         <Divider />
         <ArrowHeader2 title="Character Information" />
-        <div className="flex w-full flex-col gap-8 sm:flex-row">
-          <ThemeContainer
-            className="mx-auto w-full max-w-sm"
-            chamfer="medium"
-            borderColor={accentPrimary}
-          >
-            {!imagePreview ? (
-              <label className="flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center clip-6">
-                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                  <Icon
-                    className="text-tertiary"
-                    path={mdiImagePlus}
-                    size={3}
-                  />
-                  <p className="text-tertiary font-semibold">
-                    Upload character picture
-                  </p>
-                  <p className="text-tertiary">PNG, JPG, JPEG</p>
-                </div>
-                <input
-                  id="file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
-                <img
-                  className="fade-in-bottom"
-                  src={imagePreview}
-                  alt="Preview"
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2"
-                  onClick={() => {
-                    characterForm.setFieldValue('picture', '');
-                    setImagePreview('');
-                  }}
-                >
-                  <Icon path={mdiCloseBox} size={1.5} />
-                </button>
-              </div>
-            )}
-          </ThemeContainer>
+        <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
+          <PictureField
+            form={characterForm}
+            sizeInfo={{ aspectRatio: '1/1', maxHeight: '', minHeight: '' }}
+          />
           <div className="flex w-full flex-col gap-8 max-sm:col-span-2">
             <characterForm.Field
               name="firstName"

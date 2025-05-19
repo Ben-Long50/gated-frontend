@@ -4,6 +4,7 @@ import createCampaign from './createCampaign';
 const useCreateCampaignMutation = (
   apiUrl: string,
   setFormMessage: (message: string) => void,
+  campaignId?: number,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -12,6 +13,9 @@ const useCreateCampaignMutation = (
     },
     onSuccess: () => {
       setFormMessage('Campaign successfully created');
+      queryClient.invalidateQueries({
+        queryKey: ['campaign', campaignId],
+      });
       return queryClient.invalidateQueries({
         queryKey: ['campaigns'],
         exact: false,

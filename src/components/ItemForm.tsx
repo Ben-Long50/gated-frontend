@@ -1,5 +1,5 @@
 import { useForm } from '@tanstack/react-form';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
@@ -12,11 +12,8 @@ import { Modifier } from 'src/types/modifier';
 import useDeleteItemMutation from '../hooks/useDeleteItemMutation/useDeleteItemMutation';
 import useCreateItemMutation from '../hooks/useCreateItemMutation/useCreateItemMutation';
 import useItemQuery from '../hooks/useItemQuery/useItemQuery';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
-import Icon from '@mdi/react';
-import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { ItemStats } from 'src/types/item';
+import { Stats } from 'src/types/item';
 import useModifyItemMutation from '../hooks/useModifyItemMutation/useModifyItemMutation';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
@@ -25,6 +22,8 @@ import { Keyword } from 'src/types/keyword';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 import KeywordLinkField from './form_fields/KeywordLinkField';
 import ActionLinkField from './form_fields/ActionLinkField';
+import PictureField from './form_fields/PictureField';
+import RarityField from './form_fields/RarityField';
 
 const ItemForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -36,13 +35,7 @@ const ItemForm = () => {
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
 
-  const { data: item } = useItemQuery(apiUrl, Number(itemId), {
-    enabled: !!itemId,
-  });
-
-  const [imagePreview, setImagePreview] = useState(
-    item?.picture?.imageUrl || '',
-  );
+  const { data: item } = useItemQuery(apiUrl, Number(itemId), 'item');
 
   const createItem = useCreateItemMutation(
     apiUrl,
@@ -69,23 +62,6 @@ const ItemForm = () => {
     itemForm.reset();
   };
 
-  useEffect(() => {
-    if (item) {
-      setImagePreview(item.picture?.imageUrl);
-    } else setImagePreview('');
-  }, [item, itemId]);
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      itemForm.setFieldValue('picture', selectedFile);
-
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
-
   const itemForm = useForm({
     defaultValues: {
       id: item?.id || null,
@@ -93,17 +69,16 @@ const ItemForm = () => {
       rarity: item?.rarity || '',
       grade: item?.grade || 1,
       picture: item?.picture || '',
+      position: item?.picture?.position || { x: 50, y: 50 },
       category: item?.category || '',
       description: item?.description || '',
       price: item?.price || '',
       stats: {
         range: item?.stats.range || '',
-        currentStacks: item?.stats.currentStacks || '',
-        maxStacks: item?.stats.maxStacks || '',
         power: item?.stats.power || '',
         currentPower: item?.stats.currentPower || '',
         weight: item?.stats.weight || '',
-      } as ItemStats,
+      } as Stats,
       actions: item?.actions || ([] as Action[]),
       keywords:
         item?.keywords || ([] as { keyword: Keyword; value?: number }[]),
@@ -206,23 +181,7 @@ const ItemForm = () => {
           </itemForm.Field>
         </div>
         <div className="flex w-full items-center gap-4 lg:gap-8">
-          <itemForm.Field
-            name="rarity"
-            validators={{
-              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
-            }}
-          >
-            {(field) => (
-              <SelectField className="w-full" label="Item rarity" field={field}>
-                <option value=""></option>
-                <option value="common">Common</option>
-                <option value="uncommon">Uncommon</option>
-                <option value="rare">Rare</option>
-                <option value="blackMarket">Black Market</option>
-                <option value="artifact">Artifact</option>
-              </SelectField>
-            )}
-          </itemForm.Field>
+          <RarityField form={itemForm} />
           <itemForm.Field
             name="grade"
             validators={{
@@ -254,55 +213,11 @@ const ItemForm = () => {
             </SelectField>
           )}
         </itemForm.Field>
-
-        <div className="flex flex-col gap-8 sm:flex-row">
-          <ThemeContainer
-            className="mx-auto w-full max-w-sm"
-            chamfer="medium"
-            borderColor={accentPrimary}
-            overflowHidden={true}
-          >
-            {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
-                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                  <Icon
-                    className="text-tertiary"
-                    path={mdiImagePlus}
-                    size={3}
-                  />
-                  <p className="text-tertiary font-semibold">
-                    Upload item picture
-                  </p>
-                  <p className="text-tertiary">PNG, JPG, JPEG</p>
-                </div>
-                <input
-                  id="file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
-                <img
-                  className="fade-in-bottom"
-                  src={imagePreview}
-                  alt="Preview"
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2"
-                  onClick={() => {
-                    itemForm.setFieldValue('picture', '');
-                    setImagePreview('');
-                  }}
-                >
-                  <div className="rounded bg-zinc-950">
-                    <Icon path={mdiCloseBox} size={1.5} />
-                  </div>
-                </button>
-              </div>
-            )}
-          </ThemeContainer>
+        <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
+          <PictureField
+            form={itemForm}
+            sizeInfo={{ aspectRatio: '1/1', maxHeight: '', minHeight: '' }}
+          />
           <itemForm.Field
             name="description"
             validators={{

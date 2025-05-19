@@ -142,7 +142,11 @@ const Perks = ({
         className="w-full"
         borderColor={accentPrimary}
       >
-        <PerkList perkTree={perks.filteredPerkTree} mode={mode} field={field} />
+        <PerkList
+          perkTree={perkTree || perks.filteredPerkTree}
+          mode={mode}
+          field={field}
+        />
       </ThemeContainer>
     </div>
   );

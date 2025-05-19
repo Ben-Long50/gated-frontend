@@ -1,18 +1,20 @@
 import { useEffect } from 'react';
-import { motion } from 'motion/react';
+
+type Position = {
+  x: number;
+  y: number;
+};
 
 const CloudinaryImage = ({
   className,
   url,
-  width,
-  height,
+  position,
   alt,
   onClick,
 }: {
   className: string;
   url: string;
-  width?: number;
-  height?: number;
+  position: Position;
   alt: string;
   onClick?: () => void;
 }) => {
@@ -38,9 +40,10 @@ const CloudinaryImage = ({
 
   return (
     <img
-      className={`${className} cld-responsive`}
-      width={width}
-      height={height}
+      className={`${className} cld-responsive bg-primary h-full w-full object-cover`}
+      style={{
+        objectPosition: position ? `${position.x}% ${position.y}%` : '50% 50%',
+      }}
       data-src={responsiveUrl}
       loading="lazy"
       alt={alt}

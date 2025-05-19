@@ -24,6 +24,7 @@ import Divider from './Divider';
 import BtnAuth from './buttons/BtnAuth';
 import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
+import CharacterPicture from './CharacterPicture';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -42,8 +43,6 @@ const CharacterSheet = () => {
     isPending: characterPending,
     isError: characterError,
   } = useCharacterQuery(apiUrl, Number(characterId));
-
-  console.log(character);
 
   const filteredCharacter = useCharacter(character);
 
@@ -108,28 +107,17 @@ const CharacterSheet = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-8 sm:flex-row">
+      <div className="grid gap-8 max-sm:grid-flow-row sm:grid-cols-2">
         {filteredCharacter.picture.imageUrl && (
-          <ThemeContainer
-            className="size mx-auto aspect-square w-full max-w-96"
-            chamfer="medium"
-            borderColor={accentPrimary}
-            overflowHidden={true}
-          >
-            <img
-              className="clip-6"
-              src={filteredCharacter.picture.imageUrl}
-              alt="Preview"
-            />
-          </ThemeContainer>
+          <CharacterPicture character={character} />
         )}
-
         <ThemeContainer
           chamfer="medium"
-          className="mb-auto max-h-96 w-full"
+          className="mb-auto w-full"
           borderColor={accentPrimary}
+          overflowHidden={true}
         >
-          <div className="scrollbar-secondary-2 flex max-h-96 flex-col gap-4 overflow-y-auto p-4">
+          <div className="scrollbar-secondary-2 flex h-full flex-col gap-4 overflow-y-auto p-4">
             <div className="flex w-full items-center justify-between">
               <ArrowHeader3
                 title={
@@ -309,7 +297,7 @@ const CharacterSheet = () => {
                 chamfer="medium"
                 borderColor={accentPrimary}
               >
-                <div className="p-6">
+                <div className="p-4">
                   <AttributeCard
                     attribute={attribute}
                     points={points}

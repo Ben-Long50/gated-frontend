@@ -1,20 +1,28 @@
 import { mdiTriangleDown } from '@mdi/js';
 import Icon from '@mdi/react';
+import { useContext } from 'react';
+import { LayoutContext } from 'src/contexts/LayoutContext';
 
 const ArrowHeader4 = ({
   title,
   className,
+  reverse,
 }: {
   title: string;
   className?: string;
+  reverse?: boolean;
 }) => {
+  const { mobile } = useContext(LayoutContext);
+
   return (
-    <div className={`${className} flex items-center gap-4`}>
+    <div
+      className={`${className} text-left ${reverse && 'flex-row-reverse'} flex items-start gap-4`}
+    >
       <Icon
-        className={`${className ? 'text-inherit' : 'text-primary'} shrink-0`}
+        className={`${mobile ? 'mt-[7px]' : 'mt-[9px]'} text-primary shrink-0`}
         path={mdiTriangleDown}
         size={0.375}
-        rotate={-90}
+        rotate={reverse ? 90 : -90}
       />
       <h4 className={`${className ? '!text-inherit' : 'text-primary'} `}>
         {title}
