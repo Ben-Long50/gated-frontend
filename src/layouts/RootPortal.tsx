@@ -40,7 +40,7 @@ const RootPortal = ({
 
   return createPortal(
     <div
-      className={`backdrop-fade fixed inset-0 top-14 z-20 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-md sm:p-4 md:p-8`}
+      className={`backdrop-fade fixed inset-0 top-14 z-30 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-md sm:p-4 md:p-8`}
       onClick={(e) => {
         if (modalOpen) {
           e.preventDefault();

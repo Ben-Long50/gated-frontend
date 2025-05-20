@@ -19,6 +19,7 @@ import {
   WeaponControls,
 } from './ItemCardControls';
 import { AuthContext } from 'src/contexts/AuthContext';
+import useItemStats from 'src/hooks/useItemStats';
 
 const ItemCard = ({
   item,
@@ -42,20 +43,7 @@ const ItemCard = ({
     }
   }, []);
 
-  const itemStats = useMemo(
-    () =>
-      item?.stats
-        ? Object.fromEntries(
-            Object.entries(item?.stats).map(([stat, value]) =>
-              item?.modifiedStats &&
-              Object.keys(item?.modifiedStats).includes(stat)
-                ? [stat, value + item?.modifiedStats[stat]]
-                : [stat, value],
-            ),
-          )
-        : undefined,
-    [item],
-  );
+  const { itemStats } = useItemStats(item);
 
   const cardRef = useRef(null);
 

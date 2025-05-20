@@ -17,7 +17,7 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
       className="w-full"
       chamfer="large"
       borderColor={accentPrimary}
-      bgImageUrl={campaign.picture?.imageUrl}
+      bgImageUrl={campaign.picture}
       overflowHidden={true}
     >
       <div className="flex flex-col items-center gap-8 p-6 md:flex-row">

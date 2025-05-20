@@ -4,12 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from 'src/contexts/ThemeContext';
 import ArrowHeader4 from '../ArrowHeader4';
 import Icon from '@mdi/react';
-import {
-  mdiCloseBox,
-  mdiImagePlus,
-  mdiRectangleOutline,
-  mdiSquareOutline,
-} from '@mdi/js';
+import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 
 type SizeInfo = {
   aspectRatio: string;
@@ -48,62 +43,65 @@ const PictureField = ({
 
   return (
     <div className="flex flex-col gap-4 sm:gap-8">
-      <ThemeContainer
-        className="mx-auto my-auto w-full"
-        chamfer="medium"
-        borderColor={accentPrimary}
-        overflowHidden={true}
-      >
-        {!imagePreview ? (
-          <label
-            className="bg-secondary flex w-full cursor-pointer flex-col items-center justify-center"
-            style={sizeInfo}
-          >
-            <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-              <Icon className="text-tertiary" path={mdiImagePlus} size={3} />
-              <p className="text-tertiary font-semibold">Upload Picture</p>
-              <p className="text-tertiary">PNG, JPG, JPEG</p>
-            </div>
-            <input
-              id="file"
-              type="file"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-          </label>
-        ) : (
-          <form.Subscribe selector={(state) => state.values.position}>
-            {(position) => (
-              <div
-                className="bg-secondary h-full w-full overflow-hidden bg-black"
-                style={{
-                  aspectRatio,
-                  maxHeight: sizeInfo.maxHeight,
-                  minHeight: sizeInfo.minHeight,
-                }}
-              >
-                <img
-                  className="h-full w-full object-cover"
-                  src={imagePreview}
-                  alt="Preview"
+      <div className="flex aspect-square w-full items-center">
+        <ThemeContainer
+          className="mx-auto my-auto w-full"
+          chamfer="medium"
+          borderColor={accentPrimary}
+          overflowHidden={true}
+        >
+          {!imagePreview ? (
+            <label
+              className="bg-secondary flex w-full cursor-pointer flex-col items-center justify-center"
+              style={sizeInfo}
+            >
+              <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
+                <Icon className="text-tertiary" path={mdiImagePlus} size={3} />
+                <p className="text-tertiary font-semibold">Upload Picture</p>
+                <p className="text-tertiary">PNG, JPG, JPEG</p>
+              </div>
+              <input
+                id="file"
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </label>
+          ) : (
+            <form.Subscribe selector={(state) => state.values.position}>
+              {(position) => (
+                <div
+                  className="bg-secondary h-full w-full overflow-hidden bg-black"
                   style={{
-                    objectPosition: `${position.x}% ${position.y}%`,
-                  }}
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2 rounded-md bg-zinc-900"
-                  onClick={() => {
-                    form.setFieldValue('picture', '');
-                    setImagePreview('');
+                    aspectRatio,
+                    maxHeight: sizeInfo.maxHeight,
+                    minHeight: sizeInfo.minHeight,
                   }}
                 >
-                  <Icon path={mdiCloseBox} size={1.5} />
-                </button>
-              </div>
-            )}
-          </form.Subscribe>
-        )}
-      </ThemeContainer>
+                  <img
+                    className="h-full w-full object-cover"
+                    src={imagePreview}
+                    alt="Preview"
+                    style={{
+                      objectPosition: `${position.x}% ${position.y}%`,
+                    }}
+                  />
+                  <button
+                    className="text-secondary absolute right-2 top-2 rounded-md bg-zinc-900"
+                    onClick={() => {
+                      form.setFieldValue('picture', '');
+                      setImagePreview('');
+                    }}
+                  >
+                    <Icon path={mdiCloseBox} size={1.5} />
+                  </button>
+                </div>
+              )}
+            </form.Subscribe>
+          )}
+        </ThemeContainer>
+      </div>
+
       <div className="items-centerv flex flex-wrap items-center justify-between gap-4">
         <ArrowHeader4 title="Aspect Ratio Previews" />
         <div className="flex items-center gap-4">

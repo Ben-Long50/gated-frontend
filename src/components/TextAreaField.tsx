@@ -37,7 +37,7 @@ const TextAreaField = ({
   }, [focus, field.state]);
 
   return (
-    <div className="h-full grow">
+    <div className="h-full min-h-[250px] grow">
       <ThemeContainer
         chamfer="small"
         className={`mx-auto flex h-full w-full flex-col`}

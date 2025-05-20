@@ -1,7 +1,8 @@
-import { ItemObject } from 'src/types/global';
+import { Action } from 'src/types/action';
+import { Item } from 'src/types/item';
 import { Keyword } from 'src/types/keyword';
 
-export const extractItemListIds = (itemList: ItemObject[]) => {
+export const extractItemListIds = (itemList: Item[] | Action[]) => {
   return itemList.map((item) => item.id);
 };
 

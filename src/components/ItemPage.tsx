@@ -23,6 +23,7 @@ import useItemQuery from '../hooks/useItemQuery/useItemQuery';
 import ItemCardSmall from './ItemCardSmall';
 import { Keyword } from 'src/types/keyword';
 import { Item } from 'src/types/item';
+import useItemStats from 'src/hooks/useItemStats';
 
 const ItemPage = ({
   itemId,
@@ -46,20 +47,7 @@ const ItemPage = ({
     category,
   );
 
-  const itemStats = useMemo(
-    () =>
-      item?.stats
-        ? Object.fromEntries(
-            Object.entries(item?.stats).map(([stat, value]) =>
-              item?.modifiedStats &&
-              Object.keys(item?.modifiedStats).includes(stat)
-                ? [stat, value + item?.modifiedStats[stat]]
-                : [stat, value],
-            ),
-          )
-        : undefined,
-    [item],
-  );
+  const { itemStats, powerLevel } = useItemStats(item);
 
   const linkedWeapons =
     item?.itemLinkReference?.items.filter(
@@ -106,7 +94,7 @@ const ItemPage = ({
             item={item}
           />
         )}
-        <div className="flex w-full flex-col gap-8">
+        <div className="flex w-full flex-col gap-4">
           <div className="flex items-center justify-between">
             <ItemRarity
               className="col-span-2 place-self-start"
@@ -115,6 +103,10 @@ const ItemPage = ({
               cardWidth={cardWidth}
             />
             <h4>Cost {item.price ? <span>{`${item.price}p`}</span> : 'N/A'}</h4>
+          </div>
+          <div className="flex items-center justify-between">
+            <ArrowHeader3 title="Power Level" />
+            <h3>{powerLevel}</h3>
           </div>
           {item.keywords?.length > 0 && (
             <div
