@@ -14,9 +14,9 @@ interface Item {
   equipped: boolean;
   description: string;
   stats: Stats;
+  modifiedStats?: Stats;
   keywords: { keyword: Keyword; value: number | null }[];
   itemLinkReference?: LinkReference;
-  // modifiers: Modifier[];
 }
 
 interface LinkReference {

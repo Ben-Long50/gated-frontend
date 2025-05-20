@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import { useContext, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
 import { Link } from 'react-router-dom';
@@ -41,6 +41,21 @@ const ItemCard = ({
       setCardWidth(cardRef.current.offsetWidth);
     }
   }, []);
+
+  const itemStats = useMemo(
+    () =>
+      item?.stats
+        ? Object.fromEntries(
+            Object.entries(item?.stats).map(([stat, value]) =>
+              item?.modifiedStats &&
+              Object.keys(item?.modifiedStats).includes(stat)
+                ? [stat, value + item?.modifiedStats[stat]]
+                : [stat, value],
+            ),
+          )
+        : undefined,
+    [item],
+  );
 
   const cardRef = useRef(null);
 
@@ -129,11 +144,7 @@ const ItemCard = ({
                 ref={cardRef}
                 className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} scrollbar-primary-2 grid w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 overflow-y-auto border-x-2 border-gray-400 border-opacity-50`}
               >
-                <StatBars
-                  cardWidth={cardWidth}
-                  stats={item.stats}
-                  mode={mode}
-                />
+                <StatBars cardWidth={cardWidth} stats={itemStats} mode={mode} />
                 {linkedWeapons.length > 0 && (
                   <>
                     <h4 className="col-span-3 justify-self-start">

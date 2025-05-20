@@ -7,7 +7,6 @@ const ItemPageWrapper = () => {
 
   const itemId = Number(parts.pop());
   const category = parts.pop()?.slice(0, -1);
-  console.log(category);
 
   const mode = parts.pop();
 

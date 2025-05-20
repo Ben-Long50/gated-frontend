@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import { useContext, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
@@ -44,6 +44,21 @@ const ItemPage = ({
     apiUrl,
     Number(itemId),
     category,
+  );
+
+  const itemStats = useMemo(
+    () =>
+      item?.stats
+        ? Object.fromEntries(
+            Object.entries(item?.stats).map(([stat, value]) =>
+              item?.modifiedStats &&
+              Object.keys(item?.modifiedStats).includes(stat)
+                ? [stat, value + item?.modifiedStats[stat]]
+                : [stat, value],
+            ),
+          )
+        : undefined,
+    [item],
   );
 
   const linkedWeapons =
@@ -165,7 +180,7 @@ const ItemPage = ({
         ref={cardRef}
         className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-8 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
       >
-        <StatBars stats={item.stats} cardWidth={cardWidth} />
+        <StatBars stats={itemStats} cardWidth={cardWidth} />
       </div>
 
       <p className="self-start">{item.description}</p>
