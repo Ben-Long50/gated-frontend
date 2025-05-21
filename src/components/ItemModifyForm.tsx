@@ -288,67 +288,68 @@ const ItemModifyForm = () => {
             </p>
           </div>
           <div className="grid w-full grid-cols-[1fr_auto_auto_auto_auto_auto] items-center gap-x-2 gap-y-6 border-x-2 border-gray-400 border-opacity-50 px-6">
-            {Object.entries(itemStats).map(([stat, value]) => {
-              const exists =
-                itemModifyForm.getFieldValue(`modifiedStats[${stat}]`) !==
-                undefined;
-              return (
-                exists && (
-                  <itemModifyForm.Field
-                    name={`modifiedStats[${stat}]`}
-                    key={stat}
-                  >
-                    {(field) => {
-                      return (
-                        <>
-                          <h4 className="w-full">
-                            {stat.charAt(0).toUpperCase() + stat.slice(1)}{' '}
-                            <span className="text-tertiary ml-2 text-base font-normal">
-                              ({gradePointMap[stat]} GP)
-                            </span>
-                          </h4>
-                          <p className="mr-3 font-semibold !text-green-400">
-                            {field.state.value > 0
-                              ? `+${field.state.value}`
-                              : ''}
-                          </p>
-                          <button
-                            className={`${field.state.value > 0 ? 'hover:text-accent' : 'opacity-30'} bg-tertiary text-secondary timing size-8 rounded-md text-center font-semibold shadow-md shadow-black`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              if (field.state.value > 0) {
-                                field.handleChange(field.state.value - 1);
-                              }
-                            }}
-                          >
-                            <Icon path={mdiMinus} className="text-inherit" />
-                          </button>
-                          <p className="min-w-8 text-center">
-                            {value + field.state.value}
-                          </p>
-                          <button
-                            className={`${availableGp >= gradePointMap[stat] ? 'hover:text-accent' : 'opacity-30'} bg-tertiary text-secondary timing size-8 rounded-md text-center font-semibold shadow-md shadow-black`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              if (availableGp >= gradePointMap[stat]) {
-                                field.handleChange(field.state.value + 1);
-                              }
-                            }}
-                          >
-                            <Icon path={mdiPlus} className="text-inherit" />
-                          </button>
-                          <p className="text-tertiary text-sm">
-                            {item?.modifiedStats &&
-                              item?.modifiedStats[stat] &&
-                              `( ${item?.modifiedStats[stat]} )`}
-                          </p>
-                        </>
-                      );
-                    }}
-                  </itemModifyForm.Field>
-                )
-              );
-            })}
+            {itemStats &&
+              Object.entries(itemStats[0]).map(([stat, value]) => {
+                const exists =
+                  itemModifyForm.getFieldValue(`modifiedStats[${stat}]`) !==
+                  undefined;
+                return (
+                  exists && (
+                    <itemModifyForm.Field
+                      name={`modifiedStats[${stat}]`}
+                      key={stat}
+                    >
+                      {(field) => {
+                        return (
+                          <>
+                            <h4 className="w-full">
+                              {stat.charAt(0).toUpperCase() + stat.slice(1)}{' '}
+                              <span className="text-tertiary ml-2 text-base font-normal">
+                                ({gradePointMap[stat]} GP)
+                              </span>
+                            </h4>
+                            <p className="mr-3 font-semibold !text-green-400">
+                              {field.state.value > 0
+                                ? `+${field.state.value}`
+                                : ''}
+                            </p>
+                            <button
+                              className={`${field.state.value > 0 ? 'hover:text-accent' : 'opacity-30'} bg-tertiary text-secondary timing size-8 rounded-md text-center font-semibold shadow-md shadow-black`}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (field.state.value > 0) {
+                                  field.handleChange(field.state.value - 1);
+                                }
+                              }}
+                            >
+                              <Icon path={mdiMinus} className="text-inherit" />
+                            </button>
+                            <p className="min-w-8 text-center">
+                              {value + field.state.value}
+                            </p>
+                            <button
+                              className={`${availableGp >= gradePointMap[stat] ? 'hover:text-accent' : 'opacity-30'} bg-tertiary text-secondary timing size-8 rounded-md text-center font-semibold shadow-md shadow-black`}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                if (availableGp >= gradePointMap[stat]) {
+                                  field.handleChange(field.state.value + 1);
+                                }
+                              }}
+                            >
+                              <Icon path={mdiPlus} className="text-inherit" />
+                            </button>
+                            <p className="text-tertiary text-sm">
+                              {item?.modifiedStats &&
+                                item?.modifiedStats[stat] &&
+                                `( ${item?.modifiedStats[stat]} )`}
+                            </p>
+                          </>
+                        );
+                      }}
+                    </itemModifyForm.Field>
+                  )
+                );
+              })}
           </div>
           <Divider />
           <KeywordList

@@ -218,7 +218,7 @@ const Equipment = () => {
           />
         </div>
         <ThemeContainer
-          className="row-span-2 mb-auto max-w-[450px]"
+          className="row-span-2 mb-auto min-w-[350px] max-w-[450px]"
           chamfer="medium"
           borderColor={accentPrimary}
         >
@@ -226,89 +226,89 @@ const Equipment = () => {
             <ArrowHeader3 title="Stats" />
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <EquipmentIcon className="text-secondary size-8" />
+                <EquipmentIcon className="text-secondary size-8 shrink-0" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Power Level
                 </h3>
               </div>
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+              <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
                 {powerLevel}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <CharacterIcon className="text-secondary size-8" />
+                <CharacterIcon className="text-secondary size-8 shrink-0" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Character Level
                 </h3>
               </div>
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+              <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
                 {filteredCharacter.level}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <SpeedIcon className="text-secondary size-8" />
+                <SpeedIcon className="text-secondary size-8 shrink-0" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Speed
                 </h3>
               </div>
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+              <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
                 {filteredCharacter.stats.speed}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <ArmorIcon className="text-secondary size-8" />
+                <ArmorIcon className="text-secondary size-8 shrink-0" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Armor
                 </h3>
               </div>
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+              <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
                 {filteredCharacter.stats.armor}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <WardIcon className="text-secondary size-8" />
+                <WardIcon className="text-secondary size-8 shrink-0" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Ward
                 </h3>
               </div>
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+              <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
                 {filteredCharacter.stats.ward}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <EvasionIcon className="text-secondary size-8" />
+                <EvasionIcon className="text-secondary size-8 shrink-0" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Evasion
                 </h3>
               </div>
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+              <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
                 {filteredCharacter.stats.evasion}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <InjuryIcon className="text-secondary size-8" />
+                <InjuryIcon className="text-secondary size-8 shrink-0" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Injuries
                 </h3>
               </div>
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+              <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
                 {filteredCharacter.stats.injuries}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
-                <InsanityIcon className="text-secondary size-8" />
+                <InsanityIcon className="text-secondary size-8 shrink-0" />
                 <h3 className="text-primary text-xl font-semibold tracking-widest">
                   Insanities
                 </h3>
               </div>
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+              <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
                 {filteredCharacter.stats.insanities}
               </p>
             </div>
