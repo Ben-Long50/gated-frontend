@@ -1,4 +1,4 @@
-import { ReactNode, useContext, useState } from 'react';
+import { ReactNode, useContext, useRef, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import BtnAuth from './buttons/BtnAuth';
@@ -41,6 +41,8 @@ const ItemMenu = ({
     return '';
   });
 
+  const listRef = useRef(null);
+
   let itemList = [] as Item[];
 
   switch (tab) {
@@ -71,7 +73,10 @@ const ItemMenu = ({
 
   switch (mode) {
     case 'equipment':
-      listLayoutClasses = 'grid grid-cols-1 sm:grid-cols-2';
+      listLayoutClasses =
+        listRef.current?.offsetWidth < 700
+          ? 'grid grid-cols-1'
+          : 'grid grid-cols-2';
       break;
     case 'deployments':
       listLayoutClasses = 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3';
@@ -90,7 +95,10 @@ const ItemMenu = ({
       chamfer="medium"
       overflowHidden={true}
     >
-      <div className="scrollbar-secondary-2 flex max-h-75dvh w-full flex-col gap-2 overflow-y-auto p-4">
+      <div
+        ref={listRef}
+        className="scrollbar-secondary-2 flex max-h-75dvh w-full flex-col gap-2 overflow-y-auto p-4"
+      >
         <div className="col-span-2 grid grid-flow-col gap-2 sm:gap-4">
           {(category === 'equipment' || mode === 'equipment') && (
             <>

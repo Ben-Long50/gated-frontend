@@ -25,6 +25,7 @@ import {
   WeaponControls,
 } from './ItemCardControls';
 import { AuthContext } from 'src/contexts/AuthContext';
+import useItemStats from 'src/hooks/useItemStats';
 
 const ItemCardMobile = ({
   item,
@@ -61,6 +62,8 @@ const ItemCardMobile = ({
   }, [toolTip]);
 
   const cardRef = useRef(null);
+
+  const { itemStats } = useItemStats([item]);
 
   const linkedWeapons =
     item.itemLinkReference?.items.filter(
@@ -135,7 +138,7 @@ const ItemCardMobile = ({
               >
                 <StatBars
                   cardWidth={cardWidth}
-                  stats={item.stats}
+                  stats={itemStats[0]}
                   mode={mode}
                 />
                 {linkedWeapons.length > 0 && (

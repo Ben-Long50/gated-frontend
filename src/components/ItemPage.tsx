@@ -47,7 +47,7 @@ const ItemPage = ({
     category,
   );
 
-  const { itemStats, powerLevel } = useItemStats(item);
+  const { itemStats, powerLevel } = useItemStats([item]);
 
   const linkedWeapons =
     item?.itemLinkReference?.items.filter(
@@ -172,7 +172,7 @@ const ItemPage = ({
         ref={cardRef}
         className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-8 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
       >
-        <StatBars stats={itemStats} cardWidth={cardWidth} />
+        <StatBars stats={itemStats[0]} cardWidth={cardWidth} />
       </div>
 
       <p className="self-start">{item.description}</p>

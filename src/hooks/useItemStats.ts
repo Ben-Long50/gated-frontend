@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Item } from 'src/types/item';
 
-const useItemStats = (item: Item) => {
+const useItemStats = (items: Item[]) => {
   const gradePointMap = {
     damage: 10,
     salvo: 5,
@@ -24,30 +24,40 @@ const useItemStats = (item: Item) => {
 
   const itemStats = useMemo(
     () =>
-      item?.stats
-        ? Object.fromEntries(
-            Object.entries(item?.stats).map(([stat, value]) =>
-              item?.modifiedStats &&
-              Object.keys(item?.modifiedStats).includes(stat)
-                ? [stat, value + item?.modifiedStats[stat]]
-                : [stat, value],
+      items && items[0]
+        ? items?.map((item) =>
+            Object.fromEntries(
+              Object.entries(item?.stats).map(([stat, value]) =>
+                item?.modifiedStats &&
+                Object.keys(item?.modifiedStats).includes(stat)
+                  ? [stat, value + item?.modifiedStats[stat]]
+                  : [stat, value],
+              ),
             ),
           )
-        : undefined,
-    [item],
+        : null,
+    [items],
   );
 
-  const powerLevel = itemStats
-    ? Math.ceil(
-        Object.entries(itemStats).reduce((sum, [stat, value]) => {
-          if (gradePointMap[stat]) {
-            return sum + value * gradePointMap[stat];
-          } else {
-            return sum;
-          }
-        }, 0),
-      )
-    : null;
+  const powerLevel = useMemo(
+    () =>
+      itemStats
+        ? Math.ceil(
+            itemStats
+              ?.map((stats) =>
+                Object.entries(stats).reduce((sum, [stat, value]) => {
+                  if (gradePointMap[stat]) {
+                    return sum + value * gradePointMap[stat];
+                  } else {
+                    return sum;
+                  }
+                }, 0),
+              )
+              .reduce((sum, level) => sum + level, 0),
+          )
+        : null,
+    [itemStats],
+  );
 
   return { itemStats, powerLevel };
 };

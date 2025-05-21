@@ -27,6 +27,9 @@ import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
 import ItemCard from './ItemCard';
 import ItemCardMobile from './ItemCardMobile';
+import EquipmentIcon from './icons/EquipmentIcon';
+import CharacterIcon from './icons/CharacterIcon';
+import useItemStats from 'src/hooks/useItemStats';
 
 const Equipment = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -63,6 +66,9 @@ const Equipment = () => {
   };
 
   const cardRef = useRef(null);
+  const activeRef = useRef(null);
+
+  console.log(activeRef.current?.offsetWidth);
 
   const {
     data: character,
@@ -71,6 +77,12 @@ const Equipment = () => {
   } = useCharacterQuery(apiUrl, Number(characterId));
 
   const filteredCharacter = useCharacter(character);
+
+  const { powerLevel } = useItemStats(
+    character?.characterInventory.items.filter(
+      (item) => item.equipped === true,
+    ),
+  );
 
   const { stats, rollBonuses } = useStats(
     character?.characterInventory,
@@ -122,7 +134,7 @@ const Equipment = () => {
   return (
     <div className="relative flex w-full max-w-9xl flex-col items-center gap-8">
       <h1 className="text-center">{namePrefix + ' ' + 'Equipment'}</h1>
-      <div className="flex w-full flex-col justify-between gap-8 lg:flex-row">
+      <div className="flex w-full flex-col gap-8 sm:flex-row">
         {filteredCharacter.picture.imageUrl && (
           <ThemeContainer
             className="size mx-auto mb-auto aspect-square w-full max-w-60"
@@ -139,7 +151,7 @@ const Equipment = () => {
         )}
         <div
           ref={cardRef}
-          className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
+          className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} col-span-1 grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
         >
           <StatBars
             cardWidth={cardRef.current?.offsetWidth}
@@ -156,10 +168,10 @@ const Equipment = () => {
           />
         </div>
       </div>
-      <div className="flex w-full flex-col items-start gap-8 sm:grid sm:grid-cols-2 lg:grid-cols-[2fr_1fr] xl:grid-cols-[2.5fr_1fr]">
-        <div className="flex w-full flex-col gap-8">
+      <div className="flex w-full flex-col gap-8 lg:flex-row">
+        <div ref={activeRef} className="col-span-2 flex w-full flex-col gap-8">
           {activeItem &&
-            (mobile ? (
+            (activeRef.current?.offsetWidth < 500 ? (
               <ItemCardMobile
                 key={active.id}
                 item={activeItem}
@@ -206,12 +218,34 @@ const Equipment = () => {
           />
         </div>
         <ThemeContainer
-          className="mb-auto w-full"
+          className="row-span-2 mb-auto max-w-[450px]"
           chamfer="medium"
           borderColor={accentPrimary}
         >
           <div className="flex h-full flex-col gap-4 p-4 pr-6">
             <ArrowHeader3 title="Stats" />
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-center gap-4">
+                <EquipmentIcon className="text-secondary size-8" />
+                <h3 className="text-primary text-xl font-semibold tracking-widest">
+                  Power Level
+                </h3>
+              </div>
+              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                {powerLevel}
+              </p>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-center gap-4">
+                <CharacterIcon className="text-secondary size-8" />
+                <h3 className="text-primary text-xl font-semibold tracking-widest">
+                  Character Level
+                </h3>
+              </div>
+              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                {filteredCharacter.level}
+              </p>
+            </div>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center justify-center gap-4">
                 <SpeedIcon className="text-secondary size-8" />
@@ -221,17 +255,6 @@ const Equipment = () => {
               </div>
               <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
                 {filteredCharacter.stats.speed}
-              </p>
-            </div>
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center justify-center gap-4">
-                <EvasionIcon className="text-secondary size-8" />
-                <h3 className="text-primary text-xl font-semibold tracking-widest">
-                  Evasion
-                </h3>
-              </div>
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                {filteredCharacter.stats.evasion}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -254,6 +277,17 @@ const Equipment = () => {
               </div>
               <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
                 {filteredCharacter.stats.ward}
+              </p>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-center gap-4">
+                <EvasionIcon className="text-secondary size-8" />
+                <h3 className="text-primary text-xl font-semibold tracking-widest">
+                  Evasion
+                </h3>
+              </div>
+              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                {filteredCharacter.stats.evasion}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
