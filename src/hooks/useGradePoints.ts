@@ -23,7 +23,7 @@ const useGradePoints = (form: FormApi, item: Item) => {
     weapon: 20,
   };
 
-  const { powerLevel } = useItemStats(item);
+  const { powerLevel } = useItemStats([item]);
 
   const newGrade = useStore(form.store, (state) => state.values.grade);
 
