@@ -119,7 +119,6 @@ const DroneForm = () => {
         actionIds: extractItemListIds(value.actions),
         keywordIds: extractKeywordListIds(value.keywords),
       };
-      console.log(data);
 
       const formData = new FormData();
 

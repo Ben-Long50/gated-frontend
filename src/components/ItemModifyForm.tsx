@@ -118,8 +118,6 @@ const ItemModifyForm = () => {
         ),
       );
 
-      console.log(filteredStats);
-
       const { keywords, ...rest } = value;
 
       const data = {
@@ -132,8 +130,6 @@ const ItemModifyForm = () => {
           ...extractKeywordListIds(item.keywords),
         ],
       };
-
-      console.log(data);
 
       const formData = new FormData();
       Object.entries(data).forEach(([key, val]) => {
@@ -158,7 +154,7 @@ const ItemModifyForm = () => {
     },
   });
 
-  const { itemStats } = useItemStats(item);
+  const { itemStats } = useItemStats([item]);
 
   const {
     gradePointMap,

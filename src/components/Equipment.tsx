@@ -68,8 +68,6 @@ const Equipment = () => {
   const cardRef = useRef(null);
   const activeRef = useRef(null);
 
-  console.log(activeRef.current?.offsetWidth);
-
   const {
     data: character,
     isLoading: characterLoading,

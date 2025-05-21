@@ -10,8 +10,6 @@ const editCart = async (
   },
 ) => {
   try {
-    console.log(formData);
-
     const response = await fetch(
       `${apiUrl}/characters/${characterId}/cart/${cartId}`,
       {

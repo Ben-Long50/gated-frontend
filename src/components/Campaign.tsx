@@ -36,8 +36,6 @@ const Campaign = () => {
     isError,
   } = useCampaignQuery(apiUrl, Number(campaignId));
 
-  console.log(campaign);
-
   const playerCharacters =
     campaign?.characters.filter(
       (character: Character) => character.playerCharacter === true,
