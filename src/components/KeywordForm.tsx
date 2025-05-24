@@ -14,6 +14,7 @@ import useKeywords from '../hooks/useKeywords';
 import { Keyword } from 'src/types/keyword';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
+import InputSelectField from './InputSelectField';
 
 const KeywordForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -32,12 +33,12 @@ const KeywordForm = () => {
 
   const createKeyword = useCreateKeywordMutation(
     apiUrl,
-    keywordId,
+    Number(keywordId),
     setFormMessage,
   );
   const deleteKeyword = useDeleteKeywordMutation(
     apiUrl,
-    keywordId,
+    Number(keywordId),
     setFormMessage,
   );
 
@@ -58,6 +59,7 @@ const KeywordForm = () => {
       name: keyword?.name || '',
       description: keyword?.description || '',
       keywordType: keyword?.keywordType || '',
+      gpCost: keyword?.gpCost || null,
     },
     onSubmit: async ({ value }) => {
       await createKeyword.mutate(value);
@@ -110,31 +112,47 @@ const KeywordForm = () => {
         >
           {(field) => (
             <TextAreaField
-              className="h-40 w-full"
+              className="w-full"
               label="Trait Description"
               field={field}
             />
           )}
         </keywordForm.Field>
-        <keywordForm.Field
-          name="keywordType"
-          validators={{
-            onSubmit: ({ value }) =>
-              value.length < 1 ? 'You must select a trait type' : undefined,
-          }}
-        >
-          {(field) => (
-            <SelectField label="Trait Type" field={field}>
-              <option defaultValue="" disabled></option>
-              <option value="weapon">Weapon</option>
-              <option value="armor">Armor</option>
-              <option value="vehicle">Vehicle</option>
-              <option value="chromebits">Chromebits</option>
-              <option value="hardwired">Hardwired</option>
-              <option value="networked">Networked</option>
-            </SelectField>
-          )}
-        </keywordForm.Field>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+          <keywordForm.Field
+            name="keywordType"
+            validators={{
+              onSubmit: ({ value }) =>
+                value.length < 1 ? 'You must select a trait type' : undefined,
+            }}
+          >
+            {(field) => (
+              <InputSelectField
+                options={[
+                  'weapon',
+                  'armor',
+                  'vehicle',
+                  'chromebits',
+                  'hardwired',
+                  'networked',
+                ]}
+                field={field}
+                label="Trait Type"
+              />
+            )}
+          </keywordForm.Field>
+          <keywordForm.Field
+            name="gpCost"
+            validators={{
+              onSubmit: ({ value }) =>
+                !value ? 'You must enter GP cost' : undefined,
+            }}
+          >
+            {(field) => (
+              <InputField field={field} type="number" label="GP Cost" />
+            )}
+          </keywordForm.Field>
+        </div>
         <BtnRect
           ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
           type="submit"

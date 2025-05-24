@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
@@ -20,14 +20,13 @@ import ThemeContainer from './ThemeContainer';
 import { Faction } from 'src/types/faction';
 import BtnRect from './buttons/BtnRect';
 import useJoinCampaignMutation from '../hooks/useJoinCampaignMutation/useJoinCampaignMutation';
-import { LayoutContext } from '../contexts/LayoutContext';
 import ArrowHeader3 from './ArrowHeader3';
 
 const Campaign = () => {
   const { apiUrl, user } = useContext(AuthContext);
-  const { mobile } = useContext(LayoutContext);
   const { campaignId } = useParams();
   const { accentPrimary } = useContext(ThemeContext);
+  const [tab, setTab] = useState('sessions');
 
   const {
     data: campaign,
@@ -125,54 +124,68 @@ const Campaign = () => {
             )}
           </BtnRect>
         )}
-        <div
-          className={`${mobile ? 'flex flex-col gap-4' : 'mt-40 grid grid-cols-2 gap-8'} w-full`}
-        >
+        <div className={`mt-28 flex w-full flex-col gap-4`}>
           <ThemeContainer borderColor={accentPrimary} chamfer="medium">
-            <div className="flex flex-col gap-4 p-4">
-              <ArrowHeader2 title="Sessions" />
-              {campaign.sessions.map((session: Session) => (
-                <Link
-                  className="w-full"
-                  key={session.id}
-                  to={`sessions/${session.id}`}
+            <div className="flex flex-col gap-4 p-4 sm:p-8">
+              <div className="grid grid-cols-2 gap-4">
+                <BtnAuth
+                  active={tab === 'sessions'}
+                  onClick={() => setTab('sessions')}
                 >
-                  <BtnAuth className="timing flex w-full items-center justify-between gap-4 !p-4 !px-6">
-                    <ArrowHeader3 title={session.name} />
-                    <p className="text-right">
-                      {format(session.createdAt, 'PP')}
-                    </p>
-                  </BtnAuth>
-                </Link>
-              ))}
+                  Sessions
+                </BtnAuth>
+                <BtnAuth
+                  active={tab === 'factions'}
+                  onClick={() => setTab('factions')}
+                >
+                  Factions
+                </BtnAuth>
+              </div>
+              <Divider />
+              {tab === 'sessions' && (
+                <>
+                  {campaign.sessions.map((session: Session) => (
+                    <Link
+                      className="w-full"
+                      key={session.id}
+                      to={`sessions/${session.id}`}
+                    >
+                      <BtnAuth className="timing flex w-full items-center justify-between gap-4 !p-4 !px-6">
+                        <ArrowHeader3 title={session.name} />
+                        <p className="text-right">
+                          {format(session.createdAt, 'PP')}
+                        </p>
+                      </BtnAuth>
+                    </Link>
+                  ))}
+                </>
+              )}
+              {tab === 'factions' && (
+                <>
+                  {campaign.factions.map((faction: Faction) => (
+                    <Link
+                      className="w-full"
+                      key={faction.id}
+                      to={`factions/${faction.id}`}
+                    >
+                      <BtnAuth className="timing flex w-full items-center justify-between p-4">
+                        <div className="flex items-center gap-4">
+                          {faction.picture?.imageUrl && (
+                            <img
+                              className="size-16 rounded-full object-cover shadow shadow-black"
+                              src={faction.picture?.imageUrl}
+                              alt={faction.name + "'s picture"}
+                            />
+                          )}
+                          <ArrowHeader3 title={faction.name} />
+                        </div>
+                      </BtnAuth>
+                    </Link>
+                  ))}
+                </>
+              )}
             </div>
           </ThemeContainer>
-          <ThemeContainer borderColor={accentPrimary} chamfer="medium">
-            <div className="flex flex-col gap-4 p-4">
-              <ArrowHeader2 title="Factions" />
-              {campaign.factions.map((faction: Faction) => (
-                <Link
-                  className="w-full"
-                  key={faction.id}
-                  to={`factions/${faction.id}`}
-                >
-                  <BtnAuth className="timing flex w-full items-center justify-between p-4">
-                    <div className="flex items-center gap-4">
-                      {faction.picture?.imageUrl && (
-                        <img
-                          className="size-16 rounded-full object-cover shadow shadow-black"
-                          src={faction.picture?.imageUrl}
-                          alt={faction.name + "'s picture"}
-                        />
-                      )}
-                      <ArrowHeader3 title={faction.name} />
-                    </div>
-                  </BtnAuth>
-                </Link>
-              ))}
-            </div>
-          </ThemeContainer>
-
           <Divider className="col-span-2" />
           <div className="col-span-2 flex flex-col items-start gap-8">
             {playerCharacters.length > 0 && (
@@ -200,15 +213,17 @@ const Campaign = () => {
               </>
             )}
           </div>
-          <Link className="col-start-2" to={`update`}>
-            <BtnRect
-              className="w-full"
-              type="button"
-              ariaLabel="Update campaign"
-            >
-              Update Campaign
-            </BtnRect>
-          </Link>
+          {campaign.ownerId === user?.id && (
+            <Link className="col-start-2" to={`update`}>
+              <BtnRect
+                className="w-full"
+                type="button"
+                ariaLabel="Update campaign"
+              >
+                Update Campaign
+              </BtnRect>
+            </Link>
+          )}
         </div>
       </div>
     </>

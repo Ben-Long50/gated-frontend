@@ -58,16 +58,12 @@ const StatBar = ({
           }).map((_, index) => (
             <div
               key={index}
-              className={`${index === 0 && 'rounded-l-sm'} ${index === arrayLength - 1 && 'rounded-r-sm'} ${total && index >= total && 'ring-[3px] ring-inset ring-red-600'} h-4 w-full min-w-[1px] max-w-8 grow border-b-[1px] border-l-[0.5px] border-r-[0.5px] border-t-[1px] border-black`}
+              className={`${index === 0 && 'rounded-l-sm border-l-[1px]'} ${index === arrayLength - 1 && 'rounded-r-sm border-r-[1px]'} ${total && index >= total && 'ring-[3px] ring-inset ring-red-600'} h-4 w-full min-w-[1px] max-w-8 grow border-b-[1px] border-l-[0.5px] border-r-[0.5px] border-t-[1px] border-black`}
               style={{
                 backgroundImage:
                   index < current
                     ? `linear-gradient(to bottom, rgb(160, 160, 160), ${color}, rgb(50, 50, 50)`
                     : 'none',
-                // boxShadow:
-                //   arrayLength > 0 && index < current
-                //     ? `0 -3px 4px -1px ${color}, 0 2px 4px -1px ${color}`
-                //     : 'none',
                 backgroundColor: index < current ? undefined : 'gray',
               }}
             />

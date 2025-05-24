@@ -6,7 +6,6 @@ import { Notification } from 'src/types/notification';
 import BtnRect from './buttons/BtnRect';
 import { Link } from 'react-router-dom';
 import AccountPicture from './AccountPicture';
-import ArrowHeader2 from './ArrowHeader2';
 import Icon from '@mdi/react';
 import { mdiTrashCanOutline } from '@mdi/js';
 import useDeleteNotificationMutation from '../hooks/useDeleteNotificationMutation/useDeleteNotificationMutation';
@@ -43,13 +42,8 @@ const NotificationCard = ({ notification }: { notification: Notification }) => {
         <div className="flex w-full items-start justify-between">
           <div className="flex flex-wrap items-center justify-start gap-4">
             <div className="flex items-center">
-              <ArrowHeader2 title="" />
               <AccountPicture user={notification.sender} />
-              <h2 className="ml-4">
-                {notification.sender.firstName +
-                  ' ' +
-                  notification.sender.lastName}
-              </h2>
+              <h2 className="ml-4">{notification.sender.username}</h2>
             </div>
             <p className="!text-tertiary">(Campaign Invitation)</p>
           </div>
@@ -60,12 +54,7 @@ const NotificationCard = ({ notification }: { notification: Notification }) => {
           </div>
         </div>
         <p>
-          <span>
-            {notification.sender.firstName +
-              ' ' +
-              notification.sender.lastName +
-              ' '}
-          </span>
+          <span>{notification.sender.username} </span>
           {notificationMessage}
         </p>
 

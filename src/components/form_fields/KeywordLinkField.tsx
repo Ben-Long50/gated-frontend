@@ -11,11 +11,13 @@ import ArrowHeader2 from '../ArrowHeader2';
 
 const KeywordLinkField = ({
   form,
+  mode,
   title,
   className,
   keywordType,
 }: {
   form: FormApi;
+  mode?: string;
   title?: string;
   className?: string;
   keywordType?:
@@ -70,14 +72,21 @@ const KeywordLinkField = ({
                             <ItemCardSmall
                               key={keyword.keyword.id}
                               heading={
-                                <h3>
-                                  {keyword.value
-                                    ? keyword.keyword?.name.replace(
-                                        /X/g,
-                                        keyword.value.toString(),
-                                      )
-                                    : keyword.keyword?.name}
-                                </h3>
+                                <div className="flex w-full items-center justify-between">
+                                  <h3>
+                                    {keyword.value
+                                      ? keyword.keyword?.name.replace(
+                                          /X/g,
+                                          keyword.value.toString(),
+                                        )
+                                      : keyword.keyword?.name}
+                                  </h3>
+                                  {mode === 'modify' && (
+                                    <p className="text-tertiary pr-2">
+                                      ({keyword.keyword.gpCost} GP)
+                                    </p>
+                                  )}
+                                </div>
                               }
                             >
                               <p>

@@ -36,6 +36,8 @@ import { useParams } from 'react-router-dom';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Modal from './Modal';
+import CharacterPictureRound from './CharacterPictureRound';
+import ArrowHeader2 from './ArrowHeader2';
 
 const RollSimulator = ({
   modalOpen,
@@ -130,17 +132,8 @@ const RollSimulator = ({
                 )}
                 {field.state.value && (
                   <div className="flex w-full items-center justify-start gap-4">
-                    <img
-                      className="z-10 size-16 shrink-0 rounded-full shadow shadow-zinc-950"
-                      src={field.state.value?.picture.imageUrl}
-                      alt={
-                        field.state.value?.firstName +
-                        ' ' +
-                        field.state.value?.lastName +
-                        "'s profile picture"
-                      }
-                    />
-                    <ArrowHeader1
+                    <CharacterPictureRound character={field.state.value} />
+                    <ArrowHeader2
                       title={
                         field.state.value.firstName +
                         ' ' +
@@ -420,7 +413,7 @@ const RollSimulator = ({
         toggleModal={resetDice}
       >
         <ThemeContainer
-          className="min-h-50dvh h-80dvh w-full max-w-3xl"
+          className="h-80dvh min-h-50dvh w-full max-w-3xl"
           chamfer="medium"
           borderColor={accentPrimary}
         >

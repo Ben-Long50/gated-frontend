@@ -3,20 +3,15 @@ import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import useFactionQuery from '../hooks/useFactionQuery/useFactionQuery';
-import AffiliationBar from './AffiliationBar';
 import ArrowHeader2 from './ArrowHeader2';
-import NoblebloodIcon from './icons/NoblebloodIcon';
-import FederalIcon from './icons/FederalIcon';
 import BtnRect from './buttons/BtnRect';
 import Divider from './Divider';
-import { ThemeContext } from '../contexts/ThemeContext';
 import { Affiliation } from 'src/types/faction';
 import BtnAuth from './buttons/BtnAuth';
 import AffiliationCard from './AffiliationCard';
 
 const Faction = () => {
-  const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
+  const { apiUrl, user } = useContext(AuthContext);
   const { factionId } = useParams();
 
   const {

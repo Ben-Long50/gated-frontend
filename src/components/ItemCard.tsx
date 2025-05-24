@@ -142,7 +142,9 @@ const ItemCard = ({
                     <h4 className="col-span-3 justify-self-start">
                       Integrated Weapons
                     </h4>
-                    <p>{linkedWeapons.length}</p>
+                    <p className="min-w-6 text-center">
+                      {linkedWeapons.length}
+                    </p>
                   </>
                 )}
                 {linkedArmors.length > 0 && (
@@ -150,7 +152,7 @@ const ItemCard = ({
                     <h4 className="col-span-3 justify-self-start">
                       Integrated Armors
                     </h4>
-                    <p>{linkedArmors.length}</p>
+                    <p className="min-w-6 text-center">{linkedArmors.length}</p>
                   </>
                 )}
                 {uniqueActions.length > 0 && (
@@ -158,7 +160,9 @@ const ItemCard = ({
                     <h4 className="col-span-3 justify-self-start">
                       Unique Actions
                     </h4>
-                    <p>{uniqueActions.length}</p>
+                    <p className="min-w-6 text-center">
+                      {uniqueActions.length}
+                    </p>
                   </>
                 )}
               </div>

@@ -3,6 +3,7 @@ export interface Keyword {
   name: string;
   description: string;
   keywordType: KeywordType;
+  gpCost: number;
 }
 
 enum KeywordType {

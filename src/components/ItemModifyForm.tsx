@@ -28,6 +28,7 @@ import KeywordList from './KeywordList';
 import Modal from './Modal';
 import useCharacterQuery from 'src/hooks/useCharacterQuery/useCharacterQuery';
 import useItemStats from 'src/hooks/useItemStats';
+import BtnIcon from './buttons/BtnIcon';
 
 const ItemModifyForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -83,28 +84,28 @@ const ItemModifyForm = () => {
     defaultValues: {
       id: item?.id ?? null,
       name: item?.name ?? '',
-      grade: item?.grade ?? '',
+      grade: item?.grade ?? 0,
       description: item?.description ?? '',
       picture: item?.picture ?? '',
       position: item?.picture?.position ?? { x: 50, y: 50 },
       modifiedStats: {
-        damage: 0,
-        salvo: 0,
-        flurry: 0,
-        range: 0,
-        magCapacity: 0,
-        magCount: 0,
-        power: 0,
-        armor: 0,
-        ward: 0,
-        block: 0,
-        speed: 0,
-        agility: 0,
-        hull: 0,
-        cargo: 0,
-        hangar: 0,
-        pass: 0,
-        weapon: 0,
+        damage: item?.modifiedStats?.damage || 0,
+        salvo: item?.modifiedStats?.salvo || 0,
+        flurry: item?.modifiedStats?.flurry || 0,
+        range: item?.modifiedStats?.range || 0,
+        magCapacity: item?.modifiedStats?.magCapacity || 0,
+        magCount: item?.modifiedStats?.magCount || 0,
+        power: item?.modifiedStats?.power || 0,
+        armor: item?.modifiedStats?.armor || 0,
+        ward: item?.modifiedStats?.ward || 0,
+        block: item?.modifiedStats?.block || 0,
+        speed: item?.modifiedStats?.speed || 0,
+        agility: item?.modifiedStats?.agility || 0,
+        hull: item?.modifiedStats?.hull || 0,
+        cargo: item?.modifiedStats?.cargo || 0,
+        hangar: item?.modifiedStats?.hangar || 0,
+        pass: item?.modifiedStats?.pass || 0,
+        weapon: item?.modifiedStats?.weapon || 0,
       } as Stats,
       keywords: [] as { keyword: Keyword; value: number | null }[],
       upgradePrice: 0,
@@ -201,39 +202,46 @@ const ItemModifyForm = () => {
                 <ArrowHeader3 title="Grade" />
                 <itemModifyForm.Field name="grade">
                   {(field) => (
-                    <div className="flex items-center gap-2">
-                      <button
-                        className={`${field.state.value > item?.grade ? 'hover:text-accent' : 'opacity-50'} bg-tertiary text-secondary timing size-8 shrink-0 rounded-md text-center font-semibold shadow-md shadow-black`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (field.state.value > item?.grade) {
-                            field.handleChange(field.state.value - 1);
-                          }
-                        }}
-                      >
-                        <Icon path={mdiMinus} className="text-inherit" />
-                      </button>
-                      <div className="flex flex-wrap items-center justify-center gap-1">
-                        {Array.from({ length: field.state.value }).map(
-                          (_, index) => (
+                    <div className="flex w-1/2 items-center gap-2">
+                      <BtnIcon
+                        path={mdiMinus}
+                        active={item?.grade && field.state.value > item?.grade}
+                        onClick={() =>
+                          field.handleChange(field.state.value - 1)
+                        }
+                      />
+                      <div className="flex grow flex-wrap items-center justify-end gap-1">
+                        {field.state.value > 5 ? (
+                          <div className="flex items-center gap-2">
                             <Icon
-                              key={index}
                               path={mdiStar}
-                              className="size-7 text-yellow-300"
+                              className="size-6 shrink-0 text-yellow-300"
                             />
-                          ),
+                            <p className="whitespace-nowrap pt-1 font-semibold">
+                              x {field.state.value}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="flex">
+                            {Array.from({ length: field.state.value }).map(
+                              (_, index) => (
+                                <Icon
+                                  key={index}
+                                  path={mdiStar}
+                                  className="size-6 text-yellow-300"
+                                />
+                              ),
+                            )}
+                          </div>
                         )}
                       </div>
-
-                      <button
-                        className={`bg-tertiary text-secondary timing hover:text-accent size-8 shrink-0 rounded-md text-center font-semibold shadow-md shadow-black`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          field.handleChange(field.state.value + 1);
-                        }}
-                      >
-                        <Icon path={mdiPlus} className="text-inherit" />
-                      </button>
+                      <BtnIcon
+                        path={mdiPlus}
+                        active={field.state.value < 10}
+                        onClick={() =>
+                          field.handleChange(field.state.value + 1)
+                        }
+                      />
                     </div>
                   )}
                 </itemModifyForm.Field>
@@ -296,12 +304,14 @@ const ItemModifyForm = () => {
                       key={stat}
                     >
                       {(field) => {
+                        const currentLevel =
+                          field.state.value + item?.stats[stat];
                         return (
                           <>
                             <h4 className="w-full">
                               {stat.charAt(0).toUpperCase() + stat.slice(1)}{' '}
                               <span className="text-tertiary ml-2 text-base font-normal">
-                                ({gradePointMap[stat]} GP)
+                                ({gradePointMap[stat](currentLevel + 1)} GP)
                               </span>
                             </h4>
                             <p className="mr-3 font-semibold !text-green-400">
@@ -309,31 +319,25 @@ const ItemModifyForm = () => {
                                 ? `+${field.state.value}`
                                 : ''}
                             </p>
-                            <button
-                              className={`${field.state.value > 0 ? 'hover:text-accent' : 'opacity-30'} bg-tertiary text-secondary timing size-8 rounded-md text-center font-semibold shadow-md shadow-black`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                if (field.state.value > 0) {
-                                  field.handleChange(field.state.value - 1);
-                                }
-                              }}
-                            >
-                              <Icon path={mdiMinus} className="text-inherit" />
-                            </button>
+                            <BtnIcon
+                              path={mdiMinus}
+                              active={field.state.value > 0}
+                              onClick={() =>
+                                field.handleChange(field.state.value - 1)
+                              }
+                            />
                             <p className="min-w-8 text-center">
                               {value + field.state.value}
                             </p>
-                            <button
-                              className={`${availableGp >= gradePointMap[stat] ? 'hover:text-accent' : 'opacity-30'} bg-tertiary text-secondary timing size-8 rounded-md text-center font-semibold shadow-md shadow-black`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                if (availableGp >= gradePointMap[stat]) {
-                                  field.handleChange(field.state.value + 1);
-                                }
-                              }}
-                            >
-                              <Icon path={mdiPlus} className="text-inherit" />
-                            </button>
+                            <BtnIcon
+                              path={mdiPlus}
+                              active={
+                                availableGp >= gradePointMap[stat](currentLevel)
+                              }
+                              onClick={() =>
+                                field.handleChange(field.state.value + 1)
+                              }
+                            />
                             <p className="text-tertiary text-sm">
                               {item?.modifiedStats &&
                                 item?.modifiedStats[stat] &&
@@ -355,6 +359,7 @@ const ItemModifyForm = () => {
           />
           <KeywordLinkField
             title="New Traits"
+            mode={mode}
             className="grid grid-cols-1 gap-4 sm:grid-cols-2"
             keywordType={category}
             form={itemModifyForm}
