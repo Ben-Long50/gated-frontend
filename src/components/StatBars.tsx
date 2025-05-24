@@ -71,6 +71,7 @@ const StatBars = ({
       return;
     editCurrentSanity.mutate(value);
   };
+  console.log(stats);
 
   return (
     <>
@@ -373,40 +374,28 @@ const StatBars = ({
               <BlockIcon className="text-secondary size-8" />
             </StatBar>
           )}
-      {mode === 'equipment' || mode === 'deployments'
-        ? stats.power !== undefined &&
-          stats.currentPower !== undefined && (
-            <StatBar
-              title="PWR"
-              total={stats.power}
-              current={stats.currentPower}
-              color="rgb(107, 255, 124)"
-              cardWidth={cardWidth}
-            >
-              <LightningIcon className="text-secondary size-8" />
-            </StatBar>
-          )
-        : stats.power !== undefined && (
-            <StatBar
-              title="PWR"
-              current={stats.power}
-              color="rgb(107, 255, 124)"
-              cardWidth={cardWidth}
-            >
-              <LightningIcon className="text-secondary size-8" />
-            </StatBar>
-          )}
-      {stats.currentStacks !== undefined ? (
+      {stats.currentPower !== undefined ? (
         <StatBar
-          title="STACKS"
-          total={stats.maxStacks ? stats.maxStacks : undefined}
-          current={stats.currentStacks}
-          color={statColorMap['STACKS']}
+          title="PWR"
+          total={stats.power}
+          current={stats.currentPower}
+          color="rgb(107, 255, 124)"
           cardWidth={cardWidth}
         >
-          <StackIcon className="text-secondary size-8" />
+          <LightningIcon className="text-secondary size-8" />
         </StatBar>
-      ) : undefined}
+      ) : (
+        stats.power !== undefined && (
+          <StatBar
+            title="PWR"
+            current={stats.power}
+            color="rgb(107, 255, 124)"
+            cardWidth={cardWidth}
+          >
+            <LightningIcon className="text-secondary size-8" />
+          </StatBar>
+        )
+      )}
       {stats.weight !== undefined && !stats.maxWeight && (
         <StatBar
           title="WGT"

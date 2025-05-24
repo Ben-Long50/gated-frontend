@@ -18,6 +18,7 @@ import ItemCard from './ItemCard';
 import ItemCardMobile from './ItemCardMobile';
 import { LayoutContext } from 'src/contexts/LayoutContext';
 import { DroneControls, VehicleControls } from './ItemCardControls';
+import useItemStats from 'src/hooks/useItemStats';
 
 const Deployments = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -93,6 +94,10 @@ const Deployments = () => {
   const cardRef = useRef(null);
   const [cardHeight, setCardHeight] = useState<number | null>(null);
 
+  const { itemStats } = useItemStats([activeItem]);
+
+  console.log(itemStats);
+
   useLayoutEffect(() => {
     if (cardRef.current) {
       setCardHeight(cardRef.current.offsetHeight);
@@ -141,9 +146,7 @@ const Deployments = () => {
               >
                 <StatBars
                   cardWidth={cardRef.current?.offsetWidth}
-                  stats={{
-                    ...activeItem.stats,
-                  }}
+                  stats={itemStats[0]}
                 />
               </div>
             </div>

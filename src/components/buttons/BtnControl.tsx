@@ -14,7 +14,7 @@ const BtnControl = ({
 }) => {
   return (
     <button
-      className={`${mutation === null ? 'border-gray-400 opacity-50' : 'hover:bg-tertiary hover:text-accent border-yellow-300 border-opacity-50 hover:border-opacity-100'} text-secondary timing grid w-full shrink-0 items-center justify-center gap-4 rounded-md border px-2 py-2 shadow-md shadow-zinc-950`}
+      className={`${mutation === null ? 'border-gray-400 opacity-50' : 'hover:bg-tertiary hover:text-accent border-yellow-300 border-opacity-50 hover:border-opacity-100'} bg-primary text-secondary timing grid w-full shrink-0 items-center justify-center gap-4 rounded-md border px-2 py-2 shadow-md shadow-zinc-950`}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();

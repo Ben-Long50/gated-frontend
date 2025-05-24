@@ -37,7 +37,7 @@
     left: 0;
     width: 100lvw;
     height: 100lvh;
-    background-image: url('/public/tron_grid.jpg');
+    background-image: url('/public/nova_viridian.jpeg');
     z-index: -1;
   }
 
@@ -52,7 +52,7 @@
     left: 0;
     width: 100lvw;
     height: 100lvh;
-    background-image: url('/public/tron_grid.jpg');
+    background-image: url('/public/nova_viridian.jpeg');
     z-index: -1;
   }
 }

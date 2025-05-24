@@ -172,18 +172,18 @@ const ItemCard = ({
         {(mode === 'equipment' || mode === 'deployments') &&
           ownerId === user?.id &&
           (item.itemType === 'weapon' ? (
-            <WeaponControls weaponId={item.id} stats={item.stats} />
+            <WeaponControls weaponId={item.id} stats={itemStats[0]} />
           ) : item.itemType === 'armor' ? (
-            <ArmorControls armorId={item.id} stats={item.stats} />
-          ) : item.itemType === 'cybernetic' ? (
-            <CyberneticControls cyberneticId={item.id} stats={item.stats} />
+            <ArmorControls armorId={item.id} stats={itemStats[0]} />
+          ) : item.itemType === 'augmentation' ? (
+            <CyberneticControls cyberneticId={item.id} stats={itemStats[0]} />
           ) : item.itemType === 'vehicle' ? (
-            <VehicleControls vehicleId={item.id} stats={item.stats} />
+            <VehicleControls vehicleId={item.id} stats={itemStats[0]} />
           ) : item.itemType === 'drone' ? (
-            <DroneControls droneId={item.id} stats={item.stats} />
+            <DroneControls droneId={item.id} stats={itemStats[0]} />
           ) : (
             item.itemType === 'reusable' && (
-              <ItemControls itemId={item.id} stats={item.stats} />
+              <ItemControls itemId={item.id} stats={itemStats[0]} />
             )
           ))}
       </Link>
