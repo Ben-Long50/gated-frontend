@@ -57,8 +57,8 @@ const ItemForm = () => {
   const deleteItem = useDeleteItemMutation(
     apiUrl,
     category,
-    Number(itemId),
     setFormMessage,
+    Number(itemId),
   );
 
   const handleDelete = () => {
@@ -166,12 +166,7 @@ const ItemForm = () => {
           formData.append(key, JSON.stringify(value));
         }
       });
-
-      if (mode === 'create' || mode === 'update') {
-        await createItem.mutate(formData);
-      } else if (mode === 'modify') {
-        await modifyItem.mutate(formData);
-      }
+      await createItem.mutate(formData);
     },
   });
 

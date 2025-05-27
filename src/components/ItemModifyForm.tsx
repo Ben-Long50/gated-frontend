@@ -40,7 +40,7 @@ const ItemModifyForm = () => {
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
   const itemId = parts[parts.length - 2];
-  const category = parts[parts.length - 3].slice(0, -1);
+  const category = parts[parts.length - 3];
 
   const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
 

@@ -1,7 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import InputField from './InputField';
-import ThemeContainer from './ThemeContainer';
-import { ThemeContext } from '../contexts/ThemeContext';
 import BtnRect from './buttons/BtnRect';
 import AttributeCard from './AttributeCard';
 import { AuthContext } from '../contexts/AuthContext';
@@ -10,8 +8,6 @@ import useAttributeTree from '../hooks/useAttributeTree';
 import StatBar from './StatBar';
 import usePerks from '../hooks/usePerks';
 import useCreateCharacterMutation from '../hooks/useCreateCharacterMutation/useCreateCharacterMutation';
-import Icon from '@mdi/react';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import ArmorIcon from './icons/ArmorIcon';
@@ -37,7 +33,6 @@ import PictureField from './form_fields/PictureField';
 
 const CharacterForm = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
   const [formMessage, setFormMessage] = useState('');

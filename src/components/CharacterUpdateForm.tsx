@@ -152,10 +152,7 @@ const CharacterUpdateForm = () => {
   });
 
   useEffect(() => {
-    characterUpdateForm.setFieldValue(
-      'attributes',
-      attributeTree.destructureTree(),
-    );
+    characterUpdateForm.setFieldValue('attributes', attributeTree.tree);
   }, [attributeTree, characterUpdateForm]);
 
   if (perks.isLoading || perks.isPending || isLoading || isPending) {
