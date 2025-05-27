@@ -10,6 +10,8 @@ import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import { useContext } from 'react';
 import { AuthContext } from 'src/contexts/AuthContext';
 import Loading from './Loading';
+import ItemPicture from './ItemPicture';
+import ArrowHeader3 from './ArrowHeader3';
 
 const ItemUpdateModal = ({
   item,
@@ -34,7 +36,7 @@ const ItemUpdateModal = ({
 
   return (
     <Modal modalOpen={updateMode} toggleModal={toggleUpdateMode}>
-      <h1 className="text-center">{`Update your "${item.name}"`}</h1>
+      <h1 className="text-center">{`Update your ${item.name}`}</h1>
       <p>
         Since purchase and/or upgrade of your {item.name}, the base weapon (
         {baseItem?.name}) has been updated. Reasons for update include balancing
@@ -49,6 +51,15 @@ const ItemUpdateModal = ({
         constantly being adjusted to promote balanced and immersive gameplay. A
         preview displaying the base stat differences is shown below.
       </p>
+      <Divider />
+      <ArrowHeader2 title="Updated Item Information" className="self-start" />
+      <div className="grid grid-cols-2 gap-8">
+        <ItemPicture item={item} />
+        <div className="flex flex-col items-start gap-4">
+          <ArrowHeader3 title="Description" />
+          <p>{item.description}</p>
+        </div>
+      </div>
       <Divider />
       <ArrowHeader2 title="Base Stats" className="self-start" />
       <div className="flex w-full flex-col gap-4 border-x-2 border-gray-400 border-opacity-50 px-4">

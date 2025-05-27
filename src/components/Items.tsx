@@ -44,16 +44,12 @@ const Items = ({
     mobile ? 'small' : 'large',
   );
 
-  console.log(itemList);
-
   const items = useItems({
     category,
     itemList: itemList || undefined,
     includedKeywords: include.length > 0 ? include : undefined,
     excludedKeywords: exclude.length > 0 ? exclude : undefined,
   });
-
-  console.log(items);
 
   const searchForm = useForm({
     defaultValues: {

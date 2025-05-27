@@ -1,4 +1,4 @@
-import { useForm, useStore } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
 import { useContext, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { AuthContext } from 'src/contexts/AuthContext';
@@ -56,6 +56,7 @@ const ItemModifyForm = () => {
 
   const deleteItem = useDeleteItemMutation(
     apiUrl,
+    category,
     setFormMessage,
     Number(itemId),
   );
@@ -65,7 +66,6 @@ const ItemModifyForm = () => {
     Number(characterId),
     Number(itemId),
     category,
-    setFormMessage,
   );
 
   const handleDelete = () => {
@@ -128,7 +128,7 @@ const ItemModifyForm = () => {
         modifiedStats: filteredStats,
         itemIds: extractItemListIds(item?.itemLinkReference?.items),
         actionIds: extractItemListIds(item?.itemLinkReference?.actions),
-        keywordIds: extractKeywordListIds(item.keywords),
+        keywordIds: extractKeywordListIds(item?.keywords),
         modifiedKeywordIds: extractKeywordListIds(value.keywords),
       };
 

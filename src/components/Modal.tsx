@@ -14,7 +14,7 @@ const Modal = ({
 
   return (
     <RootPortal modalOpen={modalOpen} toggleModal={toggleModal}>
-      <div className="bg-primary scrollbar-primary-2 flex max-h-85dvh max-w-4xl flex-col items-center gap-4 overflow-y-auto rounded-lg p-4 shadow-lg shadow-black sm:gap-8 sm:p-8">
+      <div className="bg-primary scrollbar-primary-2 flex max-h-85dvh w-full max-w-5xl flex-col items-center gap-4 overflow-y-auto rounded-lg p-4 shadow-lg shadow-black sm:gap-8 sm:p-8">
         {children}
       </div>
     </RootPortal>

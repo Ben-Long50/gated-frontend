@@ -1,7 +1,6 @@
 import { FormApi, FormState } from '@tanstack/react-form';
 import FormLinkModal from './FormLinkModal';
 import { useState } from 'react';
-import Weapons from '../Weapons';
 import BtnRect from '../buttons/BtnRect';
 import ArrowHeader2 from '../ArrowHeader2';
 import { Item } from 'src/types/item';

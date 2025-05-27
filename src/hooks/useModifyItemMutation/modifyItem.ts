@@ -4,11 +4,12 @@ const modifyItem = async (
   formData: FormData,
   characterId: number,
   itemId: number,
+  category: string,
   apiUrl: string,
 ) => {
   try {
     const response = await fetch(
-      `${apiUrl}/characters/${characterId}/items/${itemId}/modify`,
+      `${apiUrl}/characters/${characterId}/items/${category}/${itemId}/modify`,
       {
         method: 'PUT',
         credentials: 'include',

@@ -6,7 +6,7 @@ const useItemQuery = (apiUrl: string, itemId: number, category: string) => {
   return useQuery<Item>({
     queryKey: ['item', itemId],
     queryFn: async () => await getItemById(apiUrl, itemId, category),
-    enabled: !!category,
+    enabled: typeof itemId === 'number' && !isNaN(itemId),
   });
 };
 

@@ -268,7 +268,7 @@ const ItemPage = ({
         <div className="flex w-full items-center justify-between">
           <Link
             className="timing group flex items-center gap-4 self-start py-2"
-            to={`/glam/codex/${category}s/${item.baseItem.id}`}
+            to={`/glam/codex/${category}/${item.baseItem.id}`}
           >
             <Icon
               path={mdiLink}
@@ -285,26 +285,12 @@ const ItemPage = ({
           <button
             className="group flex items-center gap-4 py-2"
             onClick={() => {
-              if (item.baseItem && item.updatedAt <= item.baseItem.updatedAt) {
+              if (item.baseItem && item.updatedAt < item.baseItem.updatedAt) {
                 toggleUpdateMode();
               }
             }}
           >
-            {item.updatedAt >= item.baseItem.updatedAt ? (
-              <>
-                <div className="overflow-hidden">
-                  <p
-                    className={`timing group-hover:text-accent inline-block origin-right translate-x-full transform text-right ease-in-out group-hover:translate-x-0`}
-                  >
-                    Up to Date
-                  </p>
-                </div>
-                <Icon
-                  path={mdiCalendarCheckOutline}
-                  className="group-hover:text-accent timing text-secondary size-8 shrink-0"
-                />
-              </>
-            ) : (
+            {item.updatedAt < item.baseItem.updatedAt ? (
               <>
                 <div className="overflow-hidden">
                   <p
@@ -315,6 +301,20 @@ const ItemPage = ({
                 </div>
                 <Icon
                   path={mdiCalendarRemoveOutline}
+                  className="group-hover:text-accent timing text-secondary size-8 shrink-0"
+                />
+              </>
+            ) : (
+              <>
+                <div className="overflow-hidden">
+                  <p
+                    className={`timing group-hover:text-accent inline-block origin-right translate-x-full transform text-right ease-in-out group-hover:translate-x-0`}
+                  >
+                    Up to Date
+                  </p>
+                </div>
+                <Icon
+                  path={mdiCalendarCheckOutline}
                   className="group-hover:text-accent timing text-secondary size-8 shrink-0"
                 />
               </>

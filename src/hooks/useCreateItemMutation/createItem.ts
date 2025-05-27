@@ -1,8 +1,12 @@
 import handleResponse from '../handleResponse';
 
-const createItem = async (apiUrl: string, formData: FormData) => {
+const createItem = async (
+  apiUrl: string,
+  category: string,
+  formData: FormData,
+) => {
   try {
-    const response = await fetch(`${apiUrl}/items`, {
+    const response = await fetch(`${apiUrl}/items/${category}`, {
       method: 'POST',
       credentials: 'include',
       body: formData,

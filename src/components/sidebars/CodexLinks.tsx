@@ -172,7 +172,7 @@ const CodexLinks = ({
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
             title="Create a New Augmentation"
-            path="codex/cybernetics/create"
+            path="codex/augmentations/create"
             setSidebarVisibility={setSidebarVisibility}
           />
         )}

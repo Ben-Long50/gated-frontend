@@ -1,28 +1,21 @@
 import { Route } from 'react-router-dom';
 import ActionForm from 'src/components/ActionForm';
 import Actions from 'src/components/Actions';
-import Armor from 'src/components/Armor';
-import ArmorForm from 'src/components/ArmorForm';
 import BookEntry from 'src/components/BookEntry';
 import BookEntryForm from 'src/components/BookEntryForm';
 import BookManage from 'src/components/BookManage';
 import CodexSearch from 'src/components/CodexSearch';
 import ConditionForm from 'src/components/ConditionForm';
 import Conditions from 'src/components/Conditions';
-import CyberneticForm from 'src/components/CyberneticForm';
-import DroneForm from 'src/components/DroneForm';
 import ItemForm from 'src/components/ItemForm';
 import ItemPageWrapper from 'src/components/ItemPageWrapper';
 import Items from 'src/components/Items';
 import KeywordForm from 'src/components/KeywordForm';
 import Keywords from 'src/components/Keywords';
-import ModificationForm from 'src/components/ModificationForm';
 import PatchNotes from 'src/components/PatchNotes';
 import PatchNoteForm from 'src/components/PatchNotesForm';
 import PerkForm from 'src/components/PerkForm';
 import Perks from 'src/components/Perks';
-import VehicleForm from 'src/components/VehicleForm';
-import WeaponForm from 'src/components/WeaponForm';
 
 const CodexRoutes = () => {
   return (
@@ -42,84 +35,80 @@ const CodexRoutes = () => {
       </Route>
       <Route path="weapons">
         <Route index element={<Items key="weapons" />} />
-        <Route path=":weaponId" element={<ItemPageWrapper />} />
-        <Route path="create" element={<WeaponForm key="create weapon" />} />
+        <Route path=":itemId" element={<ItemPageWrapper />} />
+        <Route path="create" element={<ItemForm key="create weapon" />} />
         <Route
-          path=":weaponId/update"
-          element={<WeaponForm key="update weapon" />}
+          path=":itemId/update"
+          element={<ItemForm key="update weapon" />}
         />
       </Route>
       <Route path="armors">
         <Route index element={<Items key="armors" />} />
-        <Route path=":armorId" element={<ItemPageWrapper />} />
-        <Route path="create" element={<ArmorForm key="create armor" />} />
+        <Route path=":itemId" element={<ItemPageWrapper />} />
+        <Route path="create" element={<ItemForm key="create armor" />} />
         <Route
-          path=":armorId/update"
-          element={<ArmorForm key="update armor" />}
+          path=":itemId/update"
+          element={<ItemForm key="update armor" />}
         />
       </Route>
       <Route path="augmentations">
         <Route index element={<Items key="augmentations" />} />
-        <Route path=":cyberneticId" element={<ItemPageWrapper />} />
+        <Route path=":itemId" element={<ItemPageWrapper />} />
+        <Route path="create" element={<ItemForm key="create cybernetics" />} />
         <Route
-          path="create"
-          element={<CyberneticForm key="create cybernetics" />}
-        />
-        <Route
-          path=":cyberneticId/update"
-          element={<CyberneticForm key="update cybernetics" />}
+          path=":itemId/update"
+          element={<ItemForm key="update cybernetics" />}
         />
       </Route>
       <Route path="vehicles">
         <Route index element={<Items key="vehicles" />} />
-        <Route path=":vehicleId" element={<ItemPageWrapper />} />
+        <Route path=":itemId" element={<ItemPageWrapper />} />
         <Route
-          path="weapons/:weaponId/update"
-          element={<WeaponForm key="update vehicle weapon" />}
+          path="weapons/:itemId/update"
+          element={<ItemForm key="update vehicle weapon" />}
         />
-        <Route path="create" element={<VehicleForm key="create vehicle" />} />
+        <Route path="create" element={<ItemForm key="create vehicle" />} />
         <Route
-          path=":vehicleId/update"
-          element={<VehicleForm key="update vehicle" />}
+          path=":itemId/update"
+          element={<ItemForm key="update vehicle" />}
         />
       </Route>
       <Route path="drones">
         <Route index element={<Items key="drones" />} />
-        <Route path=":droneId" element={<ItemPageWrapper />} />
+        <Route path=":itemId" element={<ItemPageWrapper />} />
         <Route
-          path="weapons/:weaponId/update"
-          element={<WeaponForm key="update drone weapon" />}
+          path="weapons/:itemId/update"
+          element={<ItemForm key="update drone weapon" />}
         />
-        <Route path="create" element={<DroneForm key="create drone" />} />
+        <Route path="create" element={<ItemForm key="create drone" />} />
         <Route
-          path=":droneId/update"
-          element={<DroneForm key="update drone" />}
+          path=":itemId/update"
+          element={<ItemForm key="update drone" />}
         />
       </Route>
       <Route path="modifications">
         <Route index element={<Items key="modifications" />} />
+        <Route path="create" element={<ItemForm key="create modification" />} />
         <Route
-          path="create"
-          element={<ModificationForm key="create modification" />}
-        />
-        <Route
-          path=":modId/update"
-          element={<ModificationForm key="update modification" />}
+          path=":itemId/update"
+          element={<ItemForm key="update modification" />}
         />
       </Route>
       <Route path="reusables">
         <Route index element={<Items key="reusables" />} />
+        <Route path=":itemId" element={<ItemPageWrapper />} />
         <Route path="create" element={<ItemForm key="create reusable" />} />
         <Route
-          path=":reusableId/update"
+          path=":itemId/update"
           element={<ItemForm key="update reusable" />}
         />
       </Route>
       <Route path="consumables">
         <Route index element={<Items key="consumables" />} />
+        <Route path=":itemId" element={<ItemPageWrapper />} />
         <Route path="create" element={<ItemForm key="create consumable" />} />
         <Route
-          path=":consumableId/update"
+          path=":itemId/update"
           element={<ItemForm key="update consumable" />}
         />
       </Route>

@@ -16,9 +16,11 @@ const BtnIcon = ({
 }) => {
   return (
     <button
-      className={`${className} ${active ? 'hover:text-accent' : 'opacity-30'} bg-tertiary text-secondary timing rounded-md p-1 text-center font-semibold shadow-md shadow-black`}
+      className={`${className} ${active ? 'hover:text-accent' : 'opacity-30'} bg-tertiary text-secondary timing rounded-md p-1.5 text-center font-semibold shadow-md shadow-black`}
+      onMouseOver={(e) => e.stopPropagation()}
       onClick={(e) => {
         e.preventDefault();
+        e.stopPropagation();
         if (active) {
           onClick();
         }

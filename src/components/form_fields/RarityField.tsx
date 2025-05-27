@@ -1,7 +1,13 @@
 import { FormApi } from '@tanstack/react-form';
 import InputSelectField from '../InputSelectField';
 
-const RarityField = ({ form }: { form: FormApi }) => {
+const RarityField = ({
+  form,
+  category,
+}: {
+  form: FormApi;
+  category: string;
+}) => {
   return (
     <form.Field
       name="rarity"
@@ -12,7 +18,7 @@ const RarityField = ({ form }: { form: FormApi }) => {
       {(field) => (
         <InputSelectField
           className="w-full"
-          label="Item rarity"
+          label={category + ' Rarity'}
           field={field}
           options={['common', 'uncommon', 'rare', 'blackMarket', 'artifact']}
         />

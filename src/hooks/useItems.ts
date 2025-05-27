@@ -19,8 +19,6 @@ const useItems = ({
   const { data: items, isLoading, isPending } = useItemsQuery(apiUrl, category);
 
   const categorizedItems = useMemo(() => {
-    if (!items) return null;
-
     const list = itemList || items;
 
     const filteredExcludeList = excludedKeywords
