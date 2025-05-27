@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import useModificationsQuery from './useModificationsQuery/useModificationsQuery';
 import { Modification } from '../types/vehicle';
 import { FetchOptions } from 'src/types/fetchOptions';
+import useItemsQuery from './useItemsQuery/useItemsQuery';
 
 const useModifications = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
@@ -11,7 +11,7 @@ const useModifications = (fetchOptions?: FetchOptions) => {
     data: modifications,
     isLoading,
     isPending,
-  } = useModificationsQuery(apiUrl);
+  } = useItemsQuery(apiUrl, 'modifications');
 
   const [query, setQuery] = useState('');
 

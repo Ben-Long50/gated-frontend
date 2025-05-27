@@ -12,7 +12,6 @@ import { Modifier } from 'src/types/modifier';
 import useDeleteItemMutation from '../hooks/useDeleteItemMutation/useDeleteItemMutation';
 import useCreateItemMutation from '../hooks/useCreateItemMutation/useCreateItemMutation';
 import useItemQuery from '../hooks/useItemQuery/useItemQuery';
-import { ThemeContext } from '../contexts/ThemeContext';
 import { Stats } from 'src/types/item';
 import useModifyItemMutation from '../hooks/useModifyItemMutation/useModifyItemMutation';
 import Divider from './Divider';
@@ -27,10 +26,9 @@ import RarityField from './form_fields/RarityField';
 
 const ItemForm = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
-  const { itemId } = useParams();
+  const { characterId, itemId } = useParams();
   const location = useLocation();
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
@@ -45,10 +43,15 @@ const ItemForm = () => {
 
   const modifyItem = useModifyItemMutation(
     apiUrl,
+    Number(characterId),
     Number(itemId),
     setFormMessage,
   );
-  const deleteItem = useDeleteItemMutation(apiUrl, setFormMessage, itemId);
+  const deleteItem = useDeleteItemMutation(
+    apiUrl,
+    setFormMessage,
+    Number(itemId),
+  );
 
   const handleDelete = () => {
     if (deleteMode) {

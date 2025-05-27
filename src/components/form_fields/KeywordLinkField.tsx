@@ -50,13 +50,27 @@ const KeywordLinkField = ({
                     toggleModal={toggleKeywords}
                   >
                     {({ toggleFormLink }) => (
-                      <Keywords
-                        title="Link Traits"
-                        forcedMode="form"
-                        field={field}
-                        toggleFormLink={toggleFormLink}
-                        keywordType={keywordType}
-                      />
+                      <>
+                        <Keywords
+                          title="Link Traits"
+                          forcedMode="form"
+                          field={field}
+                          toggleFormLink={toggleFormLink}
+                          keywordType={keywordType}
+                        />
+                        <BtnRect
+                          type="button"
+                          ariaLabel="Close"
+                          className="w-full"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleKeywords();
+                          }}
+                        >
+                          Done
+                        </BtnRect>
+                      </>
                     )}
                   </FormLinkModal>
                   <div

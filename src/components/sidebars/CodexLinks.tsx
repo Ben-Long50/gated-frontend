@@ -19,6 +19,7 @@ import SackIcon from '../../components/icons/SackIcon';
 import LinkSidebar from './LinkSidebar';
 import ModificationIcon from '../icons/ModificationIcon';
 import DroneIcon from '../icons/DroneIcon';
+import PotionIcon from '../icons/PotionIcon';
 
 const CodexLinks = ({
   sidebarVisibility,
@@ -253,28 +254,38 @@ const CodexLinks = ({
       <LinkListSidebar
         sidebarVisibility={sidebarVisibility}
         icon={<SackIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
-        title="Items"
+        title="Reusable Items"
       >
         <SubLinkSidebar
-          title="All Items"
-          path="codex/items"
-          setSidebarVisibility={setSidebarVisibility}
-        />
-        <SubLinkSidebar
-          title="Reusables"
-          path="codex/items?include=reusable"
-          setSidebarVisibility={setSidebarVisibility}
-        />
-        <SubLinkSidebar
-          title="Consumables"
-          path="codex/items?include=consumable"
+          title="All Reusables"
+          path="codex/reusables"
           setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <>
             <SubLinkSidebar
-              title="Create a New Item"
-              path="codex/items/create"
+              title="Create a New Reusable"
+              path="codex/reusables/create"
+              setSidebarVisibility={setSidebarVisibility}
+            />
+          </>
+        )}
+      </LinkListSidebar>
+      <LinkListSidebar
+        sidebarVisibility={sidebarVisibility}
+        icon={<PotionIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
+        title="Consumable Items"
+      >
+        <SubLinkSidebar
+          title="All Consumables"
+          path="codex/consumables"
+          setSidebarVisibility={setSidebarVisibility}
+        />
+        {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
+          <>
+            <SubLinkSidebar
+              title="Create a New Consumable"
+              path="codex/consumables/create"
               setSidebarVisibility={setSidebarVisibility}
             />
           </>

@@ -9,7 +9,6 @@ import Loading from './Loading';
 import { useLocation, useParams } from 'react-router-dom';
 import useDeleteModificationMutation from '../hooks/useDeleteModificationMutation/useDeleteModificationMutation';
 import useCreateModificationMutation from '../hooks/useCreateModificationMutation/useCreateModificationMutation';
-import useModificationQuery from '../hooks/useModificationQuery/useModificationQuery';
 import { Action } from 'src/types/action';
 import { Keyword } from 'src/types/keyword';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
@@ -19,6 +18,7 @@ import Divider from './Divider';
 import ActionLinkField from './form_fields/ActionLinkField';
 import PictureField from './form_fields/PictureField';
 import RarityField from './form_fields/RarityField';
+import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 
 const ModificationForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -29,9 +29,10 @@ const ModificationForm = () => {
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
 
-  const { data: modification } = useModificationQuery(
+  const { data: modification } = useItemQuery(
     apiUrl,
     Number(modificationId),
+    'modification',
   );
 
   const createModification = useCreateModificationMutation(

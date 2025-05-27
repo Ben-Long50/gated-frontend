@@ -65,7 +65,7 @@ const useDroneHullMutation = (
     },
     onSuccess: () => {
       // queryClient.invalidateQueries({
-      //   queryKey: ['drone', droneId],
+      //   queryKey: ['item', droneId],
       // });
       return queryClient.invalidateQueries({
         queryKey: ['character', characterId],

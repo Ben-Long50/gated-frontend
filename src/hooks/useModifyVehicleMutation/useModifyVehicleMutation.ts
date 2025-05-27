@@ -14,7 +14,7 @@ const useModifyVehicleMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['vehicle', vehicleId],
+        queryKey: ['item', vehicleId],
         exact: false,
       });
       return queryClient.invalidateQueries({

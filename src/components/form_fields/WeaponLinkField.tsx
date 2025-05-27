@@ -6,6 +6,7 @@ import BtnRect from '../buttons/BtnRect';
 import ArrowHeader2 from '../ArrowHeader2';
 import { Item } from 'src/types/item';
 import ItemCard from '../ItemCard';
+import Items from '../Items';
 
 const WeaponLinkField = ({
   form,
@@ -34,9 +35,9 @@ const WeaponLinkField = ({
                     toggleModal={toggleWeapons}
                   >
                     {({ toggleFormLink }) => (
-                      <Weapons
+                      <Items
                         title="Link Weapons"
-                        weaponList={weaponList}
+                        itemList={weaponList}
                         forcedMode="form"
                         toggleFormLink={toggleFormLink}
                       />

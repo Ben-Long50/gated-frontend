@@ -13,7 +13,7 @@ const KeywordList = ({
 }: {
   item: Item;
   title: string;
-  className: string;
+  className?: string;
 }) => {
   const [traitsExpanded, setTraitsExpanded] = useState(false);
 
@@ -26,6 +26,7 @@ const KeywordList = ({
           className="bg-tertiary group ml-auto size-10 rounded p-2 shadow-md shadow-black"
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             setTraitsExpanded((prev) => !prev);
           }}
         >

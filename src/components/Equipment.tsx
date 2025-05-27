@@ -209,11 +209,19 @@ const Equipment = () => {
               </>
             )}
           </div>
-          <EquipmentList
-            equipment={filteredCharacter.equipment}
-            active={active}
-            toggleActive={toggleActive}
-          />
+          <ThemeContainer
+            chamfer="medium"
+            borderColor={accentPrimary}
+            overflowHidden={true}
+          >
+            <div className="bg-primary p-4">
+              <EquipmentList
+                equipment={filteredCharacter.equipment}
+                active={active}
+                toggleActive={toggleActive}
+              />
+            </div>
+          </ThemeContainer>
         </div>
         <ThemeContainer
           className="row-span-2 mb-auto min-w-[350px] max-w-[450px]"

@@ -20,6 +20,20 @@ const useItemStats = (items: Item[]) => {
     [items],
   );
 
+  const itemKeywords = useMemo(
+    () =>
+      items && items[0]
+        ? items?.map((item) => {
+            if (item.modifiedKeywords) {
+              return [...item.keywords, ...item.modifiedKeywords];
+            } else {
+              return item.keywords;
+            }
+          })
+        : null,
+    [items],
+  );
+
   const powerLevel = useMemo(
     () =>
       itemStats
@@ -40,7 +54,7 @@ const useItemStats = (items: Item[]) => {
     [itemStats],
   );
 
-  return { itemStats, powerLevel };
+  return { itemStats, itemKeywords, powerLevel };
 };
 
 export default useItemStats;

@@ -16,7 +16,10 @@ interface Item {
   stats: Stats;
   modifiedStats?: Stats;
   keywords: { keyword: Keyword; value: number | null }[];
+  modifiedKeywords: { keyword: Keyword; value: number | null }[];
   itemLinkReference?: LinkReference;
+  baseItemId: number | null;
+  baseItem: Item | null;
 }
 
 interface LinkReference {

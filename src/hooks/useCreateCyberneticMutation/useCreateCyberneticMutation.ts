@@ -14,7 +14,7 @@ const useCreateCyberneticMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['cybernetic', cyberneticId],
+        queryKey: ['item', cyberneticId],
       });
       return queryClient.invalidateQueries({
         queryKey: ['cybernetics'],

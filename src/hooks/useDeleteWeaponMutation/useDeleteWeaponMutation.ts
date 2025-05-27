@@ -16,7 +16,7 @@ const useDeleteWeaponMutation = (
     onSuccess: () => {
       navigate(-2);
       queryClient.removeQueries({
-        queryKey: ['weapon', weaponId],
+        queryKey: ['item', weaponId],
       });
       queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],

@@ -71,7 +71,6 @@ const StatBars = ({
       return;
     editCurrentSanity.mutate(value);
   };
-  console.log(stats);
 
   return (
     <>

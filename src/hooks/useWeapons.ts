@@ -1,13 +1,17 @@
 import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import useWeaponsQuery from './useWeaponsQuery/useWeaponsQuery';
 import { WeaponWithKeywords } from '../types/weapon';
 import { FetchOptions } from 'src/types/fetchOptions';
+import useItemsQuery from './useItemsQuery/useItemsQuery';
 
 const useWeapons = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
-  const { data: weapons, isLoading, isPending } = useWeaponsQuery(apiUrl);
+  const {
+    data: weapons,
+    isLoading,
+    isPending,
+  } = useItemsQuery(apiUrl, 'weapons');
 
   const weaponsWithKeywords = useMemo(() => {
     if (!weapons) return null;

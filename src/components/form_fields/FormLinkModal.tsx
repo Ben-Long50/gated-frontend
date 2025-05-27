@@ -29,12 +29,7 @@ const FormLinkModal = ({
 
   return (
     <Modal modalOpen={modalOpen} toggleModal={toggleModal}>
-      <div
-        className="bg-secondary scrollbar-primary max-h-75dvh w-full max-w-6xl overflow-y-auto rounded-lg p-4 shadow-lg shadow-black sm:p-8"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {children({ toggleFormLink })}
-      </div>
+      {children({ toggleFormLink })}
     </Modal>
   );
 };

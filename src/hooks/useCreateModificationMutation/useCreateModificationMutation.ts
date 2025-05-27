@@ -14,7 +14,7 @@ const useCreateModificationMutation = (
     onSuccess: () => {
       setFormMessage('Modification successfully created');
       queryClient.invalidateQueries({
-        queryKey: ['modification', modificationId],
+        queryKey: ['item', modificationId],
       });
       return queryClient.invalidateQueries({
         queryKey: ['modifications'],

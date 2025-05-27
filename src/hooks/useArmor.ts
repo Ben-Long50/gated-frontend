@@ -1,13 +1,13 @@
 import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import useArmorQuery from './useArmorQuery/useArmorQuery';
 import { ArmorWithKeywords } from '../types/armor';
 import { FetchOptions } from 'src/types/fetchOptions';
+import useItemsQuery from './useItemsQuery/useItemsQuery';
 
 const useArmor = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
-  const { data: armor, isLoading, isPending } = useArmorQuery(apiUrl);
+  const { data: armor, isLoading, isPending } = useItemsQuery(apiUrl, 'armors');
 
   const armorWithKeywords = useMemo(() => {
     if (!armor) return null;

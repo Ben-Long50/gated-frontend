@@ -6,6 +6,7 @@ import Armor from '../Armor';
 import ArrowHeader2 from '../ArrowHeader2';
 import { Item } from 'src/types/item';
 import ItemCard from '../ItemCard';
+import Items from '../Items';
 
 const ArmorLinkField = ({
   form,
@@ -34,9 +35,9 @@ const ArmorLinkField = ({
                     toggleModal={toggleArmor}
                   >
                     {({ toggleFormLink }) => (
-                      <Armor
+                      <Items
                         title="Link Armor"
-                        armorList={armorList}
+                        itemList={armorList}
                         forcedMode="form"
                         toggleFormLink={toggleFormLink}
                       />

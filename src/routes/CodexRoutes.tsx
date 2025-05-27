@@ -10,24 +10,19 @@ import CodexSearch from 'src/components/CodexSearch';
 import ConditionForm from 'src/components/ConditionForm';
 import Conditions from 'src/components/Conditions';
 import CyberneticForm from 'src/components/CyberneticForm';
-import Cybernetics from 'src/components/Cybernetics';
 import DroneForm from 'src/components/DroneForm';
-import Drones from 'src/components/Drones';
 import ItemForm from 'src/components/ItemForm';
 import ItemPageWrapper from 'src/components/ItemPageWrapper';
 import Items from 'src/components/Items';
 import KeywordForm from 'src/components/KeywordForm';
 import Keywords from 'src/components/Keywords';
 import ModificationForm from 'src/components/ModificationForm';
-import Modifications from 'src/components/Modifications';
 import PatchNotes from 'src/components/PatchNotes';
 import PatchNoteForm from 'src/components/PatchNotesForm';
 import PerkForm from 'src/components/PerkForm';
 import Perks from 'src/components/Perks';
 import VehicleForm from 'src/components/VehicleForm';
-import Vehicles from 'src/components/Vehicles';
 import WeaponForm from 'src/components/WeaponForm';
-import Weapons from 'src/components/Weapons';
 
 const CodexRoutes = () => {
   return (
@@ -46,7 +41,7 @@ const CodexRoutes = () => {
         <Route path="create" element={<BookEntryForm />} />
       </Route>
       <Route path="weapons">
-        <Route index element={<Weapons key="weapons" />} />
+        <Route index element={<Items key="weapons" />} />
         <Route path=":weaponId" element={<ItemPageWrapper />} />
         <Route path="create" element={<WeaponForm key="create weapon" />} />
         <Route
@@ -55,7 +50,7 @@ const CodexRoutes = () => {
         />
       </Route>
       <Route path="armors">
-        <Route index element={<Armor key="armor" />} />
+        <Route index element={<Items key="armors" />} />
         <Route path=":armorId" element={<ItemPageWrapper />} />
         <Route path="create" element={<ArmorForm key="create armor" />} />
         <Route
@@ -64,7 +59,7 @@ const CodexRoutes = () => {
         />
       </Route>
       <Route path="augmentations">
-        <Route index element={<Cybernetics key="cybernetics" />} />
+        <Route index element={<Items key="augmentations" />} />
         <Route path=":cyberneticId" element={<ItemPageWrapper />} />
         <Route
           path="create"
@@ -76,7 +71,7 @@ const CodexRoutes = () => {
         />
       </Route>
       <Route path="vehicles">
-        <Route index element={<Vehicles key="vehicles" />} />
+        <Route index element={<Items key="vehicles" />} />
         <Route path=":vehicleId" element={<ItemPageWrapper />} />
         <Route
           path="weapons/:weaponId/update"
@@ -89,9 +84,8 @@ const CodexRoutes = () => {
         />
       </Route>
       <Route path="drones">
-        <Route index element={<Drones key="drones" />} />
+        <Route index element={<Items key="drones" />} />
         <Route path=":droneId" element={<ItemPageWrapper />} />
-        <Route path="weapons" element={<Weapons key="drone weapons" />} />
         <Route
           path="weapons/:weaponId/update"
           element={<WeaponForm key="update drone weapon" />}
@@ -103,7 +97,7 @@ const CodexRoutes = () => {
         />
       </Route>
       <Route path="modifications">
-        <Route index element={<Modifications key="modifications" />} />
+        <Route index element={<Items key="modifications" />} />
         <Route
           path="create"
           element={<ModificationForm key="create modification" />}
@@ -113,10 +107,21 @@ const CodexRoutes = () => {
           element={<ModificationForm key="update modification" />}
         />
       </Route>
-      <Route path="items">
-        <Route index element={<Items key="items" />} />
-        <Route path="create" element={<ItemForm key="create item" />} />
-        <Route path=":itemId/update" element={<ItemForm key="update item" />} />
+      <Route path="reusables">
+        <Route index element={<Items key="reusables" />} />
+        <Route path="create" element={<ItemForm key="create reusable" />} />
+        <Route
+          path=":reusableId/update"
+          element={<ItemForm key="update reusable" />}
+        />
+      </Route>
+      <Route path="consumables">
+        <Route index element={<Items key="consumables" />} />
+        <Route path="create" element={<ItemForm key="create consumable" />} />
+        <Route
+          path=":consumableId/update"
+          element={<ItemForm key="update consumable" />}
+        />
       </Route>
       <Route path="perks">
         <Route index element={<Perks key="perks" />} />

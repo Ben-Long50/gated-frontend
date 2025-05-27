@@ -14,7 +14,7 @@ const useCreateDroneMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['drone', droneId],
+        queryKey: ['item', droneId],
       });
       return queryClient.invalidateQueries({
         queryKey: ['drones'],

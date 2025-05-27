@@ -5,6 +5,7 @@ import { CyberneticWithKeywords } from 'src/types/cybernetic';
 
 import { FetchOptions } from 'src/types/fetchOptions';
 import { Item } from 'src/types/item';
+import useItemsQuery from './useItemsQuery/useItemsQuery';
 
 const useCybernetics = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
@@ -13,7 +14,7 @@ const useCybernetics = (fetchOptions?: FetchOptions) => {
     data: cybernetics,
     isLoading,
     isPending,
-  } = useCyberneticsQuery(apiUrl);
+  } = useItemsQuery(apiUrl, 'augmentations');
 
   const list = fetchOptions?.itemList || cybernetics || [];
 

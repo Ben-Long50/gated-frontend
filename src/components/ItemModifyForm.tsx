@@ -107,7 +107,9 @@ const ItemModifyForm = () => {
         pass: item?.modifiedStats?.pass || 0,
         weapon: item?.modifiedStats?.weapon || 0,
       } as Stats,
-      keywords: [] as { keyword: Keyword; value: number | null }[],
+      keywords:
+        item?.modifiedKeywords ||
+        ([] as { keyword: Keyword; value: number | null }[]),
       upgradePrice: 0,
     },
     onSubmit: async ({ value }) => {
@@ -126,10 +128,8 @@ const ItemModifyForm = () => {
         modifiedStats: filteredStats,
         itemIds: extractItemListIds(item?.itemLinkReference?.items),
         actionIds: extractItemListIds(item?.itemLinkReference?.actions),
-        keywordIds: [
-          ...extractKeywordListIds(value.keywords),
-          ...extractKeywordListIds(item.keywords),
-        ],
+        keywordIds: extractKeywordListIds(item.keywords),
+        modifiedKeywordIds: extractKeywordListIds(value.keywords),
       };
 
       const formData = new FormData();
@@ -354,11 +354,11 @@ const ItemModifyForm = () => {
           <Divider />
           <KeywordList
             item={item}
-            title={categoryName + ' Traits'}
+            title={'Base Traits'}
             className="grid grid-cols-1 gap-4 sm:grid-cols-2"
           />
           <KeywordLinkField
-            title="New Traits"
+            title="Upgraded Traits"
             mode={mode}
             className="grid grid-cols-1 gap-4 sm:grid-cols-2"
             keywordType={category}
@@ -422,74 +422,72 @@ const ItemModifyForm = () => {
         </form>
       </FormLayout>
       <Modal modalOpen={tutorialModal} toggleModal={toggleTutorialModal}>
-        <div className="bg-primary flex max-h-85dvh w-full max-w-3xl flex-col items-center gap-4 rounded-md p-4 sm:p-8">
-          <h1 className="text-center">Item Modification System</h1>
-          <Divider />
-          <p className="scrollbar-primary-2 overflow-y-auto">
-            Welcome to Electric Death Online's item modification system. Using
-            this system, you can upgrade your weapons, armor and other items by
-            increasing the item's stats and adjusting the item's traits by
-            either upgrading the values on current traits or adding new ones.
-            <br />
-            <br />
-            Each grade level (denoted by the number of star icons on the item)
-            awards you 5 Grade Points (GP) to spend on upgrades. Each stat and
-            trait option costs a different number of grade points to upgrade
-            depending on how impactful that upgrade is to the overall power of
-            the item. For example, adding a point of damage to a weapon costs
-            10GP while adding a point of Mag Capacity only costs 2GP.
-            <br />
-            <br />
-            Increasing the grade of your item is not free. Naturally, the higher
-            the price of the base item, the higher the price of each grade level
-            applied. Not only that, but grade levels become increasingly more
-            expensive to purchase for each level applied. Things can get
-            expensive real fast. Such is the cost of having a powerful item
-            perfectly suited to your build.
-            <br />
-            <br />
-            Once the purchase of an item modification is confirmed, you cannot
-            undo your chosen GP distribution, so be sure the chosen upgrades are
-            the ones you want to carry on the item forever.
-            <br />
-            <br />
-            To apply and purchase upgrades, follow this list:
-            <br />
-            <br />
-            <ol>
-              <li>
-                Use the plus and minus buttons next to "Grade" to set the number
-                of grade levels you want to purchase for the item. GP
-                corresponding to the set grade level will be shown below.
-              </li>
-              <li>
-                Use the plus and minus buttons next to each stat to spend your
-                available GP on permanent stat bonuses.
-              </li>
-              <li>
-                When all your GP is allocated, you can view the final price of
-                the chosen upgrades at the bottom of the form.
-              </li>
-              <li>
-                Click the "Modify" button to confirm your item's upgrades.
-                Profits will automatically be deducted from your character for
-                the purchase.
-              </li>
-            </ol>
-          </p>
+        <h1 className="text-center">Item Modification System</h1>
+        <Divider />
+        <p>
+          Welcome to Electric Death Online's item modification system. Using
+          this system, you can upgrade your weapons, armor and other items by
+          increasing the item's stats and adjusting the item's traits by either
+          upgrading the values on current traits or adding new ones.
+          <br />
+          <br />
+          Each grade level (denoted by the number of star icons on the item)
+          awards you 5 Grade Points (GP) to spend on upgrades. Each stat and
+          trait option costs a different number of grade points to upgrade
+          depending on how impactful that upgrade is to the overall power of the
+          item. For example, adding a point of damage to a weapon costs 10GP
+          while adding a point of Mag Capacity only costs 2GP.
+          <br />
+          <br />
+          Increasing the grade of your item is not free. Naturally, the higher
+          the price of the base item, the higher the price of each grade level
+          applied. Not only that, but grade levels become increasingly more
+          expensive to purchase for each level applied. Things can get expensive
+          real fast. Such is the cost of having a powerful item perfectly suited
+          to your build.
+          <br />
+          <br />
+          Once the purchase of an item modification is confirmed, you cannot
+          undo your chosen GP distribution, so be sure the chosen upgrades are
+          the ones you want to carry on the item forever.
+          <br />
+          <br />
+          To apply and purchase upgrades, follow this list:
+          <br />
+          <br />
+          <ol>
+            <li>
+              Use the plus and minus buttons next to "Grade" to set the number
+              of grade levels you want to purchase for the item. GP
+              corresponding to the set grade level will be shown below.
+            </li>
+            <li>
+              Use the plus and minus buttons next to each stat to spend your
+              available GP on permanent stat bonuses.
+            </li>
+            <li>
+              When all your GP is allocated, you can view the final price of the
+              chosen upgrades at the bottom of the form.
+            </li>
+            <li>
+              Click the "Modify" button to confirm your item's upgrades. Profits
+              will automatically be deducted from your character for the
+              purchase.
+            </li>
+          </ol>
+        </p>
 
-          <BtnRect
-            className="mt-4 w-full"
-            type="button"
-            ariaLabel="Close tutorial"
-            onClick={(e) => {
-              e.preventDefault();
-              setTutorialModal(false);
-            }}
-          >
-            Close
-          </BtnRect>
-        </div>
+        <BtnRect
+          className="mt-4 w-full"
+          type="button"
+          ariaLabel="Close tutorial"
+          onClick={(e) => {
+            e.preventDefault();
+            setTutorialModal(false);
+          }}
+        >
+          Close
+        </BtnRect>
       </Modal>
     </>
   );

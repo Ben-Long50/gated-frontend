@@ -6,7 +6,13 @@ import { Link } from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
 import Icon from '@mdi/react';
-import { mdiCollapseAllOutline, mdiExpandAllOutline } from '@mdi/js';
+import {
+  mdiCalendarCheckOutline,
+  mdiCalendarRemoveOutline,
+  mdiCollapseAllOutline,
+  mdiExpandAllOutline,
+  mdiLink,
+} from '@mdi/js';
 import SubweaponCard from './SubweaponCard';
 import { Action } from 'src/types/action';
 import SubactionCard from './SubactionCard';
@@ -24,6 +30,7 @@ import ItemCardSmall from './ItemCardSmall';
 import { Keyword } from 'src/types/keyword';
 import { Item } from 'src/types/item';
 import useItemStats from 'src/hooks/useItemStats';
+import ItemUpdateModal from './ItemUpdateModal';
 
 const ItemPage = ({
   itemId,
@@ -38,6 +45,11 @@ const ItemPage = ({
   const { apiUrl, user } = useContext(AuthContext);
   const [cardWidth, setCardWidth] = useState(0);
   const [traitsExpanded, setTraitsExpanded] = useState(false);
+  const [updateMode, setUpdateMode] = useState(false);
+
+  const toggleUpdateMode = () => {
+    setUpdateMode(!updateMode);
+  };
 
   const cardRef = useRef(null);
 
@@ -47,7 +59,7 @@ const ItemPage = ({
     category,
   );
 
-  const { itemStats, powerLevel } = useItemStats([item]);
+  const { itemStats, itemKeywords, powerLevel } = useItemStats([item]);
 
   const linkedWeapons =
     item?.itemLinkReference?.items.filter(
@@ -75,6 +87,7 @@ const ItemPage = ({
   if (isLoading) return <Loading />;
 
   if (!item) return <h1>No item found</h1>;
+  console.log(item);
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-8">
@@ -132,13 +145,13 @@ const ItemPage = ({
               </button>
               <Divider />
               <div className="flex flex-col gap-4">
-                {item?.keywords &&
-                  item.keywords.length > 0 &&
-                  item.keywords?.map(
+                {itemKeywords &&
+                  itemKeywords.length > 0 &&
+                  itemKeywords[0]?.map(
                     (item: { keyword: Keyword; value: number | null }) => {
                       return (
                         <ItemCardSmall
-                          key={item.keyword.id}
+                          key={item.keyword?.id}
                           expanded={traitsExpanded}
                           heading={
                             <h4>
@@ -174,7 +187,6 @@ const ItemPage = ({
       >
         <StatBars stats={itemStats[0]} cardWidth={cardWidth} />
       </div>
-
       <p className="self-start">{item.description}</p>
       {linkedWeapons.length > 0 && (
         <>
@@ -251,11 +263,75 @@ const ItemPage = ({
           </div>
         </ThemeContainer>
       )}
+      {item.baseItem && (
+        <div className="flex w-full items-center justify-between">
+          <Link
+            className="timing group flex items-center gap-4 self-start py-2"
+            to={`/glam/codex/${category}s/${item.baseItem.id}`}
+          >
+            <Icon
+              path={mdiLink}
+              className="group-hover:text-accent timing text-secondary size-8 shrink-0"
+            />
+            <div className="overflow-hidden">
+              <p
+                className={`timing group-hover:text-accent inline-block origin-left -translate-x-full transform text-left ease-in-out group-hover:translate-x-0`}
+              >
+                {item.baseItem.name}
+              </p>
+            </div>
+          </Link>
+          <button
+            className="group flex items-center gap-4 py-2"
+            onClick={() => {
+              if (item.updatedAt <= item.baseItem.updatedAt) {
+                toggleUpdateMode();
+              }
+            }}
+          >
+            {item.updatedAt >= item.baseItem.updatedAt ? (
+              <>
+                <div className="overflow-hidden">
+                  <p
+                    className={`timing group-hover:text-accent inline-block origin-right translate-x-full transform text-right ease-in-out group-hover:translate-x-0`}
+                  >
+                    Up to Date
+                  </p>
+                </div>
+                <Icon
+                  path={mdiCalendarCheckOutline}
+                  className="group-hover:text-accent timing text-secondary size-8 shrink-0"
+                />
+              </>
+            ) : (
+              <>
+                <div className="overflow-hidden">
+                  <p
+                    className={`timing group-hover:text-accent inline-block origin-right translate-x-full transform text-right ease-in-out group-hover:translate-x-0`}
+                  >
+                    New Version Available
+                  </p>
+                </div>
+                <Icon
+                  path={mdiCalendarRemoveOutline}
+                  className="group-hover:text-accent timing text-secondary size-8 shrink-0"
+                />
+              </>
+            )}
+          </button>
+          <ItemUpdateModal
+            item={item}
+            updateMode={updateMode}
+            toggleUpdateMode={toggleUpdateMode}
+          />
+        </div>
+      )}
+
       {((mode === 'codex' && user?.role === 'ADMIN') ||
         (mode === 'codex' && user?.role === 'SUPERADMIN')) && (
         <Link
-          className="w-1/3 self-end"
-          to={`/glam/codex/${category}s/${item.id}/update`}
+          className="w-full self-end sm:max-w-1/3"
+          to={`/glam/codex/${category}/${item.id}/update`}
         >
           <BtnRect
             ariaLabel="Navigat to edit weapon form"
@@ -267,7 +343,7 @@ const ItemPage = ({
         </Link>
       )}
       {mode === 'inventory' && (
-        <Link className="w-1/3 self-end" to={`modify`}>
+        <Link className="w-full self-end sm:max-w-1/3" to={`modify`}>
           <BtnRect ariaLabel="Navigate to modify weapon form" type="button">
             {'Modify ' + item.name}
           </BtnRect>

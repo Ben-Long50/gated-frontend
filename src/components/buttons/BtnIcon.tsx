@@ -1,15 +1,18 @@
 import Icon from '@mdi/react';
+import { ReactNode } from 'react';
 
 const BtnIcon = ({
   path,
   active,
   onClick,
   className,
+  children,
 }: {
   path: string;
   active: boolean;
   onClick: () => void;
   className?: string;
+  children?: ReactNode;
 }) => {
   return (
     <button
@@ -22,6 +25,7 @@ const BtnIcon = ({
       }}
     >
       <Icon path={path} className="size-6 text-inherit" />
+      {children}
     </button>
   );
 };

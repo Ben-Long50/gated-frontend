@@ -2,12 +2,16 @@ import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { VehicleWithWeapons } from 'src/types/vehicle';
 import { FetchOptions } from 'src/types/fetchOptions';
-import useVehiclesQuery from './useVehiclsQuery/useVehiclesQuery';
+import useItemsQuery from './useItemsQuery/useItemsQuery';
 
 const useVehicles = (fetchOptions?: FetchOptions) => {
   const { apiUrl } = useContext(AuthContext);
 
-  const { data: vehicles, isLoading, isPending } = useVehiclesQuery(apiUrl);
+  const {
+    data: vehicles,
+    isLoading,
+    isPending,
+  } = useItemsQuery(apiUrl, 'vehicles');
 
   const list = fetchOptions?.itemList || vehicles;
 

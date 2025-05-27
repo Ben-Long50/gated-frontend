@@ -48,66 +48,54 @@ const InventoryModal = ({
         className="flex w-full max-w-4xl flex-col gap-8"
         onClick={(e) => e.stopPropagation()}
       >
-        <ThemeContainer
-          className="w-full"
-          borderColor={accentPrimary}
-          chamfer="medium"
-        >
-          <div className="flex items-center justify-between gap-8 p-4">
-            <ArrowHeader2 title="Inventory" />
-            <p className="text-tertiary">(Double click to equip / unequip)</p>
-          </div>
-        </ThemeContainer>
+        <h1 className="text-center">Inventory</h1>
+
         <ItemMenu forcedMode="inventory" equipment={inventory}>
           {(item, index) => (
-            <ThemeContainer
+            <div
+              className="group relative h-full cursor-pointer select-none overflow-hidden rounded-bl rounded-tr pl-1"
+              style={{ backgroundColor: rarityColorMap[item.rarity] }}
               key={index}
-              chamfer="small"
-              borderColor="transparent"
-              overflowHidden={true}
-            >
-              <div
-                className="group relative h-full cursor-pointer select-none overflow-hidden rounded-bl rounded-tr pl-1"
-                style={{ backgroundColor: rarityColorMap[item.rarity] }}
-                key={index}
-                onDoubleClick={() => {
-                  if (characterId) {
-                    if (item.id === active.id) {
-                      toggleActive(null, null);
-                    }
-                    toggleEquipment.mutate({
-                      characterId: character?.id,
-                      inventoryId: character?.characterInventory?.id,
-                      category: item.itemType,
-                      itemId: item.id,
-                    });
+              onDoubleClick={() => {
+                if (characterId) {
+                  if (item.id === active.id) {
+                    toggleActive(null, null);
                   }
-                }}
-              >
-                {item.equipped === true && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
-                    <Icon
-                      className="text-tertiary group-hover:text-secondary h-full"
-                      path={mdiCheckCircle}
-                      size={3}
-                    />
-                  </div>
-                )}
-                {item.picture?.imageUrl ? (
-                  <img
-                    className="aspect-square hover:opacity-80"
-                    src={item.picture?.imageUrl}
-                    alt={item.name}
+                  toggleEquipment.mutate({
+                    characterId: character?.id,
+                    inventoryId: character?.characterInventory?.id,
+                    category: item.itemType,
+                    itemId: item.id,
+                  });
+                }
+              }}
+            >
+              {item.equipped === true && (
+                <div className="absolute inset-0 flex items-center justify-center bg-slate-950 bg-opacity-65">
+                  <Icon
+                    className="text-tertiary group-hover:text-secondary h-full"
+                    path={mdiCheckCircle}
+                    size={3}
                   />
-                ) : (
-                  <div className="bg-tertiary aspect-square h-full p-1 hover:opacity-80">
-                    <p className="my-auto text-center text-base">{item.name}</p>
-                  </div>
-                )}
-              </div>
-            </ThemeContainer>
+                </div>
+              )}
+              {item.picture?.imageUrl ? (
+                <img
+                  className="aspect-square hover:opacity-80"
+                  src={item.picture?.imageUrl}
+                  alt={item.name}
+                />
+              ) : (
+                <div className="bg-tertiary aspect-square h-full p-1 hover:opacity-80">
+                  <p className="my-auto text-center text-base">{item.name}</p>
+                </div>
+              )}
+            </div>
           )}
         </ItemMenu>
+        <p className="text-tertiary text-right">
+          (Double click to equip / unequip)
+        </p>
       </div>
     </Modal>
   );

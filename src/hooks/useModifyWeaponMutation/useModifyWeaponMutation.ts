@@ -14,7 +14,7 @@ const useModifyWeaponMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       queryClient.invalidateQueries({
-        queryKey: ['weapon', weaponId],
+        queryKey: ['item', weaponId],
         exact: false,
       });
       return queryClient.invalidateQueries({

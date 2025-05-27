@@ -20,16 +20,11 @@ import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
 import ItemCard from './ItemCard';
 import ItemCardMobile from './ItemCardMobile';
-import useWeaponsQuery from 'src/hooks/useWeaponsQuery/useWeaponsQuery';
 import { AuthContext } from 'src/contexts/AuthContext';
-import useArmorQuery from 'src/hooks/useArmorQuery/useArmorQuery';
-import useCyberneticsQuery from 'src/hooks/useCyberneticsQuery/useCyberneticsQuery';
-import useVehiclesQuery from 'src/hooks/useVehiclsQuery/useVehiclesQuery';
-import useDronesQuery from 'src/hooks/useDronesQuery/useDronesQuery';
-import useItemsQuery from 'src/hooks/useItemsQuery/useItemsQuery';
 import { Item } from 'src/types/item';
 import { Action } from 'src/types/action';
 import { Condition } from 'src/types/condition';
+import useAllItemsQuery from 'src/hooks/useAllItemsQuery/useAllItemsQuery';
 
 const CodexSearch = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -46,24 +41,15 @@ const CodexSearch = () => {
   const nameTimerRef = useRef<number | null>(null);
   const descriptionTimerRef = useRef<number | null>(null);
 
-  const { data: weapons, isLoading: weaponsLoading } = useWeaponsQuery(apiUrl);
-  const { data: armors, isLoading: armorLoading } = useArmorQuery(apiUrl);
-  const { data: cybernetics, isLoading: cyberneticsLoading } =
-    useCyberneticsQuery(apiUrl);
-  const { data: vehicles, isLoading: vehiclesLoading } =
-    useVehiclesQuery(apiUrl);
-  const { data: drones, isLoading: dronesLoading } = useDronesQuery(apiUrl);
-  const { data: items, isLoading: itemsLoading } = useItemsQuery(apiUrl);
+  const { data: items, isLoading, isPending } = useAllItemsQuery(apiUrl);
 
-  const { filteredKeywords: keywords, isLoading: keywordsLoading } =
-    useKeywords();
+  const { filteredKeywords: keywords } = useKeywords();
 
-  const { filteredPerkTree: perks, isLoading: perksLoading } = usePerks();
+  const { filteredPerkTree: perks } = usePerks();
 
-  const { filteredActions: actions, isLoading: actionsLoading } = useActions();
+  const { filteredActions: actions } = useActions();
 
-  const { filteredConditions: conditions, isLoading: conditionsLoading } =
-    useConditions();
+  const { filteredConditions: conditions } = useConditions();
 
   const perkArray = Object.values(perks)
     .map((item) => Object.values(item).flat())
@@ -78,6 +64,7 @@ const CodexSearch = () => {
 
     return itemArray
       ? itemArray.filter((item) => {
+          if (!item) return false;
           const nameMatch = item.name?.toLowerCase().includes(nameFilter);
           const descMatch = item.description
             ?.toLowerCase()
@@ -96,30 +83,13 @@ const CodexSearch = () => {
       : [];
   };
 
-  const filteredWeapons = filterItems(weapons);
-  const filteredArmors = filterItems(armors);
-  const filteredCybernetics = filterItems(cybernetics);
-  const filteredVehicles = filterItems(vehicles);
-  const filteredDrones = filterItems(drones);
-  const filteredItems = filterItems(items);
-  const filteredKeywords = filterItems(keywords);
-  const filteredPerks = filterItems(perkArray);
-  const filteredActions = filterItems(actions);
-  const filteredConditions = filterItems(conditions);
+  const filteredItems = items ? filterItems(items) : [];
+  const filteredActions = actions ? filterItems(actions) : [];
+  const filteredPerks = perkArray ? filterItems(perkArray) : [];
+  const filteredKeywords = keywords ? filterItems(keywords) : [];
+  const filteredConditions = conditions ? filterItems(conditions) : [];
 
-  const keywordList = keywords.map((keyword) => keyword.name);
-
-  const isLoading =
-    weaponsLoading ||
-    armorLoading ||
-    cyberneticsLoading ||
-    vehiclesLoading ||
-    dronesLoading ||
-    itemsLoading ||
-    keywordsLoading ||
-    perksLoading ||
-    actionsLoading ||
-    conditionsLoading;
+  const keywordList = keywords?.map((keyword) => keyword.name);
 
   const filterByNameQuery = (query: string) => {
     if (nameTimerRef.current) {
@@ -168,7 +138,7 @@ const CodexSearch = () => {
     },
   });
 
-  if (isLoading) return <Loading />;
+  if (isLoading || isPending) return <Loading />;
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
@@ -266,86 +236,6 @@ const CodexSearch = () => {
           </div>
         </form>
       </ThemeContainer>
-      {filteredWeapons.length > 0 && (
-        <>
-          <ArrowHeader2 className="self-start" title="Weapons" />
-          <div
-            className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
-          >
-            {filteredWeapons.map((item) =>
-              cardType === 'large' ? (
-                <ItemCard key={item.id} item={item} mode="search" />
-              ) : (
-                <ItemCardMobile key={item.id} item={item} mode="search" />
-              ),
-            )}
-          </div>
-        </>
-      )}
-      {filteredArmors.length > 0 && (
-        <>
-          <ArrowHeader2 className="self-start" title="Armors" />
-          <div
-            className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
-          >
-            {filteredArmors.map((item) =>
-              cardType === 'large' ? (
-                <ItemCard key={item.id} item={item} mode="search" />
-              ) : (
-                <ItemCardMobile key={item.id} item={item} mode="search" />
-              ),
-            )}
-          </div>
-        </>
-      )}
-      {filteredCybernetics.length > 0 && (
-        <>
-          <ArrowHeader2 className="self-start" title="Augmentations" />
-          <div
-            className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
-          >
-            {filteredCybernetics.map((item) =>
-              cardType === 'large' ? (
-                <ItemCard key={item.id} item={item} mode="search" />
-              ) : (
-                <ItemCardMobile key={item.id} item={item} mode="search" />
-              ),
-            )}
-          </div>
-        </>
-      )}
-      {filteredVehicles.length > 0 && (
-        <>
-          <ArrowHeader2 className="self-start" title="Vehicles" />
-          <div
-            className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
-          >
-            {filteredVehicles.map((item) =>
-              cardType === 'large' ? (
-                <ItemCard key={item.id} item={item} mode="search" />
-              ) : (
-                <ItemCardMobile key={item.id} item={item} mode="search" />
-              ),
-            )}
-          </div>
-        </>
-      )}
-      {filteredDrones.length > 0 && (
-        <>
-          <ArrowHeader2 className="self-start" title="Drones" />
-          <div
-            className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
-          >
-            {filteredDrones.map((item) =>
-              cardType === 'large' ? (
-                <ItemCard key={item.id} item={item} mode="search" />
-              ) : (
-                <ItemCardMobile key={item.id} item={item} mode="search" />
-              ),
-            )}
-          </div>
-        </>
-      )}
       {filteredItems.length > 0 && (
         <>
           <ArrowHeader2 className="self-start" title="Items" />

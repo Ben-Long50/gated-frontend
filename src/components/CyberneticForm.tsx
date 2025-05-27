@@ -27,6 +27,7 @@ import useWeapons from 'src/hooks/useWeapons';
 import useArmor from 'src/hooks/useArmor';
 import PictureField from './form_fields/PictureField';
 import RarityField from './form_fields/RarityField';
+import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 
 const CyberneticForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -37,10 +38,10 @@ const CyberneticForm = () => {
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
 
-  const { data: cybernetic } = useCyberneticQuery(
+  const { data: cybernetic } = useItemQuery(
     apiUrl,
     Number(cyberneticId),
-    { enabled: !!cyberneticId },
+    'augmentations',
   );
 
   const { filteredWeapons: weapons } = useWeapons({

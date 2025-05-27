@@ -21,7 +21,6 @@ import { Action } from 'src/types/action';
 import KeywordLinkField from './form_fields/KeywordLinkField';
 import WeaponLinkField from './form_fields/WeaponLinkField';
 import ActionLinkField from './form_fields/ActionLinkField';
-import useDroneQuery from '../hooks/useDroneQuery/useDroneQuery';
 import useCreateDroneMutation from '../hooks/useCreateDroneMutation/useCreateDroneMutation';
 import useModifyDroneMutation from '../hooks/useModifyDroneMutation/useModifyDroneMutation';
 import useDeleteDroneMutation from '../hooks/useDeleteDroneMutation/useDeleteDroneMutation';
@@ -41,9 +40,11 @@ const DroneForm = () => {
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
 
-  const { data: drone, isLoading } = useDroneQuery(apiUrl, Number(droneId), {
-    enabled: !!droneId,
-  });
+  const { data: drone, isLoading } = useItemQuery(
+    apiUrl,
+    Number(droneId),
+    'drone',
+  );
 
   const { filteredWeapons: weapons } = useWeapons({
     includedKeywords: ['Drone Weapon'],

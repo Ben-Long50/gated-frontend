@@ -6,7 +6,6 @@ const useModifyItemMutation = (
   apiUrl: string,
   characterId: number,
   itemId: number,
-  category: string,
   setFormMessage: (message: string) => void,
 ) => {
   const queryClient = useQueryClient();
@@ -20,7 +19,7 @@ const useModifyItemMutation = (
       setFormMessage(data.message);
       navigate(-1);
       return queryClient.invalidateQueries({
-        queryKey: [category, itemId],
+        queryKey: ['item', itemId],
       });
     },
     onError: (error) => {

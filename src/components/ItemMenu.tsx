@@ -90,73 +90,64 @@ const ItemMenu = ({
   }
 
   return (
-    <ThemeContainer
-      borderColor={accentPrimary}
-      chamfer="medium"
-      overflowHidden={true}
-    >
-      <div
-        ref={listRef}
-        className="scrollbar-secondary-2 flex max-h-75dvh w-full flex-col gap-2 overflow-y-auto p-4"
-      >
-        <div className="col-span-2 grid grid-flow-col gap-2 sm:gap-4">
-          {(category === 'equipment' || mode === 'equipment') && (
-            <>
-              <BtnAuth
-                active={tab === 'weapon' ? true : false}
-                onClick={() => setTab('weapon')}
-              >
-                {mobile ? <WeaponIcon className="size-8" /> : 'Weapons'}
-              </BtnAuth>
-              <BtnAuth
-                active={tab === 'armor' ? true : false}
-                onClick={() => setTab('armor')}
-              >
-                {mobile ? <ArmorIcon className="size-8" /> : 'Armor'}
-              </BtnAuth>
-              <BtnAuth
-                active={tab === 'cybernetic' ? true : false}
-                onClick={() => setTab('cybernetic')}
-              >
-                {mobile ? <CyberIcon className="size-8" /> : 'Cybernetics'}
-              </BtnAuth>
-              <BtnAuth
-                active={tab === 'item' ? true : false}
-                onClick={() => setTab('item')}
-              >
-                {mobile ? <InventoryIcon className="size-8" /> : 'Items'}
-              </BtnAuth>
-            </>
-          )}
-          {(category === 'deployments' || mode === 'deployments') && (
-            <>
-              <BtnAuth
-                active={tab === 'vehicle' ? true : false}
-                onClick={() => setTab('vehicle')}
-              >
-                {mobile ? <VehicleIcon className="size-8" /> : 'Vehicles'}
-              </BtnAuth>
-              <BtnAuth
-                active={tab === 'drone' ? true : false}
-                onClick={() => setTab('drone')}
-              >
-                {mobile ? <DroneIcon className="size-8" /> : 'Drones'}
-              </BtnAuth>
-            </>
-          )}
-        </div>
-        <Divider className="col-span-2" />
-        <div
-          className={`${listLayoutClasses} scrollbar-secondary-2 gap-2 sm:gap-4`}
-        >
-          {itemList ? (
-            itemList.map((item, index) => children(item, index, { tab }))
-          ) : (
-            <h2 className="pl-4">???</h2>
-          )}
-        </div>
+    <div ref={listRef} className="w-full flex-col gap-2">
+      <div className="col-span-2 grid grid-flow-col gap-2 sm:gap-4">
+        {(category === 'equipment' || mode === 'equipment') && (
+          <>
+            <BtnAuth
+              active={tab === 'weapon' ? true : false}
+              onClick={() => setTab('weapon')}
+            >
+              {mobile ? <WeaponIcon className="size-8" /> : 'Weapons'}
+            </BtnAuth>
+            <BtnAuth
+              active={tab === 'armor' ? true : false}
+              onClick={() => setTab('armor')}
+            >
+              {mobile ? <ArmorIcon className="size-8" /> : 'Armor'}
+            </BtnAuth>
+            <BtnAuth
+              active={tab === 'cybernetic' ? true : false}
+              onClick={() => setTab('cybernetic')}
+            >
+              {mobile ? <CyberIcon className="size-8" /> : 'Cybernetics'}
+            </BtnAuth>
+            <BtnAuth
+              active={tab === 'item' ? true : false}
+              onClick={() => setTab('item')}
+            >
+              {mobile ? <InventoryIcon className="size-8" /> : 'Items'}
+            </BtnAuth>
+          </>
+        )}
+        {(category === 'deployments' || mode === 'deployments') && (
+          <>
+            <BtnAuth
+              active={tab === 'vehicle' ? true : false}
+              onClick={() => setTab('vehicle')}
+            >
+              {mobile ? <VehicleIcon className="size-8" /> : 'Vehicles'}
+            </BtnAuth>
+            <BtnAuth
+              active={tab === 'drone' ? true : false}
+              onClick={() => setTab('drone')}
+            >
+              {mobile ? <DroneIcon className="size-8" /> : 'Drones'}
+            </BtnAuth>
+          </>
+        )}
       </div>
-    </ThemeContainer>
+      <Divider className="col-span-2" />
+      <div
+        className={`${listLayoutClasses} scrollbar-secondary-2 gap-2 sm:gap-4`}
+      >
+        {itemList ? (
+          itemList.map((item, index) => children(item, index, { tab }))
+        ) : (
+          <h2 className="pl-4">???</h2>
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -2,10 +2,10 @@ import { FormApi, FormState } from '@tanstack/react-form';
 import FormLinkModal from './FormLinkModal';
 import { useState } from 'react';
 import BtnRect from '../buttons/BtnRect';
-import Cybernetics from '../Cybernetics';
 import ArrowHeader2 from '../ArrowHeader2';
 import { Item } from 'src/types/item';
 import ItemCard from '../ItemCard';
+import Items from '../Items';
 
 const CyberneticLinkField = ({ form }: { form: FormApi }) => {
   const [cyberneticsOpen, setCyberneticsOpen] = useState(false);
@@ -30,7 +30,7 @@ const CyberneticLinkField = ({ form }: { form: FormApi }) => {
                     toggleModal={toggleCybernetics}
                   >
                     {({ toggleFormLink }) => (
-                      <Cybernetics
+                      <Items
                         title="Link Cybernetics"
                         forcedMode="form"
                         toggleFormLink={toggleFormLink}

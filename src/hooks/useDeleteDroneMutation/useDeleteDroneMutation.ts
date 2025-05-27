@@ -16,7 +16,7 @@ const useDeleteDroneMutation = (
     onSuccess: () => {
       navigate(-2);
       queryClient.invalidateQueries({
-        queryKey: ['drone', droneId],
+        queryKey: ['item', droneId],
       });
       queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],
