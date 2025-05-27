@@ -3,35 +3,30 @@ import BtnControl from './buttons/BtnControl';
 import { useContext } from 'react';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { useParams } from 'react-router-dom';
-import useEditAmmoMutation from 'src/hooks/weaponStatHooks/useEditAmmoMutation/useEditAmmoMutation';
-import useReloadAmmoMutation from 'src/hooks/weaponStatHooks/useReloadAmmoMutation/useReloadAmmoMutation';
-import useRefreshAmmoMutation from 'src/hooks/weaponStatHooks/useRefreshAmmoMutation/useRefreshAmmoMutation';
+import useEditAmmoMutation from 'src/hooks/itemStatHooks/useEditAmmoMutation/useEditAmmoMutation';
+import useReloadAmmoMutation from 'src/hooks/itemStatHooks/useReloadAmmoMutation/useReloadAmmoMutation';
+import useRefreshAmmoMutation from 'src/hooks/itemStatHooks/useRefreshAmmoMutation/useRefreshAmmoMutation';
+import useEditBlockMutation from 'src/hooks/itemStatHooks/useEditBlockMutation/useEditBlockMutation';
+import useEditHullMutation from 'src/hooks/itemStatHooks/useEditHullMutation/useEditHullMutation';
+import useEditCargoMutation from 'src/hooks/itemStatHooks/useEditCargoMutation/useEditCargoMutation';
+import useEditPassMutation from 'src/hooks/itemStatHooks/useEditPassMutation/useEditPassMutation';
+import useEditPowerMutation from 'src/hooks/itemStatHooks/useEditPowerMutation/useEditPowerMutation';
 import DamageIcon from './icons/DamageIcon';
 import MagCapacityIcon from './icons/MagCapacityIcon';
 import SalvoIcon from './icons/SalvoIcon';
 import SpareAmmoIcon from './icons/SpareAmmoIcon';
 import { ArmorStats } from 'src/types/armor';
-import useEditArmorPowerMutation from 'src/hooks/armorStatHooks/useEditArmorPowerMutation/useEditArmorPowerMutation';
-import useEditArmorBlockMutation from 'src/hooks/armorStatHooks/useEditArmorBlockMutation/useEditArmorBlockMutation';
 import BlockIcon from './icons/BlockIcon';
 import HullIcon from './icons/HullIcon';
 import LightningIcon from './icons/LightningIcon';
 import PowerIcon from './icons/PowerIcon';
-import useEditCyberneticPowerMutation from 'src/hooks/cyberneticStatHooks/useEditCyberneticPowerMutation/useEditCyberneticPowerMutation';
 import { CyberneticStats } from 'src/types/cybernetic';
-import useEditHullMutation from 'src/hooks/vehicleStatHooks/useEditHullMutation/useEditHullMutation';
-import useEditCargoMutation from 'src/hooks/vehicleStatHooks/useEditCargoMutation/useEditCargoMutation';
 import { VehicleStats } from 'src/types/vehicle';
 import CargoIcon from './icons/CargoIcon';
-import useEditPassMutation from 'src/hooks/vehicleStatHooks/useEditPassMutation/useEditPassMutation';
 import InventoryIcon from './icons/InventoryIcon';
 import PassIcon from './icons/PassIcon';
 import { DroneStats } from 'src/types/drone';
-import useEditDronePowerMutation from 'src/hooks/droneStatHooks/useEditDronePowerMutation/useEditDronePowerMutation';
-import useDroneHullMutation from 'src/hooks/droneStatHooks/useDroneHullMutation/useDroneHullMutation';
-import useEditItemPowerMutation from 'src/hooks/itemStatHooks/useEditItemPowerMutation/useEditItemPowerMutation';
 import { Stats } from 'src/types/item';
-import useRefreshItemPowerMutation from 'src/hooks/itemStatHooks/useRefreshItemPowerMutation/useRefreshItemPowerMutation';
 
 export const WeaponControls = ({
   stats,
@@ -122,16 +117,8 @@ export const ArmorControls = ({
   const { apiUrl } = useContext(AuthContext);
   const { characterId } = useParams();
 
-  const editArmorPower = useEditArmorPowerMutation(
-    apiUrl,
-    armorId,
-    Number(characterId),
-  );
-  const editArmorBlock = useEditArmorBlockMutation(
-    apiUrl,
-    armorId,
-    Number(characterId),
-  );
+  const editPower = useEditPowerMutation(apiUrl, armorId, Number(characterId));
+  const editBlock = useEditBlockMutation(apiUrl, armorId, Number(characterId));
 
   return (
     <div className="col-span-2 grid grid-cols-1 items-center justify-start gap-4 sm:grid-cols-2">
@@ -139,7 +126,7 @@ export const ArmorControls = ({
         <BtnControl
           title="Block"
           icon={<BlockIcon className="size-8 text-inherit" />}
-          mutation={stats.currentBlock > 0 ? editArmorBlock : null}
+          mutation={stats.currentBlock > 0 ? editBlock : null}
           value={-1}
         />
       )}
@@ -147,7 +134,7 @@ export const ArmorControls = ({
         <BtnControl
           title="Repair"
           icon={<HullIcon className="size-8 text-inherit" />}
-          mutation={stats.currentBlock < stats.block ? editArmorBlock : null}
+          mutation={stats.currentBlock < stats.block ? editBlock : null}
           value={stats.block - stats.currentBlock}
         />
       )}
@@ -155,7 +142,7 @@ export const ArmorControls = ({
         <BtnControl
           title="Activate"
           icon={<LightningIcon className="size-8 text-inherit" />}
-          mutation={stats.currentPower > 0 ? editArmorPower : null}
+          mutation={stats.currentPower > 0 ? editPower : null}
           value={-1}
         />
       )}
@@ -163,7 +150,7 @@ export const ArmorControls = ({
         <BtnControl
           title="Use Power Cell"
           icon={<PowerIcon className="size-8 text-inherit" />}
-          mutation={stats.currentPower < stats.power ? editArmorPower : null}
+          mutation={stats.currentPower < stats.power ? editPower : null}
           value={
             stats.power - stats.currentPower < 3
               ? stats.power - stats.currentPower
@@ -185,7 +172,7 @@ export const CyberneticControls = ({
   const { apiUrl } = useContext(AuthContext);
   const { characterId } = useParams();
 
-  const editCurrentPower = useEditCyberneticPowerMutation(
+  const editPower = useEditPowerMutation(
     apiUrl,
     cyberneticId,
     Number(characterId),
@@ -197,7 +184,7 @@ export const CyberneticControls = ({
         <BtnControl
           title="Activate"
           icon={<LightningIcon className="size-8 text-inherit" />}
-          mutation={stats.currentPower > 0 ? editCurrentPower : null}
+          mutation={stats.currentPower > 0 ? editPower : null}
           value={-1}
         />
       )}
@@ -206,7 +193,7 @@ export const CyberneticControls = ({
         <BtnControl
           title="Use Power Cell"
           icon={<PowerIcon className="size-8 text-inherit" />}
-          mutation={stats.currentPower < stats.power ? editCurrentPower : null}
+          mutation={stats.currentPower < stats.power ? editPower : null}
           value={
             stats.power - stats.currentPower < 3
               ? stats.power - stats.currentPower
@@ -228,23 +215,15 @@ export const VehicleControls = ({
   const { apiUrl } = useContext(AuthContext);
   const { characterId } = useParams();
 
-  const editVehicleHull = useEditHullMutation(
+  const editHull = useEditHullMutation(apiUrl, vehicleId, Number(characterId));
+
+  const editCargo = useEditCargoMutation(
     apiUrl,
     vehicleId,
     Number(characterId),
   );
 
-  const editVehicleCargo = useEditCargoMutation(
-    apiUrl,
-    vehicleId,
-    Number(characterId),
-  );
-
-  const editVehiclePass = useEditPassMutation(
-    apiUrl,
-    vehicleId,
-    Number(characterId),
-  );
+  const editPass = useEditPassMutation(apiUrl, vehicleId, Number(characterId));
 
   return (
     <div className="col-span-2 grid grid-cols-1 items-center justify-start gap-2 sm:grid-cols-2 sm:gap-4">
@@ -252,7 +231,7 @@ export const VehicleControls = ({
         <BtnControl
           title="Take Damage"
           icon={<DamageIcon className="size-8 text-inherit" />}
-          mutation={stats.currentHull > 0 ? editVehicleHull : null}
+          mutation={stats.currentHull > 0 ? editHull : null}
           value={-1}
         />
       )}
@@ -260,7 +239,7 @@ export const VehicleControls = ({
         <BtnControl
           title="Repair Hull"
           icon={<HullIcon className="size-8 text-inherit" />}
-          mutation={stats.currentHull < stats.hull ? editVehicleHull : null}
+          mutation={stats.currentHull < stats.hull ? editHull : null}
           value={stats.hull - stats.currentHull}
         />
       )}
@@ -268,7 +247,7 @@ export const VehicleControls = ({
         <BtnControl
           title="Unload Cargo"
           icon={<CargoIcon className="size-8 text-inherit" />}
-          mutation={stats.currentCargo > 0 ? editVehicleCargo : null}
+          mutation={stats.currentCargo > 0 ? editCargo : null}
           value={-1}
         />
       )}
@@ -276,7 +255,7 @@ export const VehicleControls = ({
         <BtnControl
           title="Load Cargo"
           icon={<InventoryIcon className="size-8 text-inherit" />}
-          mutation={stats.currentCargo < stats.cargo ? editVehicleCargo : null}
+          mutation={stats.currentCargo < stats.cargo ? editCargo : null}
           value={1}
         />
       )}
@@ -284,7 +263,7 @@ export const VehicleControls = ({
         <BtnControl
           title="Unload Passengers"
           icon={<PassIcon className="size-8 text-inherit" />}
-          mutation={stats.currentPass > 0 ? editVehiclePass : null}
+          mutation={stats.currentPass > 0 ? editPass : null}
           value={-1}
         />
       )}
@@ -292,7 +271,7 @@ export const VehicleControls = ({
         <BtnControl
           title="Load Passengers"
           icon={<PassIcon className="size-8 text-inherit" />}
-          mutation={stats.currentPass < stats.pass ? editVehiclePass : null}
+          mutation={stats.currentPass < stats.pass ? editPass : null}
           value={1}
         />
       )}
@@ -310,16 +289,8 @@ export const DroneControls = ({
   const { apiUrl } = useContext(AuthContext);
   const { characterId } = useParams();
 
-  const editDroneHull = useDroneHullMutation(
-    apiUrl,
-    droneId,
-    Number(characterId),
-  );
-  const editDronePower = useEditDronePowerMutation(
-    apiUrl,
-    droneId,
-    Number(characterId),
-  );
+  const editHull = useEditHullMutation(apiUrl, droneId, Number(characterId));
+  const editPower = useEditPowerMutation(apiUrl, droneId, Number(characterId));
 
   return (
     <div className="col-span-2 grid grid-cols-1 items-center justify-start gap-4 sm:grid-cols-2">
@@ -327,7 +298,7 @@ export const DroneControls = ({
         <BtnControl
           title="Take Damage"
           icon={<DamageIcon className="size-8 text-inherit" />}
-          mutation={stats.currentHull > 0 ? editDroneHull : null}
+          mutation={stats.currentHull > 0 ? editHull : null}
           value={-1}
         />
       )}
@@ -335,7 +306,7 @@ export const DroneControls = ({
         <BtnControl
           title="Repair Drone"
           icon={<HullIcon className="size-8 text-inherit" />}
-          mutation={stats.currentHull < stats.hull ? editDroneHull : null}
+          mutation={stats.currentHull < stats.hull ? editHull : null}
           value={stats.hull - stats.currentHull}
         />
       )}
@@ -343,7 +314,7 @@ export const DroneControls = ({
         <BtnControl
           title="Activate"
           icon={<LightningIcon className="size-8 text-inherit" />}
-          mutation={stats.currentPower > 0 ? editDronePower : null}
+          mutation={stats.currentPower > 0 ? editPower : null}
           value={-1}
         />
       )}
@@ -351,7 +322,7 @@ export const DroneControls = ({
         <BtnControl
           title="Use Power Cell"
           icon={<PowerIcon className="size-8 text-inherit" />}
-          mutation={stats.currentPower < stats.power ? editDronePower : null}
+          mutation={stats.currentPower < stats.power ? editPower : null}
           value={
             stats.power - stats.currentPower < 3
               ? stats.power - stats.currentPower
@@ -373,16 +344,7 @@ export const ItemControls = ({
   const { apiUrl } = useContext(AuthContext);
   const { characterId } = useParams();
 
-  const editCurrentPower = useEditItemPowerMutation(
-    apiUrl,
-    itemId,
-    Number(characterId),
-  );
-  const refreshPower = useRefreshItemPowerMutation(
-    apiUrl,
-    itemId,
-    Number(characterId),
-  );
+  const editPower = useEditPowerMutation(apiUrl, itemId, Number(characterId));
 
   return (
     <div className="col-span-2 grid grid-cols-1 items-center justify-start gap-4 sm:grid-cols-2">
@@ -390,7 +352,7 @@ export const ItemControls = ({
         <BtnControl
           title="Activate"
           icon={<LightningIcon className="size-8 text-inherit" />}
-          mutation={stats.currentPower > 0 ? editCurrentPower : null}
+          mutation={stats.currentPower > 0 ? editPower : null}
           value={-1}
         />
       )}
@@ -398,7 +360,12 @@ export const ItemControls = ({
         <BtnControl
           title="Recharge"
           icon={<PowerIcon className="size-8 text-inherit" />}
-          mutation={stats.currentPower < stats.power ? refreshPower : null}
+          mutation={stats.currentPower < stats.power ? editPower : null}
+          value={
+            stats.power - stats.currentPower < 3
+              ? stats.power - stats.currentPower
+              : 3
+          }
         />
       )}
     </div>

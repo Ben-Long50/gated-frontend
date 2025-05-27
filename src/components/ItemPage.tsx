@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
@@ -13,11 +13,7 @@ import {
   mdiExpandAllOutline,
   mdiLink,
 } from '@mdi/js';
-import SubweaponCard from './SubweaponCard';
 import { Action } from 'src/types/action';
-import SubactionCard from './SubactionCard';
-import SubarmorCard from './SubarmorCard';
-import SubmodificationCard from './SubmodificationCard';
 import BtnRect from './buttons/BtnRect';
 import ItemPicture from './ItemPicture';
 import Divider from './Divider';
@@ -31,6 +27,8 @@ import { Keyword } from 'src/types/keyword';
 import { Item } from 'src/types/item';
 import useItemStats from 'src/hooks/useItemStats';
 import ItemUpdateModal from './ItemUpdateModal';
+import LinkedItemCard from './LinkedItemCard';
+import LinkedActionCard from './LinkedActionCard';
 
 const ItemPage = ({
   itemId,
@@ -181,12 +179,14 @@ const ItemPage = ({
           )}
         </div>
       </div>
-      <div
-        ref={cardRef}
-        className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-8 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
-      >
-        <StatBars stats={itemStats[0]} cardWidth={cardWidth} />
-      </div>
+      {itemStats && (
+        <div
+          ref={cardRef}
+          className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-8 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
+        >
+          <StatBars stats={itemStats[0]} cardWidth={cardWidth} />
+        </div>
+      )}
       <p className="self-start">{item.description}</p>
       {linkedWeapons.length > 0 && (
         <>
@@ -195,10 +195,10 @@ const ItemPage = ({
           <div className="flex w-full flex-col gap-8">
             {linkedWeapons.map((weapon: Item, index: number) => {
               return (
-                <SubweaponCard
+                <LinkedItemCard
                   key={index}
                   mode={mode}
-                  weapon={weapon}
+                  item={weapon}
                   cardWidth={cardRef.current?.offsetWidth}
                 />
               );
@@ -213,10 +213,10 @@ const ItemPage = ({
           <div className="flex w-full flex-col gap-8">
             {linkedArmor.map((armor: Item, index: number) => {
               return (
-                <SubarmorCard
+                <LinkedItemCard
                   key={index}
                   mode={mode}
-                  armor={armor}
+                  item={armor}
                   cardWidth={cardRef.current?.offsetWidth}
                 />
               );
@@ -231,7 +231,7 @@ const ItemPage = ({
           <div className="flex w-full flex-col gap-8">
             {linkedActions.map((action: Action, index: number) => {
               return (
-                <SubactionCard
+                <LinkedActionCard
                   key={index}
                   action={action}
                   cardWidth={cardRef.current?.offsetWidth}
@@ -250,9 +250,10 @@ const ItemPage = ({
             {linkedModifiactions.map((modification: Item, index: number) => {
               return (
                 <>
-                  <SubmodificationCard
+                  <LinkedItemCard
                     key={modification.id}
-                    modification={modification}
+                    item={modification}
+                    cardWidth={cardRef.current?.offsetWidth}
                   />
                   {index < linkedModifiactions.length - 1 && (
                     <hr className="w-full border-yellow-300 border-opacity-50" />
@@ -284,7 +285,7 @@ const ItemPage = ({
           <button
             className="group flex items-center gap-4 py-2"
             onClick={() => {
-              if (item.updatedAt <= item.baseItem.updatedAt) {
+              if (item.baseItem && item.updatedAt <= item.baseItem.updatedAt) {
                 toggleUpdateMode();
               }
             }}

@@ -4,6 +4,7 @@ import { Picture } from './picture';
 
 interface Item {
   id: number;
+  updatedAt: Date;
   name: string;
   itemType: ItemType;
   itemSubtype?: string;
