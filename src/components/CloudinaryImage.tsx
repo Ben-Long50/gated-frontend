@@ -11,12 +11,14 @@ const CloudinaryImage = ({
   position,
   alt,
   onClick,
+  style,
 }: {
   className?: string;
   url: string;
   position: Position;
   alt: string;
   onClick?: () => void;
+  style: object;
 }) => {
   let responsiveUrl;
 
@@ -43,6 +45,7 @@ const CloudinaryImage = ({
       className={`${className} cld-responsive bg-primary h-full w-full object-cover`}
       style={{
         objectPosition: position ? `${position.x}% ${position.y}%` : '50% 50%',
+        ...style,
       }}
       data-src={responsiveUrl}
       loading="lazy"

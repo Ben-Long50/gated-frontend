@@ -53,10 +53,14 @@ const Session = () => {
           <img
             className="w-full object-cover object-center"
             src={`${session.picture?.imageUrl}`}
-            alt="Campaign cover image"
+            alt="Session cover image"
+            style={{
+              objectPosition: session.picture?.position
+                ? `${session.picture?.position.x}% ${session.picture?.position.y}%`
+                : '50% 50%',
+              maskImage: 'linear-gradient(black 0%, transparent 100%',
+            }}
           />
-
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
         </div>
       )}
       <div className="flex w-full max-w-5xl flex-col gap-4">

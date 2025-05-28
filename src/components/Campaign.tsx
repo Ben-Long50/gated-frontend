@@ -66,9 +66,9 @@ const Campaign = () => {
             objectPosition: campaign.picture?.position
               ? `${campaign.picture?.position.x}% ${campaign.picture?.position.y}%`
               : '50% 50%',
+            maskImage: 'linear-gradient(black 0%, transparent 100%',
           }}
         />
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
         <div className="absolute right-6 top-6 flex flex-col items-center gap-4">
           <div className="relative">
             <img

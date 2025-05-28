@@ -16,9 +16,11 @@ import CharacterIcon from './icons/CharacterIcon';
 import EquipmentIcon from './icons/EquipmentIcon';
 import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
-import CharacterPicture from './CharacterPicture';
-import CharacterMenu from './CharacterMenu';
+import RadialMenu from './RadialMenu';
 import Tag from './Tag';
+import ConditionIcon from './icons/ConditionIcon';
+import ConditionLinkField from './form_fields/ConditionLinkField';
+import CharacterMenu from './CharacterMenu';
 
 const CharacterCard = ({
   character,
@@ -37,27 +39,25 @@ const CharacterCard = ({
   return (
     <ThemeContainer
       className="w-full"
-      chamfer="large"
+      chamfer="medium"
       borderColor={accentPrimary}
-      overflowHidden={true}
+      // overflowHidden={true}
     >
       <div ref={cardRef} className="relative grid sm:grid-cols-[1fr_4fr]">
-        <div className="absolute left-0 top-0 flex h-full w-[375px] items-center">
+        <div className="absolute left-0 top-0 flex h-full w-[375px] items-center overflow-hidden rounded-bl clip-6">
           <CloudinaryImage
             url={character.picture?.imageUrl}
             alt={`${character.firstName} ${character.lastName}'s image`}
             position={character.picture?.position}
+            style={{
+              maskImage: 'linear-gradient(to right, black 0%, transparent 90%',
+            }}
           />
           {mobile && (
             <div className="absolute inset-0 z-10 bg-zinc-900 bg-opacity-60" />
           )}
-
-          <div className="absolute inset-0 h-full w-full bg-gradient-to-l from-zinc-900 to-transparent" />
         </div>
-        <CharacterMenu
-          className="absolute right-2 top-2 z-20"
-          character={character}
-        />
+        <CharacterMenu character={character} />
         <div className="z-10 flex h-full w-full flex-col justify-between gap-4 p-4 sm:col-start-2 md:gap-6 md:p-6">
           <div className="flex w-full items-center justify-between gap-4">
             <ArrowHeader1
@@ -177,7 +177,7 @@ const CharacterCard = ({
                 <div className="flex items-center justify-center gap-2">
                   <InjuryIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.injuries}
+                    {filteredCharacter.stats.injuries || 0}
                   </p>
                 </div>
               </div>
@@ -190,37 +190,9 @@ const CharacterCard = ({
                 <div className="flex items-center justify-center gap-2">
                   <InsanityIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.insanities}
+                    {filteredCharacter.stats.insanities || 0}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <Link
-                  className="ml-auto mt-auto self-end"
-                  to={path ? `${path}/${character.id}` : `${character.id}`}
-                >
-                  <button
-                    type="button"
-                    className="hover:bg-tertiary timing group rounded-full bg-yellow-300 p-2 shadow-md shadow-black hover:ring-1 hover:ring-inset hover:ring-yellow-300"
-                  >
-                    <CharacterIcon className="group-hover:text-accent size-8 shrink-0 text-zinc-950" />
-                  </button>
-                </Link>
-                <Link
-                  className="ml-auto mt-auto self-end"
-                  to={
-                    path
-                      ? `${path}/${character.id}/equipment`
-                      : `${character.id}/equipment`
-                  }
-                >
-                  <button
-                    type="button"
-                    className="hover:bg-tertiary timing group rounded-full bg-yellow-300 p-2 shadow-md shadow-black hover:ring-1 hover:ring-inset hover:ring-yellow-300"
-                  >
-                    <EquipmentIcon className="group-hover:text-accent size-8 shrink-0 text-zinc-950" />
-                  </button>
-                </Link>
               </div>
             </div>
           </div>

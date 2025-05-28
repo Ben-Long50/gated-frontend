@@ -1,67 +1,56 @@
-import { mdiDotsHorizontal } from '@mdi/js';
-import BtnIcon from './buttons/BtnIcon';
-import { useState } from 'react';
-import ConditionIcon from './icons/ConditionIcon';
 import { Character } from 'src/types/character';
 import ConditionLinkField from './form_fields/ConditionLinkField';
+import ConditionIcon from './icons/ConditionIcon';
+import RadialMenu from './RadialMenu';
+import { useLocation, useNavigate } from 'react-router-dom';
+import EquipmentIcon from './icons/EquipmentIcon';
+import CharacterIcon from './icons/CharacterIcon';
+import { useState } from 'react';
 
-const CharacterMenu = ({
-  className,
-  character,
-}: {
-  className?: string;
-  character: Character;
-}) => {
-  const [menuVisibility, setMenuVisibility] = useState(false);
+const CharacterMenu = ({ character }: { character: Character }) => {
   const [conditionModal, setConditionModal] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const parts = location.pathname.split('/');
+
+  console.log(parts);
 
   const toggleConditionModal = () => {
     setConditionModal(!conditionModal);
   };
-
   return (
-    <div className={`${className}`}>
-      <BtnIcon
-        active={true}
-        path={mdiDotsHorizontal}
-        onClick={() => {
-          setMenuVisibility(!menuVisibility);
-        }}
-      />
-      <div
-        className={`${menuVisibility ? 'visible opacity-100' : 'invisible opacity-0'} timing bg-tertiary pointer-events-none absolute left-1/2 top-1/2 grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center place-items-center rounded-full shadow-md shadow-black`}
-        style={{
-          gridTemplateAreas: 'center',
-          WebkitMaskImage: 'radial-gradient(transparent 0, black 40px)',
-          maskImage: 'radial-gradient(transparent 40px, black 40px)',
-        }}
-      >
-        <button
-          className="bg-tertiary timing group pointer-events-auto size-8"
-          style={{
-            transform: 'rotate(-90deg) translateY(-68px) rotate(90deg)',
-            gridArea: 'center',
-          }}
-          onClick={() => toggleConditionModal()}
-        >
-          <ConditionIcon className="group-hover:text-accent timing text-secondary" />
-          <ConditionLinkField
-            character={character}
-            conditionModal={conditionModal}
-            toggleConditionModal={toggleConditionModal}
-          />
-        </button>
-        <button
-          className="bg-tertiary timing group pointer-events-auto size-8"
-          style={{
-            transform: 'rotate(-135deg) translateY(-68px) rotate(135deg)',
-            gridArea: 'center',
-          }}
-        >
-          <ConditionIcon className="group-hover:text-accent timing text-secondary" />
-        </button>
+    <RadialMenu className="absolute right-2 top-2 z-20" radius={80}>
+      <div onClick={() => toggleConditionModal()}>
+        <ConditionIcon className="text-inherit group-hover:scale-125" />
+        <ConditionLinkField
+          character={character}
+          conditionModal={conditionModal}
+          toggleConditionModal={toggleConditionModal}
+        />
       </div>
-    </div>
+      <div
+        onClick={() =>
+          navigate(
+            parts.includes('campaigns')
+              ? `characters/${character.id}/equipment`
+              : `${character.id}/equipment`,
+          )
+        }
+      >
+        <EquipmentIcon className="text-inherit group-hover:scale-125" />
+      </div>
+      <div
+        onClick={() =>
+          navigate(
+            parts.includes('campaigns')
+              ? `characters/${character.id}`
+              : `${character.id}`,
+          )
+        }
+      >
+        <CharacterIcon className="text-inherit group-hover:scale-125" />
+      </div>
+    </RadialMenu>
   );
 };
 
