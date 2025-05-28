@@ -25,6 +25,13 @@ const BtnIcon = ({
           onClick();
         }
       }}
+      onMouseDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (active) {
+          onClick();
+        }
+      }}
     >
       <Icon path={path} className="size-6 text-inherit" />
       {children}

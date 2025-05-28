@@ -41,7 +41,6 @@ const CharacterCard = ({
       className="w-full"
       chamfer="medium"
       borderColor={accentPrimary}
-      // overflowHidden={true}
     >
       <div ref={cardRef} className="relative grid sm:grid-cols-[1fr_4fr]">
         <div className="absolute left-0 top-0 flex h-full w-[375px] items-center overflow-hidden rounded-bl clip-6">

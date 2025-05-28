@@ -60,6 +60,9 @@ const RadialMenu = ({
         onClick={() => {
           setMenuVisibility(true);
         }}
+        onMouseDown={() => {
+          setMenuVisibility(true);
+        }}
       />
       <div
         ref={menuRef}
@@ -89,6 +92,10 @@ const RadialMenu = ({
                 clipPath: `polygon(0% 0%, 100% 0%, ${(pieWidthOutside + pieWidthInside) / 2}px 100%, ${(pieWidthOutside - pieWidthInside) / 2}px 100%)`,
               }}
               onClick={(e) => {
+                e.stopPropagation();
+                childOnClick(e);
+              }}
+              onMouseUp={(e) => {
                 e.stopPropagation();
                 childOnClick(e);
               }}
