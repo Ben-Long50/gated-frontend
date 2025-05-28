@@ -1,15 +1,11 @@
 import { Action } from './action';
-import { ArmorWithKeywords } from './armor';
 import { AttributeTree } from './attributeTree';
 import { Campaign } from './campaign';
-import { CyberneticWithKeywords } from './cybernetic';
-import { Drone } from './drone';
+import { Condition } from './condition';
 import { Gang } from './gang';
 import { Item } from './item';
 import { Perk } from './perk';
 import { Picture } from './picture';
-import { Modification, Vehicle, VehicleWithWeapons } from './vehicle';
-import { Weapon, WeaponWithKeywords } from './weapon';
 
 interface Character {
   id: number;
@@ -36,6 +32,7 @@ interface Character {
   playerCharacter: boolean;
   preferences: CharacterPreferences;
   perks: Perk[];
+  conditions: { condition: Condition; stacks: number | null }[];
   characterCart: CharacterCart;
   characterInventory: CharacterInventory;
 }

@@ -17,6 +17,8 @@ import EquipmentIcon from './icons/EquipmentIcon';
 import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
 import CharacterPicture from './CharacterPicture';
+import CharacterMenu from './CharacterMenu';
+import Tag from './Tag';
 
 const CharacterCard = ({
   character,
@@ -49,20 +51,50 @@ const CharacterCard = ({
           {mobile && (
             <div className="absolute inset-0 z-10 bg-zinc-900 bg-opacity-60" />
           )}
+
           <div className="absolute inset-0 h-full w-full bg-gradient-to-l from-zinc-900 to-transparent" />
         </div>
+        <CharacterMenu
+          className="absolute right-2 top-2 z-20"
+          character={character}
+        />
         <div className="z-10 flex h-full w-full flex-col justify-between gap-4 p-4 sm:col-start-2 md:gap-6 md:p-6">
-          <div className="flex w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between gap-4">
             <ArrowHeader1
               title={
                 filteredCharacter.firstName + ' ' + filteredCharacter.lastName
               }
             />
-
-            <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
+            {!mobile && (
+              <div className="flex grow items-center justify-start gap-1">
+                {filteredCharacter.conditions?.map((condition) => (
+                  <Tag
+                    key={condition.id}
+                    condition={{
+                      condition: condition.condition,
+                      stacks: condition.stacks,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+            <p className="text-accent mr-8 flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
               {filteredCharacter.level}
             </p>
           </div>
+          {mobile && (
+            <div className="flex grow items-center justify-start gap-1">
+              {filteredCharacter.conditions?.map((condition) => (
+                <Tag
+                  key={condition.id}
+                  condition={{
+                    condition: condition.condition,
+                    stacks: condition.stacks,
+                  }}
+                />
+              ))}
+            </div>
+          )}
           <div
             className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2' : 'gap-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
           >

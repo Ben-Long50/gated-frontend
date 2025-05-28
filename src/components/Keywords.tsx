@@ -10,7 +10,6 @@ import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
-import { ItemObject } from 'src/types/global';
 import { Keyword } from 'src/types/keyword';
 import InputFieldBasic from './InputFieldBasic';
 import { useLocation } from 'react-router-dom';
@@ -19,13 +18,11 @@ const Keywords = ({
   title,
   forcedMode,
   field,
-  toggleFormLink,
   keywordType,
 }: {
   title?: string;
   forcedMode?: string;
   field?: FieldApi;
-  toggleFormLink?: (item: ItemObject) => void;
   keywordType?:
     | 'weapon'
     | 'armor'
