@@ -13,12 +13,8 @@ const useCreateCharacterConditionMutation = (
     },
     onSuccess: () => {
       toggleConditionModal();
-      queryClient.invalidateQueries({
-        queryKey: ['character', characterId],
-      });
       return queryClient.invalidateQueries({
-        queryKey: ['characters'],
-        exact: false,
+        queryKey: ['character', characterId],
       });
     },
     throwOnError: false,

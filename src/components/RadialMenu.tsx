@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import Icon from '@mdi/react';
 
 const RadialMenu = ({
   className,
@@ -54,16 +55,17 @@ const RadialMenu = ({
 
   return (
     <div className={`${className}`}>
-      <BtnIcon
-        active={true}
-        path={mdiDotsHorizontal}
+      <button
+        className="group p-2"
         onClick={() => {
           setMenuVisibility(true);
         }}
-        onMouseDown={() => {
-          setMenuVisibility(true);
-        }}
-      />
+      >
+        <Icon
+          className="text-secondary group-hover:text-accent size-8"
+          path={mdiDotsHorizontal}
+        />
+      </button>
       <div
         ref={menuRef}
         className={`${menuVisibility ? 'visible opacity-100' : 'invisible opacity-0'} timing pointer-events-none absolute left-1/2 top-1/2 grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center place-items-center rounded-full shadow-md shadow-black`}
@@ -95,10 +97,10 @@ const RadialMenu = ({
                 e.stopPropagation();
                 childOnClick(e);
               }}
-              onMouseUp={(e) => {
-                e.stopPropagation();
-                childOnClick(e);
-              }}
+              // onMouseUp={(e) => {
+              //   e.stopPropagation();
+              //   childOnClick(e);
+              // }}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >

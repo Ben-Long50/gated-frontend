@@ -2,7 +2,6 @@ import { useContext, useRef } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { LayoutContext } from '../contexts/LayoutContext';
-import { Link } from 'react-router-dom';
 import WardIcon from './icons/WardIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import EvasionIcon from './icons/EvasionIcon';
@@ -12,23 +11,12 @@ import { Character } from 'src/types/character';
 import ArrowHeader1 from './ArrowHeader2';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
-import CharacterIcon from './icons/CharacterIcon';
-import EquipmentIcon from './icons/EquipmentIcon';
-import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
-import RadialMenu from './RadialMenu';
 import Tag from './Tag';
-import ConditionIcon from './icons/ConditionIcon';
-import ConditionLinkField from './form_fields/ConditionLinkField';
 import CharacterMenu from './CharacterMenu';
+import CharacterStatBars from './CharacterStatBars';
 
-const CharacterCard = ({
-  character,
-  path,
-}: {
-  character: Character;
-  path?: string;
-}) => {
+const CharacterCard = ({ character }: { character: Character }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { mobile } = useContext(LayoutContext);
 
@@ -65,7 +53,7 @@ const CharacterCard = ({
               }
             />
             {!mobile && (
-              <div className="flex grow items-center justify-start gap-1">
+              <div className="flex grow flex-wrap items-center justify-start gap-1">
                 {filteredCharacter.conditions?.map((condition) => (
                   <Tag
                     key={condition.id}
@@ -77,12 +65,12 @@ const CharacterCard = ({
                 ))}
               </div>
             )}
-            <p className="text-accent mr-8 flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
+            <p className="text-accent mr-6 flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
               {filteredCharacter.level}
             </p>
           </div>
           {mobile && (
-            <div className="flex grow items-center justify-start gap-1">
+            <div className="flex grow flex-wrap items-center justify-start gap-1">
               {filteredCharacter.conditions?.map((condition) => (
                 <Tag
                   key={condition.id}
@@ -97,7 +85,7 @@ const CharacterCard = ({
           <div
             className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2' : 'gap-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
           >
-            <StatBars
+            <CharacterStatBars
               stats={{
                 maxHealth: filteredCharacter.stats.maxHealth,
                 maxSanity: filteredCharacter.stats.maxSanity,
@@ -105,6 +93,7 @@ const CharacterCard = ({
                 currentSanity: filteredCharacter.stats.currentSanity,
               }}
               cardWidth={cardRef.current?.offsetWidth}
+              characterId={character.id}
             />
           </div>
           <div

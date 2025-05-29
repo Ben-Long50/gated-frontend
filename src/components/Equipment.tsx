@@ -30,6 +30,7 @@ import ItemCardMobile from './ItemCardMobile';
 import EquipmentIcon from './icons/EquipmentIcon';
 import CharacterIcon from './icons/CharacterIcon';
 import useItemStats from 'src/hooks/useItemStats';
+import CharacterStatBars from './CharacterStatBars';
 
 const Equipment = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -151,7 +152,7 @@ const Equipment = () => {
           ref={cardRef}
           className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} col-span-1 grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
         >
-          <StatBars
+          <CharacterStatBars
             cardWidth={cardRef.current?.offsetWidth}
             stats={{
               maxHealth: filteredCharacter.stats.maxHealth,
@@ -163,6 +164,7 @@ const Equipment = () => {
               weight: filteredCharacter.stats.weight,
               maxWeight: filteredCharacter.stats.maxWeight,
             }}
+            characterId={character.id}
           />
         </div>
       </div>

@@ -21,6 +21,7 @@ import { Faction } from 'src/types/faction';
 import BtnRect from './buttons/BtnRect';
 import useJoinCampaignMutation from '../hooks/useJoinCampaignMutation/useJoinCampaignMutation';
 import ArrowHeader3 from './ArrowHeader3';
+import useCampaignCharactersQuery from 'src/hooks/useCampaignCharactersQuery/useCampaignCharactersQuery';
 
 const Campaign = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -30,26 +31,26 @@ const Campaign = () => {
 
   const {
     data: campaign,
-    isLoading,
-    isPending,
+    isLoading: campaignLoading,
     isError,
   } = useCampaignQuery(apiUrl, Number(campaignId));
 
-  const playerCharacters =
-    campaign?.characters.filter(
-      (character: Character) => character.playerCharacter === true,
-    ) || [];
-
-  const nonPlayerCharacters =
-    campaign?.characters.filter(
-      (character: Character) => character.playerCharacter === false,
-    ) || [];
+  const {
+    playerCharacters,
+    nonPlayerCharacters,
+    isLoading: charactersLoading,
+  } = useCampaignCharactersQuery(
+    apiUrl,
+    campaign?.characters.map((character) => character.id) || [],
+  );
 
   const joinCampaign = useJoinCampaignMutation(apiUrl, Number(campaignId));
 
   const pendingIds = campaign?.pendingPlayers.map((player: User) => player.id);
 
-  if (isLoading || isPending) return <Loading />;
+  const isLoading = campaignLoading || charactersLoading;
+
+  if (isLoading) return <Loading />;
 
   if (isError) {
     throw new Error('Failed to load campaign info');
@@ -188,24 +189,24 @@ const Campaign = () => {
           </ThemeContainer>
           <Divider className="col-span-2" />
           <div className="col-span-2 flex flex-col items-start gap-8">
-            {playerCharacters.length > 0 && (
+            {playerCharacters?.length > 0 && (
               <>
                 <ArrowHeader2 title="Player Characters" />
-                {playerCharacters.map((character: Character) => (
+                {playerCharacters?.map((character: Character) => (
                   <CharacterCard
-                    key={character.id}
+                    key={character?.id}
                     character={character}
                     path={`characters`}
                   />
                 ))}
               </>
             )}
-            {playerCharacters.length > 0 && (
+            {playerCharacters?.length > 0 && (
               <>
                 <ArrowHeader2 title="Non-player Characters" />
-                {nonPlayerCharacters.map((character: Character) => (
+                {nonPlayerCharacters?.map((character: Character) => (
                   <CharacterCard
-                    key={character.id}
+                    key={character?.id}
                     character={character}
                     path={`characters`}
                   />

@@ -25,6 +25,7 @@ import BtnAuth from './buttons/BtnAuth';
 import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
 import CharacterPicture from './CharacterPicture';
+import CharacterStatBars from './CharacterStatBars';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -184,7 +185,7 @@ const CharacterSheet = () => {
         ref={cardRef}
         className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
       >
-        <StatBars
+        <CharacterStatBars
           cardWidth={cardRef.current?.offsetWidth}
           stats={{
             maxHealth: filteredCharacter.stats.maxHealth,
@@ -196,6 +197,7 @@ const CharacterSheet = () => {
             weight: filteredCharacter.stats.weight,
             maxWeight: filteredCharacter.stats.maxWeight,
           }}
+          characterId={character.id}
         />
       </div>
       <div className="flex flex-col gap-8">

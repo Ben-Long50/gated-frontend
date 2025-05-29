@@ -13,13 +13,12 @@ const CharacterMenu = ({ character }: { character: Character }) => {
   const location = useLocation();
   const parts = location.pathname.split('/');
 
-  console.log(parts);
-
   const toggleConditionModal = () => {
     setConditionModal(!conditionModal);
   };
+
   return (
-    <RadialMenu className="absolute right-2 top-2 z-20" radius={80}>
+    <RadialMenu className="absolute right-1 top-0 z-20" radius={80}>
       <div onClick={() => toggleConditionModal()}>
         <ConditionIcon className="text-inherit group-hover:scale-125" />
         <ConditionLinkField
