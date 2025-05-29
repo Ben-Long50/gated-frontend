@@ -26,19 +26,14 @@ const useInventory = (inventory: CharacterInventory) => {
             augmentations: items?.filter(
               (item) => item?.itemType === 'augmentation',
             ),
-            consumables: items?.filter(
-              (item) => item?.itemType === 'consumable',
-            ),
-            reusables: items?.filter((item) => item?.itemType === 'reusable'),
             vehicles: items?.filter((item) => item?.itemType === 'vehicle'),
             drones: items?.filter((item) => item?.itemType === 'drone'),
             modifications: items?.filter(
               (item) => item?.itemType === 'modification',
             ),
-            items: items?.filter(
-              (item) =>
-                item?.itemType === 'reusable' ||
-                item?.itemType === 'consumable',
+            reusables: items?.filter((item) => item?.itemType === 'reusable'),
+            consumables: items?.filter(
+              (item) => item?.itemType === 'consumable',
             ),
             actions: items?.flatMap((item) => item?.itemLinkReference?.actions),
           }
@@ -60,14 +55,6 @@ const useInventory = (inventory: CharacterInventory) => {
               (item) =>
                 item?.itemType === 'augmentation' && item?.equipped === true,
             ),
-            consumables: items?.filter(
-              (item) =>
-                item?.itemType === 'consumable' && item?.equipped === true,
-            ),
-            reusables: items?.filter(
-              (item) =>
-                item?.itemType === 'reusable' && item?.equipped === true,
-            ),
             vehicles: items?.filter(
               (item) => item?.itemType === 'vehicle' && item?.equipped === true,
             ),
@@ -78,11 +65,13 @@ const useInventory = (inventory: CharacterInventory) => {
               (item) =>
                 item?.itemType === 'modification' && item?.equipped === true,
             ),
-            items: items?.filter(
+            reusables: items?.filter(
               (item) =>
-                (item?.itemType === 'reusable' ||
-                  item?.itemType === 'consumable') &&
-                item?.equipped === true,
+                item?.itemType === 'reusable' && item?.equipped === true,
+            ),
+            consumables: items?.filter(
+              (item) =>
+                item?.itemType === 'consumable' && item?.equipped === true,
             ),
           }
         : null,

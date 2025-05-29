@@ -61,7 +61,7 @@ const ItemCard = ({
   return (
     <ThemeContainer
       chamfer="medium"
-      className="mb-auto w-full"
+      className="w-full"
       borderColor={accentPrimary}
     >
       <Link

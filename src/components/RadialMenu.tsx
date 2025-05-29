@@ -20,6 +20,10 @@ const RadialMenu = ({
   const [menuVisibility, setMenuVisibility] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
+  const toggleMenuVisibility = () => {
+    setMenuVisibility(!menuVisibility);
+  };
+
   const menuRef = useRef(null);
   const iconRef = useRef(null);
 
@@ -62,7 +66,7 @@ const RadialMenu = ({
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          setMenuVisibility(true);
+          toggleMenuVisibility();
         }}
       />
       <div

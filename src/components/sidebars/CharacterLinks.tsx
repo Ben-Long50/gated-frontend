@@ -36,16 +36,6 @@ const CharacterLinks = ({
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Player characters"
-          path="characters/playerCharacters"
-          setSidebarVisibility={setSidebarVisibility}
-        />
-        <SubLinkSidebar
-          title="Non-player characters"
-          path="characters/nonPlayerCharacters"
-          setSidebarVisibility={setSidebarVisibility}
-        />
-        <SubLinkSidebar
           title="Create new character"
           path="characters/create"
           setSidebarVisibility={setSidebarVisibility}
@@ -129,18 +119,13 @@ const CharacterLinks = ({
         </LinkSublistSidebar>
         <LinkSublistSidebar title="Items">
           <SubLinkSidebar
-            title="All Items"
-            path={`characters/${character?.id}/inventory/items`}
+            title="Reusable Items"
+            path={`characters/${character?.id}/inventory/reusables`}
             setSidebarVisibility={setSidebarVisibility}
           />
           <SubLinkSidebar
-            title="Reusables"
-            path={`characters/${character?.id}/inventory/items?include=reusable`}
-            setSidebarVisibility={setSidebarVisibility}
-          />
-          <SubLinkSidebar
-            title="Consumables"
-            path={`characters/${character?.id}/inventory/items?include=consumable`}
+            title="Consumable Items"
+            path={`characters/${character?.id}/inventory/consumables`}
             setSidebarVisibility={setSidebarVisibility}
           />
         </LinkSublistSidebar>

@@ -57,7 +57,12 @@ const CharacterRoutes = () => {
             <Route path=":cyberneticId" element={<ItemPageWrapper />} />
             <Route path=":cyberneticId/modify" element={<ItemModifyForm />} />
           </Route>
-          <Route path="items">
+          <Route path="reusables">
+            <Route index element={<Inventory />} />
+            <Route path=":itemId" element={<ItemPageWrapper />} />
+            <Route path=":itemId/modify" element={<ItemModifyForm />} />
+          </Route>
+          <Route path="consumables">
             <Route index element={<Inventory />} />
             <Route path=":itemId" element={<ItemPageWrapper />} />
             <Route path=":itemId/modify" element={<ItemModifyForm />} />

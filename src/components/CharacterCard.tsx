@@ -22,7 +22,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
 
   const cardRef = useRef(null);
 
-  const filteredCharacter = useCharacter(character);
+  const { filteredCharacter } = useCharacter(character);
 
   return (
     <ThemeContainer

@@ -86,7 +86,8 @@ interface SortedInventory {
   augmentations: Item[];
   vehicles: Item[];
   drones: Item[];
-  items: Item[];
+  reusables: Item[];
+  consumables: Item[];
 }
 
 interface CartItemReference {

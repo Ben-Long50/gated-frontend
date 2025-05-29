@@ -42,7 +42,11 @@ const useItemStats = (items: Item[] | null) => {
               ?.map((stats) =>
                 Object.entries(stats).reduce((sum, [stat, value]) => {
                   if (gradePointMap[stat]) {
-                    return sum + gradePointMap[stat](value);
+                    let totalGpCost = 0;
+                    for (value; value > 0; value--) {
+                      totalGpCost = gradePointMap[stat](value) + totalGpCost;
+                    }
+                    return sum + totalGpCost;
                   } else {
                     return sum;
                   }

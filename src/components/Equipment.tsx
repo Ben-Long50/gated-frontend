@@ -161,7 +161,7 @@ const Equipment = () => {
           />
         </div>
       </div>
-      <div className="flex w-full flex-col gap-8 lg:flex-row">
+      <div className="flex w-full flex-col justify-start gap-8 lg:flex-row">
         <div ref={activeRef} className="col-span-2 flex w-full flex-col gap-8">
           {activeItem &&
             (activeRef.current?.offsetWidth < 500 ? (
@@ -299,7 +299,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
-                {filteredCharacter.stats.injuries}
+                {filteredCharacter.stats.injuries || 0}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -310,7 +310,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
-                {filteredCharacter.stats.insanities}
+                {filteredCharacter.stats.insanities || 0}
               </p>
             </div>
             {/* {Object.keys(rollBonuses).length > 0 && (

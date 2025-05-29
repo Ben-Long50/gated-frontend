@@ -7,7 +7,7 @@ import { Item, Stats } from 'src/types/item';
 import { useMemo } from 'react';
 
 const useStats = (
-  equipment: SortedInventory,
+  equipment: SortedInventory | null,
   attributTree: Partial<AttributeTree>,
   perks?: Perk[],
 ) => {
@@ -41,21 +41,25 @@ const useStats = (
     [equipment],
   );
 
-  const itemWeight = useMemo(() => {
-    return equipment?.items?.length > 0
-      ? equipment?.items?.reduce((sum: number, item: Item) => {
-          if (item.stats.weight) {
-            return sum + item.stats.weight;
-          }
-          return sum;
-        }, 0)
-      : 0;
-  }, [equipment]);
+  const itemWeight = useMemo(
+    () =>
+      equipment?.items?.reduce((sum: number, item: Item) => {
+        if (item.stats.weight) {
+          return sum + item.stats.weight;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
+  );
 
   const armorValue = useMemo(
     () =>
       equipment?.armors?.reduce((sum: number, armor: Item) => {
-        if (armor.stats.armor) {
+        if (
+          armor.stats.armor &&
+          armor.stats.currentBlock &&
+          armor.stats.currentBlock > 0
+        ) {
           return sum + armor.stats.armor;
         }
         return sum;
@@ -66,7 +70,11 @@ const useStats = (
   const wardValue = useMemo(
     () =>
       equipment?.armors?.reduce((sum: number, armor: Item) => {
-        if (armor.stats.ward) {
+        if (
+          armor.stats.ward &&
+          armor.stats.currentBlock &&
+          armor.stats.currentBlock > 0
+        ) {
           return sum + armor.stats.ward;
         }
         return sum;

@@ -26,14 +26,14 @@ const ItemRadialMenu = ({
   };
 
   return (
-    <div className={className}>
+    <div className={`${className} group`}>
       <Icon
         path={mdiDotsHorizontal}
-        className="text-secondary hover:text-accent shrink-0"
+        className="text-secondary group-hover:text-accent shrink-0"
       />
       <RadialMenu radius={80}>
         <div onClick={() => toggleConditionModal()}>
-          <ConditionIcon className="size-8 text-inherit group-hover:scale-125" />
+          <ConditionIcon className="size-8 text-inherit" />
           <ConditionLinkField
             item={item}
             conditionModal={conditionModal}
@@ -45,7 +45,7 @@ const ItemRadialMenu = ({
             navigate(parts.includes('campaigns') ? `${item.id}` : `${item.id}`)
           }
         >
-          <WeaponIcon className="size-8 text-inherit group-hover:scale-125" />
+          <WeaponIcon className="size-8 text-inherit" />
         </div>
         <div
           onClick={() =>
@@ -54,7 +54,7 @@ const ItemRadialMenu = ({
             )
           }
         >
-          <CharacterIcon className="size-8 text-inherit group-hover:scale-125" />
+          <CharacterIcon className="size-8 text-inherit" />
         </div>
       </RadialMenu>
     </div>

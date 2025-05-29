@@ -97,7 +97,7 @@ const useCharacter = (character: Character) => {
 
   const filteredCharacter = useMemo(
     () => filterByPreferences(character),
-    [equipment, inventory, character],
+    [equipment, inventory, character, stats],
   );
 
   return {
