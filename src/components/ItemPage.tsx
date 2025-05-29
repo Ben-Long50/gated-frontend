@@ -29,6 +29,8 @@ import useItemStats from 'src/hooks/useItemStats';
 import ItemUpdateModal from './ItemUpdateModal';
 import LinkedItemCard from './LinkedItemCard';
 import LinkedActionCard from './LinkedActionCard';
+import ItemRadialMenu from './ItemRadialMenu';
+import Tag from './Tag';
 
 const ItemPage = ({
   itemId,
@@ -85,11 +87,11 @@ const ItemPage = ({
   if (isLoading) return <Loading />;
 
   if (!item) return <h1>No item found</h1>;
-  console.log(item);
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-8">
-      <div className="grid w-full grid-cols-[1fr_auto_1fr]">
+      <div className="relative grid w-full grid-cols-[1fr_auto_1fr]">
+        <ItemRadialMenu className="block" item={item} />
         <h1 className="col-start-2 text-center">{item.name}</h1>
         {mode === 'codex' && (
           <div className="col-start-3 flex items-center justify-end gap-4 self-end">
@@ -106,6 +108,11 @@ const ItemPage = ({
           />
         )}
         <div className="flex w-full flex-col gap-4">
+          <div className="flex grow flex-wrap items-center justify-start gap-1">
+            {item.conditions?.map((condition) => (
+              <Tag key={condition.id} condition={condition} />
+            ))}
+          </div>
           <div className="flex items-center justify-between">
             <ItemRarity
               className="col-span-2 place-self-start"
@@ -115,6 +122,7 @@ const ItemPage = ({
             />
             <h4>Cost {item.price ? <span>{`${item.price}p`}</span> : 'N/A'}</h4>
           </div>
+
           <div className="flex items-center justify-between">
             <ArrowHeader3 title="Power Level" />
             <h3>{powerLevel}</h3>

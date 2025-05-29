@@ -13,7 +13,7 @@ import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 import useCharacter from 'src/hooks/useCharacter';
 import Tag from './Tag';
-import CharacterMenu from './CharacterMenu';
+import CharacterRadialMenu from './CharacterRadialMenu';
 import CharacterStatBars from './CharacterStatBars';
 
 const CharacterCard = ({ character }: { character: Character }) => {
@@ -44,7 +44,10 @@ const CharacterCard = ({ character }: { character: Character }) => {
             <div className="absolute inset-0 z-10 bg-zinc-900 bg-opacity-60" />
           )}
         </div>
-        <CharacterMenu character={character} />
+        <CharacterRadialMenu
+          className="absolute right-3 top-1 size-9"
+          character={character}
+        />
         <div className="z-10 flex h-full w-full flex-col justify-between gap-4 p-4 sm:col-start-2 md:gap-6 md:p-6">
           <div className="flex w-full items-center justify-between gap-4">
             <ArrowHeader1
@@ -55,13 +58,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
             {!mobile && (
               <div className="flex grow flex-wrap items-center justify-start gap-1">
                 {filteredCharacter.conditions?.map((condition) => (
-                  <Tag
-                    key={condition.id}
-                    condition={{
-                      condition: condition.condition,
-                      stacks: condition.stacks,
-                    }}
-                  />
+                  <Tag key={condition.id} condition={condition} />
                 ))}
               </div>
             )}

@@ -7,28 +7,44 @@ import BtnRect from '../buttons/BtnRect';
 import { useContext } from 'react';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useCreateCharacterConditionMutation from 'src/hooks/useCreateCharacterConditionMutation/useCreateCharacterConditionMutation';
+import { Item } from 'src/types/item';
+import useCreateItemConditionMutation from 'src/hooks/useCreateItemConditionMutation/useCreateItemConditionMutation';
+import Loading from '../Loading';
+import { useParams } from 'react-router-dom';
 
 const ConditionLinkField = ({
   character,
+  item,
   conditionModal,
   toggleConditionModal,
 }: {
-  character: Character;
+  character?: Character;
+  item?: Item;
   conditionModal: boolean;
   toggleConditionModal: () => void;
 }) => {
   const { apiUrl } = useContext(AuthContext);
+  const { characterId } = useParams();
 
-  const createCondition = useCreateCharacterConditionMutation(
+  const createCharacterCondition = useCreateCharacterConditionMutation(
     apiUrl,
-    Number(character.id),
+    Number(character?.id),
+    toggleConditionModal,
+  );
+
+  const createItemCondition = useCreateItemConditionMutation(
+    apiUrl,
+    Number(item?.id),
+    item?.itemType,
+    Number(characterId),
     toggleConditionModal,
   );
 
   const conditionLinkForm = useForm({
     defaultValues: {
       conditions:
-        character.conditions ||
+        character?.conditions ||
+        item?.conditions ||
         ([] as { condition: Condition; stacks: number | null }[]),
     },
     onSubmit: async ({ value }) => {
@@ -36,7 +52,11 @@ const ConditionLinkField = ({
         conditionId: condition.condition.id,
         stacks: condition.stacks,
       }));
-      await createCondition.mutate(data);
+      if (item) {
+        await createItemCondition.mutate(data);
+      } else if (character) {
+        await createCharacterCondition.mutate(data);
+      }
     },
   });
 
@@ -56,7 +76,14 @@ const ConditionLinkField = ({
           conditionLinkForm.handleSubmit();
         }}
       >
-        Submit
+        {createCharacterCondition.isPaused || createItemCondition.isPending ? (
+          <Loading
+            className="group-hover:text-yellow-300 dark:text-gray-900"
+            size={1.15}
+          />
+        ) : (
+          'Submit'
+        )}
       </BtnRect>
     </Modal>
   );

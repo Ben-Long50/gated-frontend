@@ -1,4 +1,5 @@
 import { Action } from './action';
+import { ConditionReference } from './condition';
 import { Keyword } from './keyword';
 import { Picture } from './picture';
 
@@ -18,6 +19,7 @@ interface Item {
   modifiedStats?: Stats;
   keywords: { keyword: Keyword; value: number | null }[];
   modifiedKeywords: { keyword: Keyword; value: number | null }[];
+  conditions: ConditionReference[];
   itemLinkReference?: LinkReference;
   baseItemId: number | null;
   baseItem: Item | null;

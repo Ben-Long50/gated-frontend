@@ -1,3 +1,13 @@
+import { Item } from './item';
+
+export interface ConditionReference {
+  condition: Condition;
+  conditionId: number;
+  itemId?: number;
+  characterId?: number;
+  stacks?: number;
+}
+
 export interface Condition {
   id: number;
   name: string;

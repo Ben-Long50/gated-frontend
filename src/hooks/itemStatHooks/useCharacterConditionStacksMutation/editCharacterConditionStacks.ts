@@ -1,24 +1,25 @@
-import handleResponse from '../handleResponse';
+import handleResponse from '../../handleResponse';
 
-const createItemCondition = async (
+const editCharacterConditionStacks = async (
   apiUrl: string,
-  itemId: number,
-  category: string,
-  formData: object,
+  conditionId: number,
+  characterId: number,
+  value: number,
 ) => {
   try {
     const response = await fetch(
-      `${apiUrl}/items/${category}/${itemId}/conditions`,
+      `${apiUrl}/characters/${characterId}/conditions/${conditionId}/stacks`,
       {
-        method: 'POST',
+        method: 'PATCH',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ value }),
       },
     );
     const data = await handleResponse(response);
+
     return data;
   } catch (error) {
     if (error instanceof Error) {
@@ -28,4 +29,4 @@ const createItemCondition = async (
   }
 };
 
-export default createItemCondition;
+export default editCharacterConditionStacks;

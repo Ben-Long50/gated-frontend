@@ -20,6 +20,7 @@ import {
 } from './ItemCardControls';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useItemStats from 'src/hooks/useItemStats';
+import ItemRadialMenu from './ItemRadialMenu';
 
 const ItemCard = ({
   item,
@@ -62,7 +63,6 @@ const ItemCard = ({
       chamfer="medium"
       className="mb-auto w-full"
       borderColor={accentPrimary}
-      overflowHidden={true}
     >
       <Link
         to={
@@ -75,7 +75,7 @@ const ItemCard = ({
               : `${item?.id}`
         }
         state={mode}
-        className={`${hover && 'bg-secondary'} timing relative flex w-full flex-col gap-8 p-4`}
+        className={`timing relative flex w-full flex-col gap-8 p-4`}
       >
         <div
           className="my-auto flex max-h-[300px] w-full gap-8"
@@ -100,11 +100,23 @@ const ItemCard = ({
             <div className="flex w-full items-start justify-between">
               <div className="flex items-center gap-4">
                 <ArrowHeader2 title={item.name} />
+                <div className="flex grow flex-wrap items-center justify-start gap-1">
+                  {item.conditions?.map((condition) => (
+                    <Tag
+                      key={condition.id}
+                      condition={{
+                        condition: condition.condition,
+                        stacks: condition.stacks,
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="flex items-start gap-4">
+              <div className="mr-10 flex items-start gap-4">
                 <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
                 {mode === 'codex' && <CartButton itemId={item?.id} />}
               </div>
+              <ItemRadialMenu className="relative size-10" item={item} />
             </div>
             <div
               className={`timing flex items-center justify-between gap-x-8 gap-y-2`}

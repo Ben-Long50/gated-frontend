@@ -1,5 +1,3 @@
-import { mdiDotsHorizontal } from '@mdi/js';
-import BtnIcon from './buttons/BtnIcon';
 import {
   Children,
   cloneElement,
@@ -9,7 +7,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import Icon from '@mdi/react';
 
 const RadialMenu = ({
   className,
@@ -24,6 +21,7 @@ const RadialMenu = ({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const menuRef = useRef(null);
+  const iconRef = useRef(null);
 
   useEffect(() => {
     const closeMenu = (e: MouseEvent) => {
@@ -51,24 +49,25 @@ const RadialMenu = ({
       ? diameter
       : diameter * Math.tan(angleInRadians) - pieGap;
 
+  const offset = iconRef.current
+    ? Math.ceil(((diameter * 4) / 13 - iconRef.current.offsetHeight) / 2)
+    : 0;
+
   const pieWidthInside = diameter * 0.05 * Math.tan(angleInRadians) - pieGap;
 
   return (
-    <div className={`${className}`}>
+    <div className={`${className} absolute inset-0`}>
       <button
-        className="group p-2"
-        onClick={() => {
+        className="group pointer-events-auto h-full w-full"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
           setMenuVisibility(true);
         }}
-      >
-        <Icon
-          className="text-secondary group-hover:text-accent size-8"
-          path={mdiDotsHorizontal}
-        />
-      </button>
+      />
       <div
         ref={menuRef}
-        className={`${menuVisibility ? 'visible opacity-100' : 'invisible opacity-0'} timing pointer-events-none absolute left-1/2 top-1/2 grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center place-items-center rounded-full shadow-md shadow-black`}
+        className={`${menuVisibility ? 'visible opacity-100' : 'invisible opacity-0'} timing bg-primary pointer-events-none absolute left-1/2 top-1/2 grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center place-items-center rounded-full`}
         style={{
           height: diameter,
           width: diameter,
@@ -85,7 +84,7 @@ const RadialMenu = ({
           return (
             <button
               key={index}
-              className="bg-tertiary timing group pointer-events-auto flex items-start justify-center pt-2.5 hover:bg-yellow-300"
+              className="bg-tertiary timing group pointer-events-auto flex items-start justify-center hover:bg-yellow-300"
               style={{
                 height: diameter / 2 - (diameter / 2) * 0.05,
                 width: pieWidthOutside,
@@ -94,20 +93,18 @@ const RadialMenu = ({
                 clipPath: `polygon(0% 0%, 100% 0%, ${(pieWidthOutside + pieWidthInside) / 2}px 100%, ${(pieWidthOutside - pieWidthInside) / 2}px 100%)`,
               }}
               onClick={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 childOnClick(e);
               }}
-              // onMouseUp={(e) => {
-              //   e.stopPropagation();
-              //   childOnClick(e);
-              // }}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <div
-                className={`${hoveredIndex === index ? 'text-black' : 'text-secondary'} row-start-1 size-8`}
+                ref={iconRef}
+                className={`${hoveredIndex === index ? 'text-black' : 'text-secondary'} size-8`}
                 style={{
-                  transform: `rotate(-${(360 / segmentCount) * index}deg)`,
+                  transform: `translateY(${offset}px) rotate(-${(360 / segmentCount) * index}deg)`,
                 }}
               >
                 {cloneElement(child, { onClick: undefined })}

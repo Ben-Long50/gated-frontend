@@ -26,6 +26,7 @@ import {
 } from './ItemCardControls';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useItemStats from 'src/hooks/useItemStats';
+import ItemRadialMenu from './ItemRadialMenu';
 
 const ItemCardMobile = ({
   item,
@@ -81,7 +82,6 @@ const ItemCardMobile = ({
         chamfer="medium"
         className="w-full"
         borderColor={accentPrimary}
-        overflowHidden={true}
       >
         <Link
           to={
@@ -91,7 +91,7 @@ const ItemCardMobile = ({
                 ? `${item.itemType}s/${item?.id}`
                 : `${item?.id}`
           }
-          className="timing hover:bg-secondary relative flex cursor-pointer flex-col gap-8"
+          className="timing relative flex cursor-pointer flex-col gap-8"
         >
           <div
             className="timing relative flex cursor-pointer flex-col gap-4 p-4"
@@ -103,14 +103,24 @@ const ItemCardMobile = ({
                 : undefined
             }
           >
-            <div className="flex h-full flex-col gap-2">
-              <div className="flex items-start justify-between gap-4">
-                <ArrowHeader2 title={item.name} />
-                <div className="flex flex-wrap items-start justify-end gap-4 gap-y-2">
-                  <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
-                  {mode === 'codex' && <CartButton itemId={item?.id} />}
-                </div>
+            <div className="flex items-start justify-between gap-4">
+              <ArrowHeader2 title={item.name} />
+              <div className="mr-10 flex flex-wrap items-start justify-end gap-4 gap-y-2">
+                <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
+                {mode === 'codex' && <CartButton itemId={item?.id} />}
               </div>
+              <ItemRadialMenu className="right-0 top-0" item={item} />
+            </div>
+            <div className="flex grow flex-wrap items-center justify-start gap-1">
+              {item.conditions?.map((condition) => (
+                <Tag
+                  key={condition.id}
+                  condition={{
+                    condition: condition.condition,
+                    stacks: condition.stacks,
+                  }}
+                />
+              ))}
             </div>
             <div className="flex w-full items-center justify-between">
               {item?.keywords && item.keywords.length > 0 && (
