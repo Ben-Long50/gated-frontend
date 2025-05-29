@@ -1,92 +1,96 @@
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { WeaponWithKeywords } from 'src/types/weapon';
-import { ArmorWithKeywords } from 'src/types/armor';
 import { Modifier } from 'src/types/modifier';
 import useAttributeTree from './useAttributeTree';
 import { AttributeTree } from 'src/types/attributeTree';
 import { Perk } from 'src/types/perk';
-import useActions from './useActions';
-import useEquipment from './useEquipment';
-import { CharacterInventory } from 'src/types/character';
-import { Item } from 'src/types/item';
+import { SortedInventory } from 'src/types/character';
+import { Item, Stats } from 'src/types/item';
+import { useMemo } from 'react';
 
 const useStats = (
-  inventory: Partial<CharacterInventory>,
+  equipment: SortedInventory | null,
   attributTree: Partial<AttributeTree>,
   perks?: Perk[],
 ) => {
   const tree = useAttributeTree(attributTree);
 
-  const actions = useActions();
-
-  const { equippedWeapons, equippedArmor, equippedCybernetics, equippedItems } =
-    useEquipment(inventory);
-
-  const weaponWeight = equippedWeapons?.reduce(
-    (sum: number, weapon: WeaponWithKeywords) => {
-      if (weapon.stats.weight) {
-        return sum + weapon.stats.weight;
-      }
-      return sum;
-    },
-    0,
+  const weaponWeight = useMemo(
+    () =>
+      equipment?.weapons?.reduce((sum: number, weapon: Item) => {
+        if (weapon.stats.weight) {
+          return sum + weapon.stats.weight;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
   );
 
-  const armorWeight = equippedArmor?.reduce(
-    (sum: number, armor: ArmorWithKeywords) => {
-      if (
-        armor.stats.weight &&
-        armor.stats.currentPower !== null &&
-        armor.stats.currentPower === 0
-      ) {
-        return sum + armor.stats.weight;
-      } else if (armor.stats.weight && !armor.stats.power) {
-        return sum + armor.stats.weight;
-      }
-      return sum;
-    },
-    0,
+  const armorWeight = useMemo(
+    () =>
+      equipment?.armors?.reduce((sum: number, armor: Item) => {
+        if (
+          armor.stats.weight &&
+          armor.stats.currentPower !== null &&
+          armor.stats.currentPower === 0
+        ) {
+          return sum + armor.stats.weight;
+        } else if (armor.stats.weight && !armor.stats.power) {
+          return sum + armor.stats.weight;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
   );
 
-  const itemWeight = equippedItems?.reduce((sum: number, item: Item) => {
-    if (item.stats.currentStacks && item.stats.weight) {
-      return sum + item.stats.currentStacks * item.stats.weight;
-    } else if (item.stats.currentStacks === 0) {
-      return sum;
-    } else if (item.stats.weight) {
-      return sum + item.stats.weight;
-    }
-    return sum;
-  }, 0);
-
-  const armorValue = equippedArmor?.reduce(
-    (sum: number, armor: ArmorWithKeywords) => {
-      if (armor.stats.armor) {
-        return sum + armor.stats.armor;
-      }
-      return sum;
-    },
-    0,
+  const itemWeight = useMemo(
+    () =>
+      equipment?.items?.reduce((sum: number, item: Item) => {
+        if (item.stats.weight) {
+          return sum + item.stats.weight;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
   );
 
-  const wardValue = equippedArmor?.reduce(
-    (sum: number, armor: ArmorWithKeywords) => {
-      if (armor.stats.ward) {
-        return sum + armor.stats.ward;
-      }
-      return sum;
-    },
-    0,
+  const armorValue = useMemo(
+    () =>
+      equipment?.armors?.reduce((sum: number, armor: Item) => {
+        if (
+          armor.stats.armor &&
+          armor.stats.currentBlock &&
+          armor.stats.currentBlock > 0
+        ) {
+          return sum + armor.stats.armor;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
   );
 
-  const equippedCyber = equippedCybernetics?.reduce(
-    (sum: number, cybernetic: CyberneticWithKeywords) => {
-      if (cybernetic.stats.cyber) {
-        return sum + cybernetic.stats.cyber;
-      }
-      return sum;
-    },
-    0,
+  const wardValue = useMemo(
+    () =>
+      equipment?.armors?.reduce((sum: number, armor: Item) => {
+        if (
+          armor.stats.ward &&
+          armor.stats.currentBlock &&
+          armor.stats.currentBlock > 0
+        ) {
+          return sum + armor.stats.ward;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
+  );
+
+  const equippedCyber = useMemo(
+    () =>
+      equipment?.augmentations?.reduce((sum: number, cybernetic: Item) => {
+        if (cybernetic.stats.cyber) {
+          return sum + cybernetic.stats.cyber;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
   );
 
   const stats = {
@@ -130,6 +134,8 @@ const useStats = (
   const calculateBonus = (modifier: Modifier) => {
     const bonusValue = getBonusValue(modifier);
 
+    const stat = modifier.stat as keyof Stats;
+
     if (modifier.type === 'stat') {
       const currentValue = stats[modifier.stat] || 0;
 
@@ -159,21 +165,13 @@ const useStats = (
     }
   };
 
-  equippedCybernetics?.forEach((cybernetic: CyberneticWithKeywords) => {
-    if (!cybernetic.modifiers) return;
+  // equipment?.actions.forEach((action: Action) => {
+  //   if (!action.modifiers) return;
 
-    cybernetic.modifiers.forEach((modifier: Modifier) => {
-      calculateBonus(modifier);
-    });
-  });
-
-  equippedItems?.forEach((item: Item) => {
-    if (!item.modifiers) return;
-
-    item.modifiers?.forEach((modifier: Modifier) => {
-      calculateBonus(modifier);
-    });
-  });
+  //   action.modifiers?.forEach((modifier: Modifier) => {
+  //     calculateBonus(modifier);
+  //   });
+  // });
 
   perks?.forEach((perk) => {
     if (!perk.modifiers) return;
@@ -186,8 +184,6 @@ const useStats = (
   return {
     stats,
     rollBonuses,
-    isLoading: actions.isLoading,
-    isPending: actions.isPending,
   };
 };
 

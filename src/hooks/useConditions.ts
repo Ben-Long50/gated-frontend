@@ -3,7 +3,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import useConditionsQuery from './useConditionsQuery/useActionsQuery';
 import { Condition } from 'src/types/condition';
 
-const useConditions = () => {
+const useConditions = (conditionList?: Condition[]) => {
   const { apiUrl } = useContext(AuthContext);
 
   const { data: conditions, isLoading, isPending } = useConditionsQuery(apiUrl);
@@ -11,14 +11,16 @@ const useConditions = () => {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('');
 
-  const filteredConditions: Condition[] =
+  const list = conditionList || conditions;
+
+  const filteredConditions =
     category.length > 0
-      ? conditions?.filter(
+      ? list?.filter(
           (condition: Condition) =>
             condition.conditionType === category &&
             condition.name.toLowerCase().includes(query.toLowerCase()),
         )
-      : (conditions?.filter((condition: Condition) =>
+      : (list?.filter((condition: Condition) =>
           condition.name.toLowerCase().includes(query.toLowerCase()),
         ) ?? []);
 

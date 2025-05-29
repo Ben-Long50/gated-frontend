@@ -8,31 +8,33 @@ const useActions = () => {
 
   const { data: actions, isLoading, isPending } = useActionsQuery(apiUrl);
 
+  const list = actions;
+
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
 
-  const filteredActions: Action[] =
+  const filteredActions =
     category.length > 0
       ? subCategory.length > 0
-        ? actions?.filter(
+        ? list?.filter(
             (action: Action) =>
               action.actionType === category &&
               action.actionSubtypes.includes(subCategory) &&
               action.name.toLowerCase().includes(query.toLowerCase()),
           )
-        : actions?.filter(
+        : list?.filter(
             (action: Action) =>
               action.actionType === category &&
               action.name.toLowerCase().includes(query.toLowerCase()),
           )
       : subCategory.length > 0
-        ? actions?.filter(
+        ? list?.filter(
             (action: Action) =>
               action.actionSubtypes.includes(subCategory) &&
               action.name.toLowerCase().includes(query.toLowerCase()),
           )
-        : (actions?.filter((action: Action) =>
+        : (list?.filter((action: Action) =>
             action.name.toLowerCase().includes(query.toLowerCase()),
           ) ?? []);
 

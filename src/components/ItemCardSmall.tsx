@@ -65,7 +65,7 @@ const ItemCardSmall = ({
           >
             <motion.div
               ref={detailRef}
-              className="flex flex-col gap-4"
+              className="flex flex-col gap-4 pt-4"
               initial={{ marginTop: -detailHeight - 4 }}
               animate={{
                 marginTop: detailsOpen || expanded ? 0 : -detailHeight - 4,

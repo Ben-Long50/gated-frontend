@@ -2,82 +2,95 @@ import { useContext, useRef } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { LayoutContext } from '../contexts/LayoutContext';
-import { Link } from 'react-router-dom';
 import WardIcon from './icons/WardIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import EvasionIcon from './icons/EvasionIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import CloudinaryImage from './CloudinaryImage';
-import useStats from '../hooks/useStats';
 import { Character } from 'src/types/character';
 import ArrowHeader1 from './ArrowHeader2';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
-import CharacterIcon from './icons/CharacterIcon';
-import EquipmentIcon from './icons/EquipmentIcon';
-import StatBars from './StatBars';
+import useCharacter from 'src/hooks/useCharacter';
+import Tag from './Tag';
+import CharacterRadialMenu from './CharacterRadialMenu';
+import CharacterStatBars from './CharacterStatBars';
 
-const CharacterCard = ({
-  character,
-  path,
-}: {
-  character: Character;
-  path?: string;
-}) => {
+const CharacterCard = ({ character }: { character: Character }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { mobile } = useContext(LayoutContext);
 
   const cardRef = useRef(null);
 
-  const { stats } = useStats(
-    character?.characterInventory,
-    character?.attributes,
-    character?.perks,
-  );
+  const { filteredCharacter } = useCharacter(character);
 
   return (
     <ThemeContainer
       className="w-full"
-      chamfer="large"
+      chamfer="medium"
       borderColor={accentPrimary}
-      overflowHidden={true}
     >
-      <div
-        ref={cardRef}
-        className="relative grid grid-flow-row sm:grid-flow-col sm:grid-cols-[1fr_3fr] md:flex-row"
-      >
-        <div className="absolute left-0 top-0 h-full w-[425px]">
+      <div ref={cardRef} className="relative grid sm:grid-cols-[1fr_4fr]">
+        <div className="absolute left-0 top-0 flex h-full w-[375px] items-center overflow-hidden rounded-bl clip-6">
           <CloudinaryImage
-            className="bg-primary absolute aspect-square w-full"
             url={character.picture?.imageUrl}
             alt={`${character.firstName} ${character.lastName}'s image`}
+            position={character.picture?.position}
+            style={{
+              maskImage: 'linear-gradient(to right, black 0%, transparent 90%',
+            }}
           />
           {mobile && (
             <div className="absolute inset-0 z-10 bg-zinc-900 bg-opacity-60" />
           )}
-          <div className="absolute inset-0 h-full w-full bg-gradient-to-l from-zinc-900 to-transparent" />
         </div>
-
-        <div className="z-10 col-start-2 flex h-full w-full flex-col justify-between gap-4 p-6 md:gap-6">
-          <div className="flex w-full items-center justify-between">
+        <CharacterRadialMenu
+          className="absolute right-3 top-1 size-9"
+          character={character}
+        />
+        <div className="z-10 flex h-full w-full flex-col justify-between gap-4 p-4 sm:col-start-2 md:gap-6 md:p-6">
+          <div className="flex w-full items-center justify-between gap-4">
             <ArrowHeader1
-              title={character.firstName + ' ' + character.lastName}
+              title={
+                filteredCharacter.firstName + ' ' + filteredCharacter.lastName
+              }
             />
-
-            <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
-              {character.level}
+            {!mobile && (
+              <div className="flex grow flex-wrap items-center justify-start gap-1">
+                {filteredCharacter.conditions?.map((condition) => (
+                  <Tag key={condition.id} condition={condition} />
+                ))}
+              </div>
+            )}
+            <p className="text-accent mr-6 flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
+              {filteredCharacter.level}
             </p>
           </div>
+          {mobile && (
+            <div className="flex grow flex-wrap items-center justify-start gap-1">
+              {filteredCharacter.conditions?.map((condition) => (
+                <Tag
+                  key={condition.id}
+                  condition={{
+                    condition: condition.condition,
+                    stacks: condition.stacks,
+                  }}
+                />
+              ))}
+            </div>
+          )}
           <div
-            className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
+            className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2' : 'gap-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
           >
-            <StatBars
+            <CharacterStatBars
               stats={{
-                maxHealth: stats.maxHealth,
-                maxSanity: stats.maxSanity,
-                ...character.stats,
+                maxHealth: filteredCharacter.stats.maxHealth,
+                maxSanity: filteredCharacter.stats.maxSanity,
+                currentHealth: filteredCharacter.stats.currentHealth,
+                currentSanity: filteredCharacter.stats.currentSanity,
               }}
               cardWidth={cardRef.current?.offsetWidth}
+              characterId={character.id}
             />
           </div>
           <div
@@ -95,7 +108,7 @@ const CharacterCard = ({
                 <div className="flex items-center justify-center gap-2">
                   <SpeedIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {stats.speed}
+                    {filteredCharacter.stats.speed}
                   </p>
                 </div>
               </div>
@@ -108,7 +121,7 @@ const CharacterCard = ({
                 <div className="flex items-center justify-center gap-2">
                   <EvasionIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {stats.evasion}
+                    {filteredCharacter.stats.evasion}
                   </p>
                 </div>
               </div>
@@ -121,7 +134,7 @@ const CharacterCard = ({
                 <div className="flex items-center justify-center gap-2">
                   <ArmorIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {stats.armor}
+                    {filteredCharacter.stats.armor}
                   </p>
                 </div>
               </div>
@@ -134,12 +147,11 @@ const CharacterCard = ({
                 <div className="flex items-center justify-center gap-2">
                   <WardIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {stats.ward}
+                    {filteredCharacter.stats.ward}
                   </p>
                 </div>
               </div>
             </div>
-
             <div className="ml-auto flex items-end justify-end gap-6">
               <div className="flex flex-col items-center justify-between gap-2">
                 {!mobile && (
@@ -150,7 +162,7 @@ const CharacterCard = ({
                 <div className="flex items-center justify-center gap-2">
                   <InjuryIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {character.stats?.injuries}
+                    {filteredCharacter.stats.injuries || 0}
                   </p>
                 </div>
               </div>
@@ -163,37 +175,9 @@ const CharacterCard = ({
                 <div className="flex items-center justify-center gap-2">
                   <InsanityIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {character.stats?.insanities}
+                    {filteredCharacter.stats.insanities || 0}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <Link
-                  className="ml-auto mt-auto self-end"
-                  to={path ? `${path}/${character.id}` : `${character.id}`}
-                >
-                  <button
-                    type="button"
-                    className="hover:bg-tertiary timing group rounded-full bg-yellow-300 p-2 shadow-md shadow-black hover:ring-1 hover:ring-inset hover:ring-yellow-300"
-                  >
-                    <CharacterIcon className="group-hover:text-accent size-8 shrink-0 text-zinc-950" />
-                  </button>
-                </Link>
-                <Link
-                  className="ml-auto mt-auto self-end"
-                  to={
-                    path
-                      ? `${path}/${character.id}/equipment`
-                      : `${character.id}/equipment`
-                  }
-                >
-                  <button
-                    type="button"
-                    className="hover:bg-tertiary timing group rounded-full bg-yellow-300 p-2 shadow-md shadow-black hover:ring-1 hover:ring-inset hover:ring-yellow-300"
-                  >
-                    <EquipmentIcon className="group-hover:text-accent size-8 shrink-0 text-zinc-950" />
-                  </button>
-                </Link>
               </div>
             </div>
           </div>

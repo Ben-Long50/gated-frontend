@@ -21,13 +21,9 @@ const PatchNotes = () => {
   return (
     <div className="flex w-full max-w-4xl flex-col gap-8">
       <div className="flex w-full items-center justify-between">
-        <p>Patch notes: EDO version - {patchNotes[index]?.version}</p>
+        <p>EDO - v{patchNotes[index]?.version}</p>
         <p>{format(patchNotes[index]?.createdAt, 'PP')}</p>
       </div>
-      <h1 className="text-center">
-        {patchNotes[index]?.title[0].toUpperCase() +
-          patchNotes[index]?.title.slice(1)}
-      </h1>
       <div
         className="whitespace-pre-wrap"
         dangerouslySetInnerHTML={{

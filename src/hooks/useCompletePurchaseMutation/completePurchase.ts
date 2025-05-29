@@ -1,7 +1,6 @@
 import handleResponse from '../handleResponse';
 
 const completePurchase = async (
-  formData: object,
   apiUrl: string,
   characterId: number,
   inventoryId: number,
@@ -12,10 +11,6 @@ const completePurchase = async (
       {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...formData }),
       },
     );
     const data = await handleResponse(response);

@@ -1,7 +1,6 @@
-import { mdiClose } from '@mdi/js';
-import Icon from '@mdi/react';
 import { ReactNode, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 
 const RootPortal = ({
   modalOpen,
@@ -9,21 +8,27 @@ const RootPortal = ({
   children,
 }: {
   modalOpen: boolean;
-  toggleModal: () => void;
+  toggleModal?: () => void;
   children?: ReactNode;
 }) => {
   const portalRoot = document.getElementById('portal-root');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handlePopstate = (e) => {
       if (modalOpen) {
         e.preventDefault();
-        toggleModal();
+        if (toggleModal) {
+          toggleModal();
+        }
+        if (import.meta.env.MODE === 'development') {
+          navigate(-1);
+        }
       }
     };
 
     if (modalOpen) {
-      history.pushState(null, null, window.location.href);
+      navigate(window.location.pathname, { replace: false });
     }
 
     window.addEventListener('popstate', handlePopstate);
@@ -35,17 +40,22 @@ const RootPortal = ({
 
   return createPortal(
     <div
-      className={`backdrop-fade absolute inset-0 z-10 bg-black bg-opacity-80 sm:p-4 md:p-8`}
-      onClick={toggleModal}
+      className={`backdrop-fade fixed inset-0 top-14 z-30 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-md sm:p-4 md:p-8`}
+      onClick={(e) => {
+        if (modalOpen) {
+          e.preventDefault();
+          if (toggleModal) {
+            toggleModal();
+          }
+          if (import.meta.env.MODE === 'development') {
+            navigate(-2);
+          } else {
+            navigate(-1);
+          }
+        }
+      }}
     >
       {children}
-      <button
-        aria-label="Close window"
-        className="text-primary absolute right-4 top-0 z-30 p-2"
-        onClick={toggleModal}
-      >
-        <Icon path={mdiClose} size={1.3} />
-      </button>
     </div>,
     portalRoot,
   );

@@ -1,3 +1,5 @@
+import { Picture } from 'src/types/picture';
+
 const ThemeBorder = ({
   borderColor,
   chamfer,
@@ -5,7 +7,7 @@ const ThemeBorder = ({
 }: {
   borderColor: string;
   chamfer: string;
-  bgImageUrl?: string;
+  bgImageUrl?: Picture;
 }) => {
   const chamferMapBorder = {
     small: 'clip-3 rounded-bl-[4px] rounded-tr-[4px]',
@@ -32,8 +34,10 @@ const ThemeBorder = ({
         style={
           bgImageUrl
             ? {
-                backgroundImage: `url(${bgImageUrl})`,
-                backgroundPosition: 'center',
+                backgroundImage: `url(${bgImageUrl.imageUrl})`,
+                backgroundPosition: bgImageUrl.position
+                  ? `${bgImageUrl.position.x}% ${bgImageUrl.position.y}%`
+                  : '50% 50%',
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
               }
@@ -42,7 +46,7 @@ const ThemeBorder = ({
       />
       {bgImageUrl && (
         <div
-          className={`${chamferMapBg[chamfer]} absolute h-full w-full bg-black bg-opacity-50`}
+          className={`${chamferMapBg[chamfer]} absolute w-full bg-black bg-opacity-50`}
         />
       )}
     </>

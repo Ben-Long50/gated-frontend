@@ -4,43 +4,61 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { useForm } from '@tanstack/react-form';
 import Loading from './Loading';
-import { FetchOptions } from 'src/types/fetchOptions';
 import useItems from '../hooks/useItems';
 import { Item } from 'src/types/item';
-import MiscItemCard, { MiscItemCardMobile } from './MiscItemCard';
 import ArrowHeader2 from './ArrowHeader2';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import ItemCard from './ItemCard';
+import ItemCardMobile from './ItemCardMobile';
+import InputSelectField from './InputSelectField';
 
 const Items = ({
   title,
-  fetchOptions,
-  mode,
+  itemList,
+  forcedMode,
+  toggleFormLink,
 }: {
-  title: string;
-  fetchOptions?: FetchOptions;
-  mode: string;
+  title?: string;
+  itemList?: Item[];
+  forcedMode?: string;
+  toggleFormLink?: (item: Item) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const state = location.state;
+  const parts = location.pathname.split('/').filter(Boolean);
+  const category = parts[parts.length - 1];
+  const mode = forcedMode || parts[parts.length - 2];
+
+  const heading = state ? state.title : title;
+
+  const include = searchParams.getAll('include');
+  const exclude = searchParams.getAll('exclude');
 
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
   );
 
-  const items = useItems(fetchOptions);
+  const items = useItems({
+    category,
+    itemList: itemList || undefined,
+    includedKeywords: include.length > 0 ? include : undefined,
+    excludedKeywords: exclude.length > 0 ? exclude : undefined,
+  });
 
   const searchForm = useForm({
     defaultValues: {
+      category: '',
       query: '',
     },
-    onSubmit: ({ value }) => {
-      if (value.query === '') {
-        items.resetList();
-      } else {
-        items.filterByQuery(value.query);
-      }
+    onSubmit: () => {
+      items.filterByCategory('');
+      items.filterByQuery('');
     },
   });
 
@@ -50,25 +68,38 @@ const Items = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-8">
-      <h1 className="text-center">{title}</h1>
+      <h1 className="text-center">{heading}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <form className="flex w-full flex-col gap-4 p-4">
-          <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
+        <div className="flex flex-col gap-4 p-4">
+          <div className="grid w-full grid-cols-2 items-center justify-between">
             <ArrowHeader2 title="Filter Options" />
+            <searchForm.Field name="category">
+              {(field) => (
+                <InputSelectField
+                  field={field}
+                  className=""
+                  label="Trait"
+                  options={items.filteredKeywords || []}
+                  onChange={() => {
+                    items.filterByCategory(field.state.value);
+                  }}
+                ></InputSelectField>
+              )}
+            </searchForm.Field>
           </div>
-          <div className="flex w-full items-center gap-4">
+          <div className="flex items-center gap-4">
             <searchForm.Field name="query">
               {(field) => (
                 <InputField
                   className="w-full"
-                  label="Search items"
+                  label={`Search ${category.charAt(0).toUpperCase() + category.slice(1)}`}
                   field={field}
                   onChange={() => {
-                    searchForm.handleSubmit();
+                    items.filterByQuery(field.state.value);
                   }}
                 />
               )}
@@ -115,16 +146,30 @@ const Items = ({
               />
             </button>
           </div>
-        </form>
+        </div>
       </ThemeContainer>
       {cardType === 'large' ? (
         items.filteredItems?.map((item: Item) => {
-          return <MiscItemCard key={item.id} item={item} mode={mode} />;
+          return (
+            <ItemCard
+              key={item.id}
+              item={item}
+              mode={mode}
+              toggleFormLink={toggleFormLink}
+            />
+          );
         })
       ) : (
         <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
           {items.filteredItems?.map((item: Item) => {
-            return <MiscItemCardMobile key={item.id} item={item} mode={mode} />;
+            return (
+              <ItemCardMobile
+                key={item.id}
+                item={item}
+                mode={mode}
+                toggleFormLink={toggleFormLink}
+              />
+            );
           })}
         </div>
       )}

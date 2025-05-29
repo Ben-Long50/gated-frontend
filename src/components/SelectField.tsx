@@ -8,12 +8,14 @@ const SelectField = ({
   onChange,
   children,
   label,
+  value,
   className,
 }: {
   field: FieldApi;
   onChange?: () => void;
   children: ReactNode;
   label: string;
+  value?: string;
   className?: string;
 }) => {
   const [borderColor, setBorderColor] = useState('transparent');
@@ -51,7 +53,7 @@ const SelectField = ({
           className={`${className} text-secondary timing focus:bg-primary h-[44px] w-full rounded-none clip-4 lg:h-[48px] ${field.state.value?.length === 0 || !field.state.value ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pr-2 pt-3 outline-none`}
           name={field.name}
           id={field.name}
-          value={field.state.value}
+          value={value || field.state.value}
           onFocus={() => {
             setFocus(true);
           }}
@@ -70,7 +72,7 @@ const SelectField = ({
         </select>
         <label
           htmlFor={field.name}
-          className={` ${field.state.meta.errors?.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-30 transform cursor-text transition-all`}
+          className={` ${field.state.meta.errors?.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-10 transform cursor-text transition-all`}
         >
           {label}
         </label>

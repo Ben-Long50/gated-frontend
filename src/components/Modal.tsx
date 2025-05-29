@@ -7,24 +7,22 @@ const Modal = ({
   children,
 }: {
   modalOpen: boolean;
-  toggleModal: () => void;
+  toggleModal?: () => void;
   children: ReactNode;
 }) => {
   if (!modalOpen) return;
 
   return (
-    <>
+    <RootPortal modalOpen={modalOpen} toggleModal={toggleModal}>
       <div
-        className={`fixed inset-0 z-20 flex items-center justify-center px-2`}
+        className="bg-primary scrollbar-primary-2 relative flex max-h-85dvh w-full max-w-5xl flex-col items-center gap-4 overflow-y-auto rounded-lg p-4 shadow-lg shadow-black sm:gap-8 sm:p-8"
         onClick={(e) => {
           e.stopPropagation();
-          toggleModal();
         }}
       >
         {children}
       </div>
-      <RootPortal modalOpen={modalOpen} toggleModal={toggleModal} />
-    </>
+    </RootPortal>
   );
 };
 

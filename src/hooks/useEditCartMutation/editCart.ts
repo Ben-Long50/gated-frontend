@@ -2,16 +2,16 @@ import handleResponse from '../handleResponse';
 
 const editCart = async (
   apiUrl: string,
+  characterId: number,
+  cartId: number,
   formData: {
-    characterId: number;
-    cartId: number;
-    category: string;
     itemId: number;
+    value: number;
   },
 ) => {
   try {
     const response = await fetch(
-      `${apiUrl}/characters/${formData.characterId}/cart/${formData.cartId}`,
+      `${apiUrl}/characters/${characterId}/cart/${cartId}`,
       {
         method: 'PATCH',
         credentials: 'include',
@@ -19,8 +19,8 @@ const editCart = async (
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          category: formData.category,
           itemId: formData.itemId,
+          value: formData.value,
         }),
       },
     );

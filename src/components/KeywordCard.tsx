@@ -25,13 +25,12 @@ const KeywordCard = ({
             className="pointer-events-auto -my-2 flex items-center gap-4"
             onClick={(e) => e.stopPropagation()}
           >
-            {mode === 'codex' &&
-              ((mode === 'codex' && user?.role === 'ADMIN') ||
-                (mode === 'codex' && user?.role === 'SUPERADMIN')) && (
-                <Link to={`/glam/codex/keywords/${keyword.id}/update`}>
-                  <button className="text-accent hover:underline">Edit</button>
-                </Link>
-              )}
+            {((mode === 'codex' && user?.role === 'ADMIN') ||
+              (mode === 'codex' && user?.role === 'SUPERADMIN')) && (
+              <Link to={`/glam/codex/keywords/${keyword.id}/update`}>
+                <button className="text-accent hover:underline">Edit</button>
+              </Link>
+            )}
           </div>
           {children && (
             <div
@@ -45,7 +44,7 @@ const KeywordCard = ({
       }
     >
       <div className="flex">
-        <Tag className="mr-auto" label={keyword.keywordType} toolTip={0} />
+        <Tag className="mr-auto" label={keyword.keywordType} />
       </div>
       <p className="text-secondary">{keyword.description}</p>
     </ItemCardSmall>

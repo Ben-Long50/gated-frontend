@@ -4,24 +4,20 @@ import deleteItem from './deleteItem';
 
 const useDeleteItemMutation = (
   apiUrl: string,
+  category: string,
   setFormMessage: (message: string) => void,
-  itemId?: string,
+  itemId: number,
 ) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
     mutationFn: () => {
-      return deleteItem(apiUrl, itemId);
+      return deleteItem(apiUrl, category, itemId);
     },
     onSuccess: () => {
-      navigate(-1);
+      navigate(-2);
       queryClient.invalidateQueries({
-        queryKey: ['item'],
-        exact: false,
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['items'],
-        exact: false,
+        queryKey: [category],
       });
       return queryClient.invalidateQueries({
         queryKey: ['activeCharacter'],

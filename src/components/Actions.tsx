@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
-import { useForm } from '@tanstack/react-form';
+import { FieldApi, useForm } from '@tanstack/react-form';
 import useActions from '../hooks/useActions';
 import ActionCard from './ActionCard';
 import Loading from './Loading';
@@ -10,9 +10,25 @@ import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
+import { ItemObject } from 'src/types/global';
+import { Action } from 'src/types/action';
+import { useLocation } from 'react-router-dom';
 
-const Actions = ({ mode }: { mode?: string }) => {
+const Actions = ({
+  title,
+  forcedMode,
+  field,
+  toggleFormLink,
+}: {
+  title?: string;
+  forcedMode?: string;
+  field?: FieldApi;
+  toggleFormLink?: (item: ItemObject) => void;
+}) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = forcedMode || parts[parts.length - 2];
 
   const actions = useActions();
 
@@ -34,14 +50,14 @@ const Actions = ({ mode }: { mode?: string }) => {
   }
 
   return (
-    <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">Actions</h1>
+    <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
+      <h1 className="text-center">{title || 'Actions'}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <form className="flex w-full flex-col gap-4 p-4">
+        <div className="flex w-full flex-col gap-4 p-4">
           <div className="grid w-full grid-cols-2 items-center justify-between gap-4 sm:grid-cols-3 sm:gap-8">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
@@ -49,7 +65,13 @@ const Actions = ({ mode }: { mode?: string }) => {
                 <InputSelectField
                   className="w-full"
                   label="Action Type"
-                  options={['', 'action', 'extendedAction', 'reaction']}
+                  options={[
+                    '',
+                    'action',
+                    'extendedAction',
+                    'reaction',
+                    'passive',
+                  ]}
                   initialValue=""
                   field={field}
                   onChange={() => {
@@ -100,7 +122,7 @@ const Actions = ({ mode }: { mode?: string }) => {
               />
             </button>
           </div>
-        </form>
+        </div>
       </ThemeContainer>
       <ThemeContainer
         chamfer="medium"
@@ -131,7 +153,23 @@ const Actions = ({ mode }: { mode?: string }) => {
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
             {actions.filteredActions.map((action) => {
               return (
-                <ActionCard key={action.name} action={action} mode={mode} />
+                <div key={action.id} className="flex items-center gap-4">
+                  <ActionCard action={action} mode={mode} />
+                  {mode === 'form' && (
+                    <input
+                      className="size-8"
+                      type="checkbox"
+                      onChange={() => {
+                        if (toggleFormLink) {
+                          toggleFormLink(action);
+                        }
+                      }}
+                      checked={field.state.value.some(
+                        (item: Action) => item.id === action.id,
+                      )}
+                    />
+                  )}
+                </div>
               );
             })}
           </div>

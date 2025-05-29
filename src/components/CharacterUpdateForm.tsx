@@ -7,9 +7,7 @@ import AttributeCard from './AttributeCard';
 import { AuthContext } from '../contexts/AuthContext';
 import { useForm, ValidationError } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
-import SelectField from './SelectField';
 import StatBar from './StatBar';
-import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';
 import Icon from '@mdi/react';
 import {
@@ -34,14 +32,16 @@ import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import useCampaignsQuery from '../hooks/useCampaignsQuery/useCampaignsQuery';
 import InputSelectField from './InputSelectField';
-import ArrowHeader3 from './ArrowHeader3';
-import { AttributeName, SkillName } from 'src/types/attributeTree';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
+import PerkLinkField from './form_fields/PerkLinkField';
+import NpcPreferenceField from './form_fields/NpcPreferenceField';
+import PictureField from './form_fields/PictureField';
+import useCharacter from 'src/hooks/useCharacter';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
+  const { statColorMap } = useContext(ThemeContext);
   const { layoutSize, mobile } = useContext(LayoutContext);
   const { characterId } = useParams();
   const [formMessage, setFormMessage] = useState('');
@@ -59,25 +59,23 @@ const CharacterUpdateForm = () => {
     data: character,
     isLoading: characterLoading,
     isPending: characterPending,
-  } = useCharacterQuery(apiUrl, characterId);
+  } = useCharacterQuery(apiUrl, Number(characterId));
 
-  const isLoading = characterLoading || campaignsLoading;
-  const isPending = characterPending || campaignsPending;
+  const {
+    filteredCharacter,
+    isLoading: inventoryLoading,
+    isPending: inventoryPending,
+  } = useCharacter(character);
 
-  const [imagePreview, setImagePreview] = useState(character?.picture.imageUrl);
+  const isLoading = characterLoading || campaignsLoading || inventoryLoading;
+  const isPending = characterPending || campaignsPending || inventoryPending;
 
-  const attributeTree = useAttributeTree(character?.attributes);
+  const attributeTree = useAttributeTree(filteredCharacter?.attributes);
   const perks = usePerks(attributeTree?.tree);
-
-  const { stats } = useStats(
-    character?.characterInventory,
-    attributeTree.tree,
-    character?.perks,
-  );
 
   const updateCharacter = useUpdateCharacterMutation(
     apiUrl,
-    characterId,
+    Number(characterId),
     setFormMessage,
   );
   const deleteCharacter = useDeleteCharacterMutation(apiUrl, characterId);
@@ -94,46 +92,53 @@ const CharacterUpdateForm = () => {
     characterUpdateForm.reset();
   };
 
-  const searchForm = useForm({
-    defaultValues: {
-      attribute: '' as AttributeName | 'general',
-      skill: '' as SkillName,
-      query: '',
-    },
-    onSubmit: ({ value }) => {
-      perks.filterPerks(value.query);
-    },
-  });
-
   const characterUpdateForm = useForm({
     defaultValues: {
-      playerCharacter: character?.playerCharacter ?? '',
-      campaignId: character?.campaign ?? null,
-      firstName: character?.firstName ?? '',
-      lastName: character?.lastName ?? '',
-      level: character?.level ?? '',
-      profits: character?.profits ?? '',
-      stats: {
-        currentHealth: character?.stats.currentHealth ?? '',
-        currentSanity: character?.stats.currentSanity ?? '',
-        injuries: character?.stats.injuries ?? '',
-        insanities: character?.stats.insanities ?? '',
+      playerCharacter: filteredCharacter?.playerCharacter ?? '',
+      campaignId: filteredCharacter?.campaign ?? null,
+      preferences: {
+        firstName: filteredCharacter?.preferences?.firstName ?? true,
+        lastName: filteredCharacter?.preferences?.lastName ?? true,
+        age: filteredCharacter?.preferences?.age ?? true,
+        height: filteredCharacter?.preferences?.height ?? true,
+        weight: filteredCharacter?.preferences?.weight ?? true,
+        sex: filteredCharacter?.preferences?.sex ?? true,
+        picture: filteredCharacter?.preferences?.picture ?? true,
+        backstory: filteredCharacter?.preferences?.backstory ?? true,
+        level: filteredCharacter?.preferences?.level ?? true,
+        profits: filteredCharacter?.preferences?.profits ?? true,
+        stats: filteredCharacter?.preferences?.stats ?? true,
+        attributes: filteredCharacter?.preferences?.attributes ?? true,
+        perks: filteredCharacter?.preferences?.perks ?? true,
+        equipment: filteredCharacter?.preferences?.equipment ?? true,
       },
-      picture: character?.picture ?? '',
-      height: character?.height ?? '',
-      weight: character?.weight ?? '',
-      age: character?.age ?? '',
-      sex: character?.sex ?? '',
-      attributes: character?.attributes ?? '',
-      perks: character?.perks.map((perk: Perk) => perk.id) ?? ([] as number[]),
+      firstName: filteredCharacter?.firstName ?? '',
+      lastName: filteredCharacter?.lastName ?? '',
+      level: filteredCharacter?.level ?? '',
+      profits: filteredCharacter?.profits ?? '',
+      stats: {
+        currentHealth: filteredCharacter?.stats.currentHealth ?? '',
+        currentSanity: filteredCharacter?.stats.currentSanity ?? '',
+        injuries: filteredCharacter?.stats.injuries ?? '',
+        insanities: filteredCharacter?.stats.insanities ?? '',
+      },
+      picture: filteredCharacter?.picture ?? '',
+      position: filteredCharacter?.picture?.position ?? { x: 50, y: 50 },
+      height: filteredCharacter?.height ?? '',
+      weight: filteredCharacter?.weight ?? '',
+      age: filteredCharacter?.age ?? '',
+      sex: filteredCharacter?.sex ?? '',
+      attributes: filteredCharacter?.attributes ?? '',
+      perks: filteredCharacter?.perks ?? ([] as Perk[]),
     },
     onSubmit: async ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
-
       const formData = new FormData();
-
       Object.entries(value).forEach(([key, val]) => {
-        if (key === 'picture') {
+        if (key === 'perks') {
+          const perkIds = val.map((perk: Perk) => perk.id) || [];
+          formData.append(key, JSON.stringify(perkIds));
+        } else if (key === 'picture') {
           if (val instanceof File) {
             formData.append(key, val);
           } else {
@@ -148,23 +153,8 @@ const CharacterUpdateForm = () => {
   });
 
   useEffect(() => {
-    characterUpdateForm.setFieldValue(
-      'attributes',
-      attributeTree.destructureTree(),
-    );
+    characterUpdateForm.setFieldValue('attributes', attributeTree.tree);
   }, [attributeTree, characterUpdateForm]);
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // Get the selected file
-
-    if (selectedFile) {
-      characterUpdateForm.setFieldValue('picture', selectedFile);
-
-      // Create a URL for the selected file to preview
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
 
   if (perks.isLoading || perks.isPending || isLoading || isPending) {
     return <Loading />;
@@ -239,54 +229,19 @@ const CharacterUpdateForm = () => {
             />
           )}
         </characterUpdateForm.Field>
+        <NpcPreferenceField form={characterUpdateForm} />
         <Divider />
         <ArrowHeader2 title="Character Information" />
-        <div className="flex w-full flex-col gap-8 sm:flex-row">
-          <ThemeContainer
-            className="mx-auto w-full max-w-sm"
-            chamfer="medium"
-            borderColor={accentPrimary}
-          >
-            {!imagePreview ? (
-              <label className="flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
-                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                  <Icon
-                    className="text-tertiary"
-                    path={mdiImagePlus}
-                    size={3}
-                  />
-                  <p className="text-tertiary font-semibold">
-                    Upload character picture
-                  </p>
-                  <p className="text-tertiary">PNG, JPG, JPEG</p>
-                </div>
-                <input
-                  id="file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
-                <img
-                  className="fade-in-bottom"
-                  src={imagePreview}
-                  alt="Preview"
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2"
-                  onClick={() => {
-                    characterUpdateForm.setFieldValue('picture', '');
-                    setImagePreview('');
-                  }}
-                >
-                  <Icon path={mdiCloseBox} size={1.5} />
-                </button>
-              </div>
-            )}
-          </ThemeContainer>
-          <div className="flex w-full flex-col gap-8 max-sm:col-span-2">
+        <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
+          <PictureField
+            form={characterUpdateForm}
+            sizeInfo={{
+              aspectRatio: '1/1',
+              maxHeight: '',
+              minHeight: '',
+            }}
+          />
+          <div className="flex w-full flex-col gap-8">
             <characterUpdateForm.Field
               name="firstName"
               validators={{
@@ -353,91 +308,57 @@ const CharacterUpdateForm = () => {
               </characterUpdateForm.Field>
               <characterUpdateForm.Field name="sex">
                 {(field) => (
-                  <SelectField type="select" label="Sex" field={field}>
-                    <option defaultValue="" disabled></option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </SelectField>
+                  <InputSelectField
+                    label="Sex"
+                    field={field}
+                    options={['male', 'female']}
+                  />
                 )}
               </characterUpdateForm.Field>
             </div>
           </div>
         </div>
         <div
-          className={`${mobile ? 'grid-cols-[0px_auto_1fr_auto_auto]' : 'grid-cols-[auto_auto_1fr_auto_auto]'} grid w-full items-center gap-4`}
+          className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2' : 'gap-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
         >
-          <characterUpdateForm.Field
-            name="stats.currentHealth"
-            validators={{
-              onChange: ({ value }) => {
-                if (value > stats.maxHealth) {
-                  return 'Cannot exceed max health';
-                } else if (value < 0) {
-                  return 'Health cannot be lower than 0';
-                }
-                return undefined;
-              },
-            }}
-          >
-            {(field) => (
-              <>
+          {filteredCharacter?.stats.currentHealth !== undefined && (
+            <characterUpdateForm.Field name="stats.currentHealth">
+              {(field) => (
                 <StatBar
-                  title={mobile ? '' : 'Health'}
-                  mode="edit"
+                  title="Health"
                   current={field.state.value}
                   total={stats.maxHealth}
-                  color="rgb(248 113 113)"
+                  color={statColorMap['Health']}
                   cardWidth={cardRef.current?.offsetWidth}
+                  mutation={(value: number) =>
+                    field.handleChange(field.state.value + value)
+                  }
+                  mode="adjustable"
                 >
-                  <HealthIcon
-                    className={`${mobile && 'col-span-2'} text-secondary size-8`}
-                  />
+                  <HealthIcon className="text-secondary size-8" />
                 </StatBar>
-                <InputField
-                  className="w-28 justify-self-end"
-                  field={field}
-                  label="Cur. health"
-                  type="number"
-                />
-              </>
-            )}
-          </characterUpdateForm.Field>
-          <characterUpdateForm.Field
-            name="stats.currentSanity"
-            validators={{
-              onChange: ({ value }) => {
-                if (value > stats.maxSanity) {
-                  return 'Cannot exceed max sanity';
-                } else if (value < 0) {
-                  return 'Sanity cannot be lower than 0';
-                }
-                return undefined;
-              },
-            }}
-          >
-            {(field) => (
-              <>
+              )}
+            </characterUpdateForm.Field>
+          )}
+          {filteredCharacter?.stats.currentSanity !== undefined && (
+            <characterUpdateForm.Field name="stats.currentSanity">
+              {(field) => (
                 <StatBar
-                  title={mobile ? '' : 'Sanity'}
-                  mode="edit"
+                  title="Sanity"
                   current={field.state.value}
                   total={stats.maxSanity}
-                  color="rgb(96 165 250)"
+                  color={statColorMap['Sanity']}
                   cardWidth={cardRef.current?.offsetWidth}
+                  mutation={(value: number) =>
+                    field.handleChange(field.state.value + value)
+                  }
+                  mode="adjustable"
                 >
-                  <SanityIcon
-                    className={`${mobile && 'col-span-2'} text-secondary size-8`}
-                  />
+                  <SanityIcon className="text-secondary size-8" />
                 </StatBar>
-                <InputField
-                  className="w-28 justify-self-end"
-                  field={field}
-                  label="Cur. sanity"
-                  type="number"
-                />
-              </>
-            )}
-          </characterUpdateForm.Field>
+              )}
+            </characterUpdateForm.Field>
+          )}
           <characterUpdateForm.Field
             name="stats.injuries"
             validators={{
@@ -455,30 +376,36 @@ const CharacterUpdateForm = () => {
               <>
                 {!mobile && <h4>Injuries</h4>}
                 <div
-                  className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center`}
+                  className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center justify-self-end`}
                 >
-                  {Array.from({ length: field.state.value }).map((_, index) => (
-                    <InjuryIcon
-                      key={index}
-                      className="text-secondary size-7 shrink-0 sm:size-8"
-                    />
-                  ))}
-                  {Array.from({
-                    length: stats.permanentInjuries - field.state.value,
-                  }).map((_, index) => (
-                    <Icon
-                      path={mdiCircleOutline}
-                      key={index}
-                      className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
-                    />
-                  ))}
+                  {Array.from({ length: stats.permanentInjuries }).map(
+                    (_, index) => (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (field.state.value === 1 && index === 0) {
+                            field.handleChange(index);
+                          } else {
+                            field.handleChange(index + 1);
+                          }
+                        }}
+                      >
+                        {index < field.state.value ? (
+                          <InjuryIcon
+                            key={index}
+                            className="text-secondary size-7 shrink-0 sm:size-8"
+                          />
+                        ) : (
+                          <Icon
+                            path={mdiCircleOutline}
+                            key={index}
+                            className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
+                          />
+                        )}
+                      </button>
+                    ),
+                  )}
                 </div>
-                <InputField
-                  className="w-28 justify-self-end"
-                  field={field}
-                  label="Injuries"
-                  type="number"
-                />
               </>
             )}
           </characterUpdateForm.Field>
@@ -499,30 +426,36 @@ const CharacterUpdateForm = () => {
               <>
                 {!mobile && <h4>Insanities</h4>}
                 <div
-                  className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center`}
+                  className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center justify-self-end`}
                 >
-                  {Array.from({ length: field.state.value }).map((_, index) => (
-                    <InsanityIcon
-                      key={index}
-                      className="text-secondary size-7 shrink-0 sm:size-8"
-                    />
-                  ))}
-                  {Array.from({
-                    length: stats.permanentInsanities - field.state.value,
-                  }).map((_, index) => (
-                    <Icon
-                      path={mdiCircleOutline}
-                      key={index}
-                      className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
-                    />
-                  ))}
+                  {Array.from({ length: stats.permanentInsanities }).map(
+                    (_, index) => (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (field.state.value === 1 && index === 0) {
+                            field.handleChange(index);
+                          } else {
+                            field.handleChange(index + 1);
+                          }
+                        }}
+                      >
+                        {index < field.state.value ? (
+                          <InsanityIcon
+                            key={index}
+                            className="text-secondary size-7 shrink-0 sm:size-8"
+                          />
+                        ) : (
+                          <Icon
+                            path={mdiCircleOutline}
+                            key={index}
+                            className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
+                          />
+                        )}
+                      </button>
+                    ),
+                  )}
                 </div>
-                <InputField
-                  className="w-28 justify-self-end"
-                  field={field}
-                  label="Insanities"
-                  type="number"
-                />
               </>
             )}
           </characterUpdateForm.Field>
@@ -543,100 +476,18 @@ const CharacterUpdateForm = () => {
           )}
         </div>
         <Divider />
-        <ArrowHeader2 title="Available Perks" />
+        <ArrowHeader2 title="Manage Perks" />
         <p className="text-tertiary border-l border-gray-400 pl-4">
-          Available perks are only shown if you meet the attribute and skill
-          point requirements
+          Select the perks associated with your character. Available perks are
+          only shown if you meet the attribute and skill point requirements
         </p>
-        <div className="flex w-full flex-col gap-4">
-          <div className="grid w-full items-center gap-4 max-sm:grid-cols-1 max-sm:grid-rows-[auto_1fr_1fr_auto] sm:grid-cols-[auto_1fr_1fr_auto] sm:gap-8">
-            <ArrowHeader3 title="Filter Options" />
-            <searchForm.Field
-              name="attribute"
-              listeners={{
-                onChange: () => {
-                  searchForm.setFieldValue('skill', '');
-                  perks.filterBySkill('');
-                },
-              }}
-            >
-              {(field) => (
-                <InputSelectField
-                  className="w-full"
-                  field={field}
-                  label="Attribute"
-                  options={[
-                    'general',
-                    'cybernetica',
-                    'esoterica',
-                    'peace',
-                    'violence',
-                  ]}
-                  onChange={() => perks.filterByAttribute(field.state.value)}
-                />
-              )}
-            </searchForm.Field>
-            <searchForm.Subscribe
-              selector={(state) => [state.values.attribute]}
-            >
-              {([selectedAttribute]) => (
-                <searchForm.Field name="skill">
-                  {(field) => (
-                    <InputSelectField
-                      field={field}
-                      label="Skill"
-                      options={
-                        selectedAttribute && selectedAttribute !== 'general'
-                          ? Object.keys(
-                              attributeTree.emptyAttributeTree[
-                                selectedAttribute
-                              ].skills,
-                            )
-                          : []
-                      }
-                      onChange={() => perks.filterBySkill(field.state.value)}
-                    />
-                  )}
-                </searchForm.Field>
-              )}
-            </searchForm.Subscribe>
-            <button
-              type="button"
-              className="text-accent hover:underline"
-              onClick={(e) => {
-                e.preventDefault();
-                searchForm.setFieldValue('skill', '');
-                perks.filterBySkill('');
-                searchForm.setFieldValue('attribute', '');
-                perks.filterByAttribute('');
-              }}
-            >
-              Reset
-            </button>
-          </div>
-          <searchForm.Field name="query">
-            {(field) => (
-              <InputField
-                label="Search perks"
-                field={field}
-                onChange={() => {
-                  searchForm.handleSubmit();
-                }}
-              />
-            )}
-          </searchForm.Field>
+        <div className="flex flex-col gap-4">
+          <PerkLinkField
+            form={characterUpdateForm}
+            perkTree={perks.filteredPerkTree}
+          />
         </div>
-        <characterUpdateForm.Field name="perks">
-          {(field) => (
-            <PerkList
-              field={field}
-              className="scrollbar-primary-2 max-h-[500px] overflow-y-auto py-4 pr-4"
-              perkTree={perks.filteredPerkTree}
-              mode="form"
-            />
-          )}
-        </characterUpdateForm.Field>
-
+        <Divider />
         <div className="flex flex-col gap-4 sm:gap-8">
           <BtnRect
             ariaLabel="Update character"

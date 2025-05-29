@@ -1,8 +1,9 @@
-import { ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 import ThemeBorder from './ThemeBorder';
 
 const ThemeContainer = ({
   className,
+  style,
   borderColor,
   chamfer,
   children,
@@ -10,8 +11,9 @@ const ThemeContainer = ({
   overflowHidden,
 }: {
   className?: string;
+  style?: CSSProperties;
   borderColor: string;
-  chamfer: string;
+  chamfer: 'small' | 'medium' | 'large';
   children: ReactNode;
   bgImageUrl?: string;
   overflowHidden?: boolean;
@@ -34,6 +36,7 @@ const ThemeContainer = ({
   return (
     <div
       className={`${className} ${radiusMap[chamfer]} relative shadow-lg shadow-black`}
+      style={style}
     >
       <ThemeBorder
         borderColor={borderColor}

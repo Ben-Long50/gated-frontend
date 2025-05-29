@@ -70,6 +70,16 @@ const Navbar = ({
           )}
         </button>
         <div className="flex items-center justify-end gap-4">
+          <Link className="relative" to={`account/${user?.id}/notifications`}>
+            <Icon path={mdiBellOutline} className="text-secondary size-8" />
+            {user?._count.receivedNotifications > 0 && (
+              <div className="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-yellow-300 shadow-md shadow-black">
+                <p className="text-sm font-semibold !text-zinc-900 sm:pt-0.5">
+                  {user?._count?.receivedNotifications}
+                </p>
+              </div>
+            )}
+          </Link>
           <button
             className={`${navMenuVisibility && 'scale-y-150'} timing z-10`}
             onClick={() => {
@@ -93,7 +103,7 @@ const Navbar = ({
                   alt="Profile Picture"
                 />
               ) : (
-                <CharacterIcon className="size-10" />
+                <CharacterIcon className="text-secondary size-10" />
               )}
             </button>
           </Link>
@@ -160,8 +170,8 @@ const Navbar = ({
         <Link className="relative" to={`account/${user?.id}/notifications`}>
           <Icon path={mdiBellOutline} className="text-secondary size-8" />
           {user?._count.receivedNotifications > 0 && (
-            <div className="absolute right-0 top-0 flex size-5 items-center justify-center rounded-full bg-yellow-300">
-              <p className="text-sm font-semibold !text-zinc-900">
+            <div className="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-yellow-300 shadow-md shadow-black">
+              <p className="text-sm font-semibold !text-zinc-900 sm:pt-0.5">
                 {user?._count?.receivedNotifications}
               </p>
             </div>

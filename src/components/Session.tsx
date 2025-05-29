@@ -53,10 +53,14 @@ const Session = () => {
           <img
             className="w-full object-cover object-center"
             src={`${session.picture?.imageUrl}`}
-            alt="Campaign cover image"
+            alt="Session cover image"
+            style={{
+              objectPosition: session.picture?.position
+                ? `${session.picture?.position.x}% ${session.picture?.position.y}%`
+                : '50% 50%',
+              maskImage: 'linear-gradient(black 0%, transparent 100%',
+            }}
           />
-
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
         </div>
       )}
       <div className="flex w-full max-w-5xl flex-col gap-4">
@@ -89,32 +93,38 @@ const Session = () => {
           </div>
         )}
         <Divider />
-        {sessionPlayerCharacters.length > 0 &&
-          sessionPlayerCharacters.map((character: Character) => (
-            <div
-              key={character.id}
-              className="flex w-full items-center justify-between"
-            >
-              <Link to={`characters/${character.id}`}>
-                <div className="flex items-center gap-4">
-                  <img
-                    className="size-14 rounded-full shadow-md shadow-black"
-                    src={character.picture.imageUrl}
-                    alt={`${character.firstName} ${character.lastName}'s picture`}
-                  />
-                  <ArrowHeader3
-                    title={character.firstName + ' ' + character.lastName}
-                  />
-                </div>
-              </Link>
-              <Link key={character.id} to={`characters/${character.id}/notes`}>
-                <BtnRect ariaLabel="Navigate to notes" type="button">
-                  Notes
-                </BtnRect>
-              </Link>
-            </div>
-          ))}
-        <Divider />
+        {sessionPlayerCharacters.length > 0 && (
+          <>
+            {sessionPlayerCharacters.map((character: Character) => (
+              <div
+                key={character.id}
+                className="flex w-full items-center justify-between"
+              >
+                <Link to={`characters/${character.id}`}>
+                  <div className="flex items-center gap-4">
+                    <img
+                      className="size-14 rounded-full shadow-md shadow-black"
+                      src={character.picture.imageUrl}
+                      alt={`${character.firstName} ${character.lastName}'s picture`}
+                    />
+                    <ArrowHeader3
+                      title={character.firstName + ' ' + character.lastName}
+                    />
+                  </div>
+                </Link>
+                <Link
+                  key={character.id}
+                  to={`characters/${character.id}/notes`}
+                >
+                  <BtnRect ariaLabel="Navigate to notes" type="button">
+                    Notes
+                  </BtnRect>
+                </Link>
+              </div>
+            ))}
+            <Divider />
+          </>
+        )}
         <div
           id="quill-display"
           className="ql-editor whitespace-pre-wrap"

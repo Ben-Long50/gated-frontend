@@ -10,8 +10,6 @@ const useCurrentSanityMutation = (apiUrl: string, characterId: number) => {
 
   return useMutation({
     mutationFn: (value: number) => {
-      console.log(1);
-
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }

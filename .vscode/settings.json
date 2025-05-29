@@ -11,5 +11,14 @@
   "editor.quickSuggestions": {
     "strings": "on"
   },
-  "tailwindCSS.emmetCompletions": true
+  "tailwindCSS.emmetCompletions": true,
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true
+  },
+  "liveServer.settings.host": "192.168.4.145"
 }

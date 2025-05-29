@@ -5,17 +5,23 @@ interface Action {
   id: number;
   name: string;
   description: string;
-  costs: ActionCost[];
+  costs: ActionCosts;
   roll: ActionRoll[];
+  equipped: boolean;
   actionType: ActionType;
   actionSubtypes: string[];
   duration: { unit: string; value: number | null };
   cybernetics: Cybernetic[];
 }
 
-interface ActionCost {
-  stat: ActionCostStat;
-  value: number;
+interface ActionCosts {
+  actionPoints?: number | null;
+  reactionPoints?: number | null;
+  power?: number | null;
+  health?: number | null;
+  sanity?: number | null;
+  wyrmShells?: number | null;
+  currentAmmoCount?: number | null;
 }
 
 interface ActionRoll {
@@ -27,6 +33,7 @@ enum ActionType {
   action = 'action',
   extendedAction = 'extendedAction',
   reaction = 'reaction',
+  passive = 'passive',
 }
 
 enum ActionCostStat {

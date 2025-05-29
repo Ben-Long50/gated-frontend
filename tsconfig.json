@@ -14,7 +14,8 @@
     "moduleResolution": "node" /* Resolve modules like Node.js. */,
     "baseUrl": "./" /* Set base path for imports. */,
     "paths": {
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "src/*": ["src/*"]
     },
     "resolveJsonModule": true /* Allow importing .json files. */,
     "esModuleInterop": true /* Improve CommonJS module compatibility. */,

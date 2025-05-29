@@ -1,56 +1,65 @@
 import { useForm } from '@tanstack/react-form';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
 import TextAreaField from './TextAreaField';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
-import { useParams } from 'react-router-dom';
-import SelectField from './SelectField';
-import SubactionForm from './SubactionForm';
-import { Modifier } from 'src/types/modifier';
-import ModifierField from './ModifierField';
-import useDeleteItemMutation from '../hooks/useDeleteItemMutation/useDeleteItemMutation';
-import useCreateItemMutation from '../hooks/useCreateItemMutation/useCreateItemMutation';
-import useItemQuery from '../hooks/useItemQuery/useItemQuery';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
-import Icon from '@mdi/react';
-import ThemeContainer from './ThemeContainer';
-import { ThemeContext } from '../contexts/ThemeContext';
-import { ItemStats } from 'src/types/item';
-import useModifyItemMutation from '../hooks/useModifyItemMutation/useModifyItemMutation';
-import Divider from './Divider';
+import { useLocation, useParams } from 'react-router-dom';
+import { Keyword } from 'src/types/keyword';
 import ArrowHeader2 from './ArrowHeader2';
+import Divider from './Divider';
+import { Action } from 'src/types/action';
+import ActionLinkField from './form_fields/ActionLinkField';
+import ArmorLinkField from './form_fields/ArmorLinkField';
+import WeaponLinkField from './form_fields/WeaponLinkField';
+import KeywordLinkField from './form_fields/KeywordLinkField';
+import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
+import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
+import { Item, Stats } from 'src/types/item';
+import useItems from 'src/hooks/useItems';
+import PictureField from './form_fields/PictureField';
+import RarityField from './form_fields/RarityField';
+import StatFields from './form_fields/StatFields';
+import useCreateItemMutation from 'src/hooks/useCreateItemMutation/useCreateItemMutation';
+import useDeleteItemMutation from 'src/hooks/useDeleteItemMutation/useDeleteItemMutation';
 
-const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
+const ItemForm = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { itemId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
+  const category = itemId ? parts[parts.length - 3] : parts[parts.length - 2];
 
-  const { data: item } = useItemQuery(apiUrl, Number(itemId), {
-    enabled: !!itemId,
+  const { data: item } = useItemQuery(apiUrl, Number(itemId), category);
+
+  const { filteredItems: weapons } = useItems({
+    category: 'weapons',
+    excludedKeywords: ['Cyber Weapon', 'Vehicle Weapon', 'Drone Weapon'],
   });
 
-  const [imagePreview, setImagePreview] = useState(
-    item?.picture?.imageUrl || '',
-  );
+  const { filteredItems: armors } = useItems({
+    category: 'armors',
+    excludedKeywords: ['Cyber Armor'],
+  });
 
-  const createItem = useCreateItemMutation(apiUrl, setFormMessage);
-  const modifyItem = useModifyItemMutation(
+  const createItem = useCreateItemMutation(
     apiUrl,
-    Number(itemId),
+    category,
     setFormMessage,
+    Number(itemId),
   );
-  const deleteItem = useDeleteItemMutation(apiUrl, setFormMessage, itemId);
 
-  useEffect(() => {
-    if (item) {
-      setImagePreview(item.picture?.imageUrl);
-    } else setImagePreview('');
-  }, [item, itemId]);
+  const deleteItem = useDeleteItemMutation(
+    apiUrl,
+    category,
+    setFormMessage,
+    Number(itemId),
+  );
 
   const handleDelete = () => {
     if (deleteMode) {
@@ -64,66 +73,74 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
     itemForm.reset();
   };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // Get the selected file
-
-    if (selectedFile) {
-      itemForm.setFieldValue('picture', selectedFile);
-
-      // Create a URL for the selected file to preview
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
+  const categoryName = (() => {
+    const name = category.charAt(0).toUpperCase() + category.slice(1);
+    return name.slice(0, -1);
+  })();
 
   const itemForm = useForm({
     defaultValues: {
-      id: Number(itemId) || 0,
+      id: item?.id || null,
       name: item?.name || '',
+      itemType: item?.itemType || '',
       rarity: item?.rarity || '',
       grade: item?.grade || 1,
       picture: item?.picture || '',
-      category: item?.category || '',
-      subcategory: item?.subcategory || '',
-      itemType: item?.itemType || '',
+      position: item?.picture?.position || { x: 50, y: 50 },
       description: item?.description || '',
+      price: item?.price || '',
       stats: {
-        currentStacks: item?.stats.currentStacks || '',
-        maxStacks: item?.stats.maxStacks || '',
+        damage: item?.stats.damage || '',
+        salvo: item?.stats.salvo || '',
+        flurry: item?.stats.flurry || '',
+        range: item?.stats.range || '',
+        magCapacity: item?.stats.magCapacity || '',
+        currentAmmoCount: item?.stats.currentAmmoCount || '',
+        magCount: item?.stats.magCount || '',
+        currentMagCount: item?.stats.currentMagCount || '',
+        weight: item?.stats.weight || '',
+        ward: item?.stats.ward || '',
+        block: item?.stats.block || '',
+        currentBlock: item?.stats.currentBlock || '',
         power: item?.stats.power || '',
         currentPower: item?.stats.currentPower || '',
-        weight: item?.stats.weight || '',
-      } as ItemStats,
-      actions:
-        item?.actions ||
-        ([] as {
-          name: string;
-          costs: { stat: string; value: number }[];
-          roll: { attribute: string; skill: string }[];
-          actionType: string;
-          actionSubtypes: string[];
-          duration: {
-            unit: string;
-            value: number;
-          };
-          description: string;
-        }[]),
-      modifiers:
-        item?.modifiers?.map((modifier: Modifier) => ({
-          type: modifier.type,
-          actionId: modifier.action?.id || null,
-          stat: modifier.stat || null,
-          operator: modifier.operator,
-          valueType: modifier.valueType,
-          attribute: modifier.attribute,
-          skill: modifier.skill,
-          value: modifier.value,
-          duration: modifier.duration,
-        })) || ([] as Modifier[]),
-      price: item?.price || null,
+        cyber: item?.stats.cyber || '',
+        size: item?.stats?.size || '',
+        speed: item?.stats?.speed || '',
+        agility: item?.stats?.agility || '',
+        hull: item?.stats?.hull || '',
+        currentHull: item?.stats?.currentHull || '',
+        armor: item?.stats?.armor || '',
+        cargo: item?.stats?.cargo || '',
+        currentCargo: item?.stats?.currentCargo || '',
+        hangar: item?.stats?.hangar || '',
+        currentHangar: item?.stats?.currentHangar || '',
+        pass: item?.stats?.pass || '',
+        currentPass: item?.stats?.currentPass || '',
+        weapon: item?.stats?.weapon || '',
+        currentWeapon: item?.stats?.currentWeapon || '',
+      } as Stats,
+      weapons:
+        item?.itemLinkReference?.items.filter(
+          (item: Item) => item.itemType === 'weapon',
+        ) || ([] as Item[]),
+      armor:
+        item?.itemLinkReference?.items.filter(
+          (item: Item) => item.itemType === 'armor',
+        ) || ([] as Item[]),
+      actions: item?.itemLinkReference?.actions || ([] as Action[]),
+      keywords:
+        item?.keywords || ([] as { keyword: Keyword; value: number | null }[]),
     },
     onSubmit: async ({ value }) => {
-      value.stats.currentPower = value.stats.power;
+      value.stats.currentAmmoCount = value.stats.magCapacity;
+      value.stats.currentMagCount = value.stats.magCount
+        ? value.stats.magCount - 1
+        : 0;
+
+      value.stats.currentPower = value.stats.power
+        ? value.stats.power
+        : undefined;
 
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
@@ -131,21 +148,25 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
 
       value.stats = { ...filteredStats };
 
+      const { weapons, armor, actions, keywords, ...rest } = value;
+
+      const data = {
+        ...rest,
+        itemIds: extractItemListIds([...value.weapons, ...value.armor]),
+        actionIds: extractItemListIds(value.actions),
+        keywordIds: extractKeywordListIds(value.keywords),
+      };
+
       const formData = new FormData();
 
-      Object.entries(value).forEach(([key, value]) => {
+      Object.entries(data).forEach(([key, value]) => {
         if (key === 'picture' && value instanceof File) {
           formData.append(key, value);
         } else {
           formData.append(key, JSON.stringify(value));
         }
       });
-
-      if (mode === 'create' || mode === 'update') {
-        await createItem.mutate(formData);
-      } else if (mode === 'modify') {
-        await modifyItem.mutate(formData);
-      }
+      await createItem.mutate(formData);
     },
   });
 
@@ -153,7 +174,6 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
     <FormLayout
       itemId={itemId}
       createMutation={createItem}
-      modifyMutation={modifyItem}
       deleteMutation={deleteItem}
       handleDelete={handleDelete}
       handleReset={handleReset}
@@ -170,25 +190,41 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          <h1>{title} Item</h1>
+          <h1>
+            {mode.charAt(0).toUpperCase() + mode.slice(1) + ' ' + categoryName}
+          </h1>
         </div>
         <Divider />
-        <ArrowHeader2 title="Item Information" />
+        <ArrowHeader2 title={categoryName + ' Information'} />
         <div className="flex w-full gap-4 lg:gap-8">
           <itemForm.Field
             name="name"
             validators={{
               onChange: ({ value }) =>
                 value.length < 2
-                  ? 'Armor name must be at least 2 characters long'
+                  ? `${categoryName} name must be at least 2 characters long`
                   : undefined,
             }}
           >
             {(field) => (
-              <InputField className="grow" label="Item name" field={field} />
+              <InputField
+                className="grow"
+                label={categoryName + ' Name'}
+                field={field}
+              />
             )}
           </itemForm.Field>
-          <itemForm.Field name="price">
+          <itemForm.Field
+            name="price"
+            validators={{
+              onChange: ({ value }) => {
+                if (value < 0) {
+                  return 'Price cannot be negative';
+                }
+                return undefined;
+              },
+            }}
+          >
             {(field) => (
               <InputField
                 className="max-w-28"
@@ -200,23 +236,7 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
           </itemForm.Field>
         </div>
         <div className="flex w-full items-center gap-4 lg:gap-8">
-          <itemForm.Field
-            name="rarity"
-            validators={{
-              onSubmit: ({ value }) => (!value ? 'Select a rarity' : undefined),
-            }}
-          >
-            {(field) => (
-              <SelectField className="w-full" label="Item rarity" field={field}>
-                <option value=""></option>
-                <option value="common">Common</option>
-                <option value="uncommon">Uncommon</option>
-                <option value="rare">Rare</option>
-                <option value="blackMarket">Black Market</option>
-                <option value="artifact">Artifact</option>
-              </SelectField>
-            )}
-          </itemForm.Field>
+          <RarityField form={itemForm} category={categoryName} />
           <itemForm.Field
             name="grade"
             validators={{
@@ -228,222 +248,61 @@ const ItemForm = ({ title, mode }: { title: string; mode?: string }) => {
               <InputField
                 className="w-full max-w-28"
                 type="number"
-                label="Item grade"
+                label="Grade"
                 field={field}
               />
             )}
           </itemForm.Field>
         </div>
-        <div className="flex w-full items-center gap-4 lg:gap-8">
-          <itemForm.Field
-            name="category"
-            validators={{
-              onSubmit: ({ value }) =>
-                !value ? 'Select a category' : undefined,
-            }}
-          >
-            {(field) => (
-              <SelectField
-                className="w-full"
-                label="Item category"
-                field={field}
-              >
-                <option value=""></option>
-                <option value="reusable">Reusable</option>
-                <option value="consumable">Consumable</option>
-              </SelectField>
-            )}
-          </itemForm.Field>
-          <itemForm.Subscribe selector={() => itemForm.state.values.category}>
-            {(category) => (
-              <itemForm.Field
-                name="subcategory"
-                validators={{
-                  onSubmit: ({ value }) =>
-                    !value ? 'Select a subcategory' : undefined,
-                }}
-              >
-                {(field) => (
-                  <SelectField
-                    className="w-full"
-                    label="Item subcategory"
-                    field={field}
-                  >
-                    <option value=""></option>
-                    {category === 'reusable' ? (
-                      <>
-                        <option value="anomaly">Anomaly</option>
-                        <option value="gadget">Gadget</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="chemicalTherapy">
-                          Chemical therapy
-                        </option>
-                        <option value="chemicalAssistance">
-                          Chemical assistance
-                        </option>
-
-                        <option value="misc">Misc.</option>
-                      </>
-                    )}
-                  </SelectField>
-                )}
-              </itemForm.Field>
-            )}
-          </itemForm.Subscribe>
-          <itemForm.Field
-            name="itemType"
-            validators={{
-              onChange: ({ value }) =>
-                value <= 0 ? 'Provide an item type' : undefined,
-            }}
-          >
-            {(field) => (
-              <InputField
-                className="w-full"
-                type="string"
-                label="Item type"
-                field={field}
-              />
-            )}
-          </itemForm.Field>
-        </div>
-        <div className="flex flex-col gap-8 sm:flex-row">
-          <ThemeContainer
-            className="mx-auto w-full max-w-sm"
-            chamfer="medium"
-            borderColor={accentPrimary}
-            overflowHidden={true}
-          >
-            {!imagePreview ? (
-              <label className="bg-secondary flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center">
-                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                  <Icon
-                    className="text-tertiary"
-                    path={mdiImagePlus}
-                    size={3}
-                  />
-                  <p className="text-tertiary font-semibold">
-                    Upload item picture
-                  </p>
-                  <p className="text-tertiary">PNG, JPG, JPEG</p>
-                </div>
-                <input
-                  id="file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
-                <img
-                  className="fade-in-bottom"
-                  src={imagePreview}
-                  alt="Preview"
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2"
-                  onClick={() => {
-                    itemForm.setFieldValue('picture', '');
-                    setImagePreview('');
-                  }}
-                >
-                  <div className="rounded bg-zinc-950">
-                    <Icon path={mdiCloseBox} size={1.5} />
-                  </div>
-                </button>
-              </div>
-            )}
-          </ThemeContainer>
+        <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
+          <PictureField
+            form={itemForm}
+            sizeInfo={{ aspectRatio: '1/1', maxHeight: '', minHeight: '' }}
+          />
           <itemForm.Field
             name="description"
             validators={{
               onChange: ({ value }) =>
                 value.length < 2
-                  ? 'Item description must be at least 2 characters long'
+                  ? `${categoryName} description must be at least 2 characters long`
                   : undefined,
             }}
           >
             {(field) => (
-              <TextAreaField label="Item description" field={field} />
+              <TextAreaField
+                label={categoryName + ' Description'}
+                field={field}
+              />
             )}
           </itemForm.Field>
         </div>
-        <div>
-          <itemForm.Subscribe selector={() => itemForm.state.values.category}>
-            {(category) => (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
-                <itemForm.Field name="stats.power">
-                  {(field) => (
-                    <InputField
-                      className="grow"
-                      type="number"
-                      label="Power"
-                      field={field}
-                    />
-                  )}
-                </itemForm.Field>
-                <itemForm.Field name="stats.weight">
-                  {(field) => (
-                    <InputField
-                      className="grow"
-                      type="number"
-                      label={
-                        category === 'consumable'
-                          ? 'Weight per stack'
-                          : 'Weight'
-                      }
-                      field={field}
-                    />
-                  )}
-                </itemForm.Field>
-                {category === 'consumable' && (
-                  <itemForm.Field name="stats.currentStacks">
-                    {(field) => (
-                      <InputField
-                        className="grow"
-                        type="number"
-                        label="Stacks"
-                        field={field}
-                      />
-                    )}
-                  </itemForm.Field>
-                )}
-                {category === 'consumable' && (
-                  <itemForm.Field name="stats.maxStacks">
-                    {(field) => (
-                      <InputField
-                        className="grow"
-                        type="number"
-                        label="Max. stacks"
-                        field={field}
-                      />
-                    )}
-                  </itemForm.Field>
-                )}
-              </div>
-            )}
-          </itemForm.Subscribe>
+        <StatFields
+          form={itemForm}
+          category={category}
+          categoryName={categoryName}
+        />
+        <div className="flex flex-col gap-4">
+          <KeywordLinkField form={itemForm} keywordType="weapon" />
+          <Divider />
+          <WeaponLinkField form={itemForm} weaponList={weapons} />
+          <Divider />
+          <ArmorLinkField form={itemForm} armorList={armors} />
+          <Divider />
+          <ActionLinkField form={itemForm} />
+          <Divider />
         </div>
-        <Divider />
-        <SubactionForm form={itemForm} />
-        <Divider />
-        <ModifierField form={itemForm} />
-        <Divider />
         <BtnRect
-          ariaLabel={`${title} item`}
+          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
           type="submit"
           className="group w-full"
         >
-          {createItem.isPending || modifyItem.isPending ? (
+          {createItem.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
           ) : (
-            title
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>

@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
-import { useForm } from '@tanstack/react-form';
+import { FieldApi, useForm } from '@tanstack/react-form';
 import Loading from './Loading';
 import useConditions from '../hooks/useConditions';
 import ConditionCard from './ConditionCard';
@@ -10,11 +10,29 @@ import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
+import { Condition } from 'src/types/condition';
+import InputFieldBasic from './InputFieldBasic';
 
-const Conditions = ({ mode }: { mode?: string }) => {
+const Conditions = ({
+  title,
+  mode,
+  field,
+  conditionList,
+}: {
+  title?: string;
+  mode?: string;
+  field?: FieldApi;
+  conditionList?: Condition[];
+}) => {
   const { accentPrimary } = useContext(ThemeContext);
 
-  const conditions = useConditions();
+  const {
+    filteredConditions: conditions,
+    isLoading,
+    isPending,
+    filterByCategory,
+    filterByQuery,
+  } = useConditions(conditionList);
 
   const searchForm = useForm({
     defaultValues: {
@@ -22,18 +40,18 @@ const Conditions = ({ mode }: { mode?: string }) => {
       category: '',
     },
     onSubmit: () => {
-      conditions.filterByQuery('');
-      conditions.filterByCategory('');
+      filterByQuery('');
+      filterByCategory('');
     },
   });
 
-  if (conditions.isLoading || conditions.isPending) {
+  if (isLoading || isPending) {
     return <Loading />;
   }
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">Conditions</h1>
+      <h1 className="text-center">{title || 'Conditions'}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
@@ -50,7 +68,7 @@ const Conditions = ({ mode }: { mode?: string }) => {
                   options={['', 'character', 'item']}
                   initialValue=""
                   onChange={() => {
-                    conditions.filterByCategory(field.state.value);
+                    filterByCategory(field.state.value);
                   }}
                 />
               )}
@@ -61,10 +79,10 @@ const Conditions = ({ mode }: { mode?: string }) => {
               {(field) => (
                 <InputField
                   className="w-full"
-                  label="Search conditions"
+                  label="Search Conditions"
                   field={field}
                   onChange={() => {
-                    conditions.filterByQuery(field.state.value);
+                    filterByQuery(field.state.value);
                   }}
                 />
               )}
@@ -105,14 +123,70 @@ const Conditions = ({ mode }: { mode?: string }) => {
                 />
               )}
             </searchForm.Subscribe>
-            <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
-              {conditions.filteredConditions.map((condition) => {
+            <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+              {conditions?.map((condition) => {
+                const activeCondition =
+                  mode === 'form'
+                    ? field.state.value.find(
+                        (item: {
+                          condition: Condition;
+                          stacks: number | null;
+                        }) => item.condition.id === condition.id,
+                      )
+                    : null;
                 return (
-                  <ConditionCard
-                    key={condition.name}
-                    condition={condition}
-                    mode="codex"
-                  />
+                  <div key={condition.id} className="flex items-center gap-4">
+                    <ConditionCard mode={mode} condition={condition}>
+                      {activeCondition && (
+                        <InputFieldBasic
+                          className="max-w-20 shrink-0"
+                          name="value"
+                          type="number"
+                          label="Stacks"
+                          value={activeCondition.stacks}
+                          onChange={(stacks: number | string) => {
+                            const updatedValue = field.state.value.map(
+                              (item: {
+                                condition: Condition;
+                                stacks: number | null;
+                              }) =>
+                                item.condition.id === condition.id
+                                  ? {
+                                      condition: item.condition,
+                                      stacks,
+                                    }
+                                  : item,
+                            );
+                            field.handleChange(updatedValue);
+                          }}
+                        />
+                      )}
+                    </ConditionCard>
+                    {mode === 'form' && (
+                      <input
+                        className="size-6 shrink-0"
+                        type="checkbox"
+                        checked={activeCondition}
+                        onChange={() => {
+                          if (!activeCondition) {
+                            field.handleChange([
+                              ...field.state.value,
+                              { condition },
+                            ]);
+                          } else {
+                            field.handleChange(
+                              field.state.value.filter(
+                                (item: {
+                                  condition: Condition;
+                                  stacks: number | null;
+                                }) => item.condition.id !== condition.id,
+                              ),
+                            );
+                          }
+                        }}
+                      />
+                    )}
+                  </div>
                 );
               })}
             </div>

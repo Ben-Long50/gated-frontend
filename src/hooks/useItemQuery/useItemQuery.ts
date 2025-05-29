@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import getItemById from './getItemById';
+import { Item } from 'src/types/item';
 
-const useItemQuery = (apiUrl: string, itemId: number, options: object) => {
-  return useQuery({
+const useItemQuery = (apiUrl: string, itemId: number, category: string) => {
+  return useQuery<Item>({
     queryKey: ['item', itemId],
-    queryFn: async () => await getItemById(apiUrl, itemId),
-    ...options,
+    queryFn: async () => await getItemById(apiUrl, itemId, category),
+    enabled: typeof itemId === 'number' && !isNaN(itemId),
   });
 };
 

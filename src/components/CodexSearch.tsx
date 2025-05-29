@@ -1,45 +1,35 @@
 import { useForm } from '@tanstack/react-form';
 import ThemeContainer from './ThemeContainer';
-import { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
-import SelectField from './SelectField';
 import InputField from './InputField';
-import useWeapons from '../hooks/useWeapons';
-import WeaponCard, { WeaponCardMobile } from './WeaponCard';
-import { WeaponWithKeywords } from 'src/types/weapon';
-import useArmor from '../hooks/useArmor';
 import { Keyword } from 'src/types/keyword';
-import useCybernetics from '../hooks/useCybernetics';
 import Loading from './Loading';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { ArmorWithKeywords } from 'src/types/armor';
-import ArmorCard, { ArmorCardMobile } from './ArmorCard';
-import CyberneticCard, { CyberneticCardMobile } from './CyberneticCard';
 import useKeywords from '../hooks/useKeywords';
 import KeywordCard from './KeywordCard';
-import VehicleCard, { VehicleCardMobile } from './VehicleCard';
-import useVehicles from '../hooks/useVehicles';
-import { Modification, VehicleWithWeapons } from 'src/types/vehicle';
 import PerkCard from './PerkCard';
 import usePerks from '../hooks/usePerks';
-import { Perk } from 'src/types/perk';
-import useModifications from '../hooks/useModifications';
 import useActions from '../hooks/useActions';
 import useConditions from '../hooks/useConditions';
-import { Condition } from 'src/types/condition';
-import { Action } from 'src/types/action';
 import ActionCard from './ActionCard';
 import ConditionCard from './ConditionCard';
-import ModCard from './ModCard';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
+import ItemCard from './ItemCard';
+import ItemCardMobile from './ItemCardMobile';
+import { AuthContext } from 'src/contexts/AuthContext';
+import { Item } from 'src/types/item';
+import { Action } from 'src/types/action';
+import { Condition } from 'src/types/condition';
+import useAllItemsQuery from 'src/hooks/useAllItemsQuery/useAllItemsQuery';
 
 const CodexSearch = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { mobile } = useContext(LayoutContext);
+  const { apiUrl } = useContext(AuthContext);
 
   const [nameQuery, setNameQuery] = useState<string | null>(null);
   const [descriptionQuery, setDescriptionQuery] = useState<string | null>(null);
@@ -51,156 +41,55 @@ const CodexSearch = () => {
   const nameTimerRef = useRef<number | null>(null);
   const descriptionTimerRef = useRef<number | null>(null);
 
-  const {
-    filteredWeapons: weapons,
-    filteredKeywords: weaponKeywords,
-    isLoading: weaponsLoading,
-    isPending: weaponsPending,
-  } = useWeapons();
+  const { data: items, isLoading, isPending } = useAllItemsQuery(apiUrl);
 
-  const {
-    filteredArmor: armor,
-    filteredKeywords: armorKeywords,
-    isLoading: armorLoading,
-    isPending: armorPending,
-  } = useArmor();
+  const { filteredKeywords: keywords } = useKeywords();
 
-  const {
-    filteredCybernetics: cybernetics,
-    isLoading: cyberneticsLoading,
-    isPending: cyberneticsPending,
-  } = useCybernetics();
+  const { filteredPerkTree: perks } = usePerks();
 
-  const {
-    filteredVehicles: vehicles,
-    isLoading: vehiclesLoading,
-    isPending: vehiclesPending,
-  } = useVehicles();
+  const { filteredActions: actions } = useActions();
 
-  const {
-    filteredMods: modifications,
-    isLoading: modificationsLoading,
-    isPending: modificationsPending,
-  } = useModifications();
-
-  const {
-    filteredKeywords: keywords,
-    isLoading: keywordsLoading,
-    isPending: keywordsPending,
-  } = useKeywords();
-
-  const {
-    filteredPerkTree: perks,
-    isLoading: perksLoading,
-    isPending: perksPending,
-  } = usePerks();
-
-  const {
-    filteredActions: actions,
-    isLoading: actionsLoading,
-    isPending: actionsPending,
-  } = useActions();
-
-  const {
-    filteredConditions: conditions,
-    isLoading: conditionsLoading,
-    isPending: conditionsPending,
-  } = useConditions();
+  const { filteredConditions: conditions } = useConditions();
 
   const perkArray = Object.values(perks)
     .map((item) => Object.values(item).flat())
     .flat();
 
-  const codex = useMemo(() => {
-    const allItems = [
-      ...weapons.map((weapon: WeaponWithKeywords) => ({
-        type: 'weapon',
-        item: weapon,
-      })),
-      ...armor.map((armor: ArmorWithKeywords) => ({
-        type: 'armor',
-        item: armor,
-      })),
-      ...cybernetics.map((cybernetic: CyberneticWithKeywords) => ({
-        type: 'cybernetic',
-        item: cybernetic,
-      })),
-      ...vehicles.map((vehicle: VehicleWithWeapons) => ({
-        type: 'vehicle',
-        item: vehicle,
-      })),
-      ...modifications.map((mod: Modification) => ({
-        type: 'modification',
-        item: mod,
-      })),
-      ...keywords.map((keyword: Keyword) => ({
-        type: 'keyword',
-        item: keyword,
-      })),
-      ...perkArray.map((perk: Perk) => ({
-        type: 'perk',
-        item: perk,
-      })),
-      ...actions.map((action: Action) => ({ type: 'action', item: action })),
-      ...conditions.map((condition: Condition) => ({
-        type: 'condition',
-        item: condition,
-      })),
-    ];
-
+  const filterItems = (
+    itemArray: Item[] | Keyword[] | Action[] | Condition[] | undefined,
+  ) => {
     const nameFilter = nameQuery?.toLowerCase() ?? null;
     const descFilter = descriptionQuery?.toLowerCase() ?? null;
     const hasCategoryFilter = category !== '';
 
-    return allItems.filter(({ item }) => {
-      const nameMatch = item.name?.toLowerCase().includes(nameFilter);
-      const descMatch = item.description?.toLowerCase().includes(descFilter);
+    return itemArray
+      ? itemArray.filter((item) => {
+          if (!item) return false;
+          const nameMatch = item.name?.toLowerCase().includes(nameFilter);
+          const descMatch = item.description
+            ?.toLowerCase()
+            .includes(descFilter);
 
-      const categoryMatch =
-        !hasCategoryFilter ||
-        item.keywords?.some(
-          (keyword: { keyword: Keyword }) => category === keyword.keyword?.name,
-        );
+          const categoryMatch = item.keywords
+            ? !hasCategoryFilter ||
+              item.keywords?.some(
+                (keyword: { keyword: Keyword }) =>
+                  category === keyword.keyword?.name,
+              )
+            : true;
 
-      return nameMatch && descMatch && categoryMatch;
-    });
-  }, [
-    weapons,
-    armor,
-    cybernetics,
-    vehicles,
-    modifications,
-    keywords,
-    perkArray,
-    actions,
-    conditions,
-    nameQuery,
-    descriptionQuery,
-    category,
-  ]);
+          return nameMatch && descMatch && categoryMatch;
+        })
+      : [];
+  };
 
-  const keywordList = [weaponKeywords, armorKeywords].flat();
+  const filteredItems = items ? filterItems(items) : [];
+  const filteredActions = actions ? filterItems(actions) : [];
+  const filteredPerks = perkArray ? filterItems(perkArray) : [];
+  const filteredKeywords = keywords ? filterItems(keywords) : [];
+  const filteredConditions = conditions ? filterItems(conditions) : [];
 
-  const isLoading =
-    weaponsLoading ||
-    armorLoading ||
-    cyberneticsLoading ||
-    keywordsLoading ||
-    vehiclesLoading ||
-    modificationsLoading ||
-    perksLoading ||
-    actionsLoading ||
-    conditionsLoading;
-  const isPending =
-    weaponsPending ||
-    armorPending ||
-    cyberneticsPending ||
-    keywordsPending ||
-    vehiclesPending ||
-    modificationsPending ||
-    perksPending ||
-    actionsPending ||
-    conditionsPending;
+  const keywordList = keywords?.map((keyword) => keyword.name);
 
   const filterByNameQuery = (query: string) => {
     if (nameTimerRef.current) {
@@ -266,7 +155,7 @@ const CodexSearch = () => {
               {(field) => (
                 <InputSelectField
                   field={field}
-                  label="Keyword"
+                  label="Trait"
                   options={keywordList}
                   onChange={() => {
                     setCategory(field.state.value);
@@ -280,7 +169,7 @@ const CodexSearch = () => {
           <searchForm.Field name="nameQuery">
             {(field) => (
               <InputField
-                label="Search by name"
+                label="Search by Name"
                 field={field}
                 onChange={() => {
                   filterByNameQuery(field.state.value);
@@ -293,7 +182,7 @@ const CodexSearch = () => {
               {(field) => (
                 <InputField
                   className="w-full"
-                  label="Search by description"
+                  label="Search by Description"
                   field={field}
                   onChange={() => {
                     filterByDescriptionQuery(field.state.value);
@@ -347,139 +236,59 @@ const CodexSearch = () => {
           </div>
         </form>
       </ThemeContainer>
-      <div
-        className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
-      >
-        {codex.map((item) => {
-          return item.type === 'weapon' ? (
-            cardType === 'large' ? (
-              <WeaponCard
-                key={item.item.name + item.item.id}
-                weapon={item.item}
-                mode="codex"
-              />
-            ) : (
-              <WeaponCardMobile
-                key={item.item.name + item.item.id}
-                weapon={item.item}
-                mode="codex"
-              />
-            )
-          ) : item.type === 'armor' ? (
-            cardType === 'large' ? (
-              <ArmorCard
-                key={item.item.name + item.item.id}
-                armor={item.item}
-                mode={'codex'}
-              />
-            ) : (
-              <ArmorCardMobile
-                key={item.item.name + item.item.id}
-                armor={item.item}
-                mode={'codex'}
-              />
-            )
-          ) : item.type === 'cybernetic' ? (
-            cardType === 'large' ? (
-              <CyberneticCard
-                key={item.item.name + item.item.id}
-                cybernetic={item.item}
-                mode="codex"
-              />
-            ) : (
-              <CyberneticCardMobile
-                key={item.item.name + item.item.id}
-                cybernetic={item.item}
-                mode="codex"
-              />
-            )
-          ) : (
-            item.type === 'vehicle' &&
-            (cardType === 'large' ? (
-              <VehicleCard
-                key={item.item.name + item.item.id}
-                vehicle={item.item}
-                mode="codex"
-              />
-            ) : (
-              <VehicleCardMobile
-                key={item.item.name + item.item.id}
-                vehicle={item.item}
-                mode="codex"
-              />
-            ))
-          );
-        })}
-      </div>
-      {codex.filter((item) => item.type === 'modification').length > 0 && (
-        <div className="flex w-full flex-col gap-4">
-          <h2 className="pl-4">Modifications</h2>
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {codex.map((item, index) => {
-              return (
-                item.type === 'modification' && (
-                  <ModCard key={index} modification={item.item} mode="codex" />
-                )
-              );
-            })}
+      {filteredItems.length > 0 && (
+        <>
+          <ArrowHeader2 className="self-start" title="Items" />
+          <div
+            className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
+          >
+            {filteredItems.map((item) =>
+              cardType === 'large' ? (
+                <ItemCard key={item.id} item={item} mode="search" />
+              ) : (
+                <ItemCardMobile key={item.id} item={item} mode="search" />
+              ),
+            )}
           </div>
-        </div>
+        </>
       )}
-      {codex.filter((item) => item.type === 'keyword').length > 0 && (
+      {filteredKeywords.length > 0 && (
         <div className="flex w-full flex-col gap-4">
           <h2 className="pl-4">Keywords</h2>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {codex.map((item, index) => {
-              return (
-                item.type === 'keyword' && (
-                  <KeywordCard key={index} keyword={item.item} mode="codex" />
-                )
-              );
+            {filteredKeywords.map((keyword, index) => {
+              return <KeywordCard key={index} keyword={keyword} mode="codex" />;
             })}
           </div>
         </div>
       )}
-      {codex.filter((item) => item.type === 'perk').length > 0 && (
+      {filteredPerks.length > 0 && (
         <div className="flex w-full flex-col gap-4">
           <h2 className="pl-4">Perks</h2>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {codex.map((item, index) => {
-              return (
-                item.type === 'perk' && (
-                  <PerkCard key={index} perk={item.item} mode="codex" />
-                )
-              );
+            {filteredPerks.map((perk, index) => {
+              return <PerkCard key={index} perk={perk} mode="codex" />;
             })}
           </div>
         </div>
       )}
-      {codex.filter((item) => item.type === 'action').length > 0 && (
+      {filteredActions.length > 0 && (
         <div className="flex w-full flex-col gap-4">
           <h2 className="pl-4">Actions</h2>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {codex.map((item, index) => {
-              return (
-                item.type === 'action' && (
-                  <ActionCard key={index} action={item.item} mode="codex" />
-                )
-              );
+            {filteredActions.map((action, index) => {
+              return <ActionCard key={index} action={action} mode="codex" />;
             })}
           </div>
         </div>
       )}
-      {codex.filter((item) => item.type === 'condition').length > 0 && (
+      {filteredConditions.length > 0 && (
         <div className="flex w-full flex-col gap-4">
           <h2 className="pl-4">Conditions</h2>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {codex.map((item, index) => {
+            {filteredConditions.map((condition, index) => {
               return (
-                item.type === 'condition' && (
-                  <ConditionCard
-                    key={index}
-                    condition={item.item}
-                    mode="codex"
-                  />
-                )
+                <ConditionCard key={index} condition={condition} mode="codex" />
               );
             })}
           </div>

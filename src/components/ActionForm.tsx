@@ -10,19 +10,22 @@ import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import FormLayout from '../layouts/FormLayout';
 import useCreateActionMutation from '../hooks/useCreateActionMutation/useCreateActionMutation';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import Loading from './Loading';
 import useDeleteActionMutation from '../hooks/useDeleteActionMutation/useDeleteActionMutation';
 import useActions from '../hooks/useActions';
-import { Action } from 'src/types/action';
+import { Action, ActionCosts } from 'src/types/action';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 
-const ActionForm = ({ mode }: { mode?: string }) => {
+const ActionForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { actionId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const actions = useActions();
 
@@ -60,13 +63,17 @@ const ActionForm = ({ mode }: { mode?: string }) => {
 
   const actionForm = useForm({
     defaultValues: {
+      id: action?.id || 0,
       name: action?.name || '',
-      costs:
-        action?.costs ||
-        ([{ stat: 'actionPoints', value: 1 }] as {
-          stat: string;
-          value: number;
-        }[]),
+      costs: {
+        actionPoints: action?.costs?.actionPoints || '',
+        reactionPoints: action?.costs?.reactionPoints || '',
+        power: action?.costs?.power || '',
+        health: action?.costs?.health || '',
+        sanity: action?.costs?.sanity || '',
+        wyrmShells: action?.costs?.wyrmShells || '',
+        currentAmmoCount: action?.costs?.currentAmmoCount || '',
+      },
       roll:
         action?.roll ||
         ([] as {
@@ -81,16 +88,17 @@ const ActionForm = ({ mode }: { mode?: string }) => {
       description: action?.description || '',
     },
     onSubmit: async ({ value }) => {
-      const filteredCosts = value.costs.filter((cost) => cost.stat);
-
-      value.costs = filteredCosts;
-
       const filteredSubtypes = value.actionSubtypes.filter(
         (subtype) => subtype.length,
       );
 
+      const filteredCosts = Object.fromEntries(
+        Object.entries(value.costs).filter(([_, value]) => value),
+      ) as ActionCosts;
+
+      value.costs = filteredCosts;
+
       value.actionSubtypes = filteredSubtypes;
-      value.id = actionId;
 
       await createAction.mutate(value);
     },
@@ -116,7 +124,7 @@ const ActionForm = ({ mode }: { mode?: string }) => {
         }}
       >
         <h1 className="text-center">
-          {action ? 'Update Action' : 'Create Action'}
+          {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Action'}
         </h1>
         <Divider />
         <ArrowHeader2 title="Action Information" />
@@ -132,75 +140,6 @@ const ActionForm = ({ mode }: { mode?: string }) => {
           {(field) => (
             <InputField className="grow" label="Action name" field={field} />
           )}
-        </actionForm.Field>
-        <actionForm.Field name="costs" mode="array">
-          {(field) => {
-            return (
-              <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:gap-8">
-                {field.state.value.map((_, i) => {
-                  return (
-                    <div key={i} className="flex gap-2 sm:gap-4 lg:gap-6">
-                      <actionForm.Field name={`costs[${i}].stat`}>
-                        {(subField) => {
-                          return (
-                            <SelectField
-                              className="grow"
-                              label="Stat"
-                              field={subField}
-                            >
-                              <option defaultValue=""></option>
-                              <option value="actionPoints">
-                                Action points
-                              </option>
-                              <option value="reactionPoints">
-                                Reaction points
-                              </option>
-                              <option value="power">Power</option>
-                              <option value="health">Health</option>
-                              <option value="sanity">Sanity</option>
-                              <option value="wyrmShells">Wyrm shells</option>
-                            </SelectField>
-                          );
-                        }}
-                      </actionForm.Field>
-                      <actionForm.Field key={i} name={`costs[${i}].value`}>
-                        {(subField) => {
-                          return (
-                            <InputField
-                              className="max-w-28"
-                              type="number"
-                              label="Value"
-                              field={subField}
-                            />
-                          );
-                        }}
-                      </actionForm.Field>
-                      <button
-                        className="sm:-ml-2 lg:-ml-4"
-                        onClick={() => field.removeValue(i)}
-                        type="button"
-                      >
-                        <Icon
-                          className="text-tertiary"
-                          path={mdiClose}
-                          size={1}
-                        />
-                      </button>
-                    </div>
-                  );
-                })}
-                <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
-                  <button
-                    className="text-accent self-end hover:underline"
-                    onClick={() => field.pushValue({ stat: '', value: 1 })}
-                    type="button"
-                  >
-                    Add cost
-                  </button>
-                </div>
-              </div>
-            );
-          }}
         </actionForm.Field>
         <actionForm.Field name="roll" mode="array">
           {(field) => {
@@ -308,8 +247,9 @@ const ActionForm = ({ mode }: { mode?: string }) => {
             <SelectField label="Action type" field={field}>
               <option defaultValue="" disabled></option>
               <option value="action">Action</option>
-              <option value="extendedAction">Ex. action</option>
+              <option value="extendedAction">Extended action</option>
               <option value="reaction">Reaction</option>
+              <option value="passive">Passive</option>
             </SelectField>
           )}
         </actionForm.Field>
@@ -420,16 +360,92 @@ const ActionForm = ({ mode }: { mode?: string }) => {
             />
           )}
         </actionForm.Field>
-        <BtnRect type="submit" className="group w-full">
+        <Divider />
+        <ArrowHeader2 title="Costs" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
+          <actionForm.Field name="costs.actionPoints">
+            {(field) => (
+              <InputField
+                className="grow"
+                type="number"
+                label="Actions"
+                field={field}
+              />
+            )}
+          </actionForm.Field>
+          <actionForm.Field name="costs.reactionPoints">
+            {(field) => (
+              <InputField
+                className="grow"
+                type="number"
+                label="Reactions"
+                field={field}
+              />
+            )}
+          </actionForm.Field>
+          <actionForm.Field name="costs.power">
+            {(field) => (
+              <InputField
+                className="grow"
+                type="number"
+                label="Power"
+                field={field}
+              />
+            )}
+          </actionForm.Field>
+          <actionForm.Field name="costs.health">
+            {(field) => (
+              <InputField
+                className="grow"
+                type="number"
+                label="Health"
+                field={field}
+              />
+            )}
+          </actionForm.Field>
+          <actionForm.Field name="costs.sanity">
+            {(field) => (
+              <InputField
+                className="grow"
+                type="number"
+                label="Sanity"
+                field={field}
+              />
+            )}
+          </actionForm.Field>
+          <actionForm.Field name="costs.wyrmShells">
+            {(field) => (
+              <InputField
+                className="grow"
+                type="number"
+                label="Wyrm Shells"
+                field={field}
+              />
+            )}
+          </actionForm.Field>
+          <actionForm.Field name="costs.currentAmmoCount">
+            {(field) => (
+              <InputField
+                className="grow"
+                type="number"
+                label="Ammunition"
+                field={field}
+              />
+            )}
+          </actionForm.Field>
+        </div>
+        <BtnRect
+          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          type="submit"
+          className="group w-full"
+        >
           {createAction.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : action ? (
-            'Update'
           ) : (
-            'Create'
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>

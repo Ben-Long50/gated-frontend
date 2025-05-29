@@ -1,29 +1,19 @@
-import { WeaponWithKeywords } from 'src/types/weapon';
-import { ArmorWithKeywords } from 'src/types/armor';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import { ReactNode, useContext } from 'react';
-import { Item } from 'src/types/item';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ItemMenu from './ItemMenu';
+import { SortedInventory } from 'src/types/character';
 
 const EquipmentList = ({
-  weapons,
-  armor,
-  cybernetics,
-  items,
+  equipment,
   active,
-  setActive,
+  toggleActive,
 }: {
-  weapons: WeaponWithKeywords[];
-  armor: ArmorWithKeywords[];
-  cybernetics: CyberneticWithKeywords[];
-  items: Item[];
+  equipment: SortedInventory | null;
   active: {
     id: null | number;
     category: null | string;
   };
-  setActive: (item: { id: null | number; category: null | string }) => void;
-
+  toggleActive: (id: null | number, category: null | string) => void;
   modalOpen: boolean;
   toggleModal: () => void;
   children?: ReactNode;
@@ -32,15 +22,9 @@ const EquipmentList = ({
 
   return (
     <div className="flex w-full flex-col gap-8">
-      <ItemMenu
-        weapons={weapons}
-        armor={armor}
-        cybernetics={cybernetics}
-        items={items}
-        mode="equipment"
-      >
-        {(item, index, { tab }) =>
-          item.equipped === true && (
+      <ItemMenu equipment={equipment}>
+        {(item, index, { tab }) => {
+          return (
             <div
               key={index}
               className="flex flex-col rounded-br-4xl rounded-tl-4xl shadow-md shadow-black"
@@ -49,12 +33,7 @@ const EquipmentList = ({
                 <button
                   className="group relative h-24 w-28 shrink-0 overflow-hidden pl-1 lg:h-28 lg:w-32"
                   style={{ backgroundColor: rarityColorMap[item.rarity] }}
-                  onClick={() =>
-                    setActive({
-                      id: item.id,
-                      category: tab,
-                    })
-                  }
+                  onClick={() => toggleActive(item.id, tab)}
                 >
                   {item.picture?.imageUrl ? (
                     <img
@@ -75,19 +54,14 @@ const EquipmentList = ({
                   {active?.id === item?.id ? (
                     <button
                       className="text-error text-lg hover:underline"
-                      onClick={() => setActive({ id: null, category: null })}
+                      onClick={() => toggleActive(null, null)}
                     >
                       Disarm
                     </button>
                   ) : (
                     <button
                       className="text-accent text-lg hover:underline"
-                      onClick={() =>
-                        setActive({
-                          id: item.id,
-                          category: tab,
-                        })
-                      }
+                      onClick={() => toggleActive(item.id, tab)}
                     >
                       Activate
                     </button>
@@ -95,8 +69,8 @@ const EquipmentList = ({
                 </div>
               </div>
             </div>
-          )
-        }
+          );
+        }}
       </ItemMenu>
     </div>
   );

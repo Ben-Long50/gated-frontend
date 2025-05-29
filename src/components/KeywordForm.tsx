@@ -8,18 +8,22 @@ import SelectField from './SelectField';
 import useCreateKeywordMutation from '../hooks/useCreateKeywordMutation/useCreateKeywordMutation';
 import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import useDeleteKeywordMutation from '../hooks/useDeleteKeywordMutation/useDeleteKeywordMutation';
 import useKeywords from '../hooks/useKeywords';
 import { Keyword } from 'src/types/keyword';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
+import InputSelectField from './InputSelectField';
 
-const KeywordForm = ({ mode }: { mode?: string }) => {
+const KeywordForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { keywordId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const keywords = useKeywords();
 
@@ -29,12 +33,12 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
 
   const createKeyword = useCreateKeywordMutation(
     apiUrl,
-    keywordId,
+    Number(keywordId),
     setFormMessage,
   );
   const deleteKeyword = useDeleteKeywordMutation(
     apiUrl,
-    keywordId,
+    Number(keywordId),
     setFormMessage,
   );
 
@@ -55,6 +59,7 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
       name: keyword?.name || '',
       description: keyword?.description || '',
       keywordType: keyword?.keywordType || '',
+      gpCost: keyword?.gpCost || null,
     },
     onSubmit: async ({ value }) => {
       await createKeyword.mutate(value);
@@ -81,64 +86,85 @@ const KeywordForm = ({ mode }: { mode?: string }) => {
         }}
       >
         <h1 className="text-center">
-          {keyword ? 'Update Keyword' : 'Create Keyword'}
+          {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Trait'}
         </h1>
         <Divider />
-        <ArrowHeader2 title="Keyword Information" />
+        <ArrowHeader2 title="Trait Information" />
         <keywordForm.Field
           name="name"
           validators={{
             onChange: ({ value }) =>
               value.length < 2
-                ? 'Keyword name must be at least 2 characters long'
+                ? 'Trait name must be at least 2 characters long'
                 : undefined,
           }}
         >
-          {(field) => <InputField label="Keyword name" field={field} />}
+          {(field) => <InputField label="Trait Name" field={field} />}
         </keywordForm.Field>
         <keywordForm.Field
           name="description"
           validators={{
             onChange: ({ value }) =>
               value.length < 2
-                ? 'Keyword description must be at least 2 characters long'
+                ? 'Trait description must be at least 2 characters long'
                 : undefined,
           }}
         >
           {(field) => (
             <TextAreaField
-              className="h-40 w-full"
-              label="Keyword description"
+              className="w-full"
+              label="Trait Description"
               field={field}
             />
           )}
         </keywordForm.Field>
-        <keywordForm.Field
-          name="keywordType"
-          validators={{
-            onSubmit: ({ value }) =>
-              value.length < 1 ? 'You must select a keyword type' : undefined,
-          }}
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+          <keywordForm.Field
+            name="keywordType"
+            validators={{
+              onSubmit: ({ value }) =>
+                value.length < 1 ? 'You must select a trait type' : undefined,
+            }}
+          >
+            {(field) => (
+              <InputSelectField
+                options={[
+                  'weapon',
+                  'armor',
+                  'vehicle',
+                  'chromebits',
+                  'hardwired',
+                  'networked',
+                ]}
+                field={field}
+                label="Trait Type"
+              />
+            )}
+          </keywordForm.Field>
+          <keywordForm.Field
+            name="gpCost"
+            validators={{
+              onSubmit: ({ value }) =>
+                !value ? 'You must enter GP cost' : undefined,
+            }}
+          >
+            {(field) => (
+              <InputField field={field} type="number" label="GP Cost" />
+            )}
+          </keywordForm.Field>
+        </div>
+        <BtnRect
+          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          type="submit"
+          className="group w-full"
         >
-          {(field) => (
-            <SelectField type="select" label="Keyword type" field={field}>
-              <option defaultValue="" disabled></option>
-              <option value="weapon">Weapon</option>
-              <option value="armor">Armor</option>
-              <option value="cybernetic">Cybernetic</option>
-            </SelectField>
-          )}
-        </keywordForm.Field>
-        <BtnRect type="submit" className="group w-full">
           {createKeyword.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : keyword ? (
-            'Update'
           ) : (
-            'Create'
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>

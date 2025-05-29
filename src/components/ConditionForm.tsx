@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import { useContext, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
 import Loading from './Loading';
@@ -15,11 +15,14 @@ import { Condition } from 'src/types/condition';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 
-const ConditionForm = ({ mode }: { mode?: string }) => {
+const ConditionForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { conditionId } = useParams();
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = parts[parts.length - 1];
 
   const conditions = useConditions();
 
@@ -81,7 +84,7 @@ const ConditionForm = ({ mode }: { mode?: string }) => {
         }}
       >
         <h1 className="text-center">
-          {condition ? 'Update Condition' : 'Create Condition'}
+          {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Condition'}
         </h1>
         <Divider />
         <ArrowHeader2 title="Condition Information" />
@@ -132,16 +135,18 @@ const ConditionForm = ({ mode }: { mode?: string }) => {
             />
           )}
         </conditionForm.Field>
-        <BtnRect type="submit" className="group w-full">
+        <BtnRect
+          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          type="submit"
+          className="group w-full"
+        >
           {createCondition.isPending ? (
             <Loading
               className="group-hover:text-yellow-300 dark:text-gray-900"
               size={1.15}
             />
-          ) : condition ? (
-            'Update'
           ) : (
-            'Create'
+            mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
       </form>

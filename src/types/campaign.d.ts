@@ -1,5 +1,6 @@
 import { Character } from './character';
 import { Faction } from './faction';
+import { Picture } from './picture';
 import { User } from './user';
 
 interface Campaign {
@@ -9,7 +10,7 @@ interface Campaign {
   owner: User;
   name: string;
   location: string;
-  picture: { imageUrl: string; publicId: string };
+  picture: Picture;
   pendingPlayers: User[];
   players: User[];
   factions: Faction[];

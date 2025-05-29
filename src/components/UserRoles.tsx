@@ -33,7 +33,6 @@ const UserRoleForm = ({
       role: user.role || '',
     },
     onSubmit: ({ value }) => {
-      console.log(value);
       updateUserRole.mutate(value);
     },
   });

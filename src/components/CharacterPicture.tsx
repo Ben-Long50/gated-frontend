@@ -14,20 +14,19 @@ const CharacterPicture = ({
   const { accentPrimary } = useContext(ThemeContext);
 
   return (
-    <div className="grid grid-cols-[1fr_auto_1fr]">
-      <ThemeContainer
-        className="col-span-1 col-start-2"
-        chamfer="medium"
-        borderColor={accentPrimary}
-      >
-        <CloudinaryImage
-          className={`${className} bg-primary w-full`}
-          detailsOpen={true}
-          url={character.picture?.imageUrl}
-          alt={`${character.firstName} ${character.lastName}'s image`}
-        />
-      </ThemeContainer>
-    </div>
+    <ThemeContainer
+      className="aspect-square"
+      chamfer="medium"
+      borderColor={accentPrimary}
+      overflowHidden={true}
+    >
+      <CloudinaryImage
+        className={`${className}`}
+        url={character.picture?.imageUrl}
+        alt={`${character.firstName} ${character.lastName}'s image`}
+        position={character.picture?.position}
+      />
+    </ThemeContainer>
   );
 };
 

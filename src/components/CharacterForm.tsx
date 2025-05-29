@@ -1,18 +1,13 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import InputField from './InputField';
-import ThemeContainer from './ThemeContainer';
-import { ThemeContext } from '../contexts/ThemeContext';
 import BtnRect from './buttons/BtnRect';
 import AttributeCard from './AttributeCard';
 import { AuthContext } from '../contexts/AuthContext';
 import { useForm, useStore, ValidationError } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
 import StatBar from './StatBar';
-import PerkList from './PerkList';
 import usePerks from '../hooks/usePerks';
 import useCreateCharacterMutation from '../hooks/useCreateCharacterMutation/useCreateCharacterMutation';
-import Icon from '@mdi/react';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import ArmorIcon from './icons/ArmorIcon';
@@ -31,15 +26,15 @@ import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import InputFieldRadio from './InputFieldRadio';
 import InputSelectField from './InputSelectField';
-import { AttributeName, SkillName } from 'src/types/attributeTree';
-import ArrowHeader3 from './ArrowHeader3';
+import PerkLinkField from './form_fields/PerkLinkField';
+import { Perk } from 'src/types/perk';
+import NpcPreferenceField from './form_fields/NpcPreferenceField';
+import PictureField from './form_fields/PictureField';
 
 const CharacterForm = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
   const { layoutSize } = useContext(LayoutContext);
 
-  const [imagePreview, setImagePreview] = useState('');
   const [formMessage, setFormMessage] = useState('');
 
   const cardRef = useRef(null);
@@ -52,24 +47,30 @@ const CharacterForm = () => {
 
   const createCharacter = useCreateCharacterMutation(apiUrl, setFormMessage);
 
-  const searchForm = useForm({
-    defaultValues: {
-      attribute: '' as AttributeName | 'general',
-      skill: '' as SkillName,
-      query: '',
-    },
-    onSubmit: ({ value }) => {
-      perks.filterPerks(value.query);
-    },
-  });
-
   const characterForm = useForm({
     defaultValues: {
       playerCharacter: '' as string | boolean,
       campaignId: null,
+      preferences: {
+        firstName: true,
+        lastName: true,
+        age: true,
+        height: true,
+        weight: true,
+        sex: true,
+        picture: true,
+        backstory: true,
+        level: true,
+        profits: true,
+        stats: true,
+        attributes: true,
+        perks: true,
+        equipment: true,
+      },
       firstName: '',
       lastName: '',
       picture: '',
+      position: { x: 50, y: 50 },
       height: '',
       weight: '',
       age: '',
@@ -79,7 +80,7 @@ const CharacterForm = () => {
         currentSanity: 0,
       },
       attributes: attributeTree.tree,
-      perks: [] as number[],
+      perks: [] as Perk[],
     },
     onSubmit: ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
@@ -87,7 +88,10 @@ const CharacterForm = () => {
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, value]) => {
-        if (key === 'picture' && value instanceof File) {
+        if (key === 'perks') {
+          const perkIds = value.map((perk: Perk) => perk.id) || [];
+          formData.append(key, JSON.stringify(perkIds));
+        } else if (key === 'picture' && value instanceof File) {
           formData.append(key, value);
         } else {
           formData.append(key, JSON.stringify(value));
@@ -97,14 +101,19 @@ const CharacterForm = () => {
     },
   });
 
-  const perkIds = useStore(characterForm.store, (state) => state.values.perks);
+  const perkIds = useStore(characterForm.store, (state) =>
+    state.values.perks.map((perk) => perk.id),
+  );
 
   const selectedPerks = perks
     .flattenPerkTree(perks.filteredPerkTree)
     .filter((perk) => perkIds.includes(perk.id));
 
   const { stats } = useStats(
-    { weapons: [], armor: [], cybernetics: [], vehicles: [], items: [] },
+    {
+      items: [],
+      actions: [],
+    } as unknown as CharacterInventory,
     attributeTree?.tree,
     selectedPerks,
   );
@@ -114,18 +123,6 @@ const CharacterForm = () => {
     characterForm.setFieldValue('stats.currentHealth', stats.maxHealth);
     characterForm.setFieldValue('stats.currentSanity', stats.maxSanity);
   }, [attributeTree, characterForm]);
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0]; // Get the selected file
-
-    if (selectedFile) {
-      characterForm.setFieldValue('picture', selectedFile);
-
-      // Create a URL for the selected file to preview
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
 
   if (perks.isPending) return <Loading />;
 
@@ -190,53 +187,14 @@ const CharacterForm = () => {
             />
           )}
         </characterForm.Field>
+        <NpcPreferenceField form={characterForm} />
         <Divider />
         <ArrowHeader2 title="Character Information" />
-        <div className="flex w-full flex-col gap-8 sm:flex-row">
-          <ThemeContainer
-            className="mx-auto w-full max-w-sm"
-            chamfer="medium"
-            borderColor={accentPrimary}
-          >
-            {!imagePreview ? (
-              <label className="flex aspect-square size-full w-full cursor-pointer flex-col items-center justify-center clip-6">
-                <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                  <Icon
-                    className="text-tertiary"
-                    path={mdiImagePlus}
-                    size={3}
-                  />
-                  <p className="text-tertiary font-semibold">
-                    Upload character picture
-                  </p>
-                  <p className="text-tertiary">PNG, JPG, JPEG</p>
-                </div>
-                <input
-                  id="file"
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-            ) : (
-              <div className="bg-secondary relative flex aspect-square max-w-4xl items-center justify-center overflow-hidden bg-black clip-6">
-                <img
-                  className="fade-in-bottom"
-                  src={imagePreview}
-                  alt="Preview"
-                />
-                <button
-                  className="text-secondary absolute right-2 top-2"
-                  onClick={() => {
-                    characterForm.setFieldValue('picture', '');
-                    setImagePreview('');
-                  }}
-                >
-                  <Icon path={mdiCloseBox} size={1.5} />
-                </button>
-              </div>
-            )}
-          </ThemeContainer>
+        <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
+          <PictureField
+            form={characterForm}
+            sizeInfo={{ aspectRatio: '1/1', maxHeight: '', minHeight: '' }}
+          />
           <div className="flex w-full flex-col gap-8 max-sm:col-span-2">
             <characterForm.Field
               name="firstName"
@@ -428,94 +386,13 @@ const CharacterForm = () => {
           Select a starting perk for your character. Available perks are only
           shown if you meet the attribute and skill point requirements
         </p>
-        <div className="flex w-full flex-col gap-4">
-          <div className="grid w-full items-center gap-4 max-sm:grid-cols-1 max-sm:grid-rows-[auto_1fr_1fr_auto] sm:grid-cols-[auto_1fr_1fr_auto] sm:gap-8">
-            <ArrowHeader3 title="Filter Options" />
-            <searchForm.Field
-              name="attribute"
-              listeners={{
-                onChange: () => {
-                  searchForm.setFieldValue('skill', '');
-                  perks.filterBySkill('');
-                },
-              }}
-            >
-              {(field) => (
-                <InputSelectField
-                  className="w-full"
-                  field={field}
-                  label="Attribute"
-                  options={[
-                    'general',
-                    'cybernetica',
-                    'esoterica',
-                    'peace',
-                    'violence',
-                  ]}
-                  onChange={() => perks.filterByAttribute(field.state.value)}
-                />
-              )}
-            </searchForm.Field>
-            <searchForm.Subscribe
-              selector={(state) => [state.values.attribute]}
-            >
-              {([selectedAttribute]) => (
-                <searchForm.Field name="skill">
-                  {(field) => (
-                    <InputSelectField
-                      field={field}
-                      label="Skill"
-                      options={
-                        selectedAttribute && selectedAttribute !== 'general'
-                          ? Object.keys(
-                              attributeTree.emptyAttributeTree[
-                                selectedAttribute
-                              ].skills,
-                            )
-                          : []
-                      }
-                      onChange={() => perks.filterBySkill(field.state.value)}
-                    />
-                  )}
-                </searchForm.Field>
-              )}
-            </searchForm.Subscribe>
-            <button
-              type="button"
-              className="text-accent hover:underline"
-              onClick={(e) => {
-                e.preventDefault();
-                searchForm.setFieldValue('skill', '');
-                perks.filterBySkill('');
-                searchForm.setFieldValue('attribute', '');
-                perks.filterByAttribute('');
-              }}
-            >
-              Reset
-            </button>
-          </div>
-          <searchForm.Field name="query">
-            {(field) => (
-              <InputField
-                label="Search perks"
-                field={field}
-                onChange={() => {
-                  searchForm.handleSubmit();
-                }}
-              />
-            )}
-          </searchForm.Field>
+        <div className="flex flex-col gap-4">
+          <PerkLinkField
+            form={characterForm}
+            perkTree={perks.filteredPerkTree}
+          />
         </div>
-        <characterForm.Field name="perks">
-          {(field) => (
-            <PerkList
-              field={field}
-              className="scrollbar-primary-2 max-h-[500px] overflow-y-auto py-4 pr-4"
-              perkTree={perks.filteredPerkTree}
-              mode="form"
-            />
-          )}
-        </characterForm.Field>
+        <Divider />
         <BtnRect
           ariaLabel="Create character"
           type="submit"

@@ -11,7 +11,7 @@ const AuthLayout = () => {
     <div
       className={`${theme} scrollbar-primary-2 relative flex h-full min-h-dvh w-dvw items-center justify-center overflow-y-auto p-4 sm:p-8`}
       style={{
-        backgroundImage: `url('/glam-login-1.jpeg')`,
+        backgroundImage: `url('/nova_viridian.jpeg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',

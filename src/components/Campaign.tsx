@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
@@ -20,22 +20,18 @@ import ThemeContainer from './ThemeContainer';
 import { Faction } from 'src/types/faction';
 import BtnRect from './buttons/BtnRect';
 import useJoinCampaignMutation from '../hooks/useJoinCampaignMutation/useJoinCampaignMutation';
-import { LayoutContext } from '../contexts/LayoutContext';
 import ArrowHeader3 from './ArrowHeader3';
-import { useQueryClient } from '@tanstack/react-query';
-import useCharacterQueries from '../hooks/useCharacterQuery/useCharacterQueries';
+import useCampaignCharactersQuery from 'src/hooks/useCampaignCharactersQuery/useCampaignCharactersQuery';
 
 const Campaign = () => {
   const { apiUrl, user } = useContext(AuthContext);
-  const { mobile } = useContext(LayoutContext);
   const { campaignId } = useParams();
   const { accentPrimary } = useContext(ThemeContext);
-  const queryClient = useQueryClient();
+  const [tab, setTab] = useState('sessions');
 
   const {
     data: campaign,
-    isLoading,
-    isPending,
+    isLoading: campaignLoading,
     isError,
   } = useCampaignQuery(apiUrl, Number(campaignId));
   console.log(campaign);
@@ -47,23 +43,20 @@ const Campaign = () => {
   const characters = useCharacterQueries(apiUrl, characterIds);
   console.log(characters);
 
-  const playerCharacters =
-    characters
-      ?.map((character) => character.data)
-      .filter((character) => character?.playerCharacter) || [];
+  const {
+    playerCharacters,
+    nonPlayerCharacters,
+    isLoading: charactersLoading,
+  } = useCampaignCharactersQuery(
+    apiUrl,
+    campaign?.characters.map((character) => character.id) || [],
+  );
 
-  const nonPlayerCharacters =
-    characters
-      ?.map((character) => character.data)
-      .filter((character) => !character?.playerCharacter) || [];
-
-  useEffect(() => {
-    queryClient.refetchQueries({ queryKey: ['character'] });
-  }, [campaign]);
-
-  const joinCampaign = useJoinCampaignMutation(apiUrl, campaignId);
+  const joinCampaign = useJoinCampaignMutation(apiUrl, Number(campaignId));
 
   const pendingIds = campaign?.pendingPlayers.map((player: User) => player.id);
+
+  const isLoading = campaignLoading || charactersLoading;
 
   if (isLoading) return <Loading />;
 
@@ -73,13 +66,18 @@ const Campaign = () => {
 
   return (
     <>
-      <div className="absolute top-0 -z-10 mx-auto flex aspect-[10/3] min-h-[500px] max-w-9xl justify-center overflow-hidden">
+      <div className="absolute top-0 -z-10 mx-auto aspect-[10/3] h-[500px] w-dvw max-w-9xl overflow-hidden">
         <img
-          className="w-full object-cover object-center"
+          className="h-full w-full object-cover"
           src={`${campaign.picture?.imageUrl}`}
           alt="Campaign cover image"
+          style={{
+            objectPosition: campaign.picture?.position
+              ? `${campaign.picture?.position.x}% ${campaign.picture?.position.y}%`
+              : '50% 50%',
+            maskImage: 'linear-gradient(black 0%, transparent 100%',
+          }}
         />
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
         <div className="absolute right-6 top-6 flex flex-col items-center gap-4">
           <div className="relative">
             <img
@@ -116,7 +114,7 @@ const Campaign = () => {
             {campaign.location}
           </h2>
         </div>
-        {pendingIds?.includes(user.id) && (
+        {pendingIds?.includes(user?.id) && (
           <BtnRect
             type="button"
             ariaLabel="Join campaign"
@@ -125,97 +123,116 @@ const Campaign = () => {
               joinCampaign.mutate();
             }}
           >
-            Join Campaign
+            {joinCampaign.isPending ? (
+              <Loading
+                className="group-hover:text-yellow-300 dark:text-gray-900"
+                size={1.15}
+              />
+            ) : (
+              'Join Campaign'
+            )}
           </BtnRect>
         )}
-        <div
-          className={`${mobile ? 'flex flex-col gap-4' : 'mt-40 grid grid-cols-2 gap-8'} w-full`}
-        >
+        <div className={`mt-28 flex w-full flex-col gap-4`}>
           <ThemeContainer borderColor={accentPrimary} chamfer="medium">
-            <div className="flex flex-col gap-4 p-4">
-              <ArrowHeader2 title="Sessions" />
-              {campaign.sessions.map((session: Session) => (
-                <Link
-                  className="w-full"
-                  key={session.id}
-                  to={`sessions/${session.id}`}
+            <div className="flex flex-col gap-4 p-4 sm:p-8">
+              <div className="grid grid-cols-2 gap-4">
+                <BtnAuth
+                  active={tab === 'sessions'}
+                  onClick={() => setTab('sessions')}
                 >
-                  <BtnAuth className="timing flex w-full items-center justify-between gap-4 !p-4 !px-6">
-                    <ArrowHeader3 title={session.name} />
-                    <p className="text-right">
-                      {format(session.createdAt, 'PP')}
-                    </p>
-                  </BtnAuth>
-                </Link>
-              ))}
+                  Sessions
+                </BtnAuth>
+                <BtnAuth
+                  active={tab === 'factions'}
+                  onClick={() => setTab('factions')}
+                >
+                  Factions
+                </BtnAuth>
+              </div>
+              <Divider />
+              {tab === 'sessions' && (
+                <>
+                  {campaign.sessions.map((session: Session) => (
+                    <Link
+                      className="w-full"
+                      key={session.id}
+                      to={`sessions/${session.id}`}
+                    >
+                      <BtnAuth className="timing flex w-full items-center justify-between gap-4 !p-4 !px-6">
+                        <ArrowHeader3 title={session.name} />
+                        <p className="text-right">
+                          {format(session.createdAt, 'PP')}
+                        </p>
+                      </BtnAuth>
+                    </Link>
+                  ))}
+                </>
+              )}
+              {tab === 'factions' && (
+                <>
+                  {campaign.factions.map((faction: Faction) => (
+                    <Link
+                      className="w-full"
+                      key={faction.id}
+                      to={`factions/${faction.id}`}
+                    >
+                      <BtnAuth className="timing flex w-full items-center justify-between p-4">
+                        <div className="flex items-center gap-4">
+                          {faction.picture?.imageUrl && (
+                            <img
+                              className="size-16 rounded-full object-cover shadow shadow-black"
+                              src={faction.picture?.imageUrl}
+                              alt={faction.name + "'s picture"}
+                            />
+                          )}
+                          <ArrowHeader3 title={faction.name} />
+                        </div>
+                      </BtnAuth>
+                    </Link>
+                  ))}
+                </>
+              )}
             </div>
           </ThemeContainer>
-          <ThemeContainer borderColor={accentPrimary} chamfer="medium">
-            <div className="flex flex-col gap-4 p-4">
-              <ArrowHeader2 title="Factions" />
-              {campaign.factions.map((faction: Faction) => (
-                <Link
-                  className="w-full"
-                  key={faction.id}
-                  to={`factions/${faction.id}`}
-                >
-                  <BtnAuth className="timing flex w-full items-center justify-between p-4">
-                    <div className="flex items-center gap-4">
-                      {faction.picture?.imageUrl && (
-                        <img
-                          className="size-16 rounded-full object-cover shadow shadow-black"
-                          src={faction.picture?.imageUrl}
-                          alt={faction.name + "'s picture"}
-                        />
-                      )}
-                      <ArrowHeader2 title={faction.name} />
-                    </div>
-                  </BtnAuth>
-                </Link>
-              ))}
-            </div>
-          </ThemeContainer>
-
           <Divider className="col-span-2" />
-          {characters[0].isLoading || characters[0].isPending ? (
-            <Loading />
-          ) : (
-            <div className="col-span-2 flex flex-col items-start gap-8">
-              {playerCharacters.length > 0 && (
-                <>
-                  <ArrowHeader2 title="Player Characters" />
-                  {playerCharacters.map((character: Character) => (
-                    <CharacterCard
-                      key={character.id}
-                      character={character}
-                      path={`characters`}
-                    />
-                  ))}
-                </>
-              )}
-              {playerCharacters.length > 0 && (
-                <>
-                  <ArrowHeader2 title="Non-player Characters" />
-                  {nonPlayerCharacters.map((character: Character) => (
-                    <CharacterCard
-                      key={character.id}
-                      character={character}
-                      path={`characters`}
-                    />
-                  ))}
-                </>
-              )}
-            </div>
+          <div className="col-span-2 flex flex-col items-start gap-8">
+            {playerCharacters?.length > 0 && (
+              <>
+                <ArrowHeader2 title="Player Characters" />
+                {playerCharacters?.map((character: Character) => (
+                  <CharacterCard
+                    key={character?.id}
+                    character={character}
+                    path={`characters`}
+                  />
+                ))}
+              </>
+            )}
+            {playerCharacters?.length > 0 && (
+              <>
+                <ArrowHeader2 title="Non-player Characters" />
+                {nonPlayerCharacters?.map((character: Character) => (
+                  <CharacterCard
+                    key={character?.id}
+                    character={character}
+                    path={`characters`}
+                  />
+                ))}
+              </>
+            )}
+          </div>
+          {campaign.ownerId === user?.id && (
+            <Link className="col-start-2" to={`update`}>
+              <BtnRect
+                className="w-full"
+                type="button"
+                ariaLabel="Update campaign"
+              >
+                Update Campaign
+              </BtnRect>
+            </Link>
           )}
-          <Link className="col-start-2" to={`update`}>
-            <BtnRect
-              className="w-full"
-              type="button"
-              ariaLabel="Update campaign"
-            >
-              Update Campaign
-            </BtnRect>
-          </Link>
         </div>
       </div>
     </>

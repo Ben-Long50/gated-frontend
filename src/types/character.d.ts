@@ -1,12 +1,11 @@
-import { ArmorWithKeywords } from './armor';
+import { Action } from './action';
 import { AttributeTree } from './attributeTree';
 import { Campaign } from './campaign';
-import { CyberneticWithKeywords } from './cybernetic';
+import { Condition } from './condition';
 import { Gang } from './gang';
+import { Item } from './item';
 import { Perk } from './perk';
 import { Picture } from './picture';
-import { VehicleWithWeapons } from './vehicle';
-import { WeaponWithKeywords } from './weapon';
 
 interface Character {
   id: number;
@@ -31,36 +30,70 @@ interface Character {
   lastName: string;
   active: boolean;
   playerCharacter: boolean;
+  preferences: CharacterPreferences;
   perks: Perk[];
-  weapons: WeaponWithKeywords[];
-  armor: ArmorWithKeywords[];
-  cybernetics: CyberneticWithKeywords[];
+  conditions: { condition: Condition; stacks: number | null }[];
   characterCart: CharacterCart;
   characterInventory: CharacterInventory;
 }
 
 interface CharacterStats {
-  currentHealth: number;
-  currentSanity: number;
-  injuries: number;
-  insanities: number;
+  maxHealth?: number;
+  currentHealth?: number;
+  maxSanity?: number;
+  currentSanity?: number;
+  maxCyber?: number;
+  cyber?: number;
+  maxWeight?: number;
+  weight?: number;
+  injuries?: number;
+  insanities?: number;
+}
+
+interface CharacterPreferences {
+  firstName: boolean;
+  lastName: boolean;
+  age: boolean;
+  height: boolean;
+  weight: boolean;
+  sex: boolean;
+  picture: boolean;
+  backstory: boolean;
+  level: boolean;
+  profits: boolean;
+  stats: boolean;
+  attributes: boolean;
+  perks: boolean;
+  equipment: boolean;
 }
 
 interface CharacterCart {
   id: number;
   characterId: number;
-  weapons: WeaponWithKeywords[];
-  armor: ArmorWithKeywords[];
-  cybernetics: CyberneticWithKeywords[];
-  vehicles: VehicleWithWeapons[];
+  items: CartItemReference[];
 }
 
 interface CharacterInventory {
   id: number;
   characterId: number;
-  weapons: Weapon[];
-  armor: Armor[];
-  cybernetics: Cybernetic[];
-  vehicles: Vehicle[];
   items: Item[];
+  actions: Action[];
+}
+
+interface SortedInventory {
+  weapons: Item[];
+  armors: Item[];
+  augmentations: Item[];
+  vehicles: Item[];
+  drones: Item[];
+  reusables: Item[];
+  consumables: Item[];
+}
+
+interface CartItemReference {
+  id: number;
+  characterCartId: number;
+  itemId: number;
+  item: Item;
+  quantity: number;
 }

@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import usePerks from '../hooks/usePerks';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { useForm } from '@tanstack/react-form';
+import { FieldApi, useForm } from '@tanstack/react-form';
 import InputField from './InputField';
 import Loading from './Loading';
 import ArrowHeader2 from './ArrowHeader2';
@@ -11,9 +11,27 @@ import InputSelectField from './InputSelectField';
 import { AttributeName, SkillName } from 'src/types/attributeTree';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
+import { PerkTree } from 'src/types/perk';
+import { ItemObject } from 'src/types/global';
+import { useLocation } from 'react-router-dom';
 
-const Perks = ({ mode }: { mode?: string }) => {
+const Perks = ({
+  title,
+  field,
+  forcedMode,
+  perkTree,
+  toggleFormLink,
+}: {
+  title?: string;
+  field?: FieldApi;
+  forcedMode?: string;
+  perkTree?: Partial<PerkTree>;
+  toggleFormLink?: (mode: ItemObject) => void;
+}) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = forcedMode || parts[parts.length - 2];
 
   const perks = usePerks();
 
@@ -36,7 +54,7 @@ const Perks = ({ mode }: { mode?: string }) => {
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">Perks</h1>
+      <h1 className="text-center">{title || 'Perks'}</h1>
       <ThemeContainer
         className="w-full"
         chamfer="medium"
@@ -125,9 +143,9 @@ const Perks = ({ mode }: { mode?: string }) => {
         borderColor={accentPrimary}
       >
         <PerkList
-          className="p-4 sm:p-8"
-          perkTree={perks.filteredPerkTree}
+          perkTree={perkTree || perks.filteredPerkTree}
           mode={mode}
+          field={field}
         />
       </ThemeContainer>
     </div>

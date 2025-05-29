@@ -8,11 +8,9 @@ import ItemRarity from './ItemRarity';
 import ItemCardSmall from './ItemCardSmall';
 
 const ModCard = ({
-  vehicleId,
   modification,
   mode,
 }: {
-  vehicleId?: number;
   modification: Modification;
   mode?: string;
 }) => {
@@ -22,23 +20,15 @@ const ModCard = ({
     <ItemCardSmall
       heading={
         <div className="flex w-full items-center justify-between gap-4 pr-2">
-          <div className="flex items-center gap-4">
-            <h3>{modification?.name}</h3>
-            <p className="text-error italic">
-              {modification?.vehicleId &&
-                modification.vehicleId !== vehicleId &&
-                '(Currently equipped on another vehicle)'}
-            </p>
-          </div>
-
+          <h3>{modification?.name}</h3>
           <div
             className="pointer-events-auto -my-2 flex items-center gap-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-4">
+              <p>{modification?.price}p</p>
               {mode === 'codex' && (
                 <CartButton
-                  price={modification?.price}
                   category="modifications"
                   itemId={modification?.id}
                 />
@@ -58,7 +48,7 @@ const ModCard = ({
       }
     >
       <div className="flex flex-wrap items-center justify-between gap-8">
-        <p className="text-tertiary mr-auto italic">
+        <p className="text-tertiary mr-auto">
           ({modification.modificationType})
         </p>
         <ItemRarity rarity={modification.rarity} grade={modification.grade} />

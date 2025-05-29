@@ -1,18 +1,25 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import NotificationCard from './NotificationCard';
 import useNotificationQuery from '../hooks/useNotificationQuery/useNotificationQuery';
 import Loading from './Loading';
 import { Notification } from 'src/types/notification';
+import useMarkNotificationsReadMutation from 'src/hooks/useMarkNotificationsReadMutation/useMarkNotificationsReadMutation';
 
 const Notifications = () => {
-  const { apiUrl, user } = useContext(AuthContext);
+  const { apiUrl } = useContext(AuthContext);
 
   const {
     data: notifications,
     isLoading,
     isPending,
   } = useNotificationQuery(apiUrl);
+
+  const markNotificationsRead = useMarkNotificationsReadMutation(apiUrl);
+
+  useEffect(() => {
+    markNotificationsRead.mutate();
+  }, []);
 
   if (isLoading || isPending) return <Loading />;
 

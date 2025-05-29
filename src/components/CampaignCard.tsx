@@ -17,9 +17,11 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
       className="w-full"
       chamfer="large"
       borderColor={accentPrimary}
-      bgImageUrl={campaign.picture?.imageUrl}
+      bgImageUrl={campaign.picture}
+      overflowHidden={true}
     >
       <div className="flex flex-col items-center gap-8 p-6 md:flex-row">
+        <div className="absolute inset-0 bg-black bg-opacity-60" />
         <div className="z-10 flex h-full w-full flex-col justify-between gap-4 md:gap-6">
           <div className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-4">
@@ -37,15 +39,13 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
               {campaign.players.map((player: User) => (
                 <div key={player.id} className="flex items-center gap-4">
                   <AccountPicture user={player} />
-                  <p>{player.firstName + ' ' + player.lastName}</p>
+                  <p className="font-semibold">{player.username}</p>
                 </div>
               ))}
               {campaign.pendingPlayers.map((player: User) => (
                 <div key={player.id} className="flex items-center gap-4">
                   <AccountPicture className="opacity-50" user={player} />
-                  <p className="opacity-50">
-                    {player.firstName + ' ' + player.lastName}
-                  </p>
+                  <p className="font-semibold opacity-50">{player.username}</p>
                 </div>
               ))}
             </div>
@@ -54,9 +54,7 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
                 <h3>Game Master</h3>
                 <div className="flex items-center gap-4">
                   <AccountPicture user={campaign.owner} />
-                  <p>
-                    {campaign.owner.firstName + ' ' + campaign.owner.lastName}
-                  </p>
+                  <p className="font-semibold">{campaign.owner.username}</p>
                 </div>
               </div>
               <Link

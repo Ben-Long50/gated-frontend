@@ -39,11 +39,22 @@ const ItemRarity = ({
       ) : (
         <h5 className="text-2xl font-semibold text-gray-500">Unknown</h5>
       )}
-      <div className="flex">
-        {Array.from({ length: grade }).map((_, index) => (
-          <Icon key={index} path={mdiStar} className="size-6 text-yellow-300" />
-        ))}
-      </div>
+      {grade > 5 ? (
+        <div className="flex items-center gap-2">
+          <Icon path={mdiStar} className="size-6 shrink-0 text-yellow-300" />
+          <p className="whitespace-nowrap pt-1 font-semibold">x {grade}</p>
+        </div>
+      ) : (
+        <div className="flex">
+          {Array.from({ length: grade }).map((_, index) => (
+            <Icon
+              key={index}
+              path={mdiStar}
+              className="size-6 text-yellow-300"
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

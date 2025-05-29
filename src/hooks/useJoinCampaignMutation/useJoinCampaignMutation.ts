@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import joinCampaign from './joinCampaign';
 
-const useJoinCampaignMutation = (apiUrl: string, campaignId?: string) => {
+const useJoinCampaignMutation = (apiUrl: string, campaignId: number) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -14,7 +14,6 @@ const useJoinCampaignMutation = (apiUrl: string, campaignId?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['campaign', campaignId],
-        exact: false,
       });
       return queryClient.invalidateQueries({
         queryKey: ['campaigns'],

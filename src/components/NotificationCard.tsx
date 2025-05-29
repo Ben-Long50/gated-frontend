@@ -6,9 +6,8 @@ import { Notification } from 'src/types/notification';
 import BtnRect from './buttons/BtnRect';
 import { Link } from 'react-router-dom';
 import AccountPicture from './AccountPicture';
-import ArrowHeader2 from './ArrowHeader2';
 import Icon from '@mdi/react';
-import { mdiClose } from '@mdi/js';
+import { mdiTrashCanOutline } from '@mdi/js';
 import useDeleteNotificationMutation from '../hooks/useDeleteNotificationMutation/useDeleteNotificationMutation';
 import { AuthContext } from '../contexts/AuthContext';
 
@@ -41,47 +40,40 @@ const NotificationCard = ({ notification }: { notification: Notification }) => {
     >
       <div className="flex w-full flex-col gap-4 p-4 sm:p-6">
         <div className="flex w-full items-start justify-between">
-          <div className="flex items-center justify-start">
-            <ArrowHeader2 title="" />
-            <AccountPicture user={notification.sender} />
-            <h2 className="ml-4">
-              {notification.sender.firstName +
-                ' ' +
-                notification.sender.lastName}
-            </h2>
-            <p className="!text-tertiary ml-8 italic">(Campaign Invitation)</p>
+          <div className="flex flex-wrap items-center justify-start gap-4">
+            <div className="flex items-center">
+              <AccountPicture user={notification.sender} />
+              <h2 className="ml-4">{notification.sender.username}</h2>
+            </div>
+            <p className="!text-tertiary">(Campaign Invitation)</p>
           </div>
           <div className="flex items-start gap-4 justify-self-end">
             <p className="whitespace-nowrap">
               {format(notification.createdAt, 'PP')}
             </p>
-            <button
-              aria-label="Delete notification"
-              className="-mr-4 -mt-4"
-              onClick={() => deleteNotification.mutate(notification.id)}
-            >
-              <Icon
-                className="text-tertiary hover:text-accent timing size-8"
-                path={mdiClose}
-              />
-            </button>
           </div>
         </div>
         <p>
-          <span>
-            {notification.sender.firstName +
-              ' ' +
-              notification.sender.lastName +
-              ' '}
-          </span>
+          <span>{notification.sender.username} </span>
           {notificationMessage}
         </p>
-        <Link className="self-end" to={`/glam/campaigns/pending`}>
+
+        <Link className="self-end" to={`/glam/campaigns?campaignType=pending`}>
           <BtnRect type="button" ariaLabel="Navigate to pending campaigns">
             Pending Campaigns
           </BtnRect>
         </Link>
       </div>
+      <button
+        aria-label="Delete notification"
+        className="absolute bottom-4 left-4"
+        onClick={() => deleteNotification.mutate(notification.id)}
+      >
+        <Icon
+          className="text-tertiary hover:text-accent timing size-8"
+          path={mdiTrashCanOutline}
+        />
+      </button>
     </ThemeContainer>
   );
 };

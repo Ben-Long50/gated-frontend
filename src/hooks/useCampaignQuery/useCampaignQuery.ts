@@ -8,15 +8,7 @@ const useCampaignQuery = (apiUrl: string, campaignId: number) => {
 
   return useQuery<Campaign>({
     queryKey: ['campaign', campaignId],
-    queryFn: async () => {
-      const campaign = (await getCampaign(apiUrl, campaignId)) as Campaign;
-
-      campaign.characters.forEach((character: Character) => {
-        queryClient.setQueryData(['character', character.id], character);
-      });
-
-      return campaign;
-    },
+    queryFn: async () => await getCampaign(apiUrl, campaignId),
     enabled: !!campaignId,
     throwOnError: false,
   });

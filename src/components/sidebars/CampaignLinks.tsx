@@ -23,21 +23,18 @@ const CampaignLinks = ({
   const { campaignId } = useParams();
   const [modalOpen, setModalOpen] = useState(false);
 
-  const {
-    data: campaign,
-    isLoading,
-    isPending,
-  } = useCampaignQuery(apiUrl, Number(campaignId));
+  const { data: campaign, isLoading } = useCampaignQuery(
+    apiUrl,
+    Number(campaignId),
+  );
 
   const toggleModal = () => {
     setModalOpen((prev) => !prev);
   };
 
-  if (isLoading) return <span></span>;
-
   return (
     <>
-      {!campaignId && (
+      {!campaignId ? (
         <>
           <LinkListSidebar
             sidebarVisibility={sidebarVisibility}
@@ -48,17 +45,17 @@ const CampaignLinks = ({
           >
             <SubLinkSidebar
               title="Player campaigns"
-              path={`campaigns/player`}
+              path={`campaigns?campaignType=player`}
               setSidebarVisibility={setSidebarVisibility}
             />
             <SubLinkSidebar
               title="Pending campaigns"
-              path={`campaigns/pending`}
+              path={`campaigns?campaignType=pending`}
               setSidebarVisibility={setSidebarVisibility}
             />
             <SubLinkSidebar
               title="Owner campaigns"
-              path={`campaigns/owner`}
+              path={`campaigns?campaignType=owner`}
               setSidebarVisibility={setSidebarVisibility}
             />
             <SubLinkSidebar
@@ -77,17 +74,20 @@ const CampaignLinks = ({
             setSidebarVisibility={setSidebarVisibility}
           />
         </>
-      )}
-      {campaignId && (
+      ) : (
         <>
           <LinkSidebar
             title={campaign?.name}
             icon={
-              <img
-                className="bg-secondary z-10 size-12 shrink-0 rounded-full object-cover p-1"
-                src={campaign?.picture.imageUrl}
-                alt={campaign?.name + ' ' + "'s cover picture"}
-              />
+              isLoading ? (
+                <Loading size={2} className="text-secondary size-12 p-1" />
+              ) : (
+                <img
+                  className="bg-secondary z-10 size-12 shrink-0 rounded-full object-cover p-1"
+                  src={campaign?.picture.imageUrl}
+                  alt={campaign?.name + ' ' + "'s cover picture"}
+                />
+              )
             }
             path={`/glam/campaigns/${campaign?.id}`}
             sidebarVisibility={sidebarVisibility}

@@ -9,6 +9,7 @@ const handleResponse = async (response) => {
     throw errorMessages;
   } else if (!response.ok) {
     const data = await response.json();
+
     throw new Error(`${data.error}`);
   }
   const data = await response.json();

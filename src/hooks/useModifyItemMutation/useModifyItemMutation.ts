@@ -1,24 +1,25 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import modifyItem from './modifyItem';
+import { useNavigate } from 'react-router-dom';
 
 const useModifyItemMutation = (
   apiUrl: string,
+  characterId: number,
   itemId: number,
-  setFormMessage: (message: string) => void,
+  category: string,
 ) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
   return useMutation({
     mutationFn: (formData: FormData) => {
-      return modifyItem(formData, itemId, apiUrl);
+      return modifyItem(formData, characterId, itemId, category, apiUrl);
     },
-    onSuccess: (data) => {
-      setFormMessage(data.message);
+    onSuccess: () => {
+      navigate(-1);
       return queryClient.invalidateQueries({
         queryKey: ['item', itemId],
       });
-    },
-    onError: (error) => {
-      setFormMessage(error.message);
     },
     throwOnError: false,
   });

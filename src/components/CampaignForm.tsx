@@ -1,5 +1,5 @@
 import { useForm, ValidationError } from '@tanstack/react-form';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
@@ -12,27 +12,26 @@ import { Link, useParams } from 'react-router-dom';
 import LexicalEditor from './lexical/LexicalEditor';
 import useUsersQuery from '../hooks/useUsersQuery/useUsersQuery';
 import ItemCardSmall from './ItemCardSmall';
-import { mdiCloseBox, mdiImagePlus } from '@mdi/js';
-import Icon from '@mdi/react';
 import useCreateCampaignMutation from '../hooks/useCreateCampaignMutation/useCreateCampaignMutation';
-import ThemeContainer from './ThemeContainer';
-import { ThemeContext } from '../contexts/ThemeContext';
 import ArrowHeader2 from './ArrowHeader2';
 import AffiliationBar from './AffiliationBar';
 import Divider from './Divider';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import useDeleteCampaignMutation from '../hooks/useDeleteCampaignMutation/useDeleteCampaignMutation';
+import PictureField from './form_fields/PictureField';
 
 const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
   const { campaignId } = useParams();
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const [nameQuery, setNameQuery] = useState('');
-  const [imagePreview, setImagePreview] = useState('');
 
-  const createCampaign = useCreateCampaignMutation(apiUrl, setFormMessage);
+  const createCampaign = useCreateCampaignMutation(
+    apiUrl,
+    setFormMessage,
+    Number(campaignId),
+  );
 
   const deleteCampaign = useDeleteCampaignMutation(
     apiUrl,
@@ -40,17 +39,10 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
     setFormMessage,
   );
 
-  const {
-    data: campaign,
-    isLoading,
-    isPending,
-  } = useCampaignQuery(apiUrl, Number(campaignId));
-
-  useEffect(() => {
-    if (campaign) {
-      setImagePreview(campaign.picture?.imageUrl);
-    } else setImagePreview('');
-  }, [campaign, campaignId]);
+  const { data: campaign, isLoading } = useCampaignQuery(
+    apiUrl,
+    Number(campaignId),
+  );
 
   const {
     data: users,
@@ -62,12 +54,21 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
     campaignForm.reset();
   };
 
+  const handleDelete = () => {
+    if (deleteMode) {
+      deleteCampaign.mutate();
+    } else {
+      setDeleteMode(true);
+    }
+  };
+
   const campaignForm = useForm({
     defaultValues: {
       id: campaignId || 0,
       name: campaign?.name || '',
       location: campaign?.location || '',
       picture: campaign?.picture || '',
+      position: campaign?.picture?.position || { x: 50, y: 50 },
       factions:
         campaign?.factions ||
         ([
@@ -76,7 +77,8 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
         ] as { factionType: string; name: string }[]),
       affiliation: 0,
       briefing: {} as { html: string; nodes: string },
-      players: campaign?.players || ([] as User[]),
+      players:
+        [...campaign?.players, ...campaign?.pendingPlayers] || ([] as User[]),
     },
 
     onSubmit: async ({ value }) => {
@@ -94,25 +96,6 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
       }
     },
   });
-
-  const handleDelete = () => {
-    if (deleteMode) {
-      deleteCampaign.mutate();
-    } else {
-      setDeleteMode(true);
-    }
-  };
-
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-
-    if (selectedFile) {
-      campaignForm.setFieldValue('picture', selectedFile);
-
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setImagePreview(fileUrl);
-    }
-  };
 
   if (isLoading) return <Loading />;
 
@@ -142,7 +125,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
         </div>
         <Divider />
         <ArrowHeader2 title="Campaign Information" />
-        <p className="ml-4 border-l border-gray-400 px-4">
+        <p className="text-tertiary border-l-2 border-gray-400 border-opacity-50 pl-4">
           Welcome to campaign creation! This page should only be filled out if
           you intend to act as the game master for an upcoming game. If that's
           the case then continue on and craft the perfect cybermystic,
@@ -176,50 +159,17 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             <InputField label="Campaign location (city name)" field={field} />
           )}
         </campaignForm.Field>
-        <ThemeContainer
-          className="mx-auto w-full"
-          chamfer="medium"
-          borderColor={accentPrimary}
-          overflowHidden={true}
-        >
-          {!imagePreview ? (
-            <label className="bg-secondary flex aspect-[5/2] w-full cursor-pointer flex-col items-center justify-center">
-              <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                <Icon className="text-tertiary" path={mdiImagePlus} size={3} />
-                <p className="text-tertiary font-semibold">
-                  Upload campaign cover picture
-                </p>
-                <p className="text-tertiary">PNG, JPG, JPEG</p>
-              </div>
-              <input
-                id="file"
-                type="file"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-            </label>
-          ) : (
-            <div className="bg-secondary relative flex aspect-[5/2] w-full items-center justify-center overflow-hidden bg-black clip-6">
-              <img
-                className="fade-in-bottom"
-                src={imagePreview}
-                alt="Preview"
-              />
-              <button
-                className="text-secondary absolute right-2 top-2"
-                onClick={() => {
-                  campaignForm.setFieldValue('picture', '');
-                  setImagePreview('');
-                }}
-              >
-                <Icon path={mdiCloseBox} size={1.5} />
-              </button>
-            </div>
-          )}
-        </ThemeContainer>
+        <PictureField
+          form={campaignForm}
+          sizeInfo={{
+            aspectRatio: '10/3',
+            maxHeight: '',
+            minHeight: '',
+          }}
+        />
         <Divider />
         <ArrowHeader2 title="Campaign Factions" />
-        <p className="ml-4 border-l border-gray-400 px-4">
+        <p className="text-tertiary border-l-2 border-gray-400 border-opacity-50 pl-4">
           Decide which warring factions (The Powers that Be) of GatED will be
           present in your campaign. It is strongly recommended that a standard
           campaign include 2 major factions vying for power of the game's city.
@@ -301,7 +251,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
           <>
             <Divider />
             <ArrowHeader2 title="Starting Faction Affiliation" />
-            <p className="ml-4 border-l border-gray-400 px-4">
+            <p className="text-tertiary border-l-2 border-gray-400 border-opacity-50 pl-4">
               On the scale shown below, choose the starting relationship between
               your two major factions. This chosen relationship will help guide
               the campaign narrative and give insight into the benefits and
@@ -315,7 +265,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             <div className="flex flex-col gap-8">
               <Divider />
               <ArrowHeader2 title="Session 0 Briefing" />
-              <p className="ml-4 border-l border-gray-400 px-4">
+              <p className="text-tertiary border-l-2 border-gray-400 border-opacity-50 pl-4">
                 Craft a backstory for your upcoming campaign. This backstory
                 will serve as the first taste of the world for your campaign
                 participants and act as a starting point for the campaign's
@@ -358,7 +308,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
         <div className="flex flex-col gap-8">
           <Divider />
           <ArrowHeader2 title="Invite Players" />
-          <p className="ml-4 border-l border-gray-400 px-4">
+          <p className="text-tertiary border-l-2 border-gray-400 border-opacity-50 pl-4">
             Search for the usernames of the friends you want to invite to this
             campaign and check the box next to their names. When the campaign is
             created, invitations to join the campaign will be sent to those

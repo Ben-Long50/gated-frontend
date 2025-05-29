@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toggleEquipment from './toggleEquipment';
-import { Character } from 'src/types/character';
+import { Item } from 'src/types/item';
 
-const useToggleEquipmentMutation = (apiUrl: string, characterId: number) => {
+const useToggleEquipmentMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -16,75 +16,26 @@ const useToggleEquipmentMutation = (apiUrl: string, characterId: number) => {
     },
 
     onMutate: async (mutationInfo) => {
-      await queryClient.cancelQueries({ queryKey: ['character', characterId] });
+      await queryClient.cancelQueries({
+        queryKey: ['item', mutationInfo.itemId],
+      });
 
-      const prevCharacterData: Character | undefined = queryClient.getQueryData(
-        ['character', characterId],
-      );
+      const prevItemData: Item | undefined = queryClient.getQueryData([
+        'item',
+        mutationInfo.itemId,
+      ]);
 
-      const updateInventory = () => {
-        switch (mutationInfo.category) {
-          case 'weapon':
-            return {
-              ...prevCharacterData?.characterInventory,
-              weapons: prevCharacterData?.characterInventory.weapons.map(
-                (weapon) =>
-                  weapon.id === mutationInfo.itemId
-                    ? { ...weapon, equipped: !weapon.equipped }
-                    : weapon,
-              ),
-            };
-          case 'armor':
-            return {
-              ...prevCharacterData?.characterInventory,
-              armor: prevCharacterData?.characterInventory.armor.map((armor) =>
-                armor.id === mutationInfo.itemId
-                  ? { ...armor, equipped: !armor.equipped }
-                  : armor,
-              ),
-            };
-          case 'cybernetic':
-            return {
-              ...prevCharacterData?.characterInventory,
-              cybernetics:
-                prevCharacterData?.characterInventory.cybernetics.map(
-                  (cybernetic) =>
-                    cybernetic.id === mutationInfo.itemId
-                      ? { ...cybernetic, equipped: !cybernetic.equipped }
-                      : cybernetic,
-                ),
-            };
-          case 'item':
-            return {
-              ...prevCharacterData?.characterInventory,
-              items: prevCharacterData?.characterInventory.items.map((item) =>
-                item.id === mutationInfo.itemId
-                  ? { ...item, equipped: !item.equipped }
-                  : item,
-              ),
-            };
-          default:
-            return;
-        }
-      };
+      queryClient.setQueryData(['item', mutationInfo.itemId], (prev: Item) => ({
+        ...prev,
+        equipped: !prevItemData.equipped,
+      }));
 
-      const newInventory = updateInventory();
-
-      // Optimistically update to the new value
-      queryClient.setQueryData(
-        ['character', characterId],
-        (prev: Character) => ({
-          ...prev,
-          characterInventory: newInventory,
-        }),
-      );
-      // Return a context object with the snapshotted value
-      return { prevCharacterData };
+      return { prevItemData };
     },
-    onSuccess: () => {
+
+    onSuccess: (_, mutationInfo) => {
       return queryClient.invalidateQueries({
-        queryKey: ['character', characterId],
-        exact: false,
+        queryKey: ['item', mutationInfo.itemId],
       });
     },
     throwOnError: false,
