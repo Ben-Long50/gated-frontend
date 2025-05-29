@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toggleEquipment from './toggleEquipment';
 import { Item } from 'src/types/item';
+import { socket } from 'src/socket';
 
 const useToggleEquipmentMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
@@ -34,6 +35,7 @@ const useToggleEquipmentMutation = (apiUrl: string) => {
     },
 
     onSuccess: (_, mutationInfo) => {
+      socket.emit('item', mutationInfo.itemId);
       return queryClient.invalidateQueries({
         queryKey: ['item', mutationInfo.itemId],
       });

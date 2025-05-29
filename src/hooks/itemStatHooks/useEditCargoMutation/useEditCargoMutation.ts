@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { Character } from 'src/types/character';
 import editCargo from './editCargo';
 import { Item } from 'src/types/item';
+import { socket } from 'src/socket';
 
 const useEditCargoMutation = (
   apiUrl: string,
@@ -53,6 +54,7 @@ const useEditCargoMutation = (
       return { prevItemData };
     },
     onSuccess: () => {
+      socket.emit('item', itemId);
       return queryClient.invalidateQueries({
         queryKey: ['item', itemId],
       });

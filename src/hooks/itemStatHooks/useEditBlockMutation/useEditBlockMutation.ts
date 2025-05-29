@@ -3,6 +3,7 @@ import editArmorBlock from './editBlock';
 import { useRef } from 'react';
 import { Character } from 'src/types/character';
 import { Item } from 'src/types/item';
+import { socket } from 'src/socket';
 
 const useEditBlockMutation = (
   apiUrl: string,
@@ -53,6 +54,7 @@ const useEditBlockMutation = (
       return { prevItemData };
     },
     onSuccess: () => {
+      socket.emit('item', itemId);
       return queryClient.invalidateQueries({
         queryKey: ['item', itemId],
       });

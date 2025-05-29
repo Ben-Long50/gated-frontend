@@ -22,7 +22,6 @@ import ArrowHeader1 from './ArrowHeader1';
 import ArrowHeader3 from './ArrowHeader3';
 import Divider from './Divider';
 import BtnAuth from './buttons/BtnAuth';
-import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
 import CharacterPicture from './CharacterPicture';
 import CharacterStatBars from './CharacterStatBars';

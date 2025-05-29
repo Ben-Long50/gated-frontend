@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { Item } from 'src/types/item';
 import editCharacterConditionStacks from './editCharacterConditionStacks';
+import { socket } from 'src/socket';
 
 const useCharacterConditionStacksMutation = (
   apiUrl: string,
@@ -60,6 +61,7 @@ const useCharacterConditionStacksMutation = (
     },
 
     onSuccess: () => {
+      socket.emit('character', characterId);
       return queryClient.invalidateQueries({
         queryKey: ['character', characterId],
       });

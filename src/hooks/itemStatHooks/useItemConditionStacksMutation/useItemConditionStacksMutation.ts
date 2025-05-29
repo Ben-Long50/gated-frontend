@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRef } from 'react';
 import editItemConditionStacks from './editItemConditionStacks';
 import { Item } from 'src/types/item';
+import { socket } from 'src/socket';
 
 const useItemConditionStacksMutation = (
   apiUrl: string,
@@ -60,6 +61,7 @@ const useItemConditionStacksMutation = (
     },
 
     onSuccess: () => {
+      socket.emit('item', itemId);
       return queryClient.invalidateQueries({
         queryKey: ['item', itemId],
       });

@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { Character } from 'src/types/character';
 import editPass from './editPass';
 import { Item } from 'src/types/item';
+import { socket } from 'src/socket';
 
 const useEditPassMutation = (
   apiUrl: string,
@@ -53,6 +54,7 @@ const useEditPassMutation = (
       return { prevItemData };
     },
     onSuccess: () => {
+      socket.emit('item', itemId);
       return queryClient.invalidateQueries({
         queryKey: ['item', itemId],
       });

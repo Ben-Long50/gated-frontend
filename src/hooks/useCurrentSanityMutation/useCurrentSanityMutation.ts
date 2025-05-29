@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import editCurrentSanity from './editCurrentSanity';
 import { useRef } from 'react';
 import { Character } from 'src/types/character';
+import { socket } from 'src/socket';
 
 const useCurrentSanityMutation = (apiUrl: string, characterId: number) => {
   const queryClient = useQueryClient();
@@ -49,6 +50,7 @@ const useCurrentSanityMutation = (apiUrl: string, characterId: number) => {
     },
 
     onSuccess: () => {
+      socket.emit('character', characterId);
       return queryClient.invalidateQueries({
         queryKey: ['character', characterId],
       });

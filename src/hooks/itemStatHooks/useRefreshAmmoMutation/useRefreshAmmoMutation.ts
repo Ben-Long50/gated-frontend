@@ -3,6 +3,7 @@ import refreshAmmo from './refreshAmmo';
 import { useRef } from 'react';
 import { Character } from 'src/types/character';
 import { Item } from 'src/types/item';
+import { socket } from 'src/socket';
 
 const useRefreshAmmoMutation = (
   apiUrl: string,
@@ -48,6 +49,7 @@ const useRefreshAmmoMutation = (
       return { prevItemData };
     },
     onSuccess: () => {
+      socket.emit('item', itemId);
       return queryClient.invalidateQueries({
         queryKey: ['item', itemId],
       });

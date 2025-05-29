@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import reloadAmmo from './reloadAmmo';
 import { useRef } from 'react';
 import { Item } from 'src/types/item';
+import { socket } from 'src/socket';
 
 const useReloadAmmoMutation = (
   apiUrl: string,
@@ -47,6 +48,7 @@ const useReloadAmmoMutation = (
       return { prevItemData };
     },
     onSuccess: () => {
+      socket.emit('item', itemId);
       return queryClient.invalidateQueries({
         queryKey: ['item', itemId],
       });

@@ -24,6 +24,14 @@ export const CampaignSocketProvider = () => {
       });
     });
 
+    socket.on('item', (itemId) => {
+      console.log(itemId);
+
+      queryClient.invalidateQueries({
+        queryKey: ['item', itemId],
+      });
+    });
+
     socket.on('disconnect', (reason) => {
       console.log('Disconnected:', reason);
     });

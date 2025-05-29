@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createCharacterCondition from './createCharacterCondition';
+import { socket } from 'src/socket';
 
 const useCreateCharacterConditionMutation = (
   apiUrl: string,
@@ -12,6 +13,7 @@ const useCreateCharacterConditionMutation = (
       return createCharacterCondition(apiUrl, characterId, formData);
     },
     onSuccess: () => {
+      socket.emit('character', characterId);
       toggleConditionModal();
       return queryClient.invalidateQueries({
         queryKey: ['character', characterId],

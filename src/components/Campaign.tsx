@@ -34,14 +34,6 @@ const Campaign = () => {
     isLoading: campaignLoading,
     isError,
   } = useCampaignQuery(apiUrl, Number(campaignId));
-  console.log(campaign);
-
-  const characterIds = campaign
-    ? campaign?.characters.map((character: { id: number }) => character.id)
-    : [];
-
-  const characters = useCharacterQueries(apiUrl, characterIds);
-  console.log(characters);
 
   const {
     playerCharacters,

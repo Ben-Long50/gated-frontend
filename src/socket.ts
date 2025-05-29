@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client';
 
-const isMobile = window.location.href.includes('192.168.4.130');
+const isMobile = window.location.href.includes('192.168.4.148');
 
 const apiUrl = isMobile
   ? import.meta.env.VITE_LOCAL_BACKEND_URL

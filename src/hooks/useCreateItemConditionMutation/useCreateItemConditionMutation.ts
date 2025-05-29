@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import createItemCondition from './createItemCondition';
+import { socket } from 'src/socket';
 
 const useCreateItemConditionMutation = (
   apiUrl: string,
@@ -14,15 +15,10 @@ const useCreateItemConditionMutation = (
       return createItemCondition(apiUrl, itemId, category, formData);
     },
     onSuccess: () => {
+      socket.emit('item', itemId);
       toggleConditionModal();
-      queryClient.invalidateQueries({
-        queryKey: ['item', itemId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['character', characterId],
-      });
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
+        queryKey: ['item', itemId],
       });
     },
     throwOnError: false,

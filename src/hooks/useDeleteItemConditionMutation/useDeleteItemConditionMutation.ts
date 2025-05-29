@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import deleteItemCondition from './deleteItemCondition';
 import { Item } from 'src/types/item';
+import { socket } from 'src/socket';
 
 const useDeleteItemConditionMutation = (
   apiUrl: string,
@@ -32,6 +33,7 @@ const useDeleteItemConditionMutation = (
     },
 
     onSuccess: () => {
+      socket.emit('item', itemId);
       return queryClient.invalidateQueries({
         queryKey: ['item', itemId],
       });
