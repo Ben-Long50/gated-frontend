@@ -2,73 +2,88 @@ import { Modifier } from 'src/types/modifier';
 import useAttributeTree from './useAttributeTree';
 import { AttributeTree } from 'src/types/attributeTree';
 import { Perk } from 'src/types/perk';
-import { CharacterInventory } from 'src/types/character';
+import { SortedInventory } from 'src/types/character';
 import { Item, Stats } from 'src/types/item';
-import useInventory from './useInventory';
-import { Action } from 'src/types/action';
+import { useMemo } from 'react';
 
 const useStats = (
-  inventory: CharacterInventory,
+  equipment: SortedInventory,
   attributTree: Partial<AttributeTree>,
   perks?: Perk[],
 ) => {
   const tree = useAttributeTree(attributTree);
 
-  const { equipment } = useInventory(inventory);
+  const weaponWeight = useMemo(
+    () =>
+      equipment?.weapons?.reduce((sum: number, weapon: Item) => {
+        if (weapon.stats.weight) {
+          return sum + weapon.stats.weight;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
+  );
 
-  const weaponWeight =
-    equipment?.weapons.reduce((sum: number, weapon: Item) => {
-      if (weapon.stats.weight) {
-        return sum + weapon.stats.weight;
-      }
-      return sum;
-    }, 0) || 0;
+  const armorWeight = useMemo(
+    () =>
+      equipment?.armors?.reduce((sum: number, armor: Item) => {
+        if (
+          armor.stats.weight &&
+          armor.stats.currentPower !== null &&
+          armor.stats.currentPower === 0
+        ) {
+          return sum + armor.stats.weight;
+        } else if (armor.stats.weight && !armor.stats.power) {
+          return sum + armor.stats.weight;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
+  );
 
-  const armorWeight =
-    equipment?.armor?.reduce((sum: number, armor: Item) => {
-      if (
-        armor.stats.weight &&
-        armor.stats.currentPower !== null &&
-        armor.stats.currentPower === 0
-      ) {
-        return sum + armor.stats.weight;
-      } else if (armor.stats.weight && !armor.stats.power) {
-        return sum + armor.stats.weight;
-      }
-      return sum;
-    }, 0) || 0;
+  const itemWeight = useMemo(() => {
+    return equipment?.items?.length > 0
+      ? equipment?.items?.reduce((sum: number, item: Item) => {
+          if (item.stats.weight) {
+            return sum + item.stats.weight;
+          }
+          return sum;
+        }, 0)
+      : 0;
+  }, [equipment]);
 
-  const itemWeight =
-    equipment?.items?.reduce((sum: number, item: Item) => {
-      if (item.stats.weight) {
-        return sum + item.stats.weight;
-      }
-      return sum;
-    }, 0) || 0;
+  const armorValue = useMemo(
+    () =>
+      equipment?.armors?.reduce((sum: number, armor: Item) => {
+        if (armor.stats.armor) {
+          return sum + armor.stats.armor;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
+  );
 
-  const armorValue =
-    equipment?.armor?.reduce((sum: number, armor: Item) => {
-      if (armor.stats.armor) {
-        return sum + armor.stats.armor;
-      }
-      return sum;
-    }, 0) || 0;
+  const wardValue = useMemo(
+    () =>
+      equipment?.armors?.reduce((sum: number, armor: Item) => {
+        if (armor.stats.ward) {
+          return sum + armor.stats.ward;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
+  );
 
-  const wardValue =
-    equipment?.armor?.reduce((sum: number, armor: Item) => {
-      if (armor.stats.ward) {
-        return sum + armor.stats.ward;
-      }
-      return sum;
-    }, 0) || 0;
-
-  const equippedCyber =
-    equipment?.cybernetics?.reduce((sum: number, cybernetic: Item) => {
-      if (cybernetic.stats.cyber) {
-        return sum + cybernetic.stats.cyber;
-      }
-      return sum;
-    }, 0) || 0;
+  const equippedCyber = useMemo(
+    () =>
+      equipment?.augmentations?.reduce((sum: number, cybernetic: Item) => {
+        if (cybernetic.stats.cyber) {
+          return sum + cybernetic.stats.cyber;
+        }
+        return sum;
+      }, 0) || 0,
+    [equipment],
+  );
 
   const stats = {
     maxHealth: 10 + tree.getPoints('violence', 'threshold') * 1,
@@ -142,13 +157,13 @@ const useStats = (
     }
   };
 
-  equipment?.actions.forEach((action: Action) => {
-    if (!action.modifiers) return;
+  // equipment?.actions.forEach((action: Action) => {
+  //   if (!action.modifiers) return;
 
-    action.modifiers?.forEach((modifier: Modifier) => {
-      calculateBonus(modifier);
-    });
-  });
+  //   action.modifiers?.forEach((modifier: Modifier) => {
+  //     calculateBonus(modifier);
+  //   });
+  // });
 
   perks?.forEach((perk) => {
     if (!perk.modifiers) return;

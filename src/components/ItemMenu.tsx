@@ -1,6 +1,4 @@
 import { ReactNode, useContext, useRef, useState } from 'react';
-import ThemeContainer from './ThemeContainer';
-import { ThemeContext } from '../contexts/ThemeContext';
 import BtnAuth from './buttons/BtnAuth';
 import Divider from './Divider';
 import { LayoutContext } from '../contexts/LayoutContext';
@@ -24,7 +22,6 @@ const ItemMenu = ({
   children: (item: any, index: number, props: { tab: string }) => ReactNode;
 }) => {
   const { mobile } = useContext(LayoutContext);
-  const { accentPrimary } = useContext(ThemeContext);
   const location = useLocation();
   const parts = location.pathname.split('/');
   const mode = forcedMode || parts[parts.length - 1];
@@ -49,11 +46,11 @@ const ItemMenu = ({
     case 'weapon':
       itemList = equipment?.weapons || [];
       break;
-    case 'armor':
-      itemList = equipment?.armor || [];
+    case 'armors':
+      itemList = equipment?.armors || [];
       break;
-    case 'cybernetic':
-      itemList = equipment?.cybernetics || [];
+    case 'augmentations':
+      itemList = equipment?.augmentations || [];
       break;
     case 'item':
       itemList = equipment?.items || [];
@@ -101,16 +98,16 @@ const ItemMenu = ({
               {mobile ? <WeaponIcon className="size-8" /> : 'Weapons'}
             </BtnAuth>
             <BtnAuth
-              active={tab === 'armor' ? true : false}
-              onClick={() => setTab('armor')}
+              active={tab === 'armors' ? true : false}
+              onClick={() => setTab('armors')}
             >
               {mobile ? <ArmorIcon className="size-8" /> : 'Armor'}
             </BtnAuth>
             <BtnAuth
-              active={tab === 'cybernetic' ? true : false}
-              onClick={() => setTab('cybernetic')}
+              active={tab === 'augmentations' ? true : false}
+              onClick={() => setTab('augmentations')}
             >
-              {mobile ? <CyberIcon className="size-8" /> : 'Cybernetics'}
+              {mobile ? <CyberIcon className="size-8" /> : 'Augmentations'}
             </BtnAuth>
             <BtnAuth
               active={tab === 'item' ? true : false}

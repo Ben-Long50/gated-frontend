@@ -3,9 +3,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { LayoutContext } from '../contexts/LayoutContext';
 import { useLocation, useParams } from 'react-router-dom';
-import useStats from '../hooks/useStats';
 import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
@@ -15,7 +13,6 @@ import InsanityIcon from './icons/InsanityIcon';
 import EquipmentList from './EquipmentList';
 import ActionCard from './ActionCard';
 import { Action } from 'src/types/action';
-import DieIcon from './icons/DieIcon';
 import { Item } from 'src/types/item';
 import ArrowHeader3 from './ArrowHeader3';
 import Divider from './Divider';
@@ -23,7 +20,6 @@ import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
 import InventoryModal from './InventoryModal';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
-import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
 import ItemCard from './ItemCard';
 import ItemCardMobile from './ItemCardMobile';
@@ -35,7 +31,6 @@ import CharacterStatBars from './CharacterStatBars';
 const Equipment = () => {
   const { apiUrl, user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
-  const { mobile } = useContext(LayoutContext);
   const { characterId } = useParams();
   const location = useLocation();
   const [inventoryOpen, setInventoryOpen] = useState(false);
@@ -75,22 +70,20 @@ const Equipment = () => {
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, Number(characterId));
 
-  const filteredCharacter = useCharacter(character);
+  const {
+    filteredCharacter,
+    isLoading: inventoryLoading,
+    isPending: inventoryPending,
+  } = useCharacter(character);
 
   const { powerLevel } = useItemStats(
-    character?.characterInventory.items.filter(
-      (item) => item.equipped === true,
-    ),
+    filteredCharacter?.equipment
+      ? Object.values(filteredCharacter?.equipment).flatMap((value) => value)
+      : null,
   );
 
-  const { stats, rollBonuses } = useStats(
-    character?.characterInventory,
-    character?.attributes,
-    character?.perks,
-  );
-
-  const isLoading = characterLoading;
-  const isPending = characterPending;
+  const isLoading = characterLoading || inventoryLoading;
+  const isPending = characterPending || inventoryPending;
 
   const activeItem = useMemo(() => {
     switch (active?.category) {
@@ -100,15 +93,15 @@ const Equipment = () => {
             (weapon: Item) => weapon.id === active.id,
           )[0] || null
         );
-      case 'armor':
+      case 'armors':
         return (
-          filteredCharacter.equipment?.armor.filter(
+          filteredCharacter.equipment?.armors.filter(
             (armor: Item) => armor.id === active.id,
           )[0] || null
         );
-      case 'cybernetic':
+      case 'augmentations':
         return (
-          filteredCharacter.equipment?.cybernetics.filter(
+          filteredCharacter.equipment?.augmentations.filter(
             (cybernetic: Item) => cybernetic.id === active.id,
           )[0] || null
         );
@@ -202,7 +195,7 @@ const Equipment = () => {
                 </BtnRect>
                 <InventoryModal
                   character={character}
-                  inventory={filteredCharacter.inventory}
+                  inventory={filteredCharacter?.inventory}
                   active={active}
                   toggleActive={toggleActive}
                   toggleModal={toggleInventoryOpen}
@@ -218,7 +211,7 @@ const Equipment = () => {
           >
             <div className="bg-primary p-4">
               <EquipmentList
-                equipment={filteredCharacter.equipment}
+                equipment={filteredCharacter?.equipment}
                 active={active}
                 toggleActive={toggleActive}
               />
@@ -320,7 +313,7 @@ const Equipment = () => {
                 {filteredCharacter.stats.insanities}
               </p>
             </div>
-            {Object.keys(rollBonuses).length > 0 && (
+            {/* {Object.keys(rollBonuses).length > 0 && (
               <>
                 <Divider />
                 <ArrowHeader3 title="Roll Bonuses" />
@@ -345,17 +338,15 @@ const Equipment = () => {
                   ),
                 )}
               </>
-            )}
-            {filteredCharacter.equipment?.actions &&
-              filteredCharacter.equipment?.actions.length > 0 && (
+            )} */}
+            {filteredCharacter?.actions &&
+              filteredCharacter?.actions.length > 0 && (
                 <>
                   <Divider />
                   <ArrowHeader3 title="Unique Actions" />
-                  {filteredCharacter.equipment?.actions.map(
-                    (action: Action) => (
-                      <ActionCard key={action?.id} action={action} />
-                    ),
-                  )}
+                  {filteredCharacter?.actions.map((action: Action) => (
+                    <ActionCard key={action?.id} action={action} />
+                  ))}
                 </>
               )}
           </div>

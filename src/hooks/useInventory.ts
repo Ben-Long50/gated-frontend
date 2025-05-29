@@ -1,62 +1,111 @@
-import { Action } from 'src/types/action';
 import { CharacterInventory } from 'src/types/character';
+import useInventoryItemsQuery from './useInventoryItemsQuery/useInventoryItemsQuery';
+import { useContext, useMemo } from 'react';
+import { AuthContext } from 'src/contexts/AuthContext';
 
 const useInventory = (inventory: CharacterInventory) => {
-  const sortedInventory = inventory
-    ? {
-        weapons: inventory.items.filter((item) => item.itemType === 'weapon'),
-        armors: inventory.items.filter((item) => item.itemType === 'armor'),
-        augmentations: inventory.items.filter(
-          (item) => item.itemType === 'augmentation',
-        ),
-        consumables: inventory.items.filter(
-          (item) => item.itemType === 'consumable',
-        ),
-        reusables: inventory.items.filter(
-          (item) => item.itemType === 'reusable',
-        ),
-        vehicles: inventory.items.filter((item) => item.itemType === 'vehicle'),
-        drones: inventory.items.filter((item) => item.itemType === 'drone'),
-        modifications: inventory.items.filter(
-          (item) => item.itemType === 'modification',
-        ),
-        actions: inventory.actions,
-      }
-    : null;
+  const { apiUrl } = useContext(AuthContext);
 
-  const sortedEquipment = inventory
-    ? {
-        weapons: inventory.items.filter(
-          (item) => item.itemType === 'weapon' && item.equipped === true,
-        ),
-        armors: inventory.items.filter(
-          (item) => item.itemType === 'armor' && item.equipped === true,
-        ),
-        augmentations: inventory.items.filter(
-          (item) => item.itemType === 'augmentation' && item.equipped === true,
-        ),
-        consumables: inventory.items.filter(
-          (item) => item.itemType === 'consumable' && item.equipped === true,
-        ),
-        reusables: inventory.items.filter(
-          (item) => item.itemType === 'reusable' && item.equipped === true,
-        ),
-        vehicles: inventory.items.filter(
-          (item) => item.itemType === 'vehicle' && item.equipped === true,
-        ),
-        drones: inventory.items.filter(
-          (item) => item.itemType === 'drone' && item.equipped === true,
-        ),
-        modifications: inventory.items.filter(
-          (item) => item.itemType === 'modification' && item.equipped === true,
-        ),
-        actions: inventory.actions.filter(
-          (action: Action) => action.equipped === true,
-        ),
-      }
-    : null;
+  const itemInfo =
+    inventory?.items?.map((item) => ({
+      category: item.itemType,
+      id: item.id,
+    })) || [];
 
-  return { inventory: sortedInventory, equipment: sortedEquipment };
+  const { items, isLoading, isPending } = useInventoryItemsQuery(
+    apiUrl,
+    itemInfo,
+  );
+
+  const sortedInventory = useMemo(
+    () =>
+      items
+        ? {
+            weapons: items?.filter((item) => item?.itemType === 'weapon'),
+            armors: items?.filter((item) => item?.itemType === 'armor'),
+            augmentations: items?.filter(
+              (item) => item?.itemType === 'augmentation',
+            ),
+            consumables: items?.filter(
+              (item) => item?.itemType === 'consumable',
+            ),
+            reusables: items?.filter((item) => item?.itemType === 'reusable'),
+            vehicles: items?.filter((item) => item?.itemType === 'vehicle'),
+            drones: items?.filter((item) => item?.itemType === 'drone'),
+            modifications: items?.filter(
+              (item) => item?.itemType === 'modification',
+            ),
+            items: items?.filter(
+              (item) =>
+                item?.itemType === 'reusable' ||
+                item?.itemType === 'consumable',
+            ),
+            actions: items?.flatMap((item) => item?.itemLinkReference?.actions),
+          }
+        : null,
+    [items],
+  );
+
+  const sortedEquipment = useMemo(
+    () =>
+      items
+        ? {
+            weapons: items?.filter(
+              (item) => item?.itemType === 'weapon' && item?.equipped === true,
+            ),
+            armors: items?.filter(
+              (item) => item?.itemType === 'armor' && item?.equipped === true,
+            ),
+            augmentations: items?.filter(
+              (item) =>
+                item?.itemType === 'augmentation' && item?.equipped === true,
+            ),
+            consumables: items?.filter(
+              (item) =>
+                item?.itemType === 'consumable' && item?.equipped === true,
+            ),
+            reusables: items?.filter(
+              (item) =>
+                item?.itemType === 'reusable' && item?.equipped === true,
+            ),
+            vehicles: items?.filter(
+              (item) => item?.itemType === 'vehicle' && item?.equipped === true,
+            ),
+            drones: items?.filter(
+              (item) => item?.itemType === 'drone' && item?.equipped === true,
+            ),
+            modifications: items?.filter(
+              (item) =>
+                item?.itemType === 'modification' && item?.equipped === true,
+            ),
+            items: items?.filter(
+              (item) =>
+                (item?.itemType === 'reusable' ||
+                  item?.itemType === 'consumable') &&
+                item?.equipped === true,
+            ),
+          }
+        : null,
+    [items],
+  );
+
+  const actions = useMemo(
+    () =>
+      items
+        ? items
+            ?.filter((item) => item?.equipped === true)
+            .flatMap((item) => item?.itemLinkReference?.actions)
+        : null,
+    [items],
+  );
+
+  return {
+    inventory: sortedInventory,
+    equipment: sortedEquipment,
+    actions,
+    isLoading,
+    isPending,
+  };
 };
 
 export default useInventory;

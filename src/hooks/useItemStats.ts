@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Item } from 'src/types/item';
 import gradePointMap from './gradePointMap';
 
-const useItemStats = (items: Item[]) => {
+const useItemStats = (items: Item[] | null) => {
   const itemStats = useMemo(
     () =>
       items && items[0]

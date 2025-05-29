@@ -33,7 +33,7 @@ const CharacterRadialMenu = ({
       />
       <RadialMenu className="absolute top-0 z-20" radius={80}>
         <div onClick={() => toggleConditionModal()}>
-          <ConditionIcon className="text-inherit group-hover:scale-125" />
+          <ConditionIcon className="size-8 text-inherit group-hover:scale-125" />
           <ConditionLinkField
             character={character}
             conditionModal={conditionModal}
@@ -49,7 +49,7 @@ const CharacterRadialMenu = ({
             )
           }
         >
-          <EquipmentIcon className="text-inherit group-hover:scale-125" />
+          <EquipmentIcon className="size-8 text-inherit group-hover:scale-125" />
         </div>
         <div
           onClick={() =>
@@ -60,7 +60,7 @@ const CharacterRadialMenu = ({
             )
           }
         >
-          <CharacterIcon className="text-inherit group-hover:scale-125" />
+          <CharacterIcon className="size-8 text-inherit group-hover:scale-125" />
         </div>
       </RadialMenu>
     </div>

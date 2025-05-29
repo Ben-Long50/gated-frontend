@@ -93,32 +93,38 @@ const Session = () => {
           </div>
         )}
         <Divider />
-        {sessionPlayerCharacters.length > 0 &&
-          sessionPlayerCharacters.map((character: Character) => (
-            <div
-              key={character.id}
-              className="flex w-full items-center justify-between"
-            >
-              <Link to={`characters/${character.id}`}>
-                <div className="flex items-center gap-4">
-                  <img
-                    className="size-14 rounded-full shadow-md shadow-black"
-                    src={character.picture.imageUrl}
-                    alt={`${character.firstName} ${character.lastName}'s picture`}
-                  />
-                  <ArrowHeader3
-                    title={character.firstName + ' ' + character.lastName}
-                  />
-                </div>
-              </Link>
-              <Link key={character.id} to={`characters/${character.id}/notes`}>
-                <BtnRect ariaLabel="Navigate to notes" type="button">
-                  Notes
-                </BtnRect>
-              </Link>
-            </div>
-          ))}
-        <Divider />
+        {sessionPlayerCharacters.length > 0 && (
+          <>
+            {sessionPlayerCharacters.map((character: Character) => (
+              <div
+                key={character.id}
+                className="flex w-full items-center justify-between"
+              >
+                <Link to={`characters/${character.id}`}>
+                  <div className="flex items-center gap-4">
+                    <img
+                      className="size-14 rounded-full shadow-md shadow-black"
+                      src={character.picture.imageUrl}
+                      alt={`${character.firstName} ${character.lastName}'s picture`}
+                    />
+                    <ArrowHeader3
+                      title={character.firstName + ' ' + character.lastName}
+                    />
+                  </div>
+                </Link>
+                <Link
+                  key={character.id}
+                  to={`characters/${character.id}/notes`}
+                >
+                  <BtnRect ariaLabel="Navigate to notes" type="button">
+                    Notes
+                  </BtnRect>
+                </Link>
+              </div>
+            ))}
+            <Divider />
+          </>
+        )}
         <div
           id="quill-display"
           className="ql-editor whitespace-pre-wrap"

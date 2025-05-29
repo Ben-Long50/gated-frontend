@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import editArmorBlock from './editBlock';
 import { useRef } from 'react';
 import { Character } from 'src/types/character';
+import { Item } from 'src/types/item';
 
 const useEditBlockMutation = (
   apiUrl: string,
@@ -32,42 +33,28 @@ const useEditBlockMutation = (
     },
 
     onMutate: (value) => {
-      queryClient.cancelQueries({ queryKey: ['character', characterId] });
+      queryClient.cancelQueries({ queryKey: ['item', itemId] });
 
-      const prevCharacterData: Character | undefined = queryClient.getQueryData(
-        ['character', characterId],
-      );
+      const prevItemData: Item | undefined = queryClient.getQueryData([
+        'item',
+        itemId,
+      ]);
 
-      queryClient.setQueryData(
-        ['character', characterId],
-        (prev: Character) => ({
-          ...prev,
-          characterInventory: {
-            ...prev.characterInventory,
-            items: prev.characterInventory.items.map((item) =>
-              item.id === itemId
-                ? {
-                    ...item,
-                    stats: {
-                      ...item.stats,
-                      currentBlock: item.stats.currentBlock
-                        ? item.stats.currentBlock + value
-                        : value,
-                    },
-                  }
-                : item,
-            ),
-          },
-        }),
-      );
+      queryClient.setQueryData(['item', itemId], (prev: Item) => ({
+        ...prev,
+        stats: {
+          ...prevItemData?.stats,
+          currentBlock: prevItemData?.stats.currentBlock
+            ? prevItemData?.stats.currentBlock + value
+            : value,
+        },
+      }));
 
-      return { prevCharacterData };
+      return { prevItemData };
     },
-
     onSuccess: () => {
       return queryClient.invalidateQueries({
-        queryKey: ['character', characterId],
-        exact: false,
+        queryKey: ['item', itemId],
       });
     },
     throwOnError: false,

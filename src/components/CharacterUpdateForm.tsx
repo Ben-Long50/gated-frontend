@@ -37,6 +37,7 @@ import InsanityIcon from './icons/InsanityIcon';
 import PerkLinkField from './form_fields/PerkLinkField';
 import NpcPreferenceField from './form_fields/NpcPreferenceField';
 import PictureField from './form_fields/PictureField';
+import useCharacter from 'src/hooks/useCharacter';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -60,17 +61,17 @@ const CharacterUpdateForm = () => {
     isPending: characterPending,
   } = useCharacterQuery(apiUrl, Number(characterId));
 
-  const isLoading = characterLoading || campaignsLoading;
-  const isPending = characterPending || campaignsPending;
+  const {
+    filteredCharacter,
+    isLoading: inventoryLoading,
+    isPending: inventoryPending,
+  } = useCharacter(character);
 
-  const attributeTree = useAttributeTree(character?.attributes);
+  const isLoading = characterLoading || campaignsLoading || inventoryLoading;
+  const isPending = characterPending || campaignsPending || inventoryPending;
+
+  const attributeTree = useAttributeTree(filteredCharacter?.attributes);
   const perks = usePerks(attributeTree?.tree);
-
-  const { stats } = useStats(
-    character?.characterInventory,
-    attributeTree.tree,
-    character?.perks,
-  );
 
   const updateCharacter = useUpdateCharacterMutation(
     apiUrl,
@@ -93,42 +94,42 @@ const CharacterUpdateForm = () => {
 
   const characterUpdateForm = useForm({
     defaultValues: {
-      playerCharacter: character?.playerCharacter ?? '',
-      campaignId: character?.campaign ?? null,
+      playerCharacter: filteredCharacter?.playerCharacter ?? '',
+      campaignId: filteredCharacter?.campaign ?? null,
       preferences: {
-        firstName: character?.preferences?.firstName ?? true,
-        lastName: character?.preferences?.lastName ?? true,
-        age: character?.preferences?.age ?? true,
-        height: character?.preferences?.height ?? true,
-        weight: character?.preferences?.weight ?? true,
-        sex: character?.preferences?.sex ?? true,
-        picture: character?.preferences?.picture ?? true,
-        backstory: character?.preferences?.backstory ?? true,
-        level: character?.preferences?.level ?? true,
-        profits: character?.preferences?.profits ?? true,
-        stats: character?.preferences?.stats ?? true,
-        attributes: character?.preferences?.attributes ?? true,
-        perks: character?.preferences?.perks ?? true,
-        equipment: character?.preferences?.equipment ?? true,
+        firstName: filteredCharacter?.preferences?.firstName ?? true,
+        lastName: filteredCharacter?.preferences?.lastName ?? true,
+        age: filteredCharacter?.preferences?.age ?? true,
+        height: filteredCharacter?.preferences?.height ?? true,
+        weight: filteredCharacter?.preferences?.weight ?? true,
+        sex: filteredCharacter?.preferences?.sex ?? true,
+        picture: filteredCharacter?.preferences?.picture ?? true,
+        backstory: filteredCharacter?.preferences?.backstory ?? true,
+        level: filteredCharacter?.preferences?.level ?? true,
+        profits: filteredCharacter?.preferences?.profits ?? true,
+        stats: filteredCharacter?.preferences?.stats ?? true,
+        attributes: filteredCharacter?.preferences?.attributes ?? true,
+        perks: filteredCharacter?.preferences?.perks ?? true,
+        equipment: filteredCharacter?.preferences?.equipment ?? true,
       },
-      firstName: character?.firstName ?? '',
-      lastName: character?.lastName ?? '',
-      level: character?.level ?? '',
-      profits: character?.profits ?? '',
+      firstName: filteredCharacter?.firstName ?? '',
+      lastName: filteredCharacter?.lastName ?? '',
+      level: filteredCharacter?.level ?? '',
+      profits: filteredCharacter?.profits ?? '',
       stats: {
-        currentHealth: character?.stats.currentHealth ?? '',
-        currentSanity: character?.stats.currentSanity ?? '',
-        injuries: character?.stats.injuries ?? '',
-        insanities: character?.stats.insanities ?? '',
+        currentHealth: filteredCharacter?.stats.currentHealth ?? '',
+        currentSanity: filteredCharacter?.stats.currentSanity ?? '',
+        injuries: filteredCharacter?.stats.injuries ?? '',
+        insanities: filteredCharacter?.stats.insanities ?? '',
       },
-      picture: character?.picture ?? '',
-      position: character?.picture?.position ?? { x: 50, y: 50 },
-      height: character?.height ?? '',
-      weight: character?.weight ?? '',
-      age: character?.age ?? '',
-      sex: character?.sex ?? '',
-      attributes: character?.attributes ?? '',
-      perks: character?.perks ?? ([] as Perk[]),
+      picture: filteredCharacter?.picture ?? '',
+      position: filteredCharacter?.picture?.position ?? { x: 50, y: 50 },
+      height: filteredCharacter?.height ?? '',
+      weight: filteredCharacter?.weight ?? '',
+      age: filteredCharacter?.age ?? '',
+      sex: filteredCharacter?.sex ?? '',
+      attributes: filteredCharacter?.attributes ?? '',
+      perks: filteredCharacter?.perks ?? ([] as Perk[]),
     },
     onSubmit: async ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
@@ -320,7 +321,7 @@ const CharacterUpdateForm = () => {
         <div
           className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2' : 'gap-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
         >
-          {character?.stats.currentHealth !== undefined && (
+          {filteredCharacter?.stats.currentHealth !== undefined && (
             <characterUpdateForm.Field name="stats.currentHealth">
               {(field) => (
                 <StatBar
@@ -339,7 +340,7 @@ const CharacterUpdateForm = () => {
               )}
             </characterUpdateForm.Field>
           )}
-          {character?.stats.currentSanity !== undefined && (
+          {filteredCharacter?.stats.currentSanity !== undefined && (
             <characterUpdateForm.Field name="stats.currentSanity">
               {(field) => (
                 <StatBar

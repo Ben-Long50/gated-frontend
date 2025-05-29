@@ -97,26 +97,20 @@ const ItemCard = ({
             />
           )}
           <div className="flex w-full flex-col gap-4">
-            <div className="flex w-full items-start justify-between">
+            <div className="flex w-full items-start justify-between gap-4">
               <div className="flex items-center gap-4">
                 <ArrowHeader2 title={item.name} />
                 <div className="flex grow flex-wrap items-center justify-start gap-1">
                   {item.conditions?.map((condition) => (
-                    <Tag
-                      key={condition.id}
-                      condition={{
-                        condition: condition.condition,
-                        stacks: condition.stacks,
-                      }}
-                    />
+                    <Tag key={condition.id} condition={condition} />
                   ))}
                 </div>
               </div>
-              <div className="mr-10 flex items-start gap-4">
+              <div className="flex grow items-start justify-end gap-4">
                 <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
                 {mode === 'codex' && <CartButton itemId={item?.id} />}
               </div>
-              <ItemRadialMenu className="relative size-10" item={item} />
+              <ItemRadialMenu className="relative size-8" item={item} />
             </div>
             <div
               className={`timing flex items-center justify-between gap-x-8 gap-y-2`}

@@ -60,7 +60,7 @@ const Deployments = () => {
     isPending,
   } = useCharacterQuery(apiUrl, Number(characterId));
 
-  const filteredCharacter = useCharacter(character);
+  const { filteredCharacter } = useCharacter(character);
 
   const activeItem = useMemo(() => {
     switch (active?.category) {
@@ -95,8 +95,6 @@ const Deployments = () => {
   const [cardHeight, setCardHeight] = useState<number | null>(null);
 
   const { itemStats } = useItemStats([activeItem]);
-
-  console.log(itemStats);
 
   useLayoutEffect(() => {
     if (cardRef.current) {

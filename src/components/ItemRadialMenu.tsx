@@ -33,7 +33,7 @@ const ItemRadialMenu = ({
       />
       <RadialMenu radius={80}>
         <div onClick={() => toggleConditionModal()}>
-          <ConditionIcon className="text-inherit group-hover:scale-125" />
+          <ConditionIcon className="size-8 text-inherit group-hover:scale-125" />
           <ConditionLinkField
             item={item}
             conditionModal={conditionModal}
@@ -45,7 +45,7 @@ const ItemRadialMenu = ({
             navigate(parts.includes('campaigns') ? `${item.id}` : `${item.id}`)
           }
         >
-          <WeaponIcon className="text-inherit group-hover:scale-125" />
+          <WeaponIcon className="size-8 text-inherit group-hover:scale-125" />
         </div>
         <div
           onClick={() =>
@@ -54,7 +54,7 @@ const ItemRadialMenu = ({
             )
           }
         >
-          <CharacterIcon className="text-inherit group-hover:scale-125" />
+          <CharacterIcon className="size-8 text-inherit group-hover:scale-125" />
         </div>
       </RadialMenu>
     </div>

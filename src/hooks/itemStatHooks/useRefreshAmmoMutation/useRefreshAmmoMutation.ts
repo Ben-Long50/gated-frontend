@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import refreshAmmo from './refreshAmmo';
 import { useRef } from 'react';
 import { Character } from 'src/types/character';
+import { Item } from 'src/types/item';
 
 const useRefreshAmmoMutation = (
   apiUrl: string,
@@ -25,44 +26,30 @@ const useRefreshAmmoMutation = (
       });
     },
 
-    onMutate: () => {
-      queryClient.cancelQueries({ queryKey: ['character', characterId] });
+    onMutate: (value) => {
+      queryClient.cancelQueries({ queryKey: ['item', itemId] });
 
-      const prevCharacterData: Character | undefined = queryClient.getQueryData(
-        ['character', characterId],
-      );
+      const prevItemData: Item | undefined = queryClient.getQueryData([
+        'item',
+        itemId,
+      ]);
 
-      queryClient.setQueryData(
-        ['character', characterId],
-        (prev: Character) => ({
-          ...prev,
-          characterInventory: {
-            ...prev.characterInventory,
-            items: prev.characterInventory.items.map((item) =>
-              item.id === itemId
-                ? {
-                    ...item,
-                    stats: {
-                      ...item.stats,
-                      currentAmmoCount: item.stats.magCapacity,
-                      currentMagCount: item.stats.magCount
-                        ? item.stats.magCount - 1
-                        : undefined,
-                    },
-                  }
-                : item,
-            ),
-          },
-        }),
-      );
+      queryClient.setQueryData(['item', itemId], (prev: Item) => ({
+        ...prev,
+        stats: {
+          ...prevItemData?.stats,
+          currentAmmoCount: prevItemData?.stats.magCapacity,
+          currentMagCount: prevItemData?.stats.magCount
+            ? prevItemData?.stats.magCount - 1
+            : undefined,
+        },
+      }));
 
-      return { prevCharacterData };
+      return { prevItemData };
     },
-
     onSuccess: () => {
       return queryClient.invalidateQueries({
-        queryKey: ['character', characterId],
-        exact: false,
+        queryKey: ['item', itemId],
       });
     },
     throwOnError: false,

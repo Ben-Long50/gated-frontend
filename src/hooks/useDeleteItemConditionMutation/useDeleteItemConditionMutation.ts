@@ -1,28 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import reloadAmmo from './reloadAmmo';
-import { useRef } from 'react';
+import deleteItemCondition from './deleteItemCondition';
 import { Item } from 'src/types/item';
 
-const useReloadAmmoMutation = (
+const useDeleteItemConditionMutation = (
   apiUrl: string,
+  conditionId: number,
   itemId: number,
-  characterId: number,
 ) => {
   const queryClient = useQueryClient();
-  const timeoutRef = useRef(0);
-
   return useMutation({
     mutationFn: () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      return new Promise((resolve) => {
-        timeoutRef.current = setTimeout(async () => {
-          await reloadAmmo(apiUrl, itemId);
-          resolve(itemId);
-        }, 1000);
-      });
+      return deleteItemCondition(apiUrl, conditionId, itemId);
     },
 
     onMutate: () => {
@@ -35,17 +23,14 @@ const useReloadAmmoMutation = (
 
       queryClient.setQueryData(['item', itemId], (prev: Item) => ({
         ...prev,
-        stats: {
-          ...prevItemData?.stats,
-          currentAmmoCount: prevItemData?.stats.magCapacity,
-          currentMagCount: prevItemData?.stats.currentMagCount
-            ? prevItemData?.stats.currentMagCount - 1
-            : undefined,
-        },
+        conditions: prevItemData?.conditions.filter(
+          (condition) => condition.id !== conditionId,
+        ),
       }));
 
       return { prevItemData };
     },
+
     onSuccess: () => {
       return queryClient.invalidateQueries({
         queryKey: ['item', itemId],
@@ -55,4 +40,4 @@ const useReloadAmmoMutation = (
   });
 };
 
-export default useReloadAmmoMutation;
+export default useDeleteItemConditionMutation;

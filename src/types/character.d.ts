@@ -82,8 +82,8 @@ interface CharacterInventory {
 
 interface SortedInventory {
   weapons: Item[];
-  armor: Item[];
-  cybernetics: Item[];
+  armors: Item[];
+  augmentations: Item[];
   vehicles: Item[];
   drones: Item[];
   items: Item[];

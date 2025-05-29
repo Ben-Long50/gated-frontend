@@ -56,7 +56,7 @@ const RadialMenu = ({
   const pieWidthInside = diameter * 0.05 * Math.tan(angleInRadians) - pieGap;
 
   return (
-    <div className={`${className} absolute inset-0`}>
+    <div className={`${className} absolute inset-0 z-10`}>
       <button
         className="group pointer-events-auto h-full w-full"
         onClick={(e) => {
@@ -102,7 +102,7 @@ const RadialMenu = ({
             >
               <div
                 ref={iconRef}
-                className={`${hoveredIndex === index ? 'text-black' : 'text-secondary'} size-8`}
+                className={`${hoveredIndex === index ? 'text-black' : 'text-secondary'}`}
                 style={{
                   transform: `translateY(${offset}px) rotate(-${(360 / segmentCount) * index}deg)`,
                 }}

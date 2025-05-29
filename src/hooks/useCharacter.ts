@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { Character } from 'src/types/character';
 import useStats from './useStats';
@@ -8,15 +8,17 @@ import useInventory from './useInventory';
 const useCharacter = (character: Character) => {
   const { user } = useContext(AuthContext);
 
-  const { stats } = useStats(
+  const { tree, emptyAttributeTree } = useAttributeTree(character?.attributes);
+
+  const { inventory, equipment, actions, isLoading, isPending } = useInventory(
     character?.characterInventory,
+  );
+
+  const { stats } = useStats(
+    equipment,
     character?.attributes,
     character?.perks,
   );
-
-  const { tree, emptyAttributeTree } = useAttributeTree(character?.attributes);
-
-  const { inventory, equipment } = useInventory(character?.characterInventory);
 
   const filterByPreferences = (character: Character) => {
     const characterOwner =
@@ -87,11 +89,22 @@ const useCharacter = (character: Character) => {
           : null,
       equipment:
         characterOwner || character?.preferences?.equipment ? equipment : null,
+      actions:
+        characterOwner || character?.preferences?.equipment ? actions : null,
       inventory,
     };
   };
 
-  return filterByPreferences(character);
+  const filteredCharacter = useMemo(
+    () => filterByPreferences(character),
+    [equipment, inventory, character],
+  );
+
+  return {
+    filteredCharacter,
+    isLoading,
+    isPending,
+  };
 };
 
 export default useCharacter;

@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toggleEquipment from './toggleEquipment';
-import { Character } from 'src/types/character';
+import { Item } from 'src/types/item';
 
-const useToggleEquipmentMutation = (apiUrl: string, characterId: number) => {
+const useToggleEquipmentMutation = (apiUrl: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -16,33 +16,26 @@ const useToggleEquipmentMutation = (apiUrl: string, characterId: number) => {
     },
 
     onMutate: async (mutationInfo) => {
-      await queryClient.cancelQueries({ queryKey: ['character', characterId] });
+      await queryClient.cancelQueries({
+        queryKey: ['item', mutationInfo.itemId],
+      });
 
-      const prevCharacterData: Character | undefined = queryClient.getQueryData(
-        ['character', characterId],
-      );
+      const prevItemData: Item | undefined = queryClient.getQueryData([
+        'item',
+        mutationInfo.itemId,
+      ]);
 
-      queryClient.setQueryData(
-        ['character', characterId],
-        (prev: Character) => ({
-          ...prev,
-          characterInventory: {
-            ...prevCharacterData?.characterInventory,
-            items: prevCharacterData?.characterInventory.items.map((item) =>
-              item.id === mutationInfo.itemId
-                ? { ...item, equipped: !item.equipped }
-                : item,
-            ),
-          },
-        }),
-      );
+      queryClient.setQueryData(['item', mutationInfo.itemId], (prev: Item) => ({
+        ...prev,
+        equipped: !prevItemData.equipped,
+      }));
 
-      return { prevCharacterData };
+      return { prevItemData };
     },
 
-    onSuccess: () => {
+    onSuccess: (_, mutationInfo) => {
       return queryClient.invalidateQueries({
-        queryKey: ['character', characterId],
+        queryKey: ['item', mutationInfo.itemId],
       });
     },
     throwOnError: false,

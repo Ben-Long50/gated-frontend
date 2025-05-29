@@ -1,6 +1,4 @@
 import { useContext } from 'react';
-import ArrowHeader2 from './ArrowHeader2';
-import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import Icon from '@mdi/react';
 import { mdiCheckCircle } from '@mdi/js';
@@ -9,11 +7,7 @@ import ItemMenu from './ItemMenu';
 import useToggleEquipmentMutation from '../hooks/useEquipmentToggleMutation/useEquipmentToggleMutation';
 import { AuthContext } from '../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
-import {
-  Character,
-  CharacterInventory,
-  SortedInventory,
-} from 'src/types/character';
+import { Character, SortedInventory } from 'src/types/character';
 
 const InventoryModal = ({
   character,
@@ -34,18 +28,15 @@ const InventoryModal = ({
   modalOpen: boolean;
 }) => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary, rarityColorMap } = useContext(ThemeContext);
+  const { rarityColorMap } = useContext(ThemeContext);
   const { characterId } = useParams();
 
-  const toggleEquipment = useToggleEquipmentMutation(
-    apiUrl,
-    Number(characterId),
-  );
+  const toggleEquipment = useToggleEquipmentMutation(apiUrl);
 
   return (
     <Modal modalOpen={modalOpen} toggleModal={toggleModal}>
       <div
-        className="flex w-full max-w-4xl flex-col gap-8"
+        className="flex w-full flex-col gap-8"
         onClick={(e) => e.stopPropagation()}
       >
         <h1 className="text-center">Inventory</h1>

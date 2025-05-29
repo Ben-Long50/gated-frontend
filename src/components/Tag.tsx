@@ -2,31 +2,42 @@ import { ConditionReference } from 'src/types/condition';
 import { Keyword } from 'src/types/keyword';
 import RadialMenu from './RadialMenu';
 import Icon from '@mdi/react';
-import { mdiMinus, mdiPlus } from '@mdi/js';
+import {
+  mdiFileDocument,
+  mdiFileDocumentOutline,
+  mdiMinus,
+  mdiPlus,
+  mdiTrashCanOutline,
+} from '@mdi/js';
 import useItemConditionStacksMutation from 'src/hooks/itemStatHooks/useItemConditionStacksMutation/useItemConditionStacksMutation';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useCharacterConditionStacksMutation from 'src/hooks/itemStatHooks/useCharacterConditionStacksMutation/useCharacterConditionStacksMutation';
+import useDeleteCharacterConditionMutation from 'src/hooks/useDeleteCharacterConditionMutation/useDeleteCharacterConditionMutation';
+import useDeleteItemConditionMutation from 'src/hooks/useDeleteItemConditionMutation/useDeleteItemConditionMutation';
+import Modal from './Modal';
+import BtnRect from './buttons/BtnRect';
+import Divider from './Divider';
 
 const Tag = ({
   keyword,
   condition,
   className,
-  label,
 }: {
   keyword?: { keyword: Keyword; value: number | null };
   condition?: ConditionReference;
   className?: string;
-  label?: string;
 }) => {
   const { apiUrl } = useContext(AuthContext);
+  const [descriptionOpen, setDescriptionOpen] = useState(false);
+
+  const toggleDescription = () => {
+    setDescriptionOpen(!descriptionOpen);
+  };
+
   const keywordName = keyword?.value
     ? keyword?.keyword?.name.replace(/X/g, keyword?.value?.toString())
     : keyword?.keyword?.name;
-
-  const conditionName = condition?.stacks
-    ? condition?.condition?.name + ' ' + condition?.stacks?.toString()
-    : condition?.condition?.name;
 
   const editItemConditionStacks = useItemConditionStacksMutation(
     apiUrl,
@@ -40,7 +51,17 @@ const Tag = ({
     condition?.characterId,
   );
 
-  console.log(condition);
+  const deleteCharacterCondition = useDeleteCharacterConditionMutation(
+    apiUrl,
+    condition?.id,
+    condition?.characterId,
+  );
+
+  const deleteItemCondition = useDeleteItemConditionMutation(
+    apiUrl,
+    condition?.id,
+    condition?.itemId,
+  );
 
   if (keyword)
     return (
@@ -56,12 +77,24 @@ const Tag = ({
       <div
         className={`bg-primary relative rounded border border-red-400 border-opacity-50 px-2 text-base shadow-md shadow-black`}
       >
-        <p className="whitespace-nowrap text-base">{conditionName}</p>
+        <div className="flex items-center gap-1">
+          <p className="whitespace-nowrap text-base">
+            {condition.condition.name}
+          </p>
+          {condition.stacks && condition.stacks > 0 && (
+            <p className="min-w-5 text-right text-base">{condition.stacks}</p>
+          )}
+        </div>
 
         <RadialMenu
           className={`${className} absolute right-0 top-0`}
-          radius={45}
+          radius={55}
         >
+          <div>
+            <p className="size-7 w-full text-center font-semibold !text-inherit">
+              {condition.stacks || 0}
+            </p>
+          </div>
           <div
             onClick={() => {
               if (condition.itemId) {
@@ -72,6 +105,50 @@ const Tag = ({
             }}
           >
             <Icon className="size-7 text-inherit" path={mdiPlus} />
+          </div>
+          <div
+            onClick={() => {
+              if (condition.itemId) {
+                deleteItemCondition.mutate();
+              } else if (condition.characterId) {
+                deleteCharacterCondition.mutate();
+              }
+            }}
+          >
+            <Icon className="size-6 text-inherit" path={mdiTrashCanOutline} />
+          </div>
+          <div onClick={() => toggleDescription()}>
+            <Icon
+              className="size-6 text-inherit"
+              path={mdiFileDocumentOutline}
+            />
+            <Modal modalOpen={descriptionOpen} toggleModal={toggleDescription}>
+              <div className="grid w-full grid-cols-3 place-items-center">
+                <p></p>
+                <h1>{condition.condition.name}</h1>
+                <p className="text-tertiary place-self-end self-start">
+                  Stacks {condition.stacks}
+                </p>
+              </div>
+
+              <Divider />
+              <p>
+                {condition.stacks
+                  ? condition.condition.description.replace(
+                      /X/g,
+                      condition.stacks?.toString(),
+                    )
+                  : condition.condition.description}
+              </p>
+              <BtnRect
+                className="w-full"
+                type="button"
+                ariaLabel="Close"
+                onClick={() => toggleDescription()}
+              >
+                Close
+              </BtnRect>
+            </Modal>
           </div>
           <div
             onClick={() => {
@@ -87,6 +164,8 @@ const Tag = ({
         </RadialMenu>
       </div>
     );
+
+  return;
 };
 
 export default Tag;

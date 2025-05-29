@@ -26,6 +26,7 @@ import StatBars from './StatBars';
 import useCharacter from 'src/hooks/useCharacter';
 import CharacterPicture from './CharacterPicture';
 import CharacterStatBars from './CharacterStatBars';
+import Tag from './Tag';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -45,10 +46,14 @@ const CharacterSheet = () => {
     isError: characterError,
   } = useCharacterQuery(apiUrl, Number(characterId));
 
-  const filteredCharacter = useCharacter(character);
+  const {
+    filteredCharacter,
+    isLoading: inventoryLoading,
+    isPending: inventoryPending,
+  } = useCharacter(character);
 
-  const isLoading = characterLoading;
-  const isPending = characterPending;
+  const isLoading = characterLoading || inventoryLoading;
+  const isPending = characterPending || inventoryPending;
 
   if (isLoading || isPending) {
     return <Loading />;
@@ -181,6 +186,15 @@ const CharacterSheet = () => {
           </div>
         </ThemeContainer>
       </div>
+      {filteredCharacter.conditions.length > 0 && (
+        <div
+          className={`${cardRef.current?.offsetWidth < 500 ? 'px-2' : 'px-4'} flex grow flex-wrap items-center justify-start gap-1`}
+        >
+          {filteredCharacter.conditions?.map((condition) => (
+            <Tag key={condition.id} condition={condition} />
+          ))}
+        </div>
+      )}
       <div
         ref={cardRef}
         className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}

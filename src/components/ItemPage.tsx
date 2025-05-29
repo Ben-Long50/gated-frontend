@@ -91,7 +91,7 @@ const ItemPage = ({
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-8">
       <div className="relative grid w-full grid-cols-[1fr_auto_1fr]">
-        <ItemRadialMenu className="block" item={item} />
+        <ItemRadialMenu className="relative size-8" item={item} />
         <h1 className="col-start-2 text-center">{item.name}</h1>
         {mode === 'codex' && (
           <div className="col-start-3 flex items-center justify-end gap-4 self-end">
@@ -108,11 +108,13 @@ const ItemPage = ({
           />
         )}
         <div className="flex w-full flex-col gap-4">
-          <div className="flex grow flex-wrap items-center justify-start gap-1">
-            {item.conditions?.map((condition) => (
-              <Tag key={condition.id} condition={condition} />
-            ))}
-          </div>
+          {item.conditions.length > 0 && (
+            <div className="flex flex-wrap items-center justify-start gap-1">
+              {item.conditions?.map((condition) => (
+                <Tag key={condition.id} condition={condition} />
+              ))}
+            </div>
+          )}
           <div className="flex items-center justify-between">
             <ItemRarity
               className="col-span-2 place-self-start"
