@@ -14,6 +14,7 @@ import { mdiCartOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import CharacterIcon from '../icons/CharacterIcon';
 import CharacterPictureRound from '../CharacterPictureRound';
+import useCharacters from 'src/hooks/useCharacters';
 
 const Sidebar = ({
   sidebarVisibility,
@@ -28,19 +29,18 @@ const Sidebar = ({
   navbarRef: RefObject;
   children: ReactNode;
 }) => {
-  const { apiUrl } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
 
   const sidebarRef = useRef(null);
 
-  const { data: character, isLoading } = useActiveCharacterQuery(apiUrl);
+  const { activeCharacter, isLoading } = useCharacters();
 
   const cartLength = useMemo(() => {
-    return Object.values(character?.characterCart || {})
+    return Object.values(activeCharacter?.characterCart || {})
       .filter(Array.isArray)
       .flat()
       .reduce((sum, item) => sum + item.quantity, 0);
-  }, [character]);
+  }, [activeCharacter]);
 
   useEffect(() => {
     const closeSidebar = (e: Event) => {
@@ -89,11 +89,11 @@ const Sidebar = ({
         {isLoading ? (
           <CharacterIcon className="text-secondary size-12 p-1" />
         ) : (
-          character && (
+          activeCharacter && (
             <LinkSidebar
-              title={character.firstName + ' ' + character.lastName}
-              icon={<CharacterPictureRound character={character} />}
-              path={`/glam/characters/${character.id}`}
+              title={activeCharacter.firstName + ' ' + activeCharacter.lastName}
+              icon={<CharacterPictureRound character={activeCharacter} />}
+              path={`/glam/characters/${activeCharacter.id}`}
               sidebarVisibility={sidebarVisibility}
               setSidebarVisibility={setSidebarVisibility}
             />
@@ -101,7 +101,7 @@ const Sidebar = ({
         )}
         {!isLoading && cartLength > 0 && (
           <LinkSidebar
-            title={character.firstName + "'s cart"}
+            title={activeCharacter.firstName + "'s cart"}
             icon={
               <div className="relative">
                 <Icon
@@ -113,7 +113,7 @@ const Sidebar = ({
                 </p>
               </div>
             }
-            path={`/glam/characters/${character.id}/cart`}
+            path={`/glam/characters/${activeCharacter.id}/cart`}
             sidebarVisibility={sidebarVisibility}
             setSidebarVisibility={setSidebarVisibility}
           />

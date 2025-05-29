@@ -21,15 +21,19 @@ const CharacterList = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
 
-  const { characters, filterByCampaign, filterByQuery, isLoading } =
-    useCharacters();
+  const {
+    characters,
+    activeCharacter,
+    filterByCampaign,
+    filterByQuery,
+    isLoading,
+  } = useCharacters();
 
   const { data: campaigns } = useCampaignsQuery(apiUrl);
 
-  const setActiveCharacter = useSetActiveCharacterMutation(apiUrl);
-
-  const activeCharacter = characters?.find(
-    (character) => character?.active === true,
+  const setActiveCharacter = useSetActiveCharacterMutation(
+    apiUrl,
+    activeCharacter?.id,
   );
 
   const activeForm = useForm({
@@ -121,6 +125,9 @@ const CharacterList = () => {
           </div>
         </form>
       </ThemeContainer>
+      {activeCharacter && (
+        <CharacterCard key={activeCharacter.id} character={activeCharacter} />
+      )}
       {!characters || characters?.length === 0 ? (
         <div className="flex w-full flex-col items-center justify-center gap-8">
           <h1 className="text-center">No Characters Found</h1>

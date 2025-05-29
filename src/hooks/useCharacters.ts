@@ -37,6 +37,11 @@ const useCharacters = () => {
     [characters, campaignId, query],
   );
 
+  const activeCharacter = useMemo(
+    () => filteredCharacters?.find((character) => character?.active === true),
+    [filteredCharacters],
+  );
+
   const filterByQuery = (query: string) => {
     setQuery(query);
   };
@@ -51,6 +56,7 @@ const useCharacters = () => {
 
   return {
     characters: filteredCharacters,
+    activeCharacter,
     filterByQuery,
     filterByCampaign,
     resetList,
