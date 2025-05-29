@@ -15,12 +15,13 @@ import SessionRoutes from './SessionRoutes';
 import ItemPageWrapper from 'src/components/ItemPageWrapper';
 import Deployments from 'src/components/Deployments';
 import ResumeForm from 'src/components/ResumeForm';
+import { CampaignSocketProvider } from 'src/contexts/CampaignSocketContext';
 
 const CampaignRoutes = () => {
   return (
     <Route path="campaigns">
       <Route index element={<Campaigns />} />
-      <Route path=":campaignId">
+      <Route path=":campaignId" element={<CampaignSocketProvider />}>
         <Route index element={<Campaign />} />
         <Route
           path="update"
