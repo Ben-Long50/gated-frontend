@@ -5,13 +5,7 @@ import useEditCartMutation from '../hooks/useEditCartMutation/useEditCartMutatio
 import BtnIcon from './buttons/BtnIcon';
 import useCharacters from 'src/hooks/useCharacters';
 
-const CartButton = ({
-  itemId,
-  handleRemove,
-}: {
-  itemId: number;
-  handleRemove?: () => void;
-}) => {
+const CartButton = ({ itemId }: { itemId: number }) => {
   const { apiUrl } = useContext(AuthContext);
 
   const { activeCharacter } = useCharacters();
@@ -25,26 +19,14 @@ const CartButton = ({
   return (
     <BtnIcon
       path={mdiCartPlus}
-      active={true}
+      active={activeCharacter ? true : false}
       onClick={() => {
-        if (activeCharacter) {
-          console.log(activeCharacter);
-          editCart.mutate(
-            {
-              itemId,
-              value: 1,
-            },
-            {
-              onSuccess: () => {
-                if (handleRemove) {
-                  handleRemove();
-                }
-              },
-            },
-          );
-        }
+        editCart.mutate({
+          itemId,
+          value: 1,
+        });
       }}
-    ></BtnIcon>
+    />
   );
 };
 
