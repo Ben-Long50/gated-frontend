@@ -5,7 +5,6 @@ const StatBar = ({
   total,
   current,
   reserve,
-  // divider,
   color,
   mode,
   children,
@@ -16,7 +15,6 @@ const StatBar = ({
   total?: number;
   reserve?: number;
   current: number;
-  // divider?: number;
   color: string;
   mode?: string;
   children: ReactNode;
@@ -71,7 +69,7 @@ const StatBar = ({
         </div>
         {mode !== 'edit' && (
           <div
-            className={`${small ? 'gap-1' : 'gap-2'} text-tertiary flex items-center whitespace-nowrap text-xl`}
+            className={`${small ? 'gap-1' : 'gap-2'} text-tertiary z-20 flex items-center whitespace-nowrap text-xl`}
           >
             <div
               className={`${mutation && 'hover:text-accent cursor-pointer'} text-secondary grid h-6 min-w-6 place-content-center`}

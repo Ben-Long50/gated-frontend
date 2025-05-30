@@ -63,12 +63,9 @@ const ItemCard = ({
       className="w-full"
       borderColor={accentPrimary}
     >
-      <div
-        className={`timing relative flex w-full cursor-pointer flex-col gap-8 p-4`}
-      >
-        <ItemRadialMenu item={item} />
+      <div className={`timing flex w-full cursor-pointer flex-col gap-8 p-4`}>
         <div
-          className="my-auto flex max-h-[300px] w-full gap-8"
+          className="relative my-auto flex max-h-[300px] w-full gap-8"
           onClick={
             mode === 'form' && toggleFormLink
               ? () => {
@@ -77,6 +74,7 @@ const ItemCard = ({
               : undefined
           }
         >
+          <ItemRadialMenu item={item} />
           {item.picture?.imageUrl && (
             <ItemPicture
               key={item.id}
