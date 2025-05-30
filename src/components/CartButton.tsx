@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useEditCartMutation from '../hooks/useEditCartMutation/useEditCartMutation';
 import BtnIcon from './buttons/BtnIcon';
+import useCharacters from 'src/hooks/useCharacters';
 
 const CartButton = ({
   itemId,
@@ -15,12 +16,12 @@ const CartButton = ({
 }) => {
   const { apiUrl } = useContext(AuthContext);
 
-  const { data: character } = useActiveCharacterQuery(apiUrl);
+  const { activeCharacter } = useCharacters();
 
   const editCart = useEditCartMutation(
     apiUrl,
-    character?.id,
-    character?.characterCart.id,
+    activeCharacter?.id,
+    activeCharacter?.characterCart?.id,
   );
 
   return (
@@ -28,7 +29,7 @@ const CartButton = ({
       path={mdiCartPlus}
       active={true}
       onClick={() => {
-        if (character) {
+        if (activeCharacter) {
           editCart.mutate(
             {
               itemId,

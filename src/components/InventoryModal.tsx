@@ -44,7 +44,7 @@ const InventoryModal = ({
         <ItemMenu forcedMode="inventory" equipment={inventory}>
           {(item, index) => (
             <div
-              className="group relative h-full cursor-pointer select-none overflow-hidden rounded-bl rounded-tr pl-1"
+              className="group relative h-full cursor-pointer select-none overflow-hidden rounded-bl rounded-tr pl-1 clip-4"
               style={{ backgroundColor: rarityColorMap[item.rarity] }}
               key={index}
               onDoubleClick={() => {
@@ -72,7 +72,7 @@ const InventoryModal = ({
               )}
               {item.picture?.imageUrl ? (
                 <img
-                  className="aspect-square hover:opacity-80"
+                  className="aspect-square"
                   src={item.picture?.imageUrl}
                   alt={item.name}
                 />

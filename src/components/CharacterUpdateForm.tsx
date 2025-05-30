@@ -10,12 +10,7 @@ import useAttributeTree from '../hooks/useAttributeTree';
 import StatBar from './StatBar';
 import usePerks from '../hooks/usePerks';
 import Icon from '@mdi/react';
-import {
-  mdiAlertOutline,
-  mdiCircleOutline,
-  mdiCloseBox,
-  mdiImagePlus,
-} from '@mdi/js';
+import { mdiAlertOutline, mdiCircleOutline } from '@mdi/js';
 import HealthIcon from './icons/HealthIcon';
 import { LayoutContext } from '../contexts/LayoutContext';
 import SanityIcon from './icons/SanityIcon';
@@ -25,7 +20,6 @@ import useDeleteCharacterMutation from '../hooks/useDeleteCharacterMutation/useD
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
-import useStats from '../hooks/useStats';
 import { Perk } from 'src/types/perk';
 import InputFieldRadio from './InputFieldRadio';
 import ArrowHeader2 from './ArrowHeader2';
@@ -327,7 +321,7 @@ const CharacterUpdateForm = () => {
                 <StatBar
                   title="Health"
                   current={field.state.value}
-                  total={stats.maxHealth}
+                  total={filteredCharacter?.stats.maxHealth}
                   color={statColorMap['Health']}
                   cardWidth={cardRef.current?.offsetWidth}
                   mutation={(value: number) =>
@@ -346,7 +340,7 @@ const CharacterUpdateForm = () => {
                 <StatBar
                   title="Sanity"
                   current={field.state.value}
-                  total={stats.maxSanity}
+                  total={filteredCharacter?.stats.maxSanity}
                   color={statColorMap['Sanity']}
                   cardWidth={cardRef.current?.offsetWidth}
                   mutation={(value: number) =>
@@ -363,7 +357,7 @@ const CharacterUpdateForm = () => {
             name="stats.injuries"
             validators={{
               onChange: ({ value }) => {
-                if (value > stats.permanentInjuries) {
+                if (value > filteredCharacter?.stats.permanentInjuries) {
                   return 'Cannot exceed max injuries';
                 } else if (value < 0) {
                   return 'Injuries cannot be lower than 0';
@@ -378,33 +372,33 @@ const CharacterUpdateForm = () => {
                 <div
                   className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center justify-self-end`}
                 >
-                  {Array.from({ length: stats.permanentInjuries }).map(
-                    (_, index) => (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (field.state.value === 1 && index === 0) {
-                            field.handleChange(index);
-                          } else {
-                            field.handleChange(index + 1);
-                          }
-                        }}
-                      >
-                        {index < field.state.value ? (
-                          <InjuryIcon
-                            key={index}
-                            className="text-secondary size-7 shrink-0 sm:size-8"
-                          />
-                        ) : (
-                          <Icon
-                            path={mdiCircleOutline}
-                            key={index}
-                            className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
-                          />
-                        )}
-                      </button>
-                    ),
-                  )}
+                  {Array.from({
+                    length: filteredCharacter?.stats.permanentInjuries,
+                  }).map((_, index) => (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (field.state.value === 1 && index === 0) {
+                          field.handleChange(index);
+                        } else {
+                          field.handleChange(index + 1);
+                        }
+                      }}
+                    >
+                      {index < field.state.value ? (
+                        <InjuryIcon
+                          key={index}
+                          className="text-secondary size-7 shrink-0 sm:size-8"
+                        />
+                      ) : (
+                        <Icon
+                          path={mdiCircleOutline}
+                          key={index}
+                          className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
+                        />
+                      )}
+                    </button>
+                  ))}
                 </div>
               </>
             )}
@@ -413,7 +407,7 @@ const CharacterUpdateForm = () => {
             name="stats.insanities"
             validators={{
               onChange: ({ value }) => {
-                if (value > stats.permanentInsanities) {
+                if (value > filteredCharacter?.stats.permanentInsanities) {
                   return 'Cannot exceed max insanities';
                 } else if (value < 0) {
                   return 'Insanities cannot be lower than 0';
@@ -428,33 +422,33 @@ const CharacterUpdateForm = () => {
                 <div
                   className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center justify-self-end`}
                 >
-                  {Array.from({ length: stats.permanentInsanities }).map(
-                    (_, index) => (
-                      <button
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (field.state.value === 1 && index === 0) {
-                            field.handleChange(index);
-                          } else {
-                            field.handleChange(index + 1);
-                          }
-                        }}
-                      >
-                        {index < field.state.value ? (
-                          <InsanityIcon
-                            key={index}
-                            className="text-secondary size-7 shrink-0 sm:size-8"
-                          />
-                        ) : (
-                          <Icon
-                            path={mdiCircleOutline}
-                            key={index}
-                            className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
-                          />
-                        )}
-                      </button>
-                    ),
-                  )}
+                  {Array.from({
+                    length: filteredCharacter?.stats.permanentInsanities,
+                  }).map((_, index) => (
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (field.state.value === 1 && index === 0) {
+                          field.handleChange(index);
+                        } else {
+                          field.handleChange(index + 1);
+                        }
+                      }}
+                    >
+                      {index < field.state.value ? (
+                        <InsanityIcon
+                          key={index}
+                          className="text-secondary size-7 shrink-0 sm:size-8"
+                        />
+                      ) : (
+                        <Icon
+                          path={mdiCircleOutline}
+                          key={index}
+                          className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
+                        />
+                      )}
+                    </button>
+                  ))}
                 </div>
               </>
             )}
@@ -477,7 +471,7 @@ const CharacterUpdateForm = () => {
         </div>
         <Divider />
         <ArrowHeader2 title="Manage Perks" />
-        <p className="text-tertiary border-l border-gray-400 pl-4">
+        <p className="text-secondary border-l-2 border-gray-400 border-opacity-50 pl-4">
           Select the perks associated with your character. Available perks are
           only shown if you meet the attribute and skill point requirements
         </p>

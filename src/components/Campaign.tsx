@@ -201,7 +201,7 @@ const Campaign = () => {
                 ))}
               </>
             )}
-            {playerCharacters?.length > 0 && (
+            {nonPlayerCharacters?.length > 0 && (
               <>
                 <ArrowHeader2 title="Non-player Characters" />
                 {nonPlayerCharacters?.map((character: Character) => (
@@ -214,16 +214,20 @@ const Campaign = () => {
               </>
             )}
           </div>
+
           {campaign.ownerId === user?.id && (
-            <Link className="col-start-2" to={`update`}>
-              <BtnRect
-                className="w-full"
-                type="button"
-                ariaLabel="Update campaign"
-              >
-                Update Campaign
-              </BtnRect>
-            </Link>
+            <>
+              <Divider />
+              <Link className="col-start-2" to={`update`}>
+                <BtnRect
+                  className="w-full"
+                  type="button"
+                  ariaLabel="Update campaign"
+                >
+                  Update Campaign
+                </BtnRect>
+              </Link>
+            </>
           )}
         </div>
       </div>

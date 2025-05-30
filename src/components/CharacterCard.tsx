@@ -30,7 +30,11 @@ const CharacterCard = ({ character }: { character: Character }) => {
       chamfer="medium"
       borderColor={accentPrimary}
     >
-      <div ref={cardRef} className="relative grid sm:grid-cols-[1fr_4fr]">
+      <div
+        ref={cardRef}
+        className="relative grid cursor-pointer sm:grid-cols-[1fr_4fr]"
+      >
+        <CharacterRadialMenu character={character} />
         <div className="absolute left-0 top-0 flex h-full w-[375px] items-center overflow-hidden rounded-bl clip-6">
           <CloudinaryImage
             url={character.picture?.imageUrl}
@@ -44,10 +48,6 @@ const CharacterCard = ({ character }: { character: Character }) => {
             <div className="absolute inset-0 z-10 bg-zinc-900 bg-opacity-60" />
           )}
         </div>
-        <CharacterRadialMenu
-          className="absolute right-3 top-1 size-9"
-          character={character}
-        />
         <div className="z-10 flex h-full w-full flex-col justify-between gap-4 p-4 sm:col-start-2 md:gap-6 md:p-6">
           <div className="flex w-full items-center justify-between gap-4">
             <ArrowHeader1
@@ -62,7 +62,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
                 ))}
               </div>
             )}
-            <p className="text-accent mr-6 flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
+            <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
               {filteredCharacter.level}
             </p>
           </div>

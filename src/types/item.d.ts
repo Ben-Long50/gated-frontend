@@ -5,6 +5,7 @@ import { Picture } from './picture';
 
 interface Item {
   id: number;
+  userId: number;
   updatedAt: Date;
   name: string;
   itemType: ItemType;

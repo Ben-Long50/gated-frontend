@@ -19,6 +19,7 @@ const RadialMenu = ({
 }) => {
   const [menuVisibility, setMenuVisibility] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
 
   const toggleMenuVisibility = () => {
     setMenuVisibility(!menuVisibility);
@@ -38,6 +39,16 @@ const RadialMenu = ({
     return () => document.removeEventListener('mousedown', closeMenu);
   }, []);
 
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    setCoordinates({ x, y });
+    console.log(menuVisibility);
+
+    toggleMenuVisibility();
+  };
+
   const segmentCount = Children.count(children);
 
   const diameter = radius ? radius * 2 : 192;
@@ -54,64 +65,67 @@ const RadialMenu = ({
       : diameter * Math.tan(angleInRadians) - pieGap;
 
   const offset = iconRef.current
-    ? Math.ceil(((diameter * 4) / 13 - iconRef.current.offsetHeight) / 2)
+    ? Math.ceil(((diameter * 4) / 11.5 - iconRef.current.offsetHeight) / 2)
     : 0;
 
-  const pieWidthInside = diameter * 0.05 * Math.tan(angleInRadians) - pieGap;
+  const centerOffset = 0.25;
+
+  const pieWidthInside =
+    diameter * centerOffset * Math.tan(angleInRadians) - pieGap;
 
   return (
-    <div className={`${className} absolute inset-0 z-10`}>
-      <button
-        className="group pointer-events-auto h-full w-full"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          toggleMenuVisibility();
-        }}
-      />
+    <div
+      ref={menuRef}
+      className={`${className} absolute inset-0 z-20`}
+      onClick={(e) => handleClick(e)}
+    >
       <div
-        ref={menuRef}
-        className={`${menuVisibility ? 'visible opacity-100' : 'invisible opacity-0'} timing bg-primary pointer-events-none absolute left-1/2 top-1/2 grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center place-items-center rounded-full`}
+        className={`${menuVisibility ? 'visible scale-100 opacity-100' : 'invisible scale-0 opacity-0'} timing pointer-events-none absolute grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center items-start overflow-hidden rounded-full shadow-md shadow-black`}
         style={{
           height: diameter,
           width: diameter,
           gridTemplateAreas: 'center',
-          WebkitMaskImage: `radial-gradient(transparent  ${diameter / 5}px, black  ${diameter / 5}px)`,
-          maskImage: `radial-gradient(transparent ${diameter / 5}px, black  ${diameter / 5}px)`,
+          top: `${coordinates.y}px`,
+          left: `${coordinates.x}px`,
         }}
       >
         {Children.map(children, (child, index) => {
           if (!isValidElement(child)) return null;
 
-          const childOnClick = child.props?.onClick;
+          const onClick = child.props?.onClick;
+          const active = child.props['data-active'] ?? true;
 
           return (
             <button
               key={index}
-              className="bg-tertiary timing group pointer-events-auto flex items-start justify-center hover:bg-yellow-300"
+              className={`${!active ? 'opacity-50' : 'hover:bg-yellow-300'} bg-tertiary timing group pointer-events-auto flex items-start justify-center`}
               style={{
-                height: diameter / 2 - (diameter / 2) * 0.05,
+                height: diameter / 2 - (diameter / 2) * centerOffset,
                 width: pieWidthOutside,
-                transform: `rotate(${(360 / segmentCount) * index}deg) translateY(-50%) translateY(-${(diameter / 2) * 0.05}px)`,
+                transform: `rotate(${(360 / segmentCount) * index}deg) translateY(-50%) translateY(-${(diameter / 2) * centerOffset}px)`,
                 gridArea: 'center',
                 clipPath: `polygon(0% 0%, 100% 0%, ${(pieWidthOutside + pieWidthInside) / 2}px 100%, ${(pieWidthOutside - pieWidthInside) / 2}px 100%)`,
               }}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                childOnClick(e);
-              }}
+              onClick={
+                active
+                  ? (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (onClick) onClick(e);
+                    }
+                  : undefined
+              }
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <div
                 ref={iconRef}
-                className={`${hoveredIndex === index ? 'text-black' : 'text-secondary'}`}
+                className={`${hoveredIndex === index && active ? 'text-black' : 'text-secondary'}`}
                 style={{
                   transform: `translateY(${offset}px) rotate(-${(360 / segmentCount) * index}deg)`,
                 }}
               >
-                {cloneElement(child, { onClick: undefined })}
+                {cloneElement(child, { onClick: undefined, active: undefined })}
               </div>
             </button>
           );

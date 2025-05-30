@@ -42,6 +42,12 @@ const useCharacters = () => {
     [filteredCharacters],
   );
 
+  const inactiveCharacters = useMemo(
+    () =>
+      filteredCharacters?.filter((character) => character?.active === false),
+    [filteredCharacters],
+  );
+
   const filterByQuery = (query: string) => {
     setQuery(query);
   };
@@ -55,7 +61,7 @@ const useCharacters = () => {
   };
 
   return {
-    characters: filteredCharacters,
+    characters: inactiveCharacters,
     activeCharacter,
     filterByQuery,
     filterByCampaign,

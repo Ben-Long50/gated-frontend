@@ -36,7 +36,6 @@ const ItemCard = ({
   const { user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const [cardWidth, setCardWidth] = useState(0);
-  const [hover, setHover] = useState(false);
 
   useLayoutEffect(() => {
     if (cardRef.current) {
@@ -64,19 +63,10 @@ const ItemCard = ({
       className="w-full"
       borderColor={accentPrimary}
     >
-      <Link
-        to={
-          mode === 'form'
-            ? ''
-            : mode === 'equipment' ||
-                mode === 'deployments' ||
-                mode === 'search'
-              ? `${item?.itemType}s/${item?.id}`
-              : `${item?.id}`
-        }
-        state={mode}
-        className={`timing relative flex w-full flex-col gap-8 p-4`}
+      <div
+        className={`timing relative flex w-full cursor-pointer flex-col gap-8 p-4`}
       >
+        <ItemRadialMenu item={item} />
         <div
           className="my-auto flex max-h-[300px] w-full gap-8"
           onClick={
@@ -86,8 +76,6 @@ const ItemCard = ({
                 }
               : undefined
           }
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
         >
           {item.picture?.imageUrl && (
             <ItemPicture
@@ -106,11 +94,10 @@ const ItemCard = ({
                   ))}
                 </div>
               </div>
-              <div className="flex grow items-start justify-end gap-4">
+              <div className="z-20 flex grow items-start justify-end gap-4">
                 <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
                 {mode === 'codex' && <CartButton itemId={item?.id} />}
               </div>
-              <ItemRadialMenu className="relative size-8" item={item} />
             </div>
             <div
               className={`timing flex items-center justify-between gap-x-8 gap-y-2`}
@@ -175,24 +162,31 @@ const ItemCard = ({
             )}
           </div>
         </div>
-        {(mode === 'equipment' || mode === 'deployments') &&
-          ownerId === user?.id &&
-          (item.itemType === 'weapon' ? (
-            <WeaponControls weaponId={item.id} stats={itemStats[0]} />
-          ) : item.itemType === 'armor' ? (
-            <ArmorControls armorId={item.id} stats={itemStats[0]} />
-          ) : item.itemType === 'augmentation' ? (
-            <CyberneticControls cyberneticId={item.id} stats={itemStats[0]} />
-          ) : item.itemType === 'vehicle' ? (
-            <VehicleControls vehicleId={item.id} stats={itemStats[0]} />
-          ) : item.itemType === 'drone' ? (
-            <DroneControls droneId={item.id} stats={itemStats[0]} />
-          ) : (
-            item.itemType === 'reusable' && (
-              <ItemControls itemId={item.id} stats={itemStats[0]} />
-            )
-          ))}
-      </Link>
+
+        {(mode === 'equipment' || mode === 'deployments') && (
+          <div className="z-10">
+            {ownerId === user?.id &&
+              (item.itemType === 'weapon' ? (
+                <WeaponControls weaponId={item.id} stats={itemStats[0]} />
+              ) : item.itemType === 'armor' ? (
+                <ArmorControls armorId={item.id} stats={itemStats[0]} />
+              ) : item.itemType === 'augmentation' ? (
+                <CyberneticControls
+                  cyberneticId={item.id}
+                  stats={itemStats[0]}
+                />
+              ) : item.itemType === 'vehicle' ? (
+                <VehicleControls vehicleId={item.id} stats={itemStats[0]} />
+              ) : item.itemType === 'drone' ? (
+                <DroneControls droneId={item.id} stats={itemStats[0]} />
+              ) : (
+                item.itemType === 'reusable' && (
+                  <ItemControls itemId={item.id} stats={itemStats[0]} />
+                )
+              ))}
+          </div>
+        )}
+      </div>
     </ThemeContainer>
   );
 };
