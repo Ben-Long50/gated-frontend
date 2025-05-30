@@ -26,6 +26,14 @@ const ItemRadialMenu = ({
     setConditionModal(!conditionModal);
   };
 
+  const detailsPath = (() => {
+    if (parts.includes('equipment') || parts.includes('deployments')) {
+      return `${item?.itemType}/${item?.id}`;
+    } else if (parts.includes('codex') || parts.includes('inventory')) {
+      return `${item?.id}`;
+    } else return '';
+  })();
+
   return (
     <RadialMenu className={`${className}`} radius={80}>
       <div
@@ -47,15 +55,7 @@ const ItemRadialMenu = ({
       >
         <WeaponIcon className="size-8 text-inherit" />
       </div>
-      <div
-        onClick={() =>
-          navigate(
-            parts.includes('codex')
-              ? `${item?.id}`
-              : `${item?.itemType}s/${item?.id}`,
-          )
-        }
-      >
+      <div onClick={() => navigate(detailsPath)}>
         <Icon path={mdiCardTextOutline} className="size-8 text-inherit" />
       </div>
     </RadialMenu>
