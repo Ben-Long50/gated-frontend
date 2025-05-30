@@ -15,8 +15,7 @@ const useClearCartMutation = (
     onSuccess: () => {
       setDeleteMode(false);
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
-        exact: false,
+        queryKey: ['character', characterId],
       });
     },
     throwOnError: false,

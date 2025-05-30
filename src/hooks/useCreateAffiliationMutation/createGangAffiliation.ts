@@ -2,7 +2,7 @@ import handleResponse from '../handleResponse';
 
 const createGangAffiliation = async (
   formData: FormData,
-  gangId: string,
+  gangId: number,
   apiUrl: string,
 ) => {
   try {

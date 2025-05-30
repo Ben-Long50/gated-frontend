@@ -112,8 +112,6 @@ const ItemUpdateModal = ({
         }).filter(([_, val]) => val),
       );
 
-      console.log(data);
-
       const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {

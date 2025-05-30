@@ -17,16 +17,12 @@ export const CampaignSocketProvider = () => {
     });
 
     socket.on('character', (characterId) => {
-      console.log(characterId);
-
       queryClient.invalidateQueries({
         queryKey: ['character', characterId],
       });
     });
 
     socket.on('item', (itemId) => {
-      console.log(itemId);
-
       queryClient.invalidateQueries({
         queryKey: ['item', itemId],
       });

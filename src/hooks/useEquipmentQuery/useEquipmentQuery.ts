@@ -7,7 +7,7 @@ const useEquipmentQuery = (
   inventoryId: number,
 ) => {
   return useQuery({
-    queryKey: ['activeCharacter', 'equipment', inventoryId],
+    queryKey: ', 'equipment', inventoryId],
     queryFn: async () =>
       await getEquippedItems(apiUrl, characterId, inventoryId),
   });

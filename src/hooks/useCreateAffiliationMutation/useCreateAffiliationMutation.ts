@@ -6,9 +6,9 @@ import createFactionAffiliation from './createFactionAffiliation';
 const useCreateAffiliationMutation = (
   apiUrl: string,
   setFormMessage: (message: string) => void,
-  factionId?: string,
-  gangId?: string,
-  characterId?: string,
+  factionId?: number,
+  gangId?: number,
+  characterId?: number,
 ) => {
   const queryClient = useQueryClient();
 
@@ -24,7 +24,7 @@ const useCreateAffiliationMutation = (
     },
     onSuccess: () => {
       setFormMessage('Affiliation successfully created');
-      queryClient.invalidateQueries({ queryKey: ['activeCharacter'] });
+      queryClient.invalidateQueries({ queryKey: ['character', characterId] });
     },
     onError: (error) => {
       setFormMessage(error.message);

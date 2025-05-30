@@ -5,14 +5,13 @@ import { CyberneticWithKeywords } from 'src/types/cybernetic';
 import { VehicleWithWeapons } from 'src/types/vehicle';
 import { Item } from 'src/types/item';
 import { useContext } from 'react';
-import Loading from './Loading';
 import Icon from '@mdi/react';
 import { mdiMinus, mdiPlus } from '@mdi/js';
 import { ThemeContext } from 'src/contexts/ThemeContext';
 import useEditCartMutation from 'src/hooks/useEditCartMutation/useEditCartMutation';
-import useActiveCharacterQuery from 'src/hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { useParams } from 'react-router-dom';
+import useCharacters from 'src/hooks/useCharacters';
 
 const CartCard = ({
   className,
@@ -34,12 +33,12 @@ const CartCard = ({
   const { rarityColorMap } = useContext(ThemeContext);
   const { characterId } = useParams();
 
-  const { data: character } = useActiveCharacterQuery(apiUrl);
+  const { activeCharacter } = useCharacters();
 
   const editCart = useEditCartMutation(
     apiUrl,
     Number(characterId),
-    character?.characterCart.id,
+    activeCharacter?.characterCart.id,
   );
 
   return (
@@ -67,7 +66,7 @@ const CartCard = ({
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                if (character) {
+                if (activeCharacter) {
                   editCart.mutate({
                     category,
                     itemId: item.id,
@@ -88,7 +87,7 @@ const CartCard = ({
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                if (character) {
+                if (activeCharacter) {
                   editCart.mutate({
                     category,
                     itemId: item.id,

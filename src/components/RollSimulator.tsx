@@ -1,14 +1,10 @@
 import { useForm, useStore } from '@tanstack/react-form';
-import { Action } from 'src/types/action';
 import useActions from '../hooks/useActions';
 import ArrowHeader3 from './ArrowHeader3';
-import SelectField from './SelectField';
 import ThemeContainer from './ThemeContainer';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputFieldRadio from './InputFieldRadio';
-import Divider from './Divider';
-import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import { AuthContext } from '../contexts/AuthContext';
 import useAttributeTree from '../hooks/useAttributeTree';
 import Loading from './Loading';
@@ -25,7 +21,6 @@ import Die3Icon from './icons/Die3Icon';
 import Die2Icon from './icons/Die2Icon';
 import Die6Icon from './icons/Die6Icon';
 import InputField from './InputField';
-import ArrowHeader1 from './ArrowHeader1';
 import Die1Icon from './icons/Die1Icon';
 import Die5Icon from './icons/Die5Icon';
 import Die4Icon from './icons/Die4Icon';
@@ -38,14 +33,9 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import Modal from './Modal';
 import CharacterPictureRound from './CharacterPictureRound';
 import ArrowHeader2 from './ArrowHeader2';
+import useCharacters from 'src/hooks/useCharacters';
 
-const RollSimulator = ({
-  modalOpen,
-  toggleModal,
-}: {
-  modalOpen?: boolean;
-  toggleModal?: () => void;
-}) => {
+const RollSimulator = () => {
   const { apiUrl, user } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
@@ -56,8 +46,7 @@ const RollSimulator = ({
     Number(campaignId),
   );
 
-  const { data: character, isLoading: characterLoading } =
-    useActiveCharacterQuery(apiUrl);
+  const { activeCharacter, isLoading: characterLoading } = useCharacters();
 
   const { filteredActions: actions } = useActions();
 
@@ -70,7 +59,7 @@ const RollSimulator = ({
 
   const rollForm = useForm({
     defaultValues: {
-      character: user?.id === campaign?.ownerId ? '' : character,
+      activeCharacter: user?.id === campaign?.ownerId ? '' : activeCharacter,
       action: '',
       rollType: 'recommended' as 'recommended' | 'custom',
       attribute: '' as AttributeName,
@@ -91,7 +80,7 @@ const RollSimulator = ({
 
   const selectedCharacter = useStore(
     rollForm.store,
-    (state) => state.values.character,
+    (state) => state.values.activeCharacter,
   );
 
   const { emptyAttributeTree, getPoints } = useAttributeTree(
@@ -111,7 +100,7 @@ const RollSimulator = ({
       >
         <div className={`flex w-full flex-col gap-8 p-4`}>
           <rollForm.Field
-            name="character"
+            name="activeCharacter"
             listeners={{
               onChange: () => {
                 rollForm.setFieldValue('action', '');

@@ -40,68 +40,70 @@ const useEditCartMutation = (
     },
 
     onMutate: (value) => {
-      queryClient.cancelQueries({ queryKey: ['activeCharacter'] });
+      queryClient.cancelQueries({ queryKey: ['character', characterId] });
 
       const prevCharacterData: Character | undefined = queryClient.getQueryData(
-        ['activeCharacter'],
+        ['character', characterId],
       );
 
-      queryClient.setQueryData(['activeCharacter'], (prev: Character) => {
-        const targetItem = prev.characterCart.items.find(
-          (item) =>
-            Object.values(item).find((value) => typeof value === 'object')
-              .id === value.itemId,
-        );
+      queryClient.setQueryData(
+        ['character', characterId],
+        (prev: Character) => {
+          const targetItem = prev.characterCart.items.find(
+            (item) =>
+              Object.values(item).find((value) => typeof value === 'object')
+                .id === value.itemId,
+          );
 
-        if (targetItem && targetItem.quantity + value.value <= 0) {
-          return {
-            ...prev,
-            characterCart: {
-              ...prev.characterCart,
-              items: prev.characterCart.items.filter(
-                (item) => item.id !== targetItem.id,
-              ),
-            },
-          };
-        }
-
-        return !targetItem
-          ? {
+          if (targetItem && targetItem.quantity + value.value <= 0) {
+            return {
               ...prev,
               characterCart: {
                 ...prev.characterCart,
-                items: [
-                  ...prev.characterCart.items,
-                  {
-                    quantity: value.value,
-                    item: { id: value.itemId },
-                  },
-                ],
-              },
-            }
-          : {
-              ...prev,
-              characterCart: {
-                ...prev.characterCart,
-                items: prev.characterCart.items.map((item) =>
-                  item.id === targetItem.id
-                    ? {
-                        ...item,
-                        quantity: item.quantity + value.value,
-                      }
-                    : item,
+                items: prev.characterCart.items.filter(
+                  (item) => item.id !== targetItem.id,
                 ),
               },
             };
-      });
+          }
+
+          return !targetItem
+            ? {
+                ...prev,
+                characterCart: {
+                  ...prev.characterCart,
+                  items: [
+                    ...prev.characterCart.items,
+                    {
+                      quantity: value.value,
+                      item: { id: value.itemId },
+                    },
+                  ],
+                },
+              }
+            : {
+                ...prev,
+                characterCart: {
+                  ...prev.characterCart,
+                  items: prev.characterCart.items.map((item) =>
+                    item.id === targetItem.id
+                      ? {
+                          ...item,
+                          quantity: item.quantity + value.value,
+                        }
+                      : item,
+                  ),
+                },
+              };
+        },
+      );
 
       return { prevCharacterData };
     },
 
     onSuccess: () => {
       return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
-        exact: false,
+        queryKey: ['character', characterId],
       });
     },
     throwOnError: false,

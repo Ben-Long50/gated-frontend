@@ -1,39 +1,31 @@
-import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import ArrowHeader2 from './ArrowHeader2';
-import { useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import { Affiliation } from 'src/types/faction';
 import AffiliationCard from './AffiliationCard';
 import { Link } from 'react-router-dom';
 import BtnRect from './buttons/BtnRect';
+import useCharacters from 'src/hooks/useCharacters';
 
 const Affiliations = () => {
-  const { apiUrl } = useContext(AuthContext);
+  const { activeCharacter, isLoading: characterLoading } = useCharacters();
 
-  const {
-    data: character,
-    isLoading,
-    isPending,
-  } = useActiveCharacterQuery(apiUrl);
-
-  const affiliations = character
+  const affiliations = activeCharacter
     ? {
         factionAffiliations:
-          character.affiliations.filter(
+          activeCharacter?.affiliations.filter(
             (affiliation: Affiliation) => affiliation.factions.length > 0,
           ) || [],
         gangAffiliations: [],
         characterAffiliations:
-          character.affiliations.filter(
+          activeCharacter?.affiliations.filter(
             (affiliation: Affiliation) => affiliation.characters.length > 1,
           ) || [],
       }
     : null;
 
-  if (isLoading || isPending) return <Loading />;
+  if (characterLoading) return <Loading />;
 
-  if (!character.campaign) {
+  if (!activeCharacter?.campaign) {
     return (
       <div className="flex max-w-5xl flex-col items-center gap-8">
         <h1 className="w-full text-center">Affiliations</h1>
@@ -41,7 +33,7 @@ const Affiliations = () => {
           Your active character is not associated with a campaign. Update your
           character information with a campaign to access affiliations.
         </h3>
-        <Link to={`/glam/characters/${character.id}`}>
+        <Link to={`/glam/characters/${activeCharacter?.id}`}>
           <BtnRect type="button" ariaLabel="Character sheet">
             Character Sheet
           </BtnRect>

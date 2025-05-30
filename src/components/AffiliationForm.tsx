@@ -9,7 +9,6 @@ import AffiliationBar from './AffiliationBar';
 import { Character } from 'src/types/character';
 import { Faction } from 'src/types/faction';
 import useCreateAffiliationMutation from '../hooks/useCreateAffiliationMutation/useCreateAffiliationMutation';
-import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import InputSelectField from './InputSelectField';
 import AffiliationIcon from './icons/AffiliationIcon';
 import { Gang } from 'src/types/gang';
@@ -19,6 +18,7 @@ import useAffiliationQuery from '../hooks/useAffiliationQuery/useAffiliationQuer
 import useDeleteAffiliationMutation from '../hooks/useDeleteAffiliationMutation/useDeleteAffiliationMutation';
 import useFactionQuery from '../hooks/useFactionQuery/useFactionQuery';
 import ArrowHeader3 from './ArrowHeader3';
+import useCharacters from 'src/hooks/useCharacters';
 
 const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -27,11 +27,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const {
-    data: character,
-    isLoading: characterLoading,
-    isPending: characterPending,
-  } = useActiveCharacterQuery(apiUrl);
+  const { activeCharacter, isLoading: characterLoading } = useCharacters();
 
   const {
     data: faction,
@@ -47,14 +43,14 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const isLoading = characterLoading || factionLoading || affiliationLoading;
 
-  const isPending = characterPending || factionPending || affiliationPending;
+  const isPending = factionPending || affiliationPending;
 
   const createAffiliation = useCreateAffiliationMutation(
     apiUrl,
     setFormMessage,
-    factionId,
-    gangId,
-    characterId,
+    Number(factionId),
+    Number(gangId),
+    Number(characterId),
   );
 
   const updateAffiliation = useUpdateAffiliationMutation(
@@ -83,7 +79,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const secondaryCharacter =
     affiliation?.characters.find(
-      (character: Character) => character.id !== Number(characterId),
+      (character: Character) => activeCharacter?.id !== Number(characterId),
     ) || null;
 
   const handleDelete = () => {
@@ -131,7 +127,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   if (isLoading || isPending) return <Loading />;
 
-  if (!character.campaign) {
+  if (!activeCharacter?.campaign) {
     return (
       <div className="flex max-w-5xl flex-col items-center gap-8">
         <h1 className="w-full text-center">Create Affiliation</h1>
@@ -139,7 +135,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
           Your active character is not associated with a campaign. Update your
           character information with a campaign to access affiliations.
         </h3>
-        <Link to={`/glam/characters/${character.id}`}>
+        <Link to={`/glam/characters/${activeCharacter?.id}`}>
           <BtnRect type="button" ariaLabel="Character sheet">
             Character Sheet
           </BtnRect>
@@ -209,11 +205,11 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                           label="Campaign Factions"
                           options={
                             factionId
-                              ? character.campaign.factions.filter(
+                              ? activeCharacter?.campaign.factions.filter(
                                   (faction: Faction) =>
                                     faction.id !== Number(factionId),
                                 )
-                              : character.campaign.factions
+                              : activeCharacter?.campaign.factions
                           }
                         />
                       )}
@@ -227,10 +223,10 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                           label="Campaign Gangs"
                           options={
                             gangId
-                              ? character.campaign.gangs.filter(
+                              ? activeCharacter?.campaign.gangs.filter(
                                   (gang: Gang) => gang.id !== Number(gangId),
                                 )
-                              : character.campaign.gangs
+                              : activeCharacter?.campaign.gangs
                           }
                         />
                       )}
@@ -244,11 +240,11 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                           label="Campaign Characters"
                           options={
                             characterId
-                              ? character.campaign.characters.filter(
+                              ? activeCharacter?.campaign.characters.filter(
                                   (character: Character) =>
-                                    character.id !== Number(characterId),
+                                    activeCharacter?.id !== Number(characterId),
                                 )
-                              : character.campaign.characters
+                              : activeCharacter?.campaign.characters
                           }
                         />
                       )}
@@ -266,10 +262,12 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
             <div className={`flex items-center gap-4 justify-self-start`}>
               <img
                 className={`${mobile ? 'size-14' : 'size-20'} rounded-full object-cover shadow-md shadow-black`}
-                src={character.picture.imageUrl}
+                src={activeCharacter?.picture.imageUrl}
               />
               <ArrowHeader3
-                title={character.firstName + ' ' + character.lastName}
+                title={
+                  activeCharacter?.firstName + ' ' + activeCharacter?.lastName
+                }
               />
             </div>
           )}
@@ -323,16 +321,20 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                       >
                         <ArrowHeader3
                           className="text-right"
-                          title={character.firstName + ' ' + character.lastName}
+                          title={
+                            activeCharacter?.firstName +
+                            ' ' +
+                            activeCharacter?.lastName
+                          }
                           reverse={true}
                         />
                         <img
                           className={`${mobile ? 'size-14' : 'size-20'} rounded-full shadow-md shadow-black`}
-                          src={character.picture?.imageUrl}
+                          src={activeCharacter?.picture?.imageUrl}
                           alt={
-                            character.firstName +
+                            activeCharacter?.firstName +
                             ' ' +
-                            character.lastName +
+                            activeCharacter?.lastName +
                             "'s picture"
                           }
                         />

@@ -2,7 +2,7 @@ import handleResponse from '../handleResponse';
 
 const createCharacterAffiliation = async (
   formData: FormData,
-  characterId: string,
+  characterId: number,
   apiUrl: string,
 ) => {
   try {

@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
-import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import Loading from './Loading';
@@ -9,6 +8,7 @@ import CartCard from './CartCard';
 import useClearCartMutation from '../hooks/useClearCartMutation/useClearCartMutation';
 import useCompletePurchaseMutation from '../hooks/useCompletePurchaseMutation/useCompletePurchaseMutation';
 import ArrowHeader2 from './ArrowHeader2';
+import useCharacters from 'src/hooks/useCharacters';
 
 const Cart = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -16,29 +16,25 @@ const Cart = () => {
 
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const {
-    data: character,
-    isLoading,
-    isPending,
-  } = useActiveCharacterQuery(apiUrl);
+  const { activeCharacter, isLoading } = useCharacters();
 
   const clearCart = useClearCartMutation(
     apiUrl,
-    character?.id,
-    character?.characterCart?.id,
+    activeCharacter?.id,
+    activeCharacter?.characterCart?.id,
     setDeleteMode,
   );
 
   const completePurchase = useCompletePurchaseMutation(
     apiUrl,
-    character?.id,
-    character?.characterInventory?.id,
+    activeCharacter?.id,
+    activeCharacter?.characterInventory?.id,
   );
 
-  if (isLoading || isPending) return <Loading />;
+  if (isLoading) return <Loading />;
 
   const cart = Object.fromEntries(
-    Object.entries(character?.characterCart)
+    Object.entries(activeCharacter?.characterCart)
       .filter(([key, value]) => Array.isArray(value) && value.length > 0)
       .map(([key, value]) => [key, value]),
   );
@@ -55,7 +51,8 @@ const Cart = () => {
   return (
     <form className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
       <h1 className="text-center">
-        {character.firstName + ' ' + character.lastName + "'s"} Cart
+        {activeCharacter?.firstName + ' ' + activeCharacter?.lastName + "'s"}{' '}
+        Cart
       </h1>
       <ThemeContainer
         className={`ml-auto w-full`}
@@ -65,7 +62,7 @@ const Cart = () => {
         <div className="flex w-full flex-col gap-4 p-4 sm:px-8">
           <div className="flex w-full items-center justify-between gap-8">
             <h3>Available profits</h3>
-            <h3 className="ml-auto">{character.profits}p</h3>
+            <h3 className="ml-auto">{activeCharacter?.profits}p</h3>
           </div>
 
           <div className="flex w-full items-center justify-between gap-8">
@@ -73,9 +70,9 @@ const Cart = () => {
             <div className="flex items-center gap-4">
               <h3 className="ml-auto">{totalPrice}p</h3>
               <p
-                className={`${character?.profits - totalPrice < 0 && 'text-error'} text-base`}
+                className={`${activeCharacter?.profits - totalPrice < 0 && 'text-error'} text-base`}
               >
-                ({character?.profits - totalPrice}p)
+                ({activeCharacter?.profits - totalPrice}p)
               </p>
             </div>
           </div>

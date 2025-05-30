@@ -1,6 +1,4 @@
 import { mdiCartPlus } from '@mdi/js';
-import Icon from '@mdi/react';
-import useActiveCharacterQuery from '../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useEditCartMutation from '../hooks/useEditCartMutation/useEditCartMutation';
@@ -30,6 +28,7 @@ const CartButton = ({
       active={true}
       onClick={() => {
         if (activeCharacter) {
+          console.log(activeCharacter);
           editCart.mutate(
             {
               itemId,

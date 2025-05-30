@@ -19,9 +19,8 @@ const useDeleteItemMutation = (
       queryClient.invalidateQueries({
         queryKey: [category],
       });
-      return queryClient.invalidateQueries({
-        queryKey: ['activeCharacter'],
-        exact: false,
+      return queryClient.removeQueries({
+        queryKey: ['item', itemId],
       });
     },
     onError: (error) => {

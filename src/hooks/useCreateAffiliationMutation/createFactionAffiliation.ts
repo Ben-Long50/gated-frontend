@@ -2,7 +2,7 @@ import handleResponse from '../handleResponse';
 
 const createFactionAffiliation = async (
   formData: FormData,
-  factionId: string,
+  factionId: number,
   apiUrl: string,
 ) => {
   try {

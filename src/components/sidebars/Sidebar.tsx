@@ -1,4 +1,3 @@
-import useActiveCharacterQuery from '../../hooks/useActiveCharacterQuery/useActiveCharacterQuery';
 import {
   ReactNode,
   RefObject,
@@ -7,7 +6,6 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import { AuthContext } from '../../contexts/AuthContext';
 import LinkSidebar from './LinkSidebar';
 import { LayoutContext } from '../../contexts/LayoutContext';
 import { mdiCartOutline } from '@mdi/js';

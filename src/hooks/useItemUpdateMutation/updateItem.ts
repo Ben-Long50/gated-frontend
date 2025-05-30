@@ -16,7 +16,7 @@ const updateItem = async (
       },
     );
     const data = await handleResponse(response);
-    console.log(data);
+
     return data;
   } catch (error) {
     if (error instanceof Error) {
