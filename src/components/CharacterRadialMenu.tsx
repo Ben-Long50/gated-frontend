@@ -8,6 +8,15 @@ import CharacterIcon from './icons/CharacterIcon';
 import { useContext, useState } from 'react';
 import { AuthContext } from 'src/contexts/AuthContext';
 import HangarIcon from './icons/HangarIcon';
+import ProfitsIcon from './icons/ProfitsIcon';
+import Icon from '@mdi/react';
+import {
+  mdiArrowULeftBottom,
+  mdiCurrencyUsd,
+  mdiMinus,
+  mdiPlus,
+} from '@mdi/js';
+import useProfitsMutation from 'src/hooks/useProfitsMutation/useProfitsMutation';
 
 const CharacterRadialMenu = ({
   character,
@@ -16,14 +25,21 @@ const CharacterRadialMenu = ({
   character: Character;
   className?: string;
 }) => {
-  const { user } = useContext(AuthContext);
+  const { apiUrl, user } = useContext(AuthContext);
   const [conditionModal, setConditionModal] = useState(false);
+  const [profitMenu, setProfitMenu] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const parts = location.pathname.split('/');
 
+  const editProfits = useProfitsMutation(apiUrl, character.id);
+
   const toggleConditionModal = () => {
     setConditionModal(!conditionModal);
+  };
+
+  const toggleProfitMenu = () => {
+    setProfitMenu(!profitMenu);
   };
 
   const path = (() => {
@@ -34,8 +50,8 @@ const CharacterRadialMenu = ({
     }
   })();
 
-  return (
-    <RadialMenu className={`${className}`} radius={80}>
+  return !profitMenu ? (
+    <RadialMenu className={`${className}`} radius={80} iconSize={32}>
       <div
         onClick={() => toggleConditionModal()}
         data-active={
@@ -51,13 +67,50 @@ const CharacterRadialMenu = ({
         />
       </div>
       <div onClick={() => navigate(`${path}/equipment`)}>
-        <EquipmentIcon className="size-8 text-inherit" />
+        <EquipmentIcon className="text-inherit" />
       </div>
       <div onClick={() => navigate(`${path}/deployments`)}>
-        <HangarIcon className="size-8 text-inherit" />
+        <HangarIcon className="text-inherit" />
       </div>
       <div onClick={() => navigate(`${path}`)}>
-        <CharacterIcon className="size-8 text-inherit" />
+        <CharacterIcon className="text-inherit" />
+      </div>
+      <div
+        onClick={() => {
+          toggleProfitMenu();
+        }}
+        // data-active={character.campaign?.ownerId === user?.id}
+      >
+        <Icon className="text-inherit" path={mdiCurrencyUsd} />
+      </div>
+    </RadialMenu>
+  ) : (
+    <RadialMenu className={`${className}`} radius={80} iconSize={32}>
+      <div>
+        <p className="text-2xl font-semibold !text-inherit">
+          {character.profits || 0}
+        </p>
+      </div>
+      <div
+        onClick={() => {
+          editProfits.mutate(1);
+        }}
+      >
+        <Icon className="text-inherit" path={mdiPlus} />
+      </div>
+      <div
+        onClick={() => {
+          toggleProfitMenu();
+        }}
+      >
+        <Icon className="text-inherit" path={mdiArrowULeftBottom} />
+      </div>
+      <div
+        onClick={() => {
+          editProfits.mutate(-1);
+        }}
+      >
+        <Icon className="text-inherit" path={mdiMinus} />
       </div>
     </RadialMenu>
   );

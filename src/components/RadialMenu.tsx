@@ -11,10 +11,12 @@ import {
 const RadialMenu = ({
   className,
   radius,
+  iconSize,
   children,
 }: {
   className?: string;
-  radius?: number;
+  radius: number;
+  iconSize: number;
   children: ReactNode;
 }) => {
   const [menuVisibility, setMenuVisibility] = useState(false);
@@ -26,7 +28,6 @@ const RadialMenu = ({
   };
 
   const menuRef = useRef(null);
-  const iconRef = useRef(null);
 
   useEffect(() => {
     const closeMenu = (e: MouseEvent) => {
@@ -43,7 +44,12 @@ const RadialMenu = ({
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    setCoordinates({ x, y });
+
+    if (menuVisibility) {
+      setTimeout(() => setCoordinates({ x, y }), 300);
+    } else {
+      setCoordinates({ x, y });
+    }
 
     toggleMenuVisibility();
   };
@@ -63,8 +69,8 @@ const RadialMenu = ({
       ? diameter
       : diameter * Math.tan(angleInRadians) - pieGap;
 
-  const offset = iconRef.current
-    ? Math.ceil(((diameter * 4) / 11.5 - iconRef.current.offsetHeight) / 2)
+  const offset = iconSize
+    ? Math.ceil(((diameter * 4) / 11.5 - iconSize) / 2)
     : 0;
 
   const centerOffset = 0.25;
@@ -79,7 +85,7 @@ const RadialMenu = ({
       onClick={(e) => handleClick(e)}
     >
       <div
-        className={`${menuVisibility ? 'visible scale-100 opacity-100' : 'invisible scale-0 opacity-0'} timing pointer-events-none absolute grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center items-start overflow-hidden rounded-full shadow-md shadow-black`}
+        className={`${menuVisibility ? 'visible scale-100' : 'invisible scale-0'} timing pointer-events-none absolute grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center items-start overflow-hidden rounded-full shadow-md shadow-black transition-transform`}
         style={{
           height: diameter,
           width: diameter,
@@ -118,9 +124,10 @@ const RadialMenu = ({
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <div
-                ref={iconRef}
                 className={`${hoveredIndex === index && active ? 'text-black' : 'text-secondary'}`}
                 style={{
+                  height: iconSize,
+                  width: iconSize,
                   transform: `translateY(${offset}px) rotate(-${(360 / segmentCount) * index}deg)`,
                 }}
               >
