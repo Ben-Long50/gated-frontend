@@ -14,6 +14,7 @@ import useConditions from '../hooks/useConditions';
 import { Condition } from 'src/types/condition';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
+import InputSelectField from './InputSelectField';
 
 const ConditionForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -98,7 +99,7 @@ const ConditionForm = () => {
           }}
         >
           {(field) => (
-            <InputField className="grow" label="Condition name" field={field} />
+            <InputField className="grow" label="Condition Name" field={field} />
           )}
         </conditionForm.Field>
         <conditionForm.Field
@@ -111,11 +112,12 @@ const ConditionForm = () => {
           }}
         >
           {(field) => (
-            <SelectField className="grow" label="Condition type" field={field}>
-              <option defaultValue=""></option>
-              <option value="character">Character</option>
-              <option value="item">Item</option>
-            </SelectField>
+            <InputSelectField
+              className="grow"
+              label="Condition Type"
+              field={field}
+              options={['character', 'item']}
+            />
           )}
         </conditionForm.Field>
         <conditionForm.Field
@@ -128,11 +130,7 @@ const ConditionForm = () => {
           }}
         >
           {(field) => (
-            <TextAreaField
-              className="h-40 w-full"
-              label="Condition description"
-              field={field}
-            />
+            <TextAreaField label="Condition Description" field={field} />
           )}
         </conditionForm.Field>
         <BtnRect

@@ -4,12 +4,11 @@ import Modal from '../Modal';
 import { Character } from 'src/types/character';
 import { Condition } from 'src/types/condition';
 import BtnRect from '../buttons/BtnRect';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useCreateCharacterConditionMutation from 'src/hooks/useCreateCharacterConditionMutation/useCreateCharacterConditionMutation';
 import { Item } from 'src/types/item';
 import useCreateItemConditionMutation from 'src/hooks/useCreateItemConditionMutation/useCreateItemConditionMutation';
-import Loading from '../Loading';
 import { useParams } from 'react-router-dom';
 
 const ConditionLinkField = ({
@@ -39,6 +38,10 @@ const ConditionLinkField = ({
     Number(characterId),
     toggleConditionModal,
   );
+
+  useEffect(() => {
+    conditionLinkForm.reset();
+  }, [character, item]);
 
   const conditionLinkForm = useForm({
     defaultValues: {
@@ -76,14 +79,7 @@ const ConditionLinkField = ({
           conditionLinkForm.handleSubmit();
         }}
       >
-        {createCharacterCondition.isPaused || createItemCondition.isPending ? (
-          <Loading
-            className="group-hover:text-yellow-300 dark:text-gray-900"
-            size={1.15}
-          />
-        ) : (
-          'Submit'
-        )}
+        Submit
       </BtnRect>
     </Modal>
   );

@@ -35,7 +35,7 @@ const ItemRadialMenu = ({
   })();
 
   return (
-    <RadialMenu className={`${className}`} radius={80}>
+    <RadialMenu className={`${className}`} size="large">
       <div
         onClick={() => toggleConditionModal()}
         data-active={item.userId === user?.id}

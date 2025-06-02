@@ -10,13 +10,11 @@ import {
 
 const RadialMenu = ({
   className,
-  radius,
-  iconSize,
+  size,
   children,
 }: {
   className?: string;
-  radius: number;
-  iconSize: number;
+  size: 'large' | 'medium' | 'small';
   children: ReactNode;
 }) => {
   const [menuVisibility, setMenuVisibility] = useState(false);
@@ -53,6 +51,26 @@ const RadialMenu = ({
 
     toggleMenuVisibility();
   };
+
+  let radius = 0;
+  let iconSize = 0;
+
+  switch (size) {
+    case 'large':
+      radius = 80;
+      iconSize = 32;
+      break;
+    case 'medium':
+      radius = 67.5;
+      iconSize = 26;
+      break;
+    case 'small':
+      radius = 55;
+      iconSize = 20;
+      break;
+    default:
+      break;
+  }
 
   const segmentCount = Children.count(children);
 

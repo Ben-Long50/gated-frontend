@@ -17,6 +17,7 @@ import {
   mdiPlus,
 } from '@mdi/js';
 import useProfitsMutation from 'src/hooks/useProfitsMutation/useProfitsMutation';
+import useCharacter from 'src/hooks/useCharacter';
 
 const CharacterRadialMenu = ({
   character,
@@ -31,6 +32,8 @@ const CharacterRadialMenu = ({
   const navigate = useNavigate();
   const location = useLocation();
   const parts = location.pathname.split('/');
+
+  const { filteredCharacter } = useCharacter(character);
 
   const editProfits = useProfitsMutation(apiUrl, character.id);
 
@@ -51,7 +54,7 @@ const CharacterRadialMenu = ({
   })();
 
   return !profitMenu ? (
-    <RadialMenu className={`${className}`} radius={80} iconSize={32}>
+    <RadialMenu className={`${className}`} size="large">
       <div
         onClick={() => toggleConditionModal()}
         data-active={
@@ -79,16 +82,19 @@ const CharacterRadialMenu = ({
         onClick={() => {
           toggleProfitMenu();
         }}
-        // data-active={character.campaign?.ownerId === user?.id}
+        data-active={
+          character.userId === user?.id ||
+          character.campaign?.ownerId === user?.id
+        }
       >
-        <Icon className="text-inherit" path={mdiCurrencyUsd} />
+        <ProfitsIcon className="text-inherit" />
       </div>
     </RadialMenu>
   ) : (
-    <RadialMenu className={`${className}`} radius={80} iconSize={32}>
-      <div>
+    <RadialMenu className={`${className}`} size="large">
+      <div className="flex justify-center">
         <p className="text-2xl font-semibold !text-inherit">
-          {character.profits || 0}
+          {filteredCharacter.profits || 0}
         </p>
       </div>
       <div

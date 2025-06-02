@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { Item } from 'src/types/item';
 import editCharacterConditionStacks from './editCharacterConditionStacks';
 import { socket } from 'src/socket';
+import { Character } from 'src/types/character';
 
 const useCharacterConditionStacksMutation = (
   apiUrl: string,
@@ -40,22 +41,24 @@ const useCharacterConditionStacksMutation = (
     onMutate: (value) => {
       queryClient.cancelQueries({ queryKey: ['character', characterId] });
 
-      const prevCharacterData: Item | undefined = queryClient.getQueryData([
-        'character',
-        characterId,
-      ]);
+      const prevCharacterData: Character | undefined = queryClient.getQueryData(
+        ['character', characterId],
+      );
 
-      queryClient.setQueryData(['character', characterId], (prev: Item) => ({
-        ...prev,
-        conditions: prevCharacterData?.conditions.map((condition) =>
-          condition.id === conditionId
-            ? {
-                ...condition,
-                stacks: condition?.stacks ? condition.stacks + value : value,
-              }
-            : condition,
-        ),
-      }));
+      queryClient.setQueryData(
+        ['character', characterId],
+        (prev: Character) => ({
+          ...prev,
+          conditions: prevCharacterData?.conditions.map((condition) =>
+            condition.id === conditionId
+              ? {
+                  ...condition,
+                  stacks: condition?.stacks ? condition.stacks + value : value,
+                }
+              : condition,
+          ),
+        }),
+      );
 
       return { prevCharacterData };
     },

@@ -88,10 +88,10 @@ const Tag = ({
 
         <RadialMenu
           className={`${className} absolute right-0 top-0`}
-          radius={55}
+          size="small"
         >
           <div>
-            <p className="size-7 w-full text-center font-semibold !text-inherit">
+            <p className="w-full text-center font-semibold !text-inherit">
               {condition.stacks || 0}
             </p>
           </div>
@@ -104,7 +104,7 @@ const Tag = ({
               }
             }}
           >
-            <Icon className="size-7 text-inherit" path={mdiPlus} />
+            <Icon className="text-inherit" path={mdiPlus} />
           </div>
           <div
             onClick={() => {
@@ -115,13 +115,10 @@ const Tag = ({
               }
             }}
           >
-            <Icon className="size-6 text-inherit" path={mdiTrashCanOutline} />
+            <Icon className="text-inherit" path={mdiTrashCanOutline} />
           </div>
           <div onClick={() => toggleDescription()}>
-            <Icon
-              className="size-6 text-inherit"
-              path={mdiFileDocumentOutline}
-            />
+            <Icon className="text-inherit" path={mdiFileDocumentOutline} />
             <Modal modalOpen={descriptionOpen} toggleModal={toggleDescription}>
               <div className="grid w-full grid-cols-3 place-items-center">
                 <p></p>
@@ -159,7 +156,7 @@ const Tag = ({
               }
             }}
           >
-            <Icon className="size-7 text-inherit" path={mdiMinus} />
+            <Icon className="text-inherit" path={mdiMinus} />
           </div>
         </RadialMenu>
       </div>
