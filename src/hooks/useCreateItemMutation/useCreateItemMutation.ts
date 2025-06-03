@@ -16,7 +16,6 @@ const useCreateItemMutation = (
       setFormMessage(data.message);
       queryClient.invalidateQueries({
         queryKey: ['item', itemId],
-        exact: false,
       });
       return queryClient.invalidateQueries({
         queryKey: [category],

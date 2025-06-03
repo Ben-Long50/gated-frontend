@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
 import InputField from './InputField';
+import InputSelectField from './InputSelectField';
 import TextAreaField from './TextAreaField';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
@@ -82,7 +83,8 @@ const ItemForm = () => {
     defaultValues: {
       id: item?.id || null,
       name: item?.name || '',
-      itemType: item?.itemType || '',
+      itemTypes: item?.itemTypes || [category],
+      itemSubtypes: item?.itemSubtypes || [''],
       rarity: item?.rarity || '',
       grade: item?.grade || 1,
       picture: item?.picture || '',
@@ -121,12 +123,12 @@ const ItemForm = () => {
         currentWeapon: item?.stats?.currentWeapon || '',
       } as Stats,
       weapons:
-        item?.itemLinkReference?.items.filter(
-          (item: Item) => item.itemType === 'weapon',
+        item?.itemLinkReference?.items.filter((item: Item) =>
+          item.itemTypes.includes('weapon'),
         ) || ([] as Item[]),
       armor:
-        item?.itemLinkReference?.items.filter(
-          (item: Item) => item.itemType === 'armor',
+        item?.itemLinkReference?.items.filter((item: Item) =>
+          item.itemTypes.includes('armor'),
         ) || ([] as Item[]),
       actions: item?.itemLinkReference?.actions || ([] as Action[]),
       keywords:
@@ -156,6 +158,8 @@ const ItemForm = () => {
         actionIds: extractItemListIds(value.actions),
         keywordIds: extractKeywordListIds(value.keywords),
       };
+
+      console.log(data);
 
       const formData = new FormData();
 
@@ -254,6 +258,46 @@ const ItemForm = () => {
             )}
           </itemForm.Field>
         </div>
+        {category === 'augmentations' && (
+          <div className="flex w-full flex-col items-center gap-4 sm:flex-row lg:gap-8">
+            <InputSelectField
+              label="Augmentation Type"
+              options={['offensive', 'defensive', 'function']}
+              onChange={(value) => {
+                if (value === 'Offensive') {
+                  itemForm.setFieldValue('itemTypes', [
+                    categoryName.toLowerCase(),
+                    'weapon',
+                  ]);
+                } else if (value === 'Defensive') {
+                  itemForm.setFieldValue('itemTypes', [
+                    categoryName.toLowerCase(),
+                    'armor',
+                  ]);
+                } else {
+                  itemForm.setFieldValue('itemTypes', [
+                    categoryName.toLowerCase(),
+                  ]);
+                }
+              }}
+            />
+            <itemForm.Field name="itemSubtypes" mode="array">
+              {(field) =>
+                field.state.value.map((_, i) => (
+                  <itemForm.Field key={i} name={`itemSubtypes[${i}]`}>
+                    {(subfield) => (
+                      <InputSelectField
+                        label="Augmentation Type"
+                        field={subfield}
+                        options={['cybernetic', 'mutation']}
+                      />
+                    )}
+                  </itemForm.Field>
+                ))
+              }
+            </itemForm.Field>
+          </div>
+        )}
         <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
           <PictureField
             form={itemForm}
@@ -276,21 +320,37 @@ const ItemForm = () => {
             )}
           </itemForm.Field>
         </div>
-        <StatFields
-          form={itemForm}
-          category={category}
-          categoryName={categoryName}
-        />
-        <div className="flex flex-col gap-4">
-          <KeywordLinkField form={itemForm} keywordType="weapon" />
-          <Divider />
-          <WeaponLinkField form={itemForm} weaponList={weapons} />
-          <Divider />
-          <ArmorLinkField form={itemForm} armorList={armors} />
-          <Divider />
-          <ActionLinkField form={itemForm} />
-          <Divider />
-        </div>
+        <itemForm.Subscribe selector={(state) => state.values.itemTypes}>
+          {(itemTypes) => (
+            <StatFields
+              form={itemForm}
+              categories={itemTypes}
+              categoryName={categoryName}
+            />
+          )}
+        </itemForm.Subscribe>
+        <itemForm.Subscribe selector={(state) => state.values.itemTypes}>
+          {(itemTypes) => (
+            <div className="flex flex-col gap-4">
+              <KeywordLinkField form={itemForm} keywordType="weapon" />
+              <Divider />
+              {itemTypes.includes('weapon') && (
+                <>
+                  <WeaponLinkField form={itemForm} weaponList={weapons} />
+                  <Divider />
+                </>
+              )}
+              {itemTypes.includes('armor') && (
+                <>
+                  <ArmorLinkField form={itemForm} armorList={armors} />
+                  <Divider />
+                </>
+              )}
+              <ActionLinkField form={itemForm} />
+              <Divider />
+            </div>
+          )}
+        </itemForm.Subscribe>
         <BtnRect
           ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
           type="submit"

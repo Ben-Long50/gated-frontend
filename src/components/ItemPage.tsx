@@ -62,18 +62,18 @@ const ItemPage = ({
   const { itemStats, itemKeywords, powerLevel } = useItemStats([item]);
 
   const linkedWeapons =
-    item?.itemLinkReference?.items.filter(
-      (item) => item.itemType === 'weapon',
+    item?.itemLinkReference?.items.filter((item) =>
+      item.itemTypes.includes('weapon'),
     ) || [];
 
   const linkedArmor =
-    item?.itemLinkReference?.items.filter(
-      (item) => item.itemType === 'armor',
+    item?.itemLinkReference?.items.filter((item) =>
+      item.itemTypes.includes('armor'),
     ) || [];
 
   const linkedModifiactions =
-    item?.itemLinkReference?.items.filter(
-      (item) => item.itemType === 'modification',
+    item?.itemLinkReference?.items.filter((item) =>
+      item.itemTypes.includes('modification'),
     ) || [];
 
   const linkedActions = item?.itemLinkReference?.actions || [];

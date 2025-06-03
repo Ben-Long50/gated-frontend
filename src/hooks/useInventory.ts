@@ -8,8 +8,8 @@ const useInventory = (inventory: CharacterInventory) => {
 
   const itemInfo =
     inventory?.items?.map((item) => ({
-      category: item.itemType,
-      id: item.id,
+      category: item?.itemTypes[0],
+      id: item?.id,
     })) || [];
 
   const { items, isLoading, isPending } = useInventoryItemsQuery(
@@ -21,19 +21,25 @@ const useInventory = (inventory: CharacterInventory) => {
     () =>
       items
         ? {
-            weapons: items?.filter((item) => item?.itemType === 'weapon'),
-            armors: items?.filter((item) => item?.itemType === 'armor'),
-            augmentations: items?.filter(
-              (item) => item?.itemType === 'augmentation',
+            weapons: items?.filter((item) =>
+              item?.itemTypes.includes('weapon'),
             ),
-            vehicles: items?.filter((item) => item?.itemType === 'vehicle'),
-            drones: items?.filter((item) => item?.itemType === 'drone'),
-            modifications: items?.filter(
-              (item) => item?.itemType === 'modification',
+            armors: items?.filter((item) => item?.itemTypes.includes('armor')),
+            augmentations: items?.filter((item) =>
+              item?.itemTypes.includes('augmentation'),
             ),
-            reusables: items?.filter((item) => item?.itemType === 'reusable'),
-            consumables: items?.filter(
-              (item) => item?.itemType === 'consumable',
+            vehicles: items?.filter((item) =>
+              item?.itemTypes.includes('vehicle'),
+            ),
+            drones: items?.filter((item) => item?.itemTypes.includes('drone')),
+            modifications: items?.filter((item) =>
+              item?.itemTypes.includes('modification'),
+            ),
+            reusables: items?.filter((item) =>
+              item?.itemTypes.includes('reusable'),
+            ),
+            consumables: items?.filter((item) =>
+              item?.itemTypes.includes('consumable'),
             ),
             actions: items?.flatMap((item) => item?.itemLinkReference?.actions),
           }
@@ -46,32 +52,39 @@ const useInventory = (inventory: CharacterInventory) => {
       items
         ? {
             weapons: items?.filter(
-              (item) => item?.itemType === 'weapon' && item?.equipped === true,
+              (item) =>
+                item?.itemTypes.includes('weapon') && item?.equipped === true,
             ),
             armors: items?.filter(
-              (item) => item?.itemType === 'armor' && item?.equipped === true,
+              (item) =>
+                item?.itemTypes.includes('armor') && item?.equipped === true,
             ),
             augmentations: items?.filter(
               (item) =>
-                item?.itemType === 'augmentation' && item?.equipped === true,
+                item?.itemTypes.includes('augmentation') &&
+                item?.equipped === true,
             ),
             vehicles: items?.filter(
-              (item) => item?.itemType === 'vehicle' && item?.equipped === true,
+              (item) =>
+                item?.itemTypes.includes('vehicle') && item?.equipped === true,
             ),
             drones: items?.filter(
-              (item) => item?.itemType === 'drone' && item?.equipped === true,
+              (item) =>
+                item?.itemTypes.includes('drone') && item?.equipped === true,
             ),
             modifications: items?.filter(
               (item) =>
-                item?.itemType === 'modification' && item?.equipped === true,
+                item?.itemTypes.includes('modification') &&
+                item?.equipped === true,
             ),
             reusables: items?.filter(
               (item) =>
-                item?.itemType === 'reusable' && item?.equipped === true,
+                item?.itemTypes.includes('reusable') && item?.equipped === true,
             ),
             consumables: items?.filter(
               (item) =>
-                item?.itemType === 'consumable' && item?.equipped === true,
+                item?.itemTypes.includes('consumable') &&
+                item?.equipped === true,
             ),
           }
         : null,

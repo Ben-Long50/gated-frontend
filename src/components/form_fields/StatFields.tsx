@@ -2,14 +2,15 @@ import { FormApi } from '@tanstack/react-form';
 import InputField from '../InputField';
 import ArrowHeader2 from '../ArrowHeader2';
 import Divider from '../Divider';
+import { ItemType } from 'src/types/item';
 
 const StatFields = ({
   form,
-  category,
+  categories,
   categoryName,
 }: {
   form: FormApi;
-  category: string;
+  categories: ItemType[];
   categoryName: string;
 }) => {
   return (
@@ -17,7 +18,21 @@ const StatFields = ({
       <Divider />
       <ArrowHeader2 title={categoryName + ' Stats'} />
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
-        {category === 'weapons' && (
+        {categories.includes('augmentation') && (
+          <>
+            <form.Field name="stats.cyber">
+              {(field) => (
+                <InputField type="number" label="Cyber" field={field} />
+              )}
+            </form.Field>
+            <form.Field name="stats.power">
+              {(field) => (
+                <InputField type="number" label="Power" field={field} />
+              )}
+            </form.Field>
+          </>
+        )}
+        {categories.includes('weapon') && (
           <>
             <form.Field name="stats.damage">
               {(field) => (
@@ -49,19 +64,23 @@ const StatFields = ({
                 <InputField type="number" label="Mag. count" field={field} />
               )}
             </form.Field>
-            <form.Field name="stats.power">
-              {(field) => (
-                <InputField type="number" label="Power" field={field} />
-              )}
-            </form.Field>
-            <form.Field name="stats.weight">
-              {(field) => (
-                <InputField type="number" label="Weight" field={field} />
-              )}
-            </form.Field>
+            {!categories.includes('augmentation') && (
+              <form.Field name="stats.power">
+                {(field) => (
+                  <InputField type="number" label="Power" field={field} />
+                )}
+              </form.Field>
+            )}
+            {!categories.includes('augmentation') && (
+              <form.Field name="stats.weight">
+                {(field) => (
+                  <InputField type="number" label="Weight" field={field} />
+                )}
+              </form.Field>
+            )}
           </>
         )}
-        {category === 'armors' && (
+        {categories.includes('armor') && (
           <>
             <form.Field name="stats.armor">
               {(field) => (
@@ -78,35 +97,24 @@ const StatFields = ({
                 <InputField type="number" label="Block points" field={field} />
               )}
             </form.Field>
-            <form.Field name="stats.power">
-              {(field) => (
-                <InputField type="number" label="Power" field={field} />
-              )}
-            </form.Field>
-            <form.Field name="stats.weight">
-              {(field) => (
-                <InputField type="number" label="Weight" field={field} />
-              )}
-            </form.Field>
+            {!categories.includes('augmentation') && (
+              <form.Field name="stats.power">
+                {(field) => (
+                  <InputField type="number" label="Power" field={field} />
+                )}
+              </form.Field>
+            )}
+            {!categories.includes('augmentation') && (
+              <form.Field name="stats.weight">
+                {(field) => (
+                  <InputField type="number" label="Weight" field={field} />
+                )}
+              </form.Field>
+            )}
           </>
         )}
-        {category === 'augmentations' && (
+        {categories.includes('drone') && (
           <>
-            <form.Field name="stats.cyber">
-              {(field) => (
-                <InputField type="number" label="Cyber" field={field} />
-              )}
-            </form.Field>
-            <form.Field name="stats.power">
-              {(field) => (
-                <InputField type="number" label="Power" field={field} />
-              )}
-            </form.Field>
-          </>
-        )}
-        {category === 'drones' && (
-          <>
-            {' '}
             <form.Field name="stats.hull">
               {(field) => (
                 <InputField type="number" label="Hull" field={field} />
@@ -134,7 +142,7 @@ const StatFields = ({
             </form.Field>
           </>
         )}
-        {category === 'vehicles' && (
+        {categories.includes('vehicle') && (
           <>
             <form.Field name="stats.size">
               {(field) => (
@@ -183,7 +191,7 @@ const StatFields = ({
             </form.Field>
           </>
         )}
-        {category === 'reusables' && (
+        {categories.includes('reusable') && (
           <>
             <form.Field name="stats.power">
               {(field) => (
@@ -202,7 +210,7 @@ const StatFields = ({
             </form.Field>
           </>
         )}
-        {category === 'consumables' && (
+        {categories.includes('consumable') && (
           <>
             <form.Field name="stats.range">
               {(field) => (

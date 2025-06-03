@@ -67,12 +67,12 @@ const ItemCardMobile = ({
   const { itemStats } = useItemStats([item]);
 
   const linkedWeapons =
-    item.itemLinkReference?.items.filter(
-      (item: Item) => item.itemType === 'weapon',
+    item.itemLinkReference?.items.filter((item: Item) =>
+      item.itemTypes.includes('weapon'),
     ) || [];
   const linkedArmors =
-    item.itemLinkReference?.items.filter(
-      (item: Item) => item.itemType === 'armor',
+    item.itemLinkReference?.items.filter((item: Item) =>
+      item.itemTypes.includes('armor'),
     ) || [];
   const uniqueActions = item.itemLinkReference?.actions || [];
 
@@ -88,7 +88,7 @@ const ItemCardMobile = ({
             mode === 'form'
               ? ''
               : mode === 'equipment' || mode === 'deployments'
-                ? `${item.itemType}s/${item?.id}`
+                ? `${item.itemTypes[0]}s/${item?.id}`
                 : `${item?.id}`
           }
           className="timing relative flex cursor-pointer flex-col gap-8"
@@ -179,18 +179,18 @@ const ItemCardMobile = ({
             </div>
             {(mode === 'equipment' || mode === 'deployments') &&
               ownerId === user?.id &&
-              (item.itemType === 'weapon' ? (
+              (item.itemTypes.includes('weapon') ? (
                 <WeaponControls weaponId={item.id} stats={item.stats} />
-              ) : item.itemType === 'armor' ? (
+              ) : item.itemTypes.includes('armor') ? (
                 <ArmorControls armorId={item.id} stats={item.stats} />
-              ) : item.itemType === 'cybernetic' ? (
+              ) : item.itemTypes.includes('augmentation') ? (
                 <CyberneticControls cyberneticId={item.id} stats={item.stats} />
-              ) : item.itemType === 'vehicle' ? (
+              ) : item.itemTypes.includes('vehicle') ? (
                 <VehicleControls vehicleId={item.id} stats={item.stats} />
-              ) : item.itemType === 'drone' ? (
+              ) : item.itemTypes.includes('drone') ? (
                 <DroneControls droneId={item.id} stats={item.stats} />
               ) : (
-                item.itemType === 'reusable' && (
+                item.itemTypes.includes('reusable') && (
                   <ItemControls itemId={item.id} stats={item.stats} />
                 )
               ))}

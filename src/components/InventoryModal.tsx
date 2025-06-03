@@ -55,7 +55,7 @@ const InventoryModal = ({
                   toggleEquipment.mutate({
                     characterId: character?.id,
                     inventoryId: character?.characterInventory?.id,
-                    category: item.itemType,
+                    category: item.itemTypes,
                     itemId: item.id,
                   });
                 }

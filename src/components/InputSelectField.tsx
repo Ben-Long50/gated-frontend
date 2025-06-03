@@ -3,12 +3,13 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { FieldApi } from '@tanstack/react-form';
 import { Action } from 'src/types/action';
-import { mdiChevronDown } from '@mdi/js';
+import { mdiChevronDown, mdiSync } from '@mdi/js';
 import Icon from '@mdi/react';
 import InputFieldBasic from './InputFieldBasic';
 import Divider from './Divider';
 import { Character } from 'src/types/character';
 import { Keyword } from 'src/types/keyword';
+import BtnIcon from './buttons/BtnIcon';
 
 const InputSelectField = ({
   field,
@@ -35,7 +36,7 @@ const InputSelectField = ({
 
   const handleBorder = () => {
     if (
-      (field?.state.value?.length === 0 || field?.state.value === null) &&
+      !searchRef.current?.value &&
       field?.state.meta.errors?.length === 0 &&
       !focus
     ) {
@@ -44,7 +45,7 @@ const InputSelectField = ({
       setBorderColor(accentPrimary);
     } else if (field?.state.meta.errors?.length > 0) {
       setBorderColor(errorPrimary);
-    } else if (field?.state.value) {
+    } else if (searchRef.current.value) {
       setBorderColor(accentPrimary);
     }
   };
@@ -99,7 +100,7 @@ const InputSelectField = ({
       >
         <input
           ref={searchRef}
-          className={`${className} text-secondary timing focus:bg-primary relative w-full rounded-none ${field?.state.value?.length === 0 || !field?.state.value ? 'bg-zinc-300 dark:bg-zinc-700' : 'bg-primary'} pb-2 pl-4 pr-2 pt-3 outline-none clip-4`}
+          className={`${className} text-secondary timing focus:bg-primary relative w-full rounded-none ${searchRef.current?.value ? 'bg-primary' : 'bg-zinc-300 dark:bg-zinc-700'} pb-2 pl-4 pr-2 pt-3 outline-none clip-4`}
           name={field?.name}
           id={field?.name}
           value={optionName(initialValue) || optionName(field?.state.value)}
@@ -113,19 +114,32 @@ const InputSelectField = ({
         />
         <label
           htmlFor={field?.name}
-          className={` ${field?.state.meta.errors?.length > 0 ? 'text-error' : ''} ${field?.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
+          className={` ${field?.state.meta.errors?.length > 0 ? 'text-error' : ''} ${searchRef.current?.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
         >
           {label}
         </label>
         <div
           className={`${focus ? 'max-h-96 py-3' : 'max-h-0'} bg-secondary timing absolute left-0 top-full flex w-full translate-y-2 flex-col items-start overflow-hidden rounded-md px-3 shadow-lg shadow-zinc-950`}
         >
-          <InputFieldBasic
-            className="w-full"
-            label="Search"
-            value={query}
-            onChange={(value: string) => setQuery(value)}
-          />
+          <div className="flex w-full items-center gap-4">
+            <InputFieldBasic
+              className="w-full"
+              label="Search"
+              value={query}
+              onChange={(value: string) => setQuery(value)}
+            />
+            <BtnIcon
+              path={mdiSync}
+              active={true}
+              onClick={() => {
+                searchRef.current.value = null;
+                if (field) {
+                  field.handleChage(null);
+                }
+              }}
+            />
+          </div>
+
           <Divider />
           <div className="scrollbar-secondary flex w-full flex-col overflow-y-auto">
             {filteredOptions.map((option) => (
@@ -137,9 +151,12 @@ const InputSelectField = ({
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  field?.handleChange(option);
-                  if (onChange) {
-                    onChange();
+                  if (field) {
+                    searchRef.current.value = optionName(option);
+                    field?.handleChange(option);
+                  } else if (onChange) {
+                    searchRef.current.value = optionName(option);
+                    onChange(searchRef.current.value);
                   }
                   setFocus(false);
                   if (searchRef.current) {

@@ -101,12 +101,11 @@ const PictureField = ({
           )}
         </ThemeContainer>
       </div>
-
-      <div className="items-centerv flex flex-wrap items-center justify-between gap-4">
+      <div className="items-centerv flex w-full flex-col items-start justify-between gap-4">
         <ArrowHeader4 title="Aspect Ratio Previews" />
-        <div className="flex items-center gap-4">
+        <div className="grid w-full grid-cols-3 items-center gap-4">
           <button
-            className={`${aspectRatio === '1/1' ? 'text-accent' : 'text-tertiary'} bg-tertiary timing hover:text-accent size-12 rounded-md text-center font-semibold shadow-md shadow-black`}
+            className={`${aspectRatio === '1/1' ? 'text-accent' : 'text-tertiary'} bg-tertiary timing hover:text-accent rounded-md p-2 text-center font-semibold shadow-md shadow-black`}
             onClick={(e) => {
               e.preventDefault();
               setAspectRatio('1/1');
@@ -115,7 +114,7 @@ const PictureField = ({
             1 : 1
           </button>
           <button
-            className={`${aspectRatio === '5/4' ? 'text-accent' : 'text-tertiary'} bg-tertiary timing hover:text-accent size-12 rounded-md text-center font-semibold shadow-md shadow-black`}
+            className={`${aspectRatio === '5/4' ? 'text-accent' : 'text-tertiary'} bg-tertiary timing hover:text-accent rounded-md p-2 text-center font-semibold shadow-md shadow-black`}
             onClick={(e) => {
               e.preventDefault();
               setAspectRatio('5/4');
@@ -124,7 +123,7 @@ const PictureField = ({
             5 : 4
           </button>
           <button
-            className={`${aspectRatio === '10/3' ? 'text-accent' : 'text-tertiary'} bg-tertiary timing hover:text-accent size-12 rounded-md text-center font-semibold shadow-md shadow-black`}
+            className={`${aspectRatio === '10/3' ? 'text-accent' : 'text-tertiary'} bg-tertiary timing hover:text-accent rounded-md p-2 text-center font-semibold shadow-md shadow-black`}
             onClick={(e) => {
               e.preventDefault();
               setAspectRatio('10/3');

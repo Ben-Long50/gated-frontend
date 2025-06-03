@@ -8,18 +8,23 @@ const useItems = ({
   itemList,
   includedKeywords,
   excludedKeywords,
+  subcategory,
 }: {
   category: string;
   itemList?: Item[];
   includedKeywords?: string[];
   excludedKeywords?: string[];
+  subcategory?: string;
 }) => {
   const { apiUrl } = useContext(AuthContext);
 
   const { data: items, isLoading, isPending } = useItemsQuery(apiUrl, category);
 
   const categorizedItems = useMemo(() => {
-    const list = itemList || items;
+    const list =
+      itemList || subcategory
+        ? items?.filter((item) => item.itemSubtypes?.includes(subcategory))
+        : items;
 
     const filteredExcludeList = excludedKeywords
       ? list?.filter((item: Item) =>

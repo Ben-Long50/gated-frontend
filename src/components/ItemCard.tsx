@@ -48,12 +48,12 @@ const ItemCard = ({
   const cardRef = useRef(null);
 
   const linkedWeapons =
-    item.itemLinkReference?.items.filter(
-      (item: Item) => item.itemType === 'weapon',
+    item.itemLinkReference?.items.filter((item: Item) =>
+      item.itemTypes.includes('weapon'),
     ) || [];
   const linkedArmors =
-    item.itemLinkReference?.items.filter(
-      (item: Item) => item.itemType === 'armor',
+    item.itemLinkReference?.items.filter((item: Item) =>
+      item.itemTypes.includes('armor'),
     ) || [];
   const uniqueActions = item.itemLinkReference?.actions || [];
 
@@ -164,21 +164,21 @@ const ItemCard = ({
         {(mode === 'equipment' || mode === 'deployments') && (
           <div className="z-10">
             {ownerId === user?.id &&
-              (item.itemType === 'weapon' ? (
+              (item.itemTypes.includes('weapon') ? (
                 <WeaponControls weaponId={item.id} stats={itemStats[0]} />
-              ) : item.itemType === 'armor' ? (
+              ) : item.itemTypes.includes('armor') ? (
                 <ArmorControls armorId={item.id} stats={itemStats[0]} />
-              ) : item.itemType === 'augmentation' ? (
+              ) : item.itemTypes.includes('augmentation') ? (
                 <CyberneticControls
                   cyberneticId={item.id}
                   stats={itemStats[0]}
                 />
-              ) : item.itemType === 'vehicle' ? (
+              ) : item.itemTypes.includes('vehicle') ? (
                 <VehicleControls vehicleId={item.id} stats={itemStats[0]} />
-              ) : item.itemType === 'drone' ? (
+              ) : item.itemTypes.includes('drone') ? (
                 <DroneControls droneId={item.id} stats={itemStats[0]} />
               ) : (
-                item.itemType === 'reusable' && (
+                item.itemTypes.includes('reusable') && (
                   <ItemControls itemId={item.id} stats={itemStats[0]} />
                 )
               ))}

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
@@ -39,6 +39,7 @@ const Items = ({
 
   const include = searchParams.getAll('include');
   const exclude = searchParams.getAll('exclude');
+  const augmentType = searchParams.get('augmentType');
 
   const [cardType, setCardType] = useState<'small' | 'large'>(() =>
     mobile ? 'small' : 'large',
@@ -49,6 +50,7 @@ const Items = ({
     itemList: itemList || undefined,
     includedKeywords: include.length > 0 ? include : undefined,
     excludedKeywords: exclude.length > 0 ? exclude : undefined,
+    subcategory: augmentType,
   });
 
   const searchForm = useForm({

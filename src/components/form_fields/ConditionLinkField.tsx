@@ -34,7 +34,7 @@ const ConditionLinkField = ({
   const createItemCondition = useCreateItemConditionMutation(
     apiUrl,
     Number(item?.id),
-    item?.itemType,
+    item?.itemTypes,
     Number(characterId),
     toggleConditionModal,
   );

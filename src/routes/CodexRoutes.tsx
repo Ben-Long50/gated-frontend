@@ -52,7 +52,7 @@ const CodexRoutes = () => {
         />
       </Route>
       <Route path="augmentations">
-        <Route index element={<Items key="augmentations" />} />
+        <Route index element={<Items key={window.location.search} />} />
         <Route path=":itemId" element={<ItemPageWrapper />} />
         <Route path="create" element={<ItemForm key="create cybernetics" />} />
         <Route

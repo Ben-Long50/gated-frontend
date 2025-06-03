@@ -8,8 +8,8 @@ interface Item {
   userId: number;
   updatedAt: Date;
   name: string;
-  itemType: ItemType;
-  itemSubtype?: string;
+  itemTypes: ItemType[];
+  itemSubtypes?: string[];
   rarity: string;
   grade: number;
   picture: Picture;
