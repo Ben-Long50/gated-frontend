@@ -22,9 +22,10 @@ const useItems = ({
 
   const categorizedItems = useMemo(() => {
     const list =
-      itemList || subcategory
+      itemList ||
+      (subcategory
         ? items?.filter((item) => item.itemSubtypes?.includes(subcategory))
-        : items;
+        : items);
 
     const filteredExcludeList = excludedKeywords
       ? list?.filter((item: Item) =>
