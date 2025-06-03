@@ -154,7 +154,8 @@ const InputSelectField = ({
                   if (field) {
                     searchRef.current.value = optionName(option);
                     field?.handleChange(option);
-                  } else if (onChange) {
+                  }
+                  if (onChange) {
                     searchRef.current.value = optionName(option);
                     onChange(searchRef.current.value);
                   }
