@@ -19,6 +19,7 @@ import Divider from './Divider';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import useDeleteCampaignMutation from '../hooks/useDeleteCampaignMutation/useDeleteCampaignMutation';
 import PictureField from './form_fields/PictureField';
+import AccountPicture from './AccountPicture';
 
 const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -77,8 +78,8 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
         ] as { factionType: string; name: string }[]),
       affiliation: 0,
       briefing: {} as { html: string; nodes: string },
-      players:
-        [...campaign?.players, ...campaign?.pendingPlayers] || ([] as User[]),
+      players: campaign?.players || ([] as User[]),
+      pendingPlayers: campaign?.pendingPlayers || ([] as User[]),
     },
 
     onSubmit: async ({ value }) => {
@@ -322,125 +323,185 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             onChange={(value: string) => {
               setNameQuery(value);
             }}
-          ></InputFieldBasic>
-          <campaignForm.Field
-            name="players"
-            validators={{
-              onChange: ({ value }) =>
-                value.length < 1
-                  ? 'You must invite at least 1 player to create a campaign'
-                  : undefined,
-            }}
+          />
+          <campaignForm.Subscribe
+            selector={(state) => [
+              state.values.players,
+              state.values.pendingPlayers,
+            ]}
           >
-            {(field) => {
-              const playerArray = field.state.value;
-
-              return (
-                <div className="flex flex-col gap-4">
-                  {field.state.meta.errors &&
-                    field.state.meta.errors.map((error: ValidationError) => (
-                      <p
-                        key={error?.toString()}
-                        className="timing text-error mt-1 text-base italic leading-5"
-                        role="alert"
-                      >
-                        {error}
-                      </p>
-                    ))}
-                  {field.state.value.length > 0 && (
-                    <ArrowHeader2 title="Selected Players" />
-                  )}
-
-                  {playerArray.map((user: User) => (
-                    <div className="flex items-center gap-4" key={user.id}>
-                      <ItemCardSmall
-                        heading={
-                          <div className="flex w-full items-center justify-between">
-                            <div className="flex items-center gap-8">
-                              <img
-                                className="size-10 rounded-full"
-                                src={user.profilePicture}
-                                alt={user.username + "'s" + ' profile picture'}
-                              />
-                              <h3>{user.username}</h3>
-                            </div>
-                          </div>
-                        }
-                      />
-                      <input
-                        className="size-8"
-                        type="checkbox"
-                        checked={true}
-                        onChange={() => {
-                          field.handleChange((prev: User[]) => {
-                            if (
-                              prev.some((player: User) => player.id === user.id)
-                            ) {
-                              return prev.filter(
-                                (player: User) => player.id !== user.id,
-                              );
-                            } else {
-                              return [...prev, user];
-                            }
-                          });
-                        }}
-                      />
-                    </div>
-                  ))}
-                  {field.state.value.length > 0 && <Divider />}
-                  {usersLoading || usersPending ? (
-                    <Loading />
-                  ) : (
-                    users?.map((user: User) => {
-                      const status = playerArray.some(
-                        (player: User) => player.id === user.id,
-                      );
-                      return (
-                        <div className="flex items-center gap-4" key={user.id}>
-                          <ItemCardSmall
-                            heading={
-                              <div className="flex w-full items-center justify-between">
-                                <div className="flex items-center gap-8">
-                                  <img
-                                    className="size-10 rounded-full"
-                                    src={user.profilePicture}
-                                    alt={
-                                      user.username + "'s" + ' profile picture'
-                                    }
-                                  />
-                                  <h3>{user.username}</h3>
-                                </div>
-                              </div>
-                            }
-                          />
-                          <input
-                            className="size-8"
-                            type="checkbox"
-                            checked={status}
-                            onChange={() => {
-                              field.handleChange((prev: User[]) => {
-                                if (
-                                  prev.some(
-                                    (player: User) => player.id === user.id,
-                                  )
-                                ) {
-                                  return prev.filter(
-                                    (player: User) => player.id !== user.id,
-                                  );
-                                } else {
-                                  return [...prev, user];
-                                }
-                              });
-                            }}
-                          />
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              );
+            {([players, pendingPlayers]) => {
+              if ([...players, ...pendingPlayers].length > 0) {
+                return <ArrowHeader2 title="Selected Players" />;
+              }
+              return null;
             }}
-          </campaignForm.Field>
+          </campaignForm.Subscribe>
+          <div className="flex flex-col gap-4">
+            <campaignForm.Field name="players">
+              {(field) => {
+                const playerArray = field.state.value;
+
+                return (
+                  <>
+                    {playerArray.map((user: User) => (
+                      <div className="flex items-center gap-4" key={user.id}>
+                        <ItemCardSmall
+                          heading={
+                            <div className="flex w-full items-center justify-between">
+                              <div className="flex items-center gap-8">
+                                <AccountPicture
+                                  className="opacity-50"
+                                  user={user}
+                                />
+                                <h3>{user.username}</h3>
+                              </div>
+                            </div>
+                          }
+                        />
+                        <input
+                          className="size-8"
+                          type="checkbox"
+                          checked={true}
+                          onChange={() => {
+                            field.handleChange((prev: User[]) => {
+                              if (
+                                prev.some(
+                                  (player: User) => player.id === user.id,
+                                )
+                              ) {
+                                return prev.filter(
+                                  (player: User) => player.id !== user.id,
+                                );
+                              } else {
+                                return [...prev, user];
+                              }
+                            });
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </>
+                );
+              }}
+            </campaignForm.Field>
+            <campaignForm.Field
+              name="pendingPlayers"
+              validators={{
+                onChange: ({ value }) =>
+                  value.length < 1
+                    ? 'You must invite at least 1 player to create a campaign'
+                    : undefined,
+              }}
+            >
+              {(field) => {
+                const playerArray = field.state.value;
+
+                return (
+                  <>
+                    {field.state.meta.errors &&
+                      field.state.meta.errors.map((error: ValidationError) => (
+                        <p
+                          key={error?.toString()}
+                          className="timing text-error mt-1 text-base italic leading-5"
+                          role="alert"
+                        >
+                          {error}
+                        </p>
+                      ))}
+                    {playerArray.map((user: User) => (
+                      <div className="flex items-center gap-4" key={user.id}>
+                        <ItemCardSmall
+                          heading={
+                            <div className="flex w-full items-center justify-between">
+                              <div className="flex items-center gap-8">
+                                <AccountPicture
+                                  className="opacity-50"
+                                  user={user}
+                                />
+                                <h3>{user.username}</h3>
+                                <p className="text-tertiary">(Pending)</p>
+                              </div>
+                            </div>
+                          }
+                        />
+                        <input
+                          className="size-8"
+                          type="checkbox"
+                          checked={true}
+                          onChange={() => {
+                            field.handleChange((prev: User[]) => {
+                              if (
+                                prev.some(
+                                  (player: User) => player.id === user.id,
+                                )
+                              ) {
+                                return prev.filter(
+                                  (player: User) => player.id !== user.id,
+                                );
+                              } else {
+                                return [...prev, user];
+                              }
+                            });
+                          }}
+                        />
+                      </div>
+                    ))}
+                    {field.state.value.length > 0 && <Divider />}
+                    {usersLoading || usersPending ? (
+                      <Loading />
+                    ) : (
+                      users?.map((user: User) => {
+                        const status = playerArray.some(
+                          (player: User) => player.id === user.id,
+                        );
+                        return (
+                          <div
+                            className="flex items-center gap-4"
+                            key={user.id}
+                          >
+                            <ItemCardSmall
+                              heading={
+                                <div className="flex w-full items-center justify-between">
+                                  <div className="flex items-center gap-8">
+                                    <AccountPicture
+                                      className="opacity-50"
+                                      user={user}
+                                    />
+                                    <h3>{user.username}</h3>
+                                  </div>
+                                </div>
+                              }
+                            />
+                            <input
+                              className="size-8"
+                              type="checkbox"
+                              checked={status}
+                              onChange={() => {
+                                field.handleChange((prev: User[]) => {
+                                  if (
+                                    prev.some(
+                                      (player: User) => player.id === user.id,
+                                    )
+                                  ) {
+                                    return prev.filter(
+                                      (player: User) => player.id !== user.id,
+                                    );
+                                  } else {
+                                    return [...prev, user];
+                                  }
+                                });
+                              }}
+                            />
+                          </div>
+                        );
+                      })
+                    )}
+                  </>
+                );
+              }}
+            </campaignForm.Field>
+          </div>
         </div>
         <BtnRect
           ariaLabel={`${title} campaign`}

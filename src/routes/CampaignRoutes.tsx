@@ -64,7 +64,6 @@ const CampaignRoutes = () => {
         {SessionRoutes()}
         <Route path="rollSimulator" element={<RollSimulator />} />
       </Route>
-
       <Route
         path="create"
         element={<CampaignForm title="Create" mode="create" />}

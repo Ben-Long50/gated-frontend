@@ -44,7 +44,7 @@ const useItems = ({
       : filteredExcludeList;
 
     return filteredIncludeList;
-  }, [items, itemList, includedKeywords, excludedKeywords]);
+  }, [items, itemList, includedKeywords, excludedKeywords, subcategory]);
 
   const filteredKeywords = useMemo(() => {
     if (!categorizedItems) return null;
