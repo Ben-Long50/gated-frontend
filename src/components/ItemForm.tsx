@@ -159,8 +159,6 @@ const ItemForm = () => {
         keywordIds: extractKeywordListIds(value.keywords),
       };
 
-      console.log(data);
-
       const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {

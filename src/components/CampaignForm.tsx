@@ -1,4 +1,4 @@
-import { useForm, ValidationError } from '@tanstack/react-form';
+import { useForm, useStore, ValidationError } from '@tanstack/react-form';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
@@ -96,7 +96,18 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
         await createCampaign.mutate(formData);
       }
     },
+
+    validators: {
+      onSubmit: ({ value }) => {
+        if ([...value.players, ...value.pendingPlayers].length < 1) {
+          return 'You must invite or have a minimum of one active player to create or update this campaign';
+        }
+        return undefined;
+      },
+    },
   });
+
+  const formErrorMap = useStore(campaignForm.store, (state) => state.errorMap);
 
   if (isLoading) return <Loading />;
 
@@ -232,19 +243,6 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                   </div>
                 );
               })}
-              {/* <div className="my-auto flex items-center justify-end gap-4 self-end sm:col-start-2 lg:gap-8">
-                <button
-                  className="text-accent self-end hover:underline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    field.pushValue('');
-                  }}
-                  type="button"
-                >
-                  Add a faction
-                </button>
-              </div> */}
             </div>
           )}
         </campaignForm.Field>
@@ -385,30 +383,12 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                 );
               }}
             </campaignForm.Field>
-            <campaignForm.Field
-              name="pendingPlayers"
-              validators={{
-                onChange: ({ value }) =>
-                  value.length < 1
-                    ? 'You must invite at least 1 player to create a campaign'
-                    : undefined,
-              }}
-            >
+            <campaignForm.Field name="pendingPlayers">
               {(field) => {
                 const playerArray = field.state.value;
 
                 return (
                   <>
-                    {field.state.meta.errors &&
-                      field.state.meta.errors.map((error: ValidationError) => (
-                        <p
-                          key={error?.toString()}
-                          className="timing text-error mt-1 text-base italic leading-5"
-                          role="alert"
-                        >
-                          {error}
-                        </p>
-                      ))}
                     {playerArray.map((user: User) => (
                       <div className="flex items-center gap-4" key={user.id}>
                         <ItemCardSmall
@@ -503,6 +483,11 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
             </campaignForm.Field>
           </div>
         </div>
+        {formErrorMap ? (
+          <div>
+            <em className="text-error">{formErrorMap.onSubmit}</em>
+          </div>
+        ) : null}
         <BtnRect
           ariaLabel={`${title} campaign`}
           type="submit"
