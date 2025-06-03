@@ -1,13 +1,14 @@
-import { Modifier } from 'src/types/modifier';
 import useAttributeTree from './useAttributeTree';
 import { AttributeTree } from 'src/types/attributeTree';
 import { Perk } from 'src/types/perk';
 import { SortedInventory } from 'src/types/character';
 import { Item, Stats } from 'src/types/item';
 import { useMemo } from 'react';
+import { Action } from 'src/types/action';
 
 const useStats = (
   equipment: SortedInventory | null,
+  actions: Action[],
   attributTree: Partial<AttributeTree>,
   perks?: Perk[],
 ) => {
@@ -108,82 +109,27 @@ const useStats = (
     permanentInsanities: 5,
   };
 
-  const rollBonuses = {} as { key: number };
-
-  const getBonusValue = (modifier: Modifier) => {
-    let bonusValue;
-
-    switch (modifier.valueType) {
-      case 'number':
-        bonusValue = modifier.value || 0;
-        break;
-      case 'attribute':
-        bonusValue = tree.getPoints(modifier.attribute);
-        break;
-      case 'skill':
-        bonusValue = tree.getPoints(modifier.attribute, modifier.skill);
-        break;
-      default:
-        bonusValue = 0;
-        break;
-    }
-
-    return bonusValue;
+  const calculateBonus = (modifiers: Stats) => {
+    Object.entries(modifiers).forEach(([stat, value]) => {
+      const currentValue = stats[stat];
+      stats[stat] = currentValue + value;
+    });
   };
 
-  const calculateBonus = (modifier: Modifier) => {
-    const bonusValue = getBonusValue(modifier);
+  actions?.forEach((action) => {
+    if (!action.modifiers) return;
 
-    const stat = modifier.stat as keyof Stats;
-
-    if (modifier.type === 'stat') {
-      const currentValue = stats[modifier.stat] || 0;
-
-      switch (modifier.operator) {
-        case 'add':
-          stats[modifier.stat] = currentValue + bonusValue;
-          break;
-        case 'subtract':
-          stats[modifier.stat] = currentValue - bonusValue;
-          break;
-        default:
-          stats[modifier.stat] = bonusValue;
-      }
-    } else if (modifier.type === 'roll') {
-      const currentValue = rollBonuses[modifier.action?.name] || 0;
-
-      switch (modifier.operator) {
-        case 'add':
-          rollBonuses[modifier.action?.name] = currentValue + bonusValue;
-          break;
-        case 'subtract':
-          rollBonuses[modifier.action?.name] = currentValue - bonusValue;
-          break;
-        default:
-          rollBonuses[modifier.action?.name] = bonusValue;
-      }
-    }
-  };
-
-  // equipment?.actions.forEach((action: Action) => {
-  //   if (!action.modifiers) return;
-
-  //   action.modifiers?.forEach((modifier: Modifier) => {
-  //     calculateBonus(modifier);
-  //   });
-  // });
+    calculateBonus(action.modifiers);
+  });
 
   perks?.forEach((perk) => {
     if (!perk.modifiers) return;
 
-    perk.modifiers?.forEach((modifier: Modifier) => {
-      calculateBonus(modifier);
-    });
+    calculateBonus(perk.modifiers);
   });
 
   return {
     stats,
-    rollBonuses,
   };
 };
 

@@ -14,7 +14,7 @@ import useDeletePerkMutation from '../hooks/useDeletePerkMutation/useDeletePerkM
 import usePerks from '../hooks/usePerks';
 import { Perk } from 'src/types/perk';
 import { Modifier } from 'src/types/modifier';
-import ModifierField from './ModifierField';
+import ModifierField from './form_fields/ModifierField';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 
@@ -149,10 +149,8 @@ const PerkForm = () => {
             />
           )}
         </perkForm.Field>
-        <perkForm.Field name="modifiers">
-          {(field) => <ModifierField form={perkForm} field={field} />}
-        </perkForm.Field>
         <Divider />
+        <ModifierField form={perkForm} />
         <ArrowHeader2 title="Perk Requirements" />
         <div className="flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
           {Object.entries(attributeTree.tree).map(

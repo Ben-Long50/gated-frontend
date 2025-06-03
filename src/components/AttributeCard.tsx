@@ -56,7 +56,7 @@ const AttributeCard = (props) => {
           ))}
         </div>
       </div>
-      <ul className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 border-l-2 border-gray-400 border-opacity-50 pl-4">
         {Object.entries(props.skills).map(([skill, { points }]) => (
           <li
             className="flex w-full flex-wrap items-center justify-between gap-1"
@@ -108,7 +108,7 @@ const AttributeCard = (props) => {
             </div>
           </li>
         ))}
-      </ul>
+      </div>
     </>
   );
 };

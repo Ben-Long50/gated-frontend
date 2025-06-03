@@ -83,7 +83,7 @@ const ItemForm = () => {
     defaultValues: {
       id: item?.id || null,
       name: item?.name || '',
-      itemTypes: item?.itemTypes || [category],
+      itemTypes: item?.itemTypes || [categoryName.toLowerCase()],
       itemSubtypes: item?.itemSubtypes || [''],
       rarity: item?.rarity || '',
       grade: item?.grade || 1,

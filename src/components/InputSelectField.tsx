@@ -10,6 +10,7 @@ import Divider from './Divider';
 import { Character } from 'src/types/character';
 import { Keyword } from 'src/types/keyword';
 import BtnIcon from './buttons/BtnIcon';
+import { camelCase, capitalCase } from 'change-case';
 
 const InputSelectField = ({
   field,
@@ -71,13 +72,9 @@ const InputSelectField = ({
     if (option?.firstName) {
       return option.firstName + ' ' + option.lastName;
     } else if (option?.name) {
-      return option.name
-        ? option.name[0].toUpperCase() + option.name.slice(1)
-        : option.name;
+      return capitalCase(option.name);
     } else if (typeof option === 'string') {
-      return option.length > 0
-        ? option[0].toUpperCase() + option.slice(1)
-        : option;
+      return capitalCase(option);
     } else return '';
   };
 
@@ -153,11 +150,11 @@ const InputSelectField = ({
                   e.stopPropagation();
                   if (field) {
                     searchRef.current.value = optionName(option);
-                    field?.handleChange(option);
+                    field?.handleChange(camelCase(option));
                   }
                   if (onChange) {
                     searchRef.current.value = optionName(option);
-                    onChange(searchRef.current.value);
+                    onChange(camelCase(searchRef.current.value));
                   }
                   setFocus(false);
                   if (searchRef.current) {

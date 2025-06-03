@@ -17,6 +17,8 @@ import useActions from '../hooks/useActions';
 import { Action, ActionCosts } from 'src/types/action';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
+import ModifierField from './form_fields/ModifierField';
+import InputSelectField from './InputSelectField';
 
 const ActionForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -50,17 +52,6 @@ const ActionForm = () => {
 
   const attributeTree = useAttributeTree();
 
-  const durationUnits = [
-    'second',
-    'minute',
-    'hour',
-    'day',
-    'turn',
-    'round',
-    'scene',
-    'session',
-  ];
-
   const actionForm = useForm({
     defaultValues: {
       id: action?.id || 0,
@@ -86,6 +77,7 @@ const ActionForm = () => {
         action?.duration ||
         ({ unit: '', value: null } as { unit: string; value: number | null }),
       description: action?.description || '',
+      modifiers: action?.modifiers || {},
     },
     onSubmit: async ({ value }) => {
       const filteredSubtypes = value.actionSubtypes.filter(
@@ -141,6 +133,21 @@ const ActionForm = () => {
             <InputField className="grow" label="Action name" field={field} />
           )}
         </actionForm.Field>
+        <actionForm.Field
+          name="actionType"
+          validators={{
+            onSubmit: ({ value }) =>
+              !value ? 'An action type must be selected' : undefined,
+          }}
+        >
+          {(field) => (
+            <InputSelectField
+              options={['action', 'extendedAction', 'reaction', 'passive']}
+              label="Action Type"
+              field={field}
+            />
+          )}
+        </actionForm.Field>
         <actionForm.Field name="roll" mode="array">
           {(field) => {
             return (
@@ -157,53 +164,36 @@ const ActionForm = () => {
                         }}
                       >
                         {(field) => (
-                          <SelectField
-                            className="w-full"
+                          <InputSelectField
+                            options={Object.keys(attributeTree.tree)}
                             label="Attribute"
                             field={field}
-                          >
-                            <option defaultValue=""></option>
-                            {Object.entries(attributeTree.tree).map(
-                              ([attribute, _]) => {
-                                return (
-                                  <option
-                                    key={attribute}
-                                    value={`${attribute}`}
-                                  >
-                                    {attribute[0].toUpperCase() +
-                                      attribute.slice(1)}
-                                  </option>
-                                );
-                              },
-                            )}
-                          </SelectField>
+                          />
                         )}
                       </actionForm.Field>
-                      <actionForm.Field name={`roll[${j}].skill`}>
-                        {(field) => {
-                          return (
-                            <SelectField
-                              className="w-full"
-                              label="Skill"
-                              field={field}
-                            >
-                              <option defaultValue=""></option>
-                              {actionForm.state.values.roll[j].attribute &&
-                                Object.entries(
-                                  attributeTree.tree[
-                                    actionForm.state.values.roll[j].attribute
-                                  ].skills,
-                                ).map(([skill, _]) => {
-                                  return (
-                                    <option key={skill} value={`${skill}`}>
-                                      {skill[0].toUpperCase() + skill.slice(1)}
-                                    </option>
-                                  );
-                                })}
-                            </SelectField>
-                          );
-                        }}
-                      </actionForm.Field>
+                      <actionForm.Subscribe
+                        selector={(state) => state.values.roll[j].attribute}
+                      >
+                        {(attribute) => (
+                          <actionForm.Field name={`roll[${j}].skill`}>
+                            {(field) => {
+                              return (
+                                <InputSelectField
+                                  options={
+                                    attribute
+                                      ? Object.keys(
+                                          attributeTree.tree[attribute].skills,
+                                        )
+                                      : []
+                                  }
+                                  label="Skill"
+                                  field={field}
+                                />
+                              );
+                            }}
+                          </actionForm.Field>
+                        )}
+                      </actionForm.Subscribe>
                     </div>
                     <button
                       className="sm:-ml-2 lg:-ml-4"
@@ -236,26 +226,8 @@ const ActionForm = () => {
             );
           }}
         </actionForm.Field>
-        <actionForm.Field
-          name="actionType"
-          validators={{
-            onSubmit: ({ value }) =>
-              !value ? 'An action type must be selected' : undefined,
-          }}
-        >
-          {(field) => (
-            <SelectField label="Action type" field={field}>
-              <option defaultValue="" disabled></option>
-              <option value="action">Action</option>
-              <option value="extendedAction">Extended action</option>
-              <option value="reaction">Reaction</option>
-              <option value="passive">Passive</option>
-            </SelectField>
-          )}
-        </actionForm.Field>
         <actionForm.Field name="actionSubtypes" mode="array">
           {(field) => {
-            const actionSubtypes = ['attack', 'movement', 'upkeep', 'unique'];
             return (
               <div className="flex flex-col gap-4">
                 {field.state.value.map((_, i) => {
@@ -264,21 +236,16 @@ const ActionForm = () => {
                       <actionForm.Field name={`actionSubtypes[${i}]`}>
                         {(subField) => {
                           return (
-                            <SelectField
-                              className="grow"
-                              label="Action subtype"
+                            <InputSelectField
+                              options={[
+                                'attack',
+                                'movement',
+                                'upkeep',
+                                'unique',
+                              ]}
+                              label="Action Subtype"
                               field={subField}
-                            >
-                              <option defaultValue=""></option>
-                              {actionSubtypes.map((subtype) => {
-                                return (
-                                  <option key={subtype} value={subtype}>
-                                    {subtype[0].toUpperCase() +
-                                      subtype.slice(1)}
-                                  </option>
-                                );
-                              })}
-                            </SelectField>
+                            />
                           );
                         }}
                       </actionForm.Field>
@@ -302,7 +269,7 @@ const ActionForm = () => {
                     onClick={() => field.pushValue('')}
                     type="button"
                   >
-                    Add subtype
+                    Add Subtype
                   </button>
                 </div>
               </div>
@@ -312,18 +279,21 @@ const ActionForm = () => {
         <div className="flex w-full items-center gap-4 lg:gap-8">
           <actionForm.Field name="duration.unit">
             {(field) => (
-              <SelectField
-                className="w-full"
-                label="Effect duration"
+              <InputSelectField
+                options={[
+                  'second',
+                  'minute',
+                  'hour',
+                  'day',
+                  'action',
+                  'turn',
+                  'round',
+                  'scene',
+                  'session',
+                ]}
+                label="Effect Duration"
                 field={field}
-              >
-                <option value=""></option>
-                {durationUnits.map((unit) => (
-                  <option key={unit} value={unit}>
-                    {unit[0].toUpperCase() + unit.slice(1)}
-                  </option>
-                ))}
-              </SelectField>
+              />
             )}
           </actionForm.Field>
           <actionForm.Field
@@ -337,7 +307,7 @@ const ActionForm = () => {
               <InputField
                 className="w-full max-w-28"
                 type="number"
-                label="Dur. value"
+                label="Dur. Value"
                 field={field}
               />
             )}
@@ -354,14 +324,15 @@ const ActionForm = () => {
         >
           {(field) => (
             <TextAreaField
-              className="h-40 w-full"
-              label="Action description"
+              className="w-full"
+              label="Action Description"
               field={field}
             />
           )}
         </actionForm.Field>
         <Divider />
-        <ArrowHeader2 title="Costs" />
+        <ModifierField form={actionForm} />
+        <ArrowHeader2 title="Action Costs" />
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
           <actionForm.Field name="costs.actionPoints">
             {(field) => (
@@ -434,6 +405,7 @@ const ActionForm = () => {
             )}
           </actionForm.Field>
         </div>
+        <Divider />
         <BtnRect
           ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
           type="submit"

@@ -1,5 +1,5 @@
 import { AttributeName, SkillName } from './attributeTree';
-import { Cybernetic } from './cybernetic';
+import { Stats } from './item';
 
 interface Action {
   id: number;
@@ -11,7 +11,7 @@ interface Action {
   actionType: ActionType;
   actionSubtypes: string[];
   duration: { unit: string; value: number | null };
-  cybernetics: Cybernetic[];
+  modifiers: Stats;
 }
 
 interface ActionCosts {

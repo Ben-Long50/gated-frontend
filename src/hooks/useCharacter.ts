@@ -16,6 +16,7 @@ const useCharacter = (character: Character) => {
 
   const { stats } = useStats(
     equipment,
+    actions,
     character?.attributes,
     character?.perks,
   );
