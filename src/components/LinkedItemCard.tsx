@@ -8,6 +8,7 @@ import ThemeContainer from './ThemeContainer';
 import { Link } from 'react-router-dom';
 import ItemPicture from './ItemPicture';
 import { Item } from 'src/types/item';
+import ItemRadialMenu from './ItemRadialMenu';
 
 const LinkedItemCard = ({
   item,
@@ -21,15 +22,12 @@ const LinkedItemCard = ({
   const { accentPrimary } = useContext(ThemeContext);
 
   return (
-    <ThemeContainer
-      borderColor={accentPrimary}
-      chamfer="medium"
-      overflowHidden={true}
-    >
-      <Link
-        className="hover:bg-secondary timing flex p-4"
-        to={`../../item/${item.id}`}
-      >
+    <ThemeContainer borderColor={accentPrimary} chamfer="medium">
+      <div className="flex cursor-pointer p-4">
+        <ItemRadialMenu
+          item={item}
+          path={`../../${item.itemTypes[0]}s/${item.id}`}
+        />
         <div className="my-auto flex max-h-[250px] w-full gap-8">
           {item.picture?.imageUrl && (
             <ItemPicture
@@ -54,7 +52,7 @@ const LinkedItemCard = ({
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     </ThemeContainer>
   );
 };

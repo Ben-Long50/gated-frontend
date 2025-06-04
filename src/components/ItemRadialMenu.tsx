@@ -11,9 +11,11 @@ import { AuthContext } from 'src/contexts/AuthContext';
 
 const ItemRadialMenu = ({
   item,
+  path,
   className,
 }: {
   item: Item;
+  path?: string;
   className?: string;
 }) => {
   const { user } = useContext(AuthContext);
@@ -27,8 +29,9 @@ const ItemRadialMenu = ({
   };
 
   const detailsPath = (() => {
+    if (path) return path;
     if (parts.includes('equipment') || parts.includes('deployments')) {
-      return `${item?.itemTypes[0]}/${item?.id}`;
+      return `${item?.itemTypes[0]}s/${item?.id}`;
     } else if (parts.includes('codex') || parts.includes('inventory')) {
       return `${item?.id}`;
     } else return '';

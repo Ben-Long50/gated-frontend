@@ -15,9 +15,7 @@ import { AuthContext } from 'src/contexts/AuthContext';
 import useCharacterConditionStacksMutation from 'src/hooks/itemStatHooks/useCharacterConditionStacksMutation/useCharacterConditionStacksMutation';
 import useDeleteCharacterConditionMutation from 'src/hooks/useDeleteCharacterConditionMutation/useDeleteCharacterConditionMutation';
 import useDeleteItemConditionMutation from 'src/hooks/useDeleteItemConditionMutation/useDeleteItemConditionMutation';
-import Modal from './Modal';
-import BtnRect from './buttons/BtnRect';
-import Divider from './Divider';
+import DescriptionModal from './DescriptionModal';
 
 const Tag = ({
   keyword,
@@ -66,9 +64,20 @@ const Tag = ({
   if (keyword)
     return (
       <div
-        className={`bg-primary relative rounded border border-yellow-300 border-opacity-50 px-2 text-base shadow-md shadow-black`}
+        className={`bg-primary relative z-20 rounded border border-yellow-300 border-opacity-50 px-2 text-base shadow-md shadow-black`}
+        onClick={(e) => {
+          console.log(1);
+          e.preventDefault();
+          e.stopPropagation();
+          toggleDescription();
+        }}
       >
         <p className="whitespace-nowrap text-base">{keywordName}</p>
+        <DescriptionModal
+          keyword={keyword}
+          modalOpen={descriptionOpen}
+          toggleModal={toggleDescription}
+        />
       </div>
     );
 
@@ -119,33 +128,11 @@ const Tag = ({
           </div>
           <div onClick={() => toggleDescription()}>
             <Icon className="text-inherit" path={mdiFileDocumentOutline} />
-            <Modal modalOpen={descriptionOpen} toggleModal={toggleDescription}>
-              <div className="grid w-full grid-cols-3 place-items-center">
-                <p></p>
-                <h1>{condition.condition.name}</h1>
-                <p className="text-tertiary place-self-end self-start">
-                  Stacks {condition.stacks}
-                </p>
-              </div>
-
-              <Divider />
-              <p>
-                {condition.stacks
-                  ? condition.condition.description.replace(
-                      /X/g,
-                      condition.stacks?.toString(),
-                    )
-                  : condition.condition.description}
-              </p>
-              <BtnRect
-                className="w-full"
-                type="button"
-                ariaLabel="Close"
-                onClick={() => toggleDescription()}
-              >
-                Close
-              </BtnRect>
-            </Modal>
+            <DescriptionModal
+              condition={condition}
+              modalOpen={descriptionOpen}
+              toggleModal={toggleDescription}
+            />
           </div>
           <div
             onClick={() => {
