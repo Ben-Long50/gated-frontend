@@ -8,6 +8,7 @@ import ItemCardSmall from './ItemCardSmall';
 import Icon from '@mdi/react';
 import { mdiTriangleDown } from '@mdi/js';
 import ActionStatBars from './ActionStatBars';
+import { capitalCase } from 'change-case';
 
 const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
   const { user } = useContext(AuthContext);
@@ -15,6 +16,14 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
   const cardRef = useRef(null);
 
   const costLength = action?.costs ? Object.keys(action.costs).length : 0;
+
+  const modifierString = action.modifiers
+    ? Object.entries(action.modifiers)
+        .map(([stat, value]) => `${value} ${capitalCase(stat)}`)
+        .join(', ')
+    : null;
+
+  const description = action.description.split(/\[stats\]/)[0];
 
   return (
     <ItemCardSmall
@@ -92,7 +101,10 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
             </div>
           </div>
         )}
-        <p className="text-secondary">{action?.description}</p>
+        <p>
+          {description}
+          <span className="text-accent font-semibold">{modifierString}</span>
+        </p>
       </div>
     </ItemCardSmall>
   );

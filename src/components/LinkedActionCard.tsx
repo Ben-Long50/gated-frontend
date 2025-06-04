@@ -8,6 +8,7 @@ import { ThemeContext } from '../contexts/ThemeContext';
 import ArrowHeader3 from './ArrowHeader3';
 import ThemeContainer from './ThemeContainer';
 import ActionStatBars from './ActionStatBars';
+import { capitalCase } from 'change-case';
 
 const LinkedActionCard = ({
   action,
@@ -19,6 +20,14 @@ const LinkedActionCard = ({
   const { accentPrimary } = useContext(ThemeContext);
 
   const costLength = action?.costs ? Object.keys(action.costs).length : 0;
+
+  const modifierString = action.modifiers
+    ? Object.entries(action.modifiers)
+        .map(([stat, value]) => `${value} ${capitalCase(stat)}`)
+        .join(', ')
+    : null;
+
+  const description = action.description.split(/\[stats\]/)[0];
 
   return (
     <ThemeContainer borderColor={accentPrimary} chamfer="medium">
@@ -68,7 +77,10 @@ const LinkedActionCard = ({
             </div>
           </div>
         )}
-        <p>{action.description}</p>
+        <p>
+          {description}
+          <span className="text-accent font-semibold">{modifierString}</span>
+        </p>
       </div>
     </ThemeContainer>
   );
