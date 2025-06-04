@@ -5,7 +5,6 @@ import TextAreaField from './TextAreaField';
 import { AuthContext } from '../contexts/AuthContext';
 import { useForm } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
-import SelectField from './SelectField';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import FormLayout from '../layouts/FormLayout';

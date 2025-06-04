@@ -95,9 +95,9 @@ const useStats = (
   );
 
   const stats = {
-    maxHealth: 10 + tree.getPoints('violence', 'threshold') * 1,
+    maxHealth: 10 + tree.getPoints('violence', 'threshold') * 2,
     maxSanity: 5 + tree.getPoints('esoterica', 'mysticism') * 1,
-    maxWeight: 10 + tree.getPoints('violence', 'threshold') * 1,
+    maxEquip: 10 + tree.getPoints('violence', 'threshold') * 1,
     maxCyber: 4 + tree.getPoints('cybernetica', 'chromebits') * 1,
     speed: 4 + tree.getPoints('violence', 'assault') * 1,
     armor: 0 + armorValue,
@@ -107,6 +107,22 @@ const useStats = (
     cyber: 0 + equippedCyber,
     permanentInjuries: 5,
     permanentInsanities: 5,
+    chomebitsTn: tree.getPoints('cybernetica', 'chromebits'),
+    hardwiredTn: tree.getPoints('cybernetica', 'hardwired'),
+    motorizedTn: tree.getPoints('cybernetica', 'motorized'),
+    networkedTn: tree.getPoints('cybernetica', 'networked'),
+    gestaltTn: tree.getPoints('esoterica', 'gestalt'),
+    godheadTn: tree.getPoints('esoterica', 'godhead'),
+    mysticismTn: tree.getPoints('esoterica', 'mysticism'),
+    outerworldTn: tree.getPoints('esoterica', 'outerworld'),
+    barterTn: tree.getPoints('peace', 'barter'),
+    rhetoricTn: tree.getPoints('peace', 'rhetoric'),
+    eruditionTn: tree.getPoints('peace', 'erudition'),
+    treatmentTn: tree.getPoints('peace', 'treatment'),
+    assaultTn: tree.getPoints('violence', 'assault'),
+    shootingTn: tree.getPoints('violence', 'shooting'),
+    subterfugeTn: tree.getPoints('violence', 'subterfuge'),
+    thresholdTn: tree.getPoints('violence', 'threshold'),
   };
 
   const calculateBonus = (modifiers: Stats) => {

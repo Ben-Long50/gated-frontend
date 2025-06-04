@@ -1,25 +1,40 @@
+import { FormApi } from '@tanstack/react-form';
 import ArrowHeader2 from '../ArrowHeader2';
 import Divider from '../Divider';
 import InputField from '../InputField';
 import InputSelectField from '../InputSelectField';
 import { capitalCase } from 'change-case';
+import Icon from '@mdi/react';
+import { mdiClose } from '@mdi/js';
 
 const ModifierField = ({ form }: { form: FormApi }) => {
   const stats = [
-    'health',
     'maxHealth',
-    'sanity',
     'maxSanity',
-    'cyber',
     'maxCyber',
-    'weight',
-    'maxWeight',
+    'maxEquip',
     'speed',
     'evasion',
     'armor',
     'ward',
     'permanentInjuries',
     'permanentInsanities',
+    'chomebitsTn',
+    'hardwiredTn',
+    'motorizedTn',
+    'networkedTn',
+    'gestaltTn',
+    'godheadTn',
+    'mysticismTn',
+    'outerworldTn',
+    'barterTn',
+    'rhetoricTn',
+    'eruditionTn',
+    'treatmentTn',
+    'assaultTn',
+    'shootingTn',
+    'subterfugeTn',
+    'thresholdTn',
   ];
 
   return (
@@ -43,11 +58,25 @@ const ModifierField = ({ form }: { form: FormApi }) => {
                     <form.Field key={stat} name={`modifiers[${stat}]`}>
                       {(subField) => {
                         return (
-                          <InputField
-                            type="number"
-                            label={capitalCase(stat)}
-                            field={subField}
-                          />
+                          <div className="flex items-center gap-2">
+                            <InputField
+                              type="number"
+                              label={capitalCase(stat)}
+                              field={subField}
+                            />
+                            <button
+                              onClick={() => {
+                                const { [stat]: _, ...rest } =
+                                  field.state.value;
+                                field.handleChange(rest);
+                              }}
+                            >
+                              <Icon
+                                path={mdiClose}
+                                className="text-tertiary hover:text-accent timing size-10"
+                              />
+                            </button>
+                          </div>
                         );
                       }}
                     </form.Field>
