@@ -23,7 +23,10 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
         .join(', ')
     : null;
 
-  const description = action.description.split(/\[stats\]/)[0];
+  const description = action.description.split(/\[stats\]/);
+
+  const description1 = description[0];
+  const description2 = description[1];
 
   return (
     <ItemCardSmall
@@ -102,8 +105,9 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
           </div>
         )}
         <p>
-          {description}
+          {description1}
           <span className="text-accent font-semibold">{modifierString}</span>
+          {description2}
         </p>
       </div>
     </ItemCardSmall>
