@@ -107,6 +107,8 @@ const useStats = (
     cyber: 0 + equippedCyber,
     permanentInjuries: 5,
     permanentInsanities: 5,
+    actions: 3,
+    reactions: 1,
     chomebitsTn: tree.getPoints('cybernetica', 'chromebits'),
     hardwiredTn: tree.getPoints('cybernetica', 'hardwired'),
     motorizedTn: tree.getPoints('cybernetica', 'motorized'),

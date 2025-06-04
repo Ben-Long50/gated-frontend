@@ -11,6 +11,7 @@ interface Action {
   actionType: ActionType;
   actionSubtypes: string[];
   duration: { unit: string; value: number | null };
+  cooldown: { unit: string; value: number | null };
   modifiers: Stats;
 }
 

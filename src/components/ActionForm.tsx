@@ -30,7 +30,7 @@ const ActionForm = () => {
 
   const actions = useActions();
 
-  const action = actions.filteredActions.filter(
+  const action = actions.filteredActions?.filter(
     (action: Action) => action.id === Number(actionId),
   )[0];
 
@@ -74,6 +74,9 @@ const ActionForm = () => {
       actionSubtypes: action?.actionSubtypes || ([] as string[]),
       duration:
         action?.duration ||
+        ({ unit: '', value: null } as { unit: string; value: number | null }),
+      cooldown:
+        action?.cooldown ||
         ({ unit: '', value: null } as { unit: string; value: number | null }),
       description: action?.description || '',
       modifiers: action?.modifiers || {},
@@ -285,6 +288,7 @@ const ActionForm = () => {
                   'hour',
                   'day',
                   'action',
+                  'reaction',
                   'turn',
                   'round',
                   'scene',
@@ -307,6 +311,44 @@ const ActionForm = () => {
                 className="w-full max-w-28"
                 type="number"
                 label="Dur. Value"
+                field={field}
+              />
+            )}
+          </actionForm.Field>
+        </div>
+        <div className="flex w-full items-center gap-4 lg:gap-8">
+          <actionForm.Field name="cooldown.unit">
+            {(field) => (
+              <InputSelectField
+                options={[
+                  'second',
+                  'minute',
+                  'hour',
+                  'day',
+                  'action',
+                  'reaction',
+                  'turn',
+                  'round',
+                  'scene',
+                  'session',
+                ]}
+                label="Cooldown Duration"
+                field={field}
+              />
+            )}
+          </actionForm.Field>
+          <actionForm.Field
+            name="cooldown.value"
+            validators={{
+              onChange: ({ value }) =>
+                value && value <= 0 ? 'Minimum value is 1' : undefined,
+            }}
+          >
+            {(field) => (
+              <InputField
+                className="w-full max-w-28"
+                type="number"
+                label="Cd. Value"
                 field={field}
               />
             )}
