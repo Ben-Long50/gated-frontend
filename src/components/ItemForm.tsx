@@ -262,12 +262,12 @@ const ItemForm = () => {
               label="Augmentation Type"
               options={['offensive', 'defensive', 'function']}
               onChange={(value) => {
-                if (value === 'Offensive') {
+                if (value === 'offensive') {
                   itemForm.setFieldValue('itemTypes', [
                     categoryName.toLowerCase(),
                     'weapon',
                   ]);
-                } else if (value === 'Defensive') {
+                } else if (value === 'defensive') {
                   itemForm.setFieldValue('itemTypes', [
                     categoryName.toLowerCase(),
                     'armor',
