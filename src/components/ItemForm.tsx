@@ -417,20 +417,6 @@ const ItemForm = () => {
             mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
-        <BtnRect
-          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
-          type="submit"
-          className="group w-full"
-        >
-          {createItem.isPending ? (
-            <Loading
-              className="group-hover:text-yellow-300 dark:text-gray-900"
-              size={1.15}
-            />
-          ) : (
-            'Create Item Copy'
-          )}
-        </BtnRect>
       </form>
     </FormLayout>
   );
