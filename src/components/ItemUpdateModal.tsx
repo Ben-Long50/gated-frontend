@@ -352,13 +352,22 @@ const ItemUpdateModal = ({
         </div>
       </div>
       <BtnRect
-        className="w-full"
+        className="group w-full"
         type="button"
         ariaLabel="Update Item"
         onClick={() => {
           itemUpdateForm.handleSubmit();
         }}
-      >{`Update ${item.name}`}</BtnRect>
+      >
+        {updateItem.isPending ? (
+          <Loading
+            className="group-hover:text-yellow-300 dark:text-gray-900"
+            size={1.15}
+          />
+        ) : (
+          `Update ${item.name}`
+        )}
+      </BtnRect>
     </Modal>
   );
 };

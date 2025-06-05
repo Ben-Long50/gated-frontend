@@ -22,15 +22,19 @@ const useItemStats = (items: Item[] | null) => {
 
   itemStats?.forEach((statObject, index) => {
     if (statObject.weapon) {
-      const weaponCount = items[index].itemLinkReference.items.filter((item) =>
-        item.itemTypes.includes('weapon'),
+      const weaponCount = items[index].itemLinkReference.items.filter(
+        (item) =>
+          item.itemTypes.includes('weapon') &&
+          item.keywords.every((keyword) => keyword.keyword.name !== 'Turret'),
       ).length;
 
       statObject.currentWeapon = weaponCount;
     }
     if (statObject.turret) {
-      const turretCount = items[index].itemLinkReference.items.filter((item) =>
-        item.itemTypes.includes('weapon'),
+      const turretCount = items[index].itemLinkReference.items.filter(
+        (item) =>
+          item.itemTypes.includes('weapon') &&
+          item.keywords.some((keyword) => keyword.keyword.name === 'Turret'),
       ).length;
 
       statObject.currentTurret = turretCount;

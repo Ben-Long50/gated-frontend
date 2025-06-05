@@ -51,15 +51,17 @@ const LinkedActionCard = ({
               </p>
             </div>
           )}
-          <Link
-            className="timing group ml-auto flex items-center gap-4 py-2"
-            to={`/glam/codex/actions`}
-          >
-            <Icon
-              path={mdiLinkBoxVariantOutline}
-              className="group-hover:text-accent timing text-secondary size-8 shrink-0"
-            />
-          </Link>
+          {action.baseActionId && (
+            <Link
+              className="timing group ml-auto flex items-center gap-4 py-2"
+              to={`/glam/codex/actions`}
+            >
+              <Icon
+                path={mdiLinkBoxVariantOutline}
+                className="group-hover:text-accent timing text-tertiary size-8 shrink-0"
+              />
+            </Link>
+          )}
         </div>
         {action?.roll && action?.roll.length > 0 && (
           <div className="flex flex-col gap-2">

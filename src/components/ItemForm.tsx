@@ -47,7 +47,7 @@ const ItemForm = () => {
 
   const { filteredItems: vehicleWeapons } = useItems({
     category: 'weapons',
-    includedKeywords: ['Vehicle Weapon'],
+    excludedKeywords: ['Cyber Weapon', 'Drone Weapon'],
   });
 
   const { filteredItems: droneWeapons } = useItems({

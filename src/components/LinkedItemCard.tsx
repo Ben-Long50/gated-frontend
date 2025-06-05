@@ -8,6 +8,9 @@ import ThemeContainer from './ThemeContainer';
 import ItemPicture from './ItemPicture';
 import { Item } from 'src/types/item';
 import ItemRadialMenu from './ItemRadialMenu';
+import { Link } from 'react-router-dom';
+import Icon from '@mdi/react';
+import { mdiLinkBoxVariantOutline } from '@mdi/js';
 
 const LinkedItemCard = ({
   item,
@@ -36,7 +39,20 @@ const LinkedItemCard = ({
             />
           )}
           <div className="flex grow flex-col items-start justify-start gap-4">
-            <ArrowHeader3 title={item?.name} />
+            <div className="flex w-full items-center justify-between">
+              <ArrowHeader3 title={item?.name} />
+              {item.baseItemId && (
+                <Link
+                  className="timing group z-20 ml-auto flex items-center gap-4 py-2"
+                  to={`/glam/codex/${item.itemTypes[0]}s/${item.baseItemId}`}
+                >
+                  <Icon
+                    path={mdiLinkBoxVariantOutline}
+                    className="group-hover:text-accent timing text-tertiary size-8 shrink-0"
+                  />
+                </Link>
+              )}
+            </div>
             <div className="flex flex-wrap items-center gap-2">
               {item.keywords?.map(
                 (item: { keyword: Keyword; value: number | null }) => {

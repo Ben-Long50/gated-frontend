@@ -20,6 +20,9 @@ import {
 import { AuthContext } from 'src/contexts/AuthContext';
 import useItemStats from 'src/hooks/useItemStats';
 import ItemRadialMenu from './ItemRadialMenu';
+import { Link } from 'react-router-dom';
+import Icon from '@mdi/react';
+import { mdiLinkBoxVariantOutline } from '@mdi/js';
 
 const ItemCard = ({
   item,
@@ -88,7 +91,20 @@ const ItemCard = ({
           <div className="flex w-full flex-col gap-4">
             <div className="flex w-full items-start justify-between gap-4">
               <div className="flex items-center gap-4">
-                <ArrowHeader2 title={item.name} />
+                <div className="flex w-full items-center justify-between gap-4">
+                  <ArrowHeader2 title={item?.name} />
+                  {item.baseItemId && (
+                    <Link
+                      className="timing group z-20 ml-auto flex items-center gap-4 py-2"
+                      to={`/glam/codex/${item.itemTypes[0]}s/${item.baseItemId}`}
+                    >
+                      <Icon
+                        path={mdiLinkBoxVariantOutline}
+                        className="group-hover:text-accent timing text-tertiary size-8 shrink-0"
+                      />
+                    </Link>
+                  )}
+                </div>
                 <div className="flex grow flex-wrap items-center justify-start gap-1">
                   {item.conditions?.map((condition) => (
                     <Tag key={condition.id} condition={condition} />
