@@ -25,7 +25,10 @@ const useItemStats = (items: Item[] | null) => {
       const weaponCount = items[index].itemLinkReference.items.filter(
         (item) =>
           item.itemTypes.includes('weapon') &&
-          item.keywords.every((keyword) => keyword.keyword.name !== 'Turret'),
+          item.keywords.every((keyword) => keyword.keyword.name !== 'Turret') &&
+          item.keywords.some(
+            (keyword) => keyword.keyword.name === 'Vehicle Weapon',
+          ),
       ).length;
 
       statObject.currentWeapon = weaponCount;
@@ -33,8 +36,13 @@ const useItemStats = (items: Item[] | null) => {
     if (statObject.turret) {
       const turretCount = items[index].itemLinkReference.items.filter(
         (item) =>
-          item.itemTypes.includes('weapon') &&
-          item.keywords.some((keyword) => keyword.keyword.name === 'Turret'),
+          (item.itemTypes.includes('weapon') &&
+            item.keywords.some(
+              (keyword) => keyword.keyword.name === 'Turret',
+            )) ||
+          item.keywords.every(
+            (keyword) => keyword.keyword.name !== 'Vehicle Weapon',
+          ),
       ).length;
 
       statObject.currentTurret = turretCount;
