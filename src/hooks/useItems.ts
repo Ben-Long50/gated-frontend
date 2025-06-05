@@ -69,7 +69,8 @@ const useItems = ({
       ? categorizedItems
           ?.filter((item: Item) =>
             item.keywords.some(
-              (keyword) => itemCategory === camelCase(keyword.keyword.name),
+              (keyword) =>
+                camelCase(itemCategory) === camelCase(keyword.keyword.name),
             ),
           )
           .filter((item: Item) =>
