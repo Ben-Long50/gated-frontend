@@ -71,6 +71,11 @@ const ItemPage = ({
       item.itemTypes.includes('armor'),
     ) || [];
 
+  const linkedVehicles =
+    item?.itemLinkReference?.items.filter((item) =>
+      item.itemTypes.includes('vehicle'),
+    ) || [];
+
   const linkedModifiactions =
     item?.itemLinkReference?.items.filter((item) =>
       item.itemTypes.includes('modification'),
@@ -227,6 +232,24 @@ const ItemPage = ({
                   key={index}
                   mode={mode}
                   item={armor}
+                  cardWidth={cardRef.current?.offsetWidth}
+                />
+              );
+            })}
+          </div>
+        </>
+      )}
+      {linkedVehicles.length > 0 && (
+        <>
+          <Divider />
+          <ArrowHeader2 className="self-start" title="Supplied Vehicles" />
+          <div className="flex w-full flex-col gap-8">
+            {linkedVehicles.map((vehicle: Item, index: number) => {
+              return (
+                <LinkedItemCard
+                  key={index}
+                  mode={mode}
+                  item={vehicle}
                   cardWidth={cardRef.current?.offsetWidth}
                 />
               );

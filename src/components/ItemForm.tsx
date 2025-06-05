@@ -25,6 +25,7 @@ import RarityField from './form_fields/RarityField';
 import StatFields from './form_fields/StatFields';
 import useCreateItemMutation from 'src/hooks/useCreateItemMutation/useCreateItemMutation';
 import useDeleteItemMutation from 'src/hooks/useDeleteItemMutation/useDeleteItemMutation';
+import VehicleLinkField from './form_fields/VehicleLinkField';
 
 const ItemForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -43,9 +44,23 @@ const ItemForm = () => {
     excludedKeywords: ['Cyber Weapon', 'Vehicle Weapon', 'Drone Weapon'],
   });
 
+  const { filteredItems: vehicleWeapons } = useItems({
+    category: 'weapons',
+    includedKeywords: ['Vehicle Weapon'],
+  });
+
+  const { filteredItems: droneWeapons } = useItems({
+    category: 'weapons',
+    includedKeywords: ['Drone Weapon'],
+  });
+
   const { filteredItems: armors } = useItems({
     category: 'armors',
     excludedKeywords: ['Cyber Armor'],
+  });
+
+  const { filteredItems: vehicles } = useItems({
+    category: 'vehicles',
   });
 
   const createItem = useCreateItemMutation(
@@ -128,6 +143,10 @@ const ItemForm = () => {
         item?.itemLinkReference?.items.filter((item: Item) =>
           item.itemTypes.includes('armor'),
         ) || ([] as Item[]),
+      vehicles:
+        item?.itemLinkReference?.items.filter((item: Item) =>
+          item.itemTypes.includes('vehicle'),
+        ) || ([] as Item[]),
       actions: item?.itemLinkReference?.actions || ([] as Action[]),
       keywords:
         item?.keywords || ([] as { keyword: Keyword; value: number | null }[]),
@@ -143,8 +162,7 @@ const ItemForm = () => {
         ? value.stats.power
         : undefined;
 
-      value.stats.currentPass = value.stats.pass ? 0 : undefined;
-      value.stats.currentCargo = value.stats.cargo ? 0 : undefined;
+      value.stats.currentHull = value.stats.hull ? 0 : undefined;
 
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
@@ -152,12 +170,23 @@ const ItemForm = () => {
 
       value.stats = { ...filteredStats };
 
-      const { weapons, armor, actions, keywords, augmentationType, ...rest } =
-        value;
+      const {
+        weapons,
+        armor,
+        vehicles,
+        actions,
+        keywords,
+        augmentationType,
+        ...rest
+      } = value;
 
       const data = {
         ...rest,
-        itemIds: extractItemListIds([...value.weapons, ...value.armor]),
+        itemIds: extractItemListIds([
+          ...value.weapons,
+          ...value.armor,
+          ...value.vehicles,
+        ]),
         actionIds: extractItemListIds(value.actions),
         keywordIds: extractKeywordListIds(value.keywords),
       };
@@ -352,6 +381,23 @@ const ItemForm = () => {
                   <Divider />
                 </>
               )}
+              {itemTypes.includes('vehicle') && (
+                <>
+                  <WeaponLinkField
+                    form={itemForm}
+                    weaponList={vehicleWeapons}
+                  />
+                  <Divider />
+                  <VehicleLinkField form={itemForm} vehicleList={vehicles} />
+                  <Divider />
+                </>
+              )}
+              {itemTypes.includes('drone') && (
+                <>
+                  <WeaponLinkField form={itemForm} weaponList={droneWeapons} />
+                  <Divider />
+                </>
+              )}
               <ActionLinkField form={itemForm} />
               <Divider />
             </div>
@@ -369,6 +415,20 @@ const ItemForm = () => {
             />
           ) : (
             mode.charAt(0).toUpperCase() + mode.slice(1)
+          )}
+        </BtnRect>
+        <BtnRect
+          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          type="submit"
+          className="group w-full"
+        >
+          {createItem.isPending ? (
+            <Loading
+              className="group-hover:text-yellow-300 dark:text-gray-900"
+              size={1.15}
+            />
+          ) : (
+            'Create Item Copy'
           )}
         </BtnRect>
       </form>

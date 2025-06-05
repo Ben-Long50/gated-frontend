@@ -54,6 +54,10 @@ const ItemCard = ({
     item.itemLinkReference?.items.filter((item: Item) =>
       item.itemTypes.includes('armor'),
     ) || [];
+  const linkedVehicles =
+    item.itemLinkReference?.items.filter((item: Item) =>
+      item.itemTypes.includes('vehicle'),
+    ) || [];
   const uniqueActions = item.itemLinkReference?.actions || [];
 
   return (
@@ -143,6 +147,16 @@ const ItemCard = ({
                       Integrated Armors
                     </h4>
                     <p className="min-w-6 text-center">{linkedArmors.length}</p>
+                  </>
+                )}
+                {linkedVehicles.length > 0 && (
+                  <>
+                    <h4 className="col-span-3 justify-self-start">
+                      Supplied Vehicles
+                    </h4>
+                    <p className="min-w-6 text-center">
+                      {linkedVehicles.length}
+                    </p>
                   </>
                 )}
                 {uniqueActions.length > 0 && (
