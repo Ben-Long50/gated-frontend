@@ -1,6 +1,6 @@
 import Icon from '@mdi/react';
 import DieIcon from './icons/DieIcon';
-import { mdiTriangleDown } from '@mdi/js';
+import { mdiLinkBoxVariantOutline, mdiTriangleDown } from '@mdi/js';
 import { Action } from 'src/types/action';
 import StopwatchIcon from './icons/StopwatchIcon';
 import { useContext } from 'react';
@@ -9,6 +9,7 @@ import ArrowHeader3 from './ArrowHeader3';
 import ThemeContainer from './ThemeContainer';
 import ActionStatBars from './ActionStatBars';
 import { capitalCase } from 'change-case';
+import { Link } from 'react-router-dom';
 
 const LinkedActionCard = ({
   action,
@@ -50,6 +51,15 @@ const LinkedActionCard = ({
               </p>
             </div>
           )}
+          <Link
+            className="timing group ml-auto flex items-center gap-4 py-2"
+            to={`/glam/codex/actions`}
+          >
+            <Icon
+              path={mdiLinkBoxVariantOutline}
+              className="group-hover:text-accent timing text-secondary size-8 shrink-0"
+            />
+          </Link>
         </div>
         {action?.roll && action?.roll.length > 0 && (
           <div className="flex flex-col gap-2">

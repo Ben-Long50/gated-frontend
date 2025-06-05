@@ -16,7 +16,6 @@ const useCreateItemCopyMutation = (
       setFormMessage(data.message);
       return queryClient.invalidateQueries({
         queryKey: [category],
-        exact: false,
       });
     },
     onError: (error) => {

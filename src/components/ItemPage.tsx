@@ -11,7 +11,7 @@ import {
   mdiCalendarRemoveOutline,
   mdiCollapseAllOutline,
   mdiExpandAllOutline,
-  mdiLink,
+  mdiLinkBoxVariantOutline,
 } from '@mdi/js';
 import { Action } from 'src/types/action';
 import BtnRect from './buttons/BtnRect';
@@ -304,7 +304,7 @@ const ItemPage = ({
             to={`/glam/codex/${category}/${item.baseItem.id}`}
           >
             <Icon
-              path={mdiLink}
+              path={mdiLinkBoxVariantOutline}
               className="group-hover:text-accent timing text-secondary size-8 shrink-0"
             />
             <div className="overflow-hidden">
