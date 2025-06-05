@@ -68,6 +68,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
     CRG: 'rgb(39, 217, 167)',
     HGR: 'rgb(219, 123, 33)',
     PASS: 'rgb(137, 39, 217)',
+    TUR: 'rgb(52 211 153)',
     WPN: 'rgb(252, 91, 50)',
     STACKS: 'rgb(33, 194, 219)',
     AP: 'rgb(252, 91, 50)',

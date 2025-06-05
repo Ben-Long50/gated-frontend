@@ -119,6 +119,8 @@ const ItemForm = () => {
         currentHangar: item?.stats?.currentHangar || '',
         pass: item?.stats?.pass || '',
         currentPass: item?.stats?.currentPass || '',
+        turret: item?.stats?.turret || '',
+        currentTurret: item?.stats?.currentTurret || '',
         weapon: item?.stats?.weapon || '',
         currentWeapon: item?.stats?.currentWeapon || '',
       } as Stats,

@@ -61,6 +61,8 @@ interface Stats {
   currentHangar?: number;
   pass?: number;
   currentPass?: number;
+  turret?: number;
+  currentTurret?: number;
   weapon?: number;
   currentWeapon?: number;
 }

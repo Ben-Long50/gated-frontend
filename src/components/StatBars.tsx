@@ -21,6 +21,7 @@ import HangarIcon from './icons/HangarIcon';
 import PassIcon from './icons/PassIcon';
 import VehicleWeaponIcon from './icons/VehicleWeaponIcon';
 import { Stats } from 'src/types/item';
+import DroneIcon from './icons/DroneIcon';
 
 const StatBars = ({
   stats,
@@ -223,7 +224,7 @@ const StatBars = ({
       )}
       {stats.currentPass !== undefined ? (
         <StatBar
-          title="PASS"
+          title="OCC"
           current={stats.currentPass}
           total={stats.pass}
           color={statColorMap['PASS']}
@@ -242,6 +243,16 @@ const StatBars = ({
             <PassIcon className="text-secondary size-8" />
           </StatBar>
         )
+      )}
+      {stats.turret !== undefined && (
+        <StatBar
+          title="TUR"
+          current={stats.turret}
+          color={statColorMap['TUR']}
+          cardWidth={cardWidth}
+        >
+          <DroneIcon className="text-secondary size-8" />
+        </StatBar>
       )}
       {stats.weapon !== undefined && (
         <StatBar

@@ -181,7 +181,12 @@ const StatFields = ({
             </form.Field>
             <form.Field name="stats.pass">
               {(field) => (
-                <InputField type="number" label="Passengers" field={field} />
+                <InputField type="number" label="Occupants" field={field} />
+              )}
+            </form.Field>
+            <form.Field name="stats.turret">
+              {(field) => (
+                <InputField type="number" label="Turrets" field={field} />
               )}
             </form.Field>
             <form.Field name="stats.weapon">
