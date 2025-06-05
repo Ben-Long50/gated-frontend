@@ -188,7 +188,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                 <InputSelectField
                   field={field}
                   label="Affilitation Type"
-                  options={['To Faction', 'To Gang', 'To Character']}
+                  options={['toFaction', 'toGang', 'toCharacter']}
                 />
               )}
             </affiliationForm.Field>
@@ -197,7 +197,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
             >
               {(type) => (
                 <>
-                  {type === 'To Faction' && (
+                  {type === 'toFaction' && (
                     <affiliationForm.Field name="faction">
                       {(field) => (
                         <InputSelectField
@@ -215,7 +215,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                       )}
                     </affiliationForm.Field>
                   )}
-                  {type === 'To Gang' && (
+                  {type === 'toGang' && (
                     <affiliationForm.Field name="gang">
                       {(field) => (
                         <InputSelectField
@@ -232,7 +232,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                       )}
                     </affiliationForm.Field>
                   )}
-                  {type === 'To Character' && (
+                  {type === 'toCharacter' && (
                     <affiliationForm.Field name="character">
                       {(field) => (
                         <InputSelectField
@@ -242,7 +242,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                             characterId
                               ? activeCharacter?.campaign.characters.filter(
                                   (character: Character) =>
-                                    activeCharacter?.id !== Number(characterId),
+                                    character.id !== Number(characterId),
                                 )
                               : activeCharacter?.campaign.characters
                           }
@@ -292,7 +292,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
           >
             {([type, character, faction]) => {
               switch (type) {
-                case 'To Faction':
+                case 'toFaction':
                   return (
                     faction && (
                       <div
@@ -311,9 +311,9 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                       </div>
                     )
                   );
-                case 'To Gang':
+                case 'toGang':
                   return;
-                case 'To Character':
+                case 'toCharacter':
                   return (
                     character && (
                       <div

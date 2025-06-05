@@ -65,8 +65,7 @@ const Conditions = ({
                 <InputSelectField
                   field={field}
                   label="Condition Type"
-                  options={['', 'character', 'item']}
-                  initialValue=""
+                  options={['character', 'item']}
                   onChange={() => {
                     filterByCategory(field.state.value);
                   }}

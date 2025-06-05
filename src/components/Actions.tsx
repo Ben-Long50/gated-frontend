@@ -65,14 +65,7 @@ const Actions = ({
                 <InputSelectField
                   className="w-full"
                   label="Action Type"
-                  options={[
-                    '',
-                    'action',
-                    'extendedAction',
-                    'reaction',
-                    'passive',
-                  ]}
-                  initialValue=""
+                  options={['action', 'extendedAction', 'reaction', 'passive']}
                   field={field}
                   onChange={() => {
                     actions.filterByCategory(field.state.value);
@@ -85,8 +78,7 @@ const Actions = ({
                 <InputSelectField
                   className="w-full"
                   label="Action Subtype"
-                  options={['', 'attack', 'movement', 'upkeep', 'unique']}
-                  initialValue=""
+                  options={['attack', 'movement', 'upkeep', 'unique']}
                   field={field}
                   onChange={() => {
                     actions.filterBySubCategory(field.state.value);

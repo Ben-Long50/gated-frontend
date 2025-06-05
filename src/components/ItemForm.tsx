@@ -133,6 +133,7 @@ const ItemForm = () => {
       actions: item?.itemLinkReference?.actions || ([] as Action[]),
       keywords:
         item?.keywords || ([] as { keyword: Keyword; value: number | null }[]),
+      augmentationType: '',
     },
     onSubmit: async ({ value }) => {
       value.stats.currentAmmoCount = value.stats.magCapacity;
@@ -150,7 +151,8 @@ const ItemForm = () => {
 
       value.stats = { ...filteredStats };
 
-      const { weapons, armor, actions, keywords, ...rest } = value;
+      const { weapons, armor, actions, keywords, augmentationType, ...rest } =
+        value;
 
       const data = {
         ...rest,
@@ -258,27 +260,32 @@ const ItemForm = () => {
         </div>
         {category === 'augmentations' && (
           <div className="flex w-full flex-col items-center gap-4 sm:flex-row lg:gap-8">
-            <InputSelectField
-              label="Augmentation Type"
-              options={['offensive', 'defensive', 'function']}
-              onChange={(value) => {
-                if (value === 'offensive') {
-                  itemForm.setFieldValue('itemTypes', [
-                    categoryName.toLowerCase(),
-                    'weapon',
-                  ]);
-                } else if (value === 'defensive') {
-                  itemForm.setFieldValue('itemTypes', [
-                    categoryName.toLowerCase(),
-                    'armor',
-                  ]);
-                } else {
-                  itemForm.setFieldValue('itemTypes', [
-                    categoryName.toLowerCase(),
-                  ]);
-                }
-              }}
-            />
+            <itemForm.Field name="augmentationType">
+              {(field) => (
+                <InputSelectField
+                  label="Augmentation Type"
+                  field={field}
+                  options={['offensive', 'defensive', 'function']}
+                  onChange={(value) => {
+                    if (value === 'offensive') {
+                      itemForm.setFieldValue('itemTypes', [
+                        categoryName.toLowerCase(),
+                        'weapon',
+                      ]);
+                    } else if (value === 'defensive') {
+                      itemForm.setFieldValue('itemTypes', [
+                        categoryName.toLowerCase(),
+                        'armor',
+                      ]);
+                    } else {
+                      itemForm.setFieldValue('itemTypes', [
+                        categoryName.toLowerCase(),
+                      ]);
+                    }
+                  }}
+                />
+              )}
+            </itemForm.Field>
             <itemForm.Field name="itemSubtypes" mode="array">
               {(field) =>
                 field.state.value.map((_, i) => (

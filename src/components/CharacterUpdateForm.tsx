@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import InputField from './InputField';
-import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import BtnRect from './buttons/BtnRect';
 import AttributeCard from './AttributeCard';

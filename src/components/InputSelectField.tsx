@@ -10,7 +10,10 @@ import Divider from './Divider';
 import { Character } from 'src/types/character';
 import { Keyword } from 'src/types/keyword';
 import BtnIcon from './buttons/BtnIcon';
-import { camelCase, capitalCase } from 'change-case';
+import { capitalCase } from 'change-case';
+import { Campaign } from 'src/types/campaign';
+
+type onChangeArg = Character | Action | Keyword | Campaign | string;
 
 const InputSelectField = ({
   field,
@@ -18,26 +21,24 @@ const InputSelectField = ({
   label,
   className,
   options,
-  initialValue,
 }: {
-  field?: FieldApi;
-  onChange?: () => void;
+  field: FieldApi;
   label: string;
+  options: any[];
+  onChange?: (value: onChangeArg) => void;
   className?: string;
-  options: Character[] | Action[] | Keyword[] | string[];
-  initialValue?: string;
 }) => {
   const [borderColor, setBorderColor] = useState('transparent');
   const [focus, setFocus] = useState(false);
   const { accentPrimary, errorPrimary } = useContext(ThemeContext);
   const [query, setQuery] = useState('');
 
-  const searchRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const selectRef = useRef<HTMLDivElement | null>(null);
 
   const handleBorder = () => {
     if (
-      !searchRef.current?.value &&
+      !inputRef.current?.value &&
       field?.state.meta.errors?.length === 0 &&
       !focus
     ) {
@@ -46,33 +47,35 @@ const InputSelectField = ({
       setBorderColor(accentPrimary);
     } else if (field?.state.meta.errors?.length > 0) {
       setBorderColor(errorPrimary);
-    } else if (searchRef.current.value) {
+    } else if (field.state.value) {
       setBorderColor(accentPrimary);
     }
   };
 
   useEffect(() => {
-    const minimizeSelect = (e: MouseEvent) => {
+    const minimizeSelect = (e) => {
       if (selectRef.current && !selectRef.current.contains(e.target)) {
         setFocus(false);
       }
     };
 
-    window.addEventListener('click', minimizeSelect);
+    document.addEventListener('click', minimizeSelect);
 
-    return () => window.removeEventListener('click', minimizeSelect);
+    return () => document.removeEventListener('click', minimizeSelect);
   }, []);
 
   useEffect(() => {
     handleBorder();
-  }, [focus, field?.state]);
+  }, [focus, field.state]);
 
-  const optionName = (option) => {
-    if (!option) return;
+  const optionName = (option: any) => {
+    if (!option) return '';
     if (option?.firstName) {
       return option.firstName + ' ' + option.lastName;
     } else if (option?.name) {
       return capitalCase(option.name);
+    } else if (typeof option === 'number') {
+      return option.toString();
     } else if (typeof option === 'string') {
       return capitalCase(option);
     } else return '';
@@ -88,7 +91,7 @@ const InputSelectField = ({
   return (
     <div
       ref={selectRef}
-      className={`${className} relative ${focus ? 'z-50' : 'z-10'} timing flex w-full items-center`}
+      className={`${className} ${focus ? 'z-50' : 'z-10'} timing relative flex w-full items-center`}
     >
       <ThemeContainer
         className="grow"
@@ -96,11 +99,11 @@ const InputSelectField = ({
         borderColor={borderColor}
       >
         <input
-          ref={searchRef}
-          className={`${className} text-secondary timing focus:bg-primary relative w-full rounded-none ${searchRef.current?.value ? 'bg-primary' : 'bg-zinc-300 dark:bg-zinc-700'} pb-2 pl-4 pr-2 pt-3 outline-none clip-4`}
-          name={field?.name}
-          id={field?.name}
-          value={optionName(initialValue) || optionName(field?.state.value)}
+          ref={inputRef}
+          className={`${field.state.value ? 'bg-primary' : 'bg-zinc-300 dark:bg-zinc-700'} text-secondary timing focus:bg-primary relative w-full rounded-none pb-2 pl-4 pr-2 pt-3 outline-none clip-4`}
+          name={field.name}
+          id={field.name}
+          value={optionName(field.state.value)}
           onFocus={() => {
             setFocus(true);
           }}
@@ -111,7 +114,7 @@ const InputSelectField = ({
         />
         <label
           htmlFor={field?.name}
-          className={` ${field?.state.meta.errors?.length > 0 ? 'text-error' : ''} ${searchRef.current?.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
+          className={` ${field.state.meta.errors?.length > 0 ? 'text-error' : ''} ${field.state.value || focus ? 'bg-primary text-accent -translate-y-6' : 'text-gray-400'} timing absolute left-5 top-3.5 z-20 transform cursor-text transition-all`}
         >
           {label}
         </label>
@@ -129,9 +132,15 @@ const InputSelectField = ({
               path={mdiSync}
               active={true}
               onClick={() => {
-                searchRef.current.value = null;
                 if (field) {
-                  field.handleChage(null);
+                  field?.handleChange('');
+                }
+                if (onChange) {
+                  onChange('');
+                }
+                setFocus(false);
+                if (inputRef.current) {
+                  inputRef.current.blur();
                 }
               }}
             />
@@ -149,16 +158,14 @@ const InputSelectField = ({
                   e.preventDefault();
                   e.stopPropagation();
                   if (field) {
-                    searchRef.current.value = optionName(option);
-                    field?.handleChange(camelCase(option));
+                    field?.handleChange(option);
                   }
                   if (onChange) {
-                    searchRef.current.value = optionName(option);
-                    onChange(camelCase(searchRef.current.value));
+                    onChange(option);
                   }
                   setFocus(false);
-                  if (searchRef.current) {
-                    searchRef.current.blur();
+                  if (inputRef.current) {
+                    inputRef.current.blur();
                   }
                 }}
               >
@@ -174,8 +181,8 @@ const InputSelectField = ({
         />
       </ThemeContainer>
 
-      {field?.state.meta.errors &&
-        field?.state.meta.errors.map((error: string) => (
+      {field.state.meta.errors &&
+        field.state.meta.errors.map((error: string) => (
           <p
             key={error}
             className="timing text-error mt-1 text-base italic leading-5"

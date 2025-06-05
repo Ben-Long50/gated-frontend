@@ -59,7 +59,6 @@ const UserRoleForm = ({
                 field={field}
                 label="Role"
                 options={['SUPERADMIN', 'ADMIN', 'USER', 'GUEST']}
-                initialValue={user.role}
               />
             )}
           </roleForm.Field>

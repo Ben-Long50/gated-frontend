@@ -130,7 +130,34 @@ const useStats = (
   const calculateBonus = (modifiers: Stats) => {
     Object.entries(modifiers).forEach(([stat, value]) => {
       const currentValue = stats[stat];
-      stats[stat] = currentValue + value;
+
+      if (typeof value === 'number') {
+        stats[stat] = currentValue + value;
+      } else if (
+        ['chromebits', 'hardwired', 'motorized', 'networked'].some(
+          (item) => item === value,
+        )
+      ) {
+        stats[stat] = currentValue + tree.getPoints('cybernetica', value);
+      } else if (
+        ['gestalt', 'godhead', 'mysticism', 'outerworld'].some(
+          (item) => item === value,
+        )
+      ) {
+        stats[stat] = currentValue + tree.getPoints('esoterica', value);
+      } else if (
+        ['barter', 'rhetoric', 'erudition', 'treatment'].some(
+          (item) => item === value,
+        )
+      ) {
+        stats[stat] = currentValue + tree.getPoints('peace', value);
+      } else if (
+        ['assault', 'shooting', 'subterfuge', 'threshold'].some(
+          (item) => item === value,
+        )
+      ) {
+        stats[stat] = currentValue + tree.getPoints('violence', value);
+      }
     });
   };
 

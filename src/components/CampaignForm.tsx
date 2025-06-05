@@ -1,4 +1,4 @@
-import { useForm, useStore, ValidationError } from '@tanstack/react-form';
+import { useForm, useStore } from '@tanstack/react-form';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnRect from './buttons/BtnRect';
@@ -6,7 +6,6 @@ import InputField from './InputField';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
 import InputFieldBasic from './InputFieldBasic';
-import SelectField from './SelectField';
 import { User } from 'src/types/user';
 import { Link, useParams } from 'react-router-dom';
 import LexicalEditor from './lexical/LexicalEditor';
@@ -20,6 +19,7 @@ import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import useDeleteCampaignMutation from '../hooks/useDeleteCampaignMutation/useDeleteCampaignMutation';
 import PictureField from './form_fields/PictureField';
 import AccountPicture from './AccountPicture';
+import InputSelectField from './InputSelectField';
 
 const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -208,23 +208,17 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                       }}
                     >
                       {(subfield) => (
-                        <SelectField
+                        <InputSelectField
                           className="w-full"
                           label="Faction type"
                           field={subfield}
-                        >
-                          <option value=""></option>
-                          <option value="churchOfElShaddai">
-                            Church of El Shaddai
-                          </option>
-                          <option value="corporateHoldouts">
-                            Corporate Holdouts
-                          </option>
-                          <option value="federalReservists">
-                            Federal Reservists
-                          </option>
-                          <option value="noblebloods">Noblebloods</option>
-                        </SelectField>
+                          options={[
+                            'curchOfElShaddai',
+                            'corporateHoldouts',
+                            'federalReservists',
+                            'noblebloods',
+                          ]}
+                        />
                       )}
                     </campaignForm.Field>
                     <campaignForm.Field

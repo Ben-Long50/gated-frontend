@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import ThemeContainer from './ThemeContainer';
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
 import { Keyword } from 'src/types/keyword';
@@ -25,6 +25,7 @@ import { Item } from 'src/types/item';
 import { Action } from 'src/types/action';
 import { Condition } from 'src/types/condition';
 import useAllItemsQuery from 'src/hooks/useAllItemsQuery/useAllItemsQuery';
+import { camelCase } from 'change-case';
 
 const CodexSearch = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -55,43 +56,74 @@ const CodexSearch = () => {
     .map((item) => Object.values(item).flat())
     .flat();
 
-  const filterItems = (
-    itemArray: Item[] | Keyword[] | Action[] | Condition[] | undefined,
-  ) => {
-    const nameFilter = nameQuery?.toLowerCase() ?? null;
-    const descFilter = descriptionQuery?.toLowerCase() ?? null;
-    const hasCategoryFilter = category !== '';
+  const [filteredItems, setFilteredItems] = useState<Item[]>([]);
+  const [filteredActions, setFilteredActions] = useState<Action[]>([]);
+  const [filteredPerks, setFilteredPerks] = useState<Keyword[]>([]);
+  const [filteredKeywords, setFilteredKeywords] = useState<Keyword[]>([]);
+  const [filteredConditions, setFilteredConditions] = useState<Condition[]>([]);
+  const [filtering, setFiltering] = useState(false);
 
-    return itemArray
-      ? itemArray.filter((item) => {
-          if (!item) return false;
-          const nameMatch = item.name?.toLowerCase().includes(nameFilter);
-          const descMatch = item.description
-            ?.toLowerCase()
-            .includes(descFilter);
+  useEffect(() => {
+    let cancelled = false;
 
-          const categoryMatch = item.keywords
-            ? !hasCategoryFilter ||
-              item.keywords?.some(
-                (keyword: { keyword: Keyword }) =>
-                  category === keyword.keyword?.name,
-              )
-            : true;
+    const filter = (
+      itemArray: Item[] | Keyword[] | Action[] | Condition[] | undefined,
+    ) => {
+      const nameFilter = nameQuery?.toLowerCase() ?? null;
+      const descFilter = descriptionQuery?.toLowerCase() ?? null;
+      const hasCategoryFilter = category !== '';
 
-          return nameMatch && descMatch && categoryMatch;
-        })
-      : [];
-  };
+      const filteredItems = itemArray
+        ? itemArray.filter((item) => {
+            if (!item) return false;
+            const nameMatch = item.name?.toLowerCase().includes(nameFilter);
+            const descMatch = item.description
+              ?.toLowerCase()
+              .includes(descFilter);
+            console.log(category);
 
-  const filteredItems = items ? filterItems(items) : [];
-  const filteredActions = actions ? filterItems(actions) : [];
-  const filteredPerks = perkArray ? filterItems(perkArray) : [];
-  const filteredKeywords = keywords ? filterItems(keywords) : [];
-  const filteredConditions = conditions ? filterItems(conditions) : [];
+            const categoryMatch = item.keywords
+              ? !hasCategoryFilter ||
+                item.keywords?.some(
+                  (keyword: { keyword: Keyword }) =>
+                    category === camelCase(keyword.keyword?.name),
+                )
+              : true;
+
+            return nameMatch && descMatch && categoryMatch;
+          })
+        : [];
+
+      return filteredItems;
+    };
+
+    const filtered = {
+      items: filter(items),
+      actions: category ? [] : filter(actions),
+      perks: category ? [] : filter(perkArray),
+      keywords: category ? [] : filter(keywords),
+      conditions: category ? [] : filter(conditions),
+    };
+
+    if (!cancelled) {
+      setFilteredItems(filtered.items);
+      setFilteredActions(filtered.actions);
+      setFilteredPerks(filtered.perks);
+      setFilteredKeywords(filtered.keywords);
+      setFilteredConditions(filtered.conditions);
+      setFiltering(false);
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [category, nameQuery, descriptionQuery]);
 
   const keywordList = keywords?.map((keyword) => keyword.name);
 
   const filterByNameQuery = (query: string) => {
+    setFiltering(true);
+
     if (nameTimerRef.current) {
       clearTimeout(nameTimerRef.current);
     }
@@ -104,15 +136,17 @@ const CodexSearch = () => {
       } else if (!descriptionQuery) {
         setDescriptionQuery(null);
       }
-    }, 200);
+    }, 1000);
   };
 
   const filterByDescriptionQuery = (query: string) => {
+    setFiltering(true);
+
     if (descriptionTimerRef.current) {
       clearTimeout(descriptionTimerRef.current);
     }
 
-    nameTimerRef.current = setTimeout(() => {
+    descriptionTimerRef.current = setTimeout(() => {
       if (!nameQuery && !query && !category) {
         setDescriptionQuery(null);
       } else {
@@ -123,7 +157,7 @@ const CodexSearch = () => {
       } else if (!nameQuery) {
         setNameQuery(null);
       }
-    }, 200);
+    }, 1000);
   };
 
   const searchForm = useForm({
@@ -137,8 +171,6 @@ const CodexSearch = () => {
       filterByDescriptionQuery(value.descriptionQuery);
     },
   });
-
-  if (isLoading || isPending) return <Loading />;
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
@@ -159,8 +191,6 @@ const CodexSearch = () => {
                   options={keywordList}
                   onChange={() => {
                     setCategory(field.state.value);
-                    setNameQuery('');
-                    setDescriptionQuery('');
                   }}
                 />
               )}
@@ -236,63 +266,95 @@ const CodexSearch = () => {
           </div>
         </form>
       </ThemeContainer>
-      {filteredItems.length > 0 && (
+      {isLoading || isPending || filtering ? (
+        <Loading />
+      ) : [
+          ...filteredItems,
+          ...filteredKeywords,
+          ...filteredPerks,
+          ...filteredActions,
+          ...filteredConditions,
+        ].length === 0 ? (
+        <h1>No Codex Items Found</h1>
+      ) : (
         <>
-          <ArrowHeader2 className="self-start" title="Items" />
-          <div
-            className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
-          >
-            {filteredItems.map((item) =>
-              cardType === 'large' ? (
-                <ItemCard key={item.id} item={item} mode="search" />
-              ) : (
-                <ItemCardMobile key={item.id} item={item} mode="search" />
-              ),
-            )}
-          </div>
+          {filteredItems.length > 0 && (
+            <>
+              <ArrowHeader2 className="self-start" title="Items" />
+              <div
+                className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
+              >
+                {filteredItems.map((item) =>
+                  cardType === 'large' ? (
+                    <ItemCard key={item.id} item={item} mode="search" />
+                  ) : (
+                    <ItemCardMobile key={item.id} item={item} mode="search" />
+                  ),
+                )}
+              </div>
+            </>
+          )}
+          {filteredKeywords.length > 0 && (
+            <div className="flex w-full flex-col gap-4">
+              <h2 className="pl-4">Keywords</h2>
+              <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+                {filteredKeywords.map((keyword, index) => {
+                  return (
+                    <KeywordCard
+                      key={'triat' + index}
+                      keyword={keyword}
+                      mode="codex"
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {filteredPerks.length > 0 && (
+            <div className="flex w-full flex-col gap-4">
+              <h2 className="pl-4">Perks</h2>
+              <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+                {filteredPerks.map((perk, index) => {
+                  return (
+                    <PerkCard key={'perk' + index} perk={perk} mode="codex" />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {filteredActions.length > 0 && (
+            <div className="flex w-full flex-col gap-4">
+              <h2 className="pl-4">Actions</h2>
+              <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+                {filteredActions.map((action, index) => {
+                  return (
+                    <ActionCard
+                      key={'action' + index}
+                      action={action}
+                      mode="codex"
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {filteredConditions.length > 0 && (
+            <div className="flex w-full flex-col gap-4">
+              <h2 className="pl-4">Conditions</h2>
+              <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
+                {filteredConditions.map((condition, index) => {
+                  return (
+                    <ConditionCard
+                      key={'condition' + index}
+                      condition={condition}
+                      mode="codex"
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </>
-      )}
-      {filteredKeywords.length > 0 && (
-        <div className="flex w-full flex-col gap-4">
-          <h2 className="pl-4">Keywords</h2>
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {filteredKeywords.map((keyword, index) => {
-              return <KeywordCard key={index} keyword={keyword} mode="codex" />;
-            })}
-          </div>
-        </div>
-      )}
-      {filteredPerks.length > 0 && (
-        <div className="flex w-full flex-col gap-4">
-          <h2 className="pl-4">Perks</h2>
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {filteredPerks.map((perk, index) => {
-              return <PerkCard key={index} perk={perk} mode="codex" />;
-            })}
-          </div>
-        </div>
-      )}
-      {filteredActions.length > 0 && (
-        <div className="flex w-full flex-col gap-4">
-          <h2 className="pl-4">Actions</h2>
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {filteredActions.map((action, index) => {
-              return <ActionCard key={index} action={action} mode="codex" />;
-            })}
-          </div>
-        </div>
-      )}
-      {filteredConditions.length > 0 && (
-        <div className="flex w-full flex-col gap-4">
-          <h2 className="pl-4">Conditions</h2>
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {filteredConditions.map((condition, index) => {
-              return (
-                <ConditionCard key={index} condition={condition} mode="codex" />
-              );
-            })}
-          </div>
-        </div>
       )}
     </div>
   );

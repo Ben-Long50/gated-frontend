@@ -5,7 +5,7 @@ import gradePointMap from './gradePointMap';
 const useItemStats = (items: Item[] | null) => {
   const itemStats = useMemo(
     () =>
-      items && items[0]
+      items && items[0]?.stats
         ? items?.map((item) =>
             Object.fromEntries(
               Object.entries(item?.stats).map(([stat, value]) =>
@@ -22,7 +22,7 @@ const useItemStats = (items: Item[] | null) => {
 
   const itemKeywords = useMemo(
     () =>
-      items && items[0]
+      items && items[0]?.keywords
         ? items?.map((item) => {
             if (item.modifiedKeywords) {
               return [...item.keywords, ...item.modifiedKeywords];

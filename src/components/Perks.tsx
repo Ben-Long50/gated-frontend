@@ -76,7 +76,6 @@ const Perks = ({
                     'peace',
                     'violence',
                   ]}
-                  initialValue=""
                   onChange={() => {
                     perks.filterByAttribute(field.state.value);
                     perks.filterBySkill('');
@@ -93,7 +92,6 @@ const Perks = ({
                     <InputSelectField
                       field={field}
                       label="Skill"
-                      initialValue=""
                       options={
                         selectedAttribute
                           ? Object.keys(perks.emptyTree[selectedAttribute])

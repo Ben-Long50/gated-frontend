@@ -2,6 +2,7 @@ import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useItemsQuery from './useItemsQuery/useItemsQuery';
 import { Item } from 'src/types/item';
+import { camelCase } from 'change-case';
 
 const useItems = ({
   category,
@@ -67,7 +68,9 @@ const useItems = ({
     itemCategory.length > 0
       ? categorizedItems
           ?.filter((item: Item) =>
-            item.keywords.some((keyword) => category === keyword.keyword.name),
+            item.keywords.some(
+              (keyword) => itemCategory === camelCase(keyword.keyword.name),
+            ),
           )
           .filter((item: Item) =>
             item.name.toLowerCase().includes(query.toLowerCase()),

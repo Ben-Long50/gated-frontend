@@ -115,7 +115,7 @@ const RollSimulator = () => {
                 {user?.id === campaign?.ownerId && (
                   <InputSelectField
                     field={field}
-                    options={campaign?.characters}
+                    options={campaign?.characters || []}
                     label="Character to Roll"
                   />
                 )}
@@ -167,9 +167,8 @@ const RollSimulator = () => {
             >
               {(field) => (
                 <InputSelectField
-                  options={actions}
+                  options={actions || []}
                   label="Action"
-                  className="w-full"
                   field={field}
                 />
               )}
@@ -252,7 +251,6 @@ const RollSimulator = () => {
                           options={attributeList}
                           label="Attribute"
                           field={field}
-                          initialValue={field.state.value}
                         />
                       );
                     }}
@@ -284,7 +282,6 @@ const RollSimulator = () => {
                               options={skillList}
                               label="Skill"
                               field={field}
-                              initialValue={field.state.value}
                             />
                           );
                         }}

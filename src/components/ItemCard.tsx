@@ -1,7 +1,6 @@
 import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
-import { Link } from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
 import { Keyword } from 'src/types/keyword';

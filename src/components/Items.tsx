@@ -83,13 +83,12 @@ const Items = ({
               {(field) => (
                 <InputSelectField
                   field={field}
-                  className=""
                   label="Trait"
                   options={items.filteredKeywords || []}
                   onChange={() => {
                     items.filterByCategory(field.state.value);
                   }}
-                ></InputSelectField>
+                />
               )}
             </searchForm.Field>
           </div>

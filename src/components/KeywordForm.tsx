@@ -4,7 +4,6 @@ import BtnRect from './buttons/BtnRect';
 import TextAreaField from './TextAreaField';
 import { AuthContext } from '../contexts/AuthContext';
 import { useForm } from '@tanstack/react-form';
-import SelectField from './SelectField';
 import useCreateKeywordMutation from '../hooks/useCreateKeywordMutation/useCreateKeywordMutation';
 import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';

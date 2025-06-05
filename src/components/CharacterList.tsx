@@ -16,6 +16,7 @@ import useCharacters from 'src/hooks/useCharacters';
 import InputField from './InputField';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
+import { Campaign } from 'src/types/campaign';
 
 const CharacterList = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -41,7 +42,7 @@ const CharacterList = () => {
       character:
         activeCharacter ||
         ({ id: 0, firstName: '', lastName: '' } as Character),
-      campaignId: null as number | null,
+      campaign: null as Campaign | null,
       query: '' as string,
     },
     onSubmit: ({ value }) => {
@@ -78,11 +79,6 @@ const CharacterList = () => {
                     onChange={() => {
                       activeForm.handleSubmit();
                     }}
-                    initialValue={
-                      setActiveCharacter.isPending
-                        ? 'Switching Character'
-                        : field.state.value
-                    }
                   />
                 )}
               </activeForm.Field>
@@ -93,7 +89,7 @@ const CharacterList = () => {
               <InputSelectField
                 field={field}
                 label="Filter By Campaign"
-                options={campaigns}
+                options={campaigns || []}
                 onChange={() => filterByCampaign(field.state.value.id)}
               />
             )}
@@ -113,6 +109,7 @@ const CharacterList = () => {
               className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-1.5 shadow-md shadow-black hover:underline"
               onClick={(e) => {
                 e.preventDefault();
+                activeForm.reset();
                 filterByCampaign(null);
                 filterByQuery('');
               }}

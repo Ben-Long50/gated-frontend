@@ -76,18 +76,7 @@ const PerkForm = () => {
     defaultValues: {
       name: perk?.name ?? '',
       description: perk?.description || '',
-      modifiers:
-        perk?.modifiers?.map((modifier: Modifier) => ({
-          type: modifier.type,
-          actionId: modifier.action?.id || null,
-          stat: modifier.stat || null,
-          operator: modifier.operator,
-          valueType: modifier.valueType,
-          attribute: modifier.attribute,
-          skill: modifier.skill,
-          value: modifier.value,
-          duration: modifier.duration,
-        })) || ([] as Modifier[]),
+      modifiers: perk?.modifiers || {},
       requirements: attributeTree?.tree || null,
     },
     onSubmit: async ({ value }) => {

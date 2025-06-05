@@ -4,7 +4,7 @@ import getItems from '../useItemsQuery/getItems';
 const useAllItemsQuery = (apiUrl: string) => {
   const categories = [
     'weapons',
-    'armor',
+    'armors',
     'augmentations',
     'vehicles',
     'drones',

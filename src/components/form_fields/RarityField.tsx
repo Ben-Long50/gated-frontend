@@ -17,7 +17,6 @@ const RarityField = ({
     >
       {(field) => (
         <InputSelectField
-          className="w-full"
           label={category + ' Rarity'}
           field={field}
           options={['common', 'uncommon', 'rare', 'blackMarket', 'artifact']}

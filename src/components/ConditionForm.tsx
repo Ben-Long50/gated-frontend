@@ -9,7 +9,6 @@ import InputField from './InputField';
 import useCreateConditionMutation from '../hooks/useCreateConditionMutation/useCreateConditionMutation';
 import useDeleteConditionMutation from '../hooks/useDeleteConditionMutation/useDeleteConditionMutation';
 import FormLayout from '../layouts/FormLayout';
-import SelectField from './SelectField';
 import useConditions from '../hooks/useConditions';
 import { Condition } from 'src/types/condition';
 import ArrowHeader2 from './ArrowHeader2';
