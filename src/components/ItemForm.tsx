@@ -26,6 +26,7 @@ import StatFields from './form_fields/StatFields';
 import useCreateItemMutation from 'src/hooks/useCreateItemMutation/useCreateItemMutation';
 import useDeleteItemMutation from 'src/hooks/useDeleteItemMutation/useDeleteItemMutation';
 import VehicleLinkField from './form_fields/VehicleLinkField';
+import useCreateItemCopyMutation from 'src/hooks/useCreateItemCopyMutation/useCreateItemCopyMutation';
 
 const ItemForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -68,6 +69,13 @@ const ItemForm = () => {
     category,
     setFormMessage,
     Number(itemId),
+  );
+
+  const createItemCopy = useCreateItemCopyMutation(
+    apiUrl,
+    category,
+    itemId,
+    setFormMessage,
   );
 
   const deleteItem = useDeleteItemMutation(
@@ -217,6 +225,7 @@ const ItemForm = () => {
       itemId={itemId}
       createMutation={createItem}
       deleteMutation={deleteItem}
+      modifyMutation={createItemCopy}
       handleDelete={handleDelete}
       handleReset={handleReset}
       formMessage={formMessage}
@@ -425,6 +434,26 @@ const ItemForm = () => {
             mode.charAt(0).toUpperCase() + mode.slice(1)
           )}
         </BtnRect>
+        {itemId && item?.baseItemId === null && (
+          <BtnRect
+            type="button"
+            className="group w-full"
+            ariaLabel="Create item copy"
+            onClick={(e) => {
+              e.preventDefault();
+              createItemCopy.mutate();
+            }}
+          >
+            {createItemCopy.isPending ? (
+              <Loading
+                className="group-hover:text-yellow-300 dark:text-gray-900"
+                size={1.15}
+              />
+            ) : (
+              'Create Item Copy'
+            )}
+          </BtnRect>
+        )}
       </form>
     </FormLayout>
   );

@@ -112,8 +112,8 @@ const CharacterForm = () => {
   const { stats } = useStats(
     {
       items: [],
-      actions: [],
     } as unknown as CharacterInventory,
+    [],
     attributeTree?.tree,
     selectedPerks,
   );

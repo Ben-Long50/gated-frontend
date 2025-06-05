@@ -27,12 +27,12 @@ const CharacterLinks = ({
         title="Characters"
       >
         <SubLinkSidebar
-          title="All characters"
+          title="All Characters"
           path="characters"
           setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
-          title="Create new activeCharacter"
+          title="Create New Character"
           path="characters/create"
           setSidebarVisibility={setSidebarVisibility}
         />
