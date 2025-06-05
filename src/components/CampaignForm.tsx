@@ -213,7 +213,7 @@ const CampaignForm = ({ title, mode }: { title: string; mode?: string }) => {
                           label="Faction type"
                           field={subfield}
                           options={[
-                            'curchOfElShaddai',
+                            'churchOfElShaddai',
                             'corporateHoldouts',
                             'federalReservists',
                             'noblebloods',

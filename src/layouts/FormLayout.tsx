@@ -89,7 +89,7 @@ const FormLayout = ({
                   size={1.5}
                 />
                 <p className="text-error text-base">
-                  Press the delete button one more time to permenantly delete
+                  Press the delete button one more time to permanently delete
                 </p>
               </div>
             )}

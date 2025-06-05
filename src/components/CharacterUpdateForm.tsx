@@ -507,7 +507,7 @@ const CharacterUpdateForm = () => {
                 <h2 className="text-error font-semibold">Warning: </h2>
               </div>
               <p className="text-error">
-                You are about to permenantly delete this character. This action
+                You are about to permanently delete this character. This action
                 cannot be undone and all data relating to this character will be
                 gone forever. To continue, click the "Delete character" button
                 again.
