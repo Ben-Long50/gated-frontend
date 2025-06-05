@@ -115,8 +115,6 @@ const ItemForm = () => {
         armor: item?.stats?.armor || '',
         cargo: item?.stats?.cargo || '',
         currentCargo: item?.stats?.currentCargo || '',
-        hangar: item?.stats?.hangar || '',
-        currentHangar: item?.stats?.currentHangar || '',
         pass: item?.stats?.pass || '',
         currentPass: item?.stats?.currentPass || '',
         turret: item?.stats?.turret || '',
@@ -146,7 +144,6 @@ const ItemForm = () => {
         : undefined;
 
       value.stats.currentPass = value.stats.pass ? 0 : undefined;
-      value.stats.currentHangar = value.stats.hangar ? 0 : undefined;
       value.stats.currentCargo = value.stats.cargo ? 0 : undefined;
 
       const filteredStats = Object.fromEntries(

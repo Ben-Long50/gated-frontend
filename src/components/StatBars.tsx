@@ -200,28 +200,6 @@ const StatBars = ({
           </StatBar>
         )
       )}
-      {stats.currentHangar !== undefined ? (
-        <StatBar
-          title="HGR"
-          current={stats.currentHangar}
-          total={stats.hangar}
-          color={statColorMap['HGR']}
-          cardWidth={cardWidth}
-        >
-          <HangarIcon className="text-secondary size-8" />
-        </StatBar>
-      ) : (
-        stats.hangar !== undefined && (
-          <StatBar
-            title="HGR"
-            current={stats.hangar}
-            color={statColorMap['HGR']}
-            cardWidth={cardWidth}
-          >
-            <HangarIcon className="text-secondary size-8" />
-          </StatBar>
-        )
-      )}
       {stats.currentPass !== undefined ? (
         <StatBar
           title="OCC"
