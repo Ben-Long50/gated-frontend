@@ -162,11 +162,19 @@ const ItemForm = () => {
         ? value.stats.power
         : undefined;
 
-      value.stats.currentHull = value.stats.hull ? 0 : undefined;
+      value.stats.currentHull = value.stats.hull ? value.stats.hull : undefined;
 
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
       );
+
+      if (filteredStats.cargo) {
+        filteredStats.currentCargo = 0;
+      }
+
+      if (filteredStats.pass) {
+        filteredStats.currentPass = 0;
+      }
 
       value.stats = { ...filteredStats };
 

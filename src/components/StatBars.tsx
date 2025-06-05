@@ -17,7 +17,6 @@ import VehicleSpeedIcon from './icons/VehicleSpeedIcon';
 import AgilityIcon from './icons/AgilityIcon';
 import HullIcon from './icons/HullIcon';
 import CargoIcon from './icons/CargoIcon';
-import HangarIcon from './icons/HangarIcon';
 import PassIcon from './icons/PassIcon';
 import VehicleWeaponIcon from './icons/VehicleWeaponIcon';
 import { Stats } from 'src/types/item';
@@ -222,20 +221,22 @@ const StatBars = ({
           </StatBar>
         )
       )}
-      {stats.turret !== undefined && (
+      {stats.turret !== undefined && stats.currentTurret !== undefined && (
         <StatBar
           title="TUR"
-          current={stats.turret}
+          current={stats.currentTurret}
+          total={stats.turret}
           color={statColorMap['TUR']}
           cardWidth={cardWidth}
         >
           <DroneIcon className="text-secondary size-8" />
         </StatBar>
       )}
-      {stats.weapon !== undefined && (
+      {stats.weapon !== undefined && stats.currentWeapon !== undefined && (
         <StatBar
           title="WPN"
-          current={stats.weapon}
+          current={stats.currentWeapon}
+          total={stats.weapon}
           color={statColorMap['WPN']}
           cardWidth={cardWidth}
         >

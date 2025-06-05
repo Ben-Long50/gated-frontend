@@ -20,6 +20,23 @@ const useItemStats = (items: Item[] | null) => {
     [items],
   );
 
+  itemStats?.forEach((statObject, index) => {
+    if (statObject.weapon) {
+      const weaponCount = items[index].itemLinkReference.items.filter((item) =>
+        item.itemTypes.includes('weapon'),
+      ).length;
+
+      statObject.currentWeapon = weaponCount;
+    }
+    if (statObject.turret) {
+      const turretCount = items[index].itemLinkReference.items.filter((item) =>
+        item.itemTypes.includes('weapon'),
+      ).length;
+
+      statObject.currentTurret = turretCount;
+    }
+  });
+
   const itemKeywords = useMemo(
     () =>
       items && items[0]?.keywords
