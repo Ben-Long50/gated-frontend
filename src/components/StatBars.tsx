@@ -235,7 +235,7 @@ const StatBars = ({
       ) : (
         stats.pass !== undefined && (
           <StatBar
-            title="PASS"
+            title="OCC"
             current={stats.pass}
             color={statColorMap['PASS']}
             cardWidth={cardWidth}

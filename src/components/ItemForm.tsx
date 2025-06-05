@@ -120,9 +120,7 @@ const ItemForm = () => {
         pass: item?.stats?.pass || '',
         currentPass: item?.stats?.currentPass || '',
         turret: item?.stats?.turret || '',
-        currentTurret: item?.stats?.currentTurret || '',
         weapon: item?.stats?.weapon || '',
-        currentWeapon: item?.stats?.currentWeapon || '',
       } as Stats,
       weapons:
         item?.itemLinkReference?.items.filter((item: Item) =>
@@ -146,6 +144,10 @@ const ItemForm = () => {
       value.stats.currentPower = value.stats.power
         ? value.stats.power
         : undefined;
+
+      value.stats.currentPass = value.stats.pass ? 0 : undefined;
+      value.stats.currentHangar = value.stats.hangar ? 0 : undefined;
+      value.stats.currentCargo = value.stats.cargo ? 0 : undefined;
 
       const filteredStats = Object.fromEntries(
         Object.entries(value.stats).filter(([_, val]) => val),
