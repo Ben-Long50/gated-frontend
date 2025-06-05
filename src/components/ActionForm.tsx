@@ -94,7 +94,7 @@ const ActionForm = () => {
 
       value.actionSubtypes = filteredSubtypes;
 
-      // await createAction.mutate(value);
+      await createAction.mutate(value);
     },
   });
 
