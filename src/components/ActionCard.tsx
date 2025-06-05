@@ -17,10 +17,10 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
 
   const costLength = action?.costs ? Object.keys(action.costs).length : 0;
 
-  const modifierString = action.modifiers
-    ? Object.entries(action.modifiers)
-        .map(([stat, value]) => `${value} ${capitalCase(stat)}`)
-        .join(', ')
+  const modifiers = action.modifiers
+    ? Object.entries(action.modifiers).map(
+        ([stat, value]) => `${value} ${capitalCase(stat)}`,
+      )
     : null;
 
   const description = action.description.split(/\[stats\]/);
@@ -104,9 +104,26 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
             </div>
           </div>
         )}
-        <p>
+        <p className="w-full">
           {description1}
-          <span className="text-accent font-semibold">{modifierString}</span>
+          <span>
+            {modifiers &&
+              modifiers?.length > 0 &&
+              modifiers.map((modifier, index) => (
+                <p
+                  className={`${index !== 0 && 'ml-1'} text-accent mr-1 inline-block font-semibold`}
+                >
+                  {modifier}
+                </p>
+              ))}
+            {action.keywordModifiers.length > 0 &&
+              action.keywordModifiers.map((keyword, index) => (
+                <Tag
+                  className={`${index !== action.keywordModifiers.length - 1 && 'mr-1'} ml-1 inline-block`}
+                  keyword={keyword}
+                />
+              ))}
+          </span>
           {description2}
         </p>
       </div>

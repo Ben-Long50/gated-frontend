@@ -88,6 +88,7 @@ const CodexRoutes = () => {
       </Route>
       <Route path="modifications">
         <Route index element={<Items key="modifications" />} />
+        <Route path=":itemId" element={<ItemPageWrapper />} />
         <Route path="create" element={<ItemForm key="create modification" />} />
         <Route
           path=":itemId/update"

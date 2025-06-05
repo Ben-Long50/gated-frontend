@@ -12,19 +12,23 @@ import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
 import { Condition } from 'src/types/condition';
 import InputFieldBasic from './InputFieldBasic';
+import { useLocation } from 'react-router-dom';
 
 const Conditions = ({
   title,
-  mode,
+  forcedMode,
   field,
   conditionList,
 }: {
   title?: string;
-  mode?: string;
+  forcedMode?: string;
   field?: FieldApi;
   conditionList?: Condition[];
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
+  const location = useLocation();
+  const parts = location.pathname.split('/').filter(Boolean);
+  const mode = forcedMode || parts[parts.length - 2];
 
   const {
     filteredConditions: conditions,

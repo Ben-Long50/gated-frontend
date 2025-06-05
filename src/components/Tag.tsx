@@ -37,6 +37,10 @@ const Tag = ({
     ? keyword?.keyword?.name.replace(/X/g, keyword?.value?.toString())
     : keyword?.keyword?.name;
 
+  const conditionName = condition?.stacks
+    ? condition?.condition?.name.replace(/X/g, condition?.stacks?.toString())
+    : condition?.condition?.name;
+
   const editItemConditionStacks = useItemConditionStacksMutation(
     apiUrl,
     condition?.id,
@@ -64,7 +68,7 @@ const Tag = ({
   if (keyword)
     return (
       <div
-        className={`bg-primary relative z-20 rounded border border-yellow-300 border-opacity-50 px-2 text-base shadow-md shadow-black`}
+        className={`${className} bg-primary relative z-20 cursor-pointer rounded border border-yellow-300 border-opacity-50 px-2 text-base shadow-md shadow-black`}
         onClick={(e) => {
           console.log(1);
           e.preventDefault();
@@ -86,14 +90,7 @@ const Tag = ({
       <div
         className={`bg-primary relative rounded border border-red-400 border-opacity-50 px-2 text-base shadow-md shadow-black`}
       >
-        <div className="flex items-center gap-1">
-          <p className="whitespace-nowrap text-base">
-            {condition.condition.name}
-          </p>
-          {condition.stacks && condition.stacks > 0 && (
-            <p className="min-w-5 text-right text-base">{condition.stacks}</p>
-          )}
-        </div>
+        <p className="whitespace-nowrap text-base">{conditionName}</p>
 
         <RadialMenu
           className={`${className} absolute right-0 top-0`}

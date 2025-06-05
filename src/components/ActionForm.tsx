@@ -18,6 +18,8 @@ import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 import ModifierField from './form_fields/ModifierField';
 import InputSelectField from './InputSelectField';
+import { extractKeywordListIds } from '../utils/extractIds';
+import KeywordLinkField from './form_fields/KeywordLinkField';
 
 const ActionForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -80,6 +82,9 @@ const ActionForm = () => {
         ({ unit: '', value: null } as { unit: string; value: number | null }),
       description: action?.description || '',
       modifiers: action?.modifiers || {},
+      keywords:
+        action?.keywordModifiers ||
+        ([] as { keyword: Keyword; value: number | null }[]),
     },
     onSubmit: async ({ value }) => {
       const filteredSubtypes = value.actionSubtypes.filter(
@@ -90,11 +95,16 @@ const ActionForm = () => {
         Object.entries(value.costs).filter(([_, value]) => value),
       ) as ActionCosts;
 
-      value.costs = filteredCosts;
+      const { keywordModifiers, ...rest } = value;
 
-      value.actionSubtypes = filteredSubtypes;
+      const data = {
+        ...rest,
+        actionSubtypes: filteredSubtypes,
+        costs: filteredCosts,
+        keywordModifierIds: extractKeywordListIds(value.keywords),
+      };
 
-      await createAction.mutate(value);
+      await createAction.mutate(data);
     },
   });
 
@@ -446,6 +456,8 @@ const ActionForm = () => {
             )}
           </actionForm.Field>
         </div>
+        <Divider />
+        <KeywordLinkField form={actionForm} />
         <Divider />
         <BtnRect
           ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}

@@ -191,6 +191,15 @@ const StatFields = ({
             </form.Field>
           </>
         )}
+        {categories.includes('modification') && (
+          <>
+            <form.Field name="stats.range">
+              {(field) => (
+                <InputField type="number" label="Range" field={field} />
+              )}
+            </form.Field>
+          </>
+        )}
         {categories.includes('reusable') && (
           <>
             <form.Field name="stats.power">

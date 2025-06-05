@@ -67,7 +67,11 @@ const ConditionLinkField = ({
     <Modal modalOpen={conditionModal} toggleModal={toggleConditionModal}>
       <conditionLinkForm.Field name="conditions">
         {(field) => (
-          <Conditions title="Manage Conditions" mode="form" field={field} />
+          <Conditions
+            title="Manage Conditions"
+            forcedMode="form"
+            field={field}
+          />
         )}
       </conditionLinkForm.Field>
       <BtnRect

@@ -13,6 +13,7 @@ interface Action {
   duration: { unit: string; value: number | null };
   cooldown: { unit: string; value: number | null };
   modifiers: Stats;
+  keywordModifiers: { keyword: Keyword; value: number | null }[];
 }
 
 interface ActionCosts {
