@@ -142,6 +142,9 @@ const ItemForm = () => {
         currentPass: item?.stats?.currentPass || '',
         turret: item?.stats?.turret || '',
         weapon: item?.stats?.weapon || '',
+        wyrmMoldSlots: item?.stats?.wyrmMoldSlots || '',
+        wyrmMoldPoints: item?.stats?.wyrmMoldPoints || '',
+        esotericCharges: item?.stats?.esotericCharges || '',
       } as Stats,
       weapons:
         item?.itemLinkReference?.items.filter((item: Item) =>

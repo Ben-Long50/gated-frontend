@@ -74,6 +74,9 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
     AP: 'rgb(252, 91, 50)',
     RP: 'rgb(219, 123, 33)',
     wyrmShells: 'rgb(33, 194, 219)',
+    WMS: 'rgb(52 211 153)',
+    WMP: 'rgb(33, 194, 219)',
+    EC: 'rgb(137, 39, 217)',
   };
 
   const changeTheme = () => {

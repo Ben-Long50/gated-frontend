@@ -21,6 +21,9 @@ import PassIcon from './icons/PassIcon';
 import VehicleWeaponIcon from './icons/VehicleWeaponIcon';
 import { Stats } from 'src/types/item';
 import DroneIcon from './icons/DroneIcon';
+import WyrmShellIcon from './icons/WyrmShellIcon';
+import InsanityIcon from './icons/InsanityIcon';
+import WyrmMoldSlotsIcon from './icons/WyrmMoldSlotsIcon';
 
 const StatBars = ({
   stats,
@@ -298,7 +301,41 @@ const StatBars = ({
           </StatBar>
         )
       )}
-      {stats.weight !== undefined && !stats.maxWeight && (
+      {stats.wyrmMoldSlots !== undefined &&
+        stats.currentWyrmMoldSlots !== undefined && (
+          <StatBar
+            title="WMS"
+            current={stats.currentWyrmMoldSlots}
+            total={stats.wyrmMoldSlots}
+            color={statColorMap['WMS']}
+            cardWidth={cardWidth}
+          >
+            <WyrmMoldSlotsIcon className="text-secondary size-8" />
+          </StatBar>
+        )}
+      {stats.wyrmMoldPoints !== undefined && (
+        <StatBar
+          title="WMP"
+          current={stats.wyrmMoldPoints}
+          color={statColorMap['WMP']}
+          cardWidth={cardWidth}
+        >
+          <WyrmShellIcon className="text-secondary size-8" />
+        </StatBar>
+      )}
+      {stats.esotericCharges !== undefined &&
+        stats.currentEsotericCharges !== undefined && (
+          <StatBar
+            title="EC"
+            current={stats.currentEsotericCharges}
+            total={stats.esotericCharges}
+            color={statColorMap['EC']}
+            cardWidth={cardWidth}
+          >
+            <InsanityIcon className="text-secondary size-8" />
+          </StatBar>
+        )}
+      {stats.weight !== undefined && (
         <StatBar
           title="WGT"
           current={stats.weight}

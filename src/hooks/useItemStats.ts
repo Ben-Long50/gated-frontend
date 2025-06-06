@@ -47,6 +47,18 @@ const useItemStats = (items: Item[] | null) => {
 
       statObject.currentTurret = turretCount;
     }
+    if (statObject.wyrmMoldSlots) {
+      const wyrmMolds = items[index].itemLinkReference.items.filter((item) => {
+        item.keywords.some((keyword) => keyword.keyword.name !== 'Wyrm Mold');
+      });
+
+      const wyrmMoldPoints = wyrmMolds.reduce(
+        (sum, wyrmMold) => sum + wyrmMold.stats.wyrmMoldPoints,
+        0,
+      );
+
+      statObject.currentWyrmMoldSlots = wyrmMoldPoints || 0;
+    }
   });
 
   const itemKeywords = useMemo(

@@ -212,6 +212,38 @@ const StatFields = ({
                 <InputField type="number" label="Range" field={field} />
               )}
             </form.Field>
+            <form.Field name="stats.speed">
+              {(field) => (
+                <InputField type="number" label="Speed" field={field} />
+              )}
+            </form.Field>
+            <form.Field name="stats.wyrmMoldSlots">
+              {(field) => (
+                <InputField
+                  type="number"
+                  label="Wyrm Mold Slots"
+                  field={field}
+                />
+              )}
+            </form.Field>
+            <form.Field name="stats.wyrmMoldPoints">
+              {(field) => (
+                <InputField
+                  type="number"
+                  label="Wyrm Mold Points"
+                  field={field}
+                />
+              )}
+            </form.Field>
+            <form.Field name="stats.esotericCharges">
+              {(field) => (
+                <InputField
+                  type="number"
+                  label="Esoteric Charges"
+                  field={field}
+                />
+              )}
+            </form.Field>
             <form.Field name="stats.weight">
               {(field) => (
                 <InputField type="number" label="Weight" field={field} />

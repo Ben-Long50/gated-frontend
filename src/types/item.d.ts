@@ -65,6 +65,11 @@ interface Stats {
   currentTurret?: number;
   weapon?: number;
   currentWeapon?: number;
+  wyrmMoldSlots?: number;
+  currentWyrmMoldSlots?: number;
+  wyrmMoldPoints?: number;
+  esotericCharges?: number;
+  currentEsotericCharges?: number;
 }
 
 enum ItemType {
