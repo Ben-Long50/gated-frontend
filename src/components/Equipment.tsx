@@ -76,11 +76,13 @@ const Equipment = () => {
     isPending: inventoryPending,
   } = useCharacter(character);
 
-  const { powerLevel } = useItemStats(
-    filteredCharacter?.equipment
-      ? Object.values(filteredCharacter?.equipment).flatMap((value) => value)
-      : null,
-  );
+  // const { powerLevel } = useItemStats(
+  //   filteredCharacter?.equipment
+  //     ? Object.values(filteredCharacter?.equipment).flatMap((value) => value)
+  //     : null,
+  // );
+
+  const powerLevel = 0;
 
   const isLoading = characterLoading || inventoryLoading;
   const isPending = characterPending || inventoryPending;
@@ -155,7 +157,7 @@ const Equipment = () => {
               maxCyber: filteredCharacter.stats.maxCyber,
               cyber: filteredCharacter.stats.cyber,
               weight: filteredCharacter.stats.weight,
-              maxWeight: filteredCharacter.stats.maxWeight,
+              maxEquip: filteredCharacter.stats.maxEquip,
             }}
             characterId={character.id}
           />

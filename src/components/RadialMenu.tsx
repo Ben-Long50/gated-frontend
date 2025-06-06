@@ -99,7 +99,7 @@ const RadialMenu = ({
   return (
     <div
       ref={menuRef}
-      className={`${className} absolute inset-0 z-20`}
+      className={`${className} absolute inset-0 z-20 cursor-pointer`}
       onClick={(e) => handleClick(e)}
     >
       <div
@@ -135,6 +135,7 @@ const RadialMenu = ({
                       e.preventDefault();
                       e.stopPropagation();
                       if (onClick) onClick(e);
+                      toggleMenuVisibility();
                     }
                   : undefined
               }

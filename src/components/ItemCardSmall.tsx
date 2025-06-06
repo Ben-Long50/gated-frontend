@@ -39,14 +39,15 @@ const ItemCardSmall = ({
     >
       <div
         ref={cardRef}
-        className={`${className} bg-secondary mb-auto w-full cursor-pointer p-4`}
-        onClick={async (e) => {
+        className={`${className} bg-secondary mb-auto w-full cursor-pointer`}
+        onClick={(e) => {
           e.preventDefault();
+          e.stopPropagation();
           setDetailsOpen(!detailsOpen);
         }}
       >
         <summary
-          className={`text-primary flex w-full items-center justify-between`}
+          className={`text-primary flex w-full items-center justify-between p-4`}
         >
           {heading}
           {children && (
@@ -61,11 +62,11 @@ const ItemCardSmall = ({
         </summary>
         {children && (
           <div
-            className={`${detailsOpen || (expanded && 'pr-1 pt-4')} timing overflow-hidden`}
+            className={`${detailsOpen && 'pb-4'} timing overflow-hidden px-4`}
           >
             <motion.div
               ref={detailRef}
-              className="flex flex-col gap-4 pt-4"
+              className="flex flex-col gap-4"
               initial={{ marginTop: -detailHeight - 4 }}
               animate={{
                 marginTop: detailsOpen || expanded ? 0 : -detailHeight - 4,

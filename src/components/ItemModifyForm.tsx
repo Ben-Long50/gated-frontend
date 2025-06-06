@@ -155,7 +155,7 @@ const ItemModifyForm = () => {
     },
   });
 
-  const { itemStats } = useItemStats([item]);
+  const { itemStats } = useItemStats(item);
 
   const {
     gradePointMap,
@@ -293,7 +293,7 @@ const ItemModifyForm = () => {
           </div>
           <div className="grid w-full grid-cols-[1fr_auto_auto_auto_auto_auto] items-center gap-x-2 gap-y-6 border-x-2 border-gray-400 border-opacity-50 px-6">
             {itemStats &&
-              Object.entries(itemStats[0]).map(([stat, value]) => {
+              Object.entries(itemStats).map(([stat, value]) => {
                 const exists =
                   itemModifyForm.getFieldValue(`modifiedStats[${stat}]`) !==
                   undefined;

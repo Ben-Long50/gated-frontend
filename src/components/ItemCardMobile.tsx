@@ -64,7 +64,7 @@ const ItemCardMobile = ({
 
   const cardRef = useRef(null);
 
-  const { itemStats } = useItemStats([item]);
+  const { itemStats } = useItemStats(item);
 
   const linkedWeapons =
     item.itemLinkReference?.items.filter((item: Item) =>
@@ -146,11 +146,7 @@ const ItemCardMobile = ({
               <div
                 className={`${cardWidth && cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
               >
-                <StatBars
-                  cardWidth={cardWidth}
-                  stats={itemStats[0]}
-                  mode={mode}
-                />
+                <StatBars cardWidth={cardWidth} stats={itemStats} mode={mode} />
                 {linkedWeapons.length > 0 && (
                   <>
                     <h4 className="col-span-3 justify-self-start">

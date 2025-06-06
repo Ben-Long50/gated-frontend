@@ -9,6 +9,7 @@ import Icon from '@mdi/react';
 import { mdiTriangleDown } from '@mdi/js';
 import ActionStatBars from './ActionStatBars';
 import { capitalCase } from 'change-case';
+import ThemeContainer from './ThemeContainer';
 
 const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
   const { user } = useContext(AuthContext);
@@ -16,12 +17,6 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
   const cardRef = useRef(null);
 
   const costLength = action?.costs ? Object.keys(action.costs).length : 0;
-
-  const modifiers = action.modifiers
-    ? Object.entries(action.modifiers).map(
-        ([stat, value]) => `${value} ${capitalCase(stat)}`,
-      )
-    : null;
 
   const description = action.description.split(/\[stats\]/);
 
@@ -32,7 +27,9 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
     <ItemCardSmall
       cardRef={cardRef}
       heading={
-        <div className="flex w-full items-center justify-between gap-4 pr-2">
+        <div
+          className={`${action.characterInventoryId ? (action.active ? 'opacity-100' : 'opacity-30') : ''} flex w-full items-center justify-between gap-4 pr-2`}
+        >
           <h3> {action?.name}</h3>
           {((mode === 'codex' && user?.role === 'ADMIN') ||
             (mode === 'codex' && user?.role === 'SUPERADMIN')) && (
@@ -44,22 +41,6 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
       }
     >
       <div className="flex flex-col gap-4">
-        {action?.actionSubtypes?.length > 0 && (
-          <div className="flex items-center gap-2">
-            {action?.actionSubtypes?.map((subtype) => {
-              return (
-                <Tag
-                  key={subtype}
-                  label={
-                    subtype
-                      ? subtype.charAt(0).toUpperCase() + subtype.slice(1)
-                      : undefined
-                  }
-                />
-              );
-            })}
-          </div>
-        )}
         {action?.roll && action?.roll.length > 0 && (
           <div className="flex flex-col gap-2">
             {action.roll.map((roll, index) => (
@@ -104,28 +85,38 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
             </div>
           </div>
         )}
-        <p className="w-full">
-          {description1}
-          <span>
-            {modifiers &&
-              modifiers?.length > 0 &&
-              modifiers.map((modifier, index) => (
-                <p
-                  className={`${index !== 0 && 'ml-1'} text-accent mr-1 inline-block font-semibold`}
-                >
-                  {modifier}
-                </p>
-              ))}
-            {action.keywordModifiers.length > 0 &&
-              action.keywordModifiers.map((keyword, index) => (
-                <Tag
-                  className={`${index !== action.keywordModifiers.length - 1 && 'mr-1'} ml-1 inline-block`}
-                  keyword={keyword}
-                />
-              ))}
-          </span>
-          {description2}
-        </p>
+        <p>{description1}</p>
+        {action.modifiers && (
+          <div className="flex flex-col gap-4">
+            {Object.entries(action.modifiers).map(([stat, value], index) => (
+              <ThemeContainer
+                key={index}
+                borderColor="transparent"
+                chamfer="small"
+              >
+                <div className="bg-tertiary flex w-full items-center justify-between p-3 px-4 clip-4">
+                  <h4>{capitalCase(stat)}</h4>
+                  <p
+                    className={`${index !== 0 && 'ml-1'} ${value > 0 || typeof value === 'string' ? 'text-accent' : 'text-error'} mr-1 inline-block font-semibold`}
+                  >
+                    {value}
+                  </p>
+                </div>
+              </ThemeContainer>
+            ))}
+          </div>
+        )}
+        {action.keywordModifiers.length > 0 &&
+          action.keywordModifiers.map((keyword, index) => (
+            <ItemCardSmall
+              key={index}
+              className={`${index !== action.keywordModifiers.length - 1 && 'mr-1'} bg-tertiary`}
+              heading={<h4>{keyword.keyword.name}</h4>}
+            >
+              <p>{keyword.keyword.description}</p>
+            </ItemCardSmall>
+          ))}
+        {description2 && <p>{description2}</p>}
       </div>
     </ItemCardSmall>
   );

@@ -92,11 +92,11 @@ const CharacterStatBars = ({
           <CyberIcon className="text-secondary size-8" />
         </StatBar>
       )}
-      {stats.maxWeight !== undefined && (
+      {stats.maxEquip !== undefined && (
         <StatBar
           title="Equip"
           current={stats.weight}
-          total={stats.maxWeight}
+          total={stats.maxEquip}
           color={statColorMap['Equip']}
           cardWidth={cardWidth}
         >

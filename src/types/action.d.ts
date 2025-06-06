@@ -8,6 +8,8 @@ interface Action {
   costs: ActionCosts;
   roll: ActionRoll[];
   equipped: boolean;
+  active: boolean;
+  available: boolean;
   actionType: ActionType;
   actionSubtypes: string[];
   duration: { unit: string; value: number | null };

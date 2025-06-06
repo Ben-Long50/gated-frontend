@@ -11,6 +11,8 @@ import ActionStatBars from './ActionStatBars';
 import { capitalCase } from 'change-case';
 import { Link } from 'react-router-dom';
 import Tag from './Tag';
+import ActionRadialMenu from './ActionRadialMenu';
+import ItemCardSmall from './ItemCardSmall';
 
 const LinkedActionCard = ({
   action,
@@ -36,20 +38,20 @@ const LinkedActionCard = ({
 
   return (
     <ThemeContainer borderColor={accentPrimary} chamfer="medium">
-      <div className="flex h-full grow flex-col items-start justify-start gap-4 p-4">
-        <div className="flex w-full items-center justify-start gap-4">
+      {action.characterInventoryId && (
+        <ActionRadialMenu action={action} itemId={action.itemLink.itemId} />
+      )}
+      <div
+        className={`${action.characterInventoryId ? (action.active ? 'opacity-100' : 'opacity-30') : ''} flex flex-col items-start justify-start gap-4 p-4`}
+      >
+        <div className={`flex w-full items-center justify-start gap-4`}>
           <ArrowHeader3 title={action?.name} />
-          <p className="text-tertiary">
-            ({action.actionType[0].toUpperCase() + action.actionType.slice(1)})
-          </p>
+          <p className="text-tertiary">({capitalCase(action.actionType)})</p>
           {action.duration?.unit && (
             <div className="ml-auto flex items-center gap-4">
               <StopwatchIcon className="text-secondary size-8" />
               <p>{action.duration?.value}</p>
-              <p>
-                {action.duration?.unit[0].toUpperCase() +
-                  action.duration?.unit.slice(1)}
-              </p>
+              <p>{capitalCase(action.duration.unit)}</p>
             </div>
           )}
           {action.baseActionId && (
@@ -93,28 +95,38 @@ const LinkedActionCard = ({
             </div>
           </div>
         )}
-        <p className="w-full">
-          {description1}
-          <span>
-            {modifiers &&
-              modifiers?.length > 0 &&
-              modifiers.map((modifier, index) => (
-                <p
-                  className={`${index !== 0 && 'ml-1'} text-accent mr-1 inline-block font-semibold`}
-                >
-                  {modifier}
-                </p>
-              ))}
-            {action.keywordModifiers.length > 0 &&
-              action.keywordModifiers.map((keyword, index) => (
-                <Tag
-                  className={`${index !== action.keywordModifiers.length - 1 && 'mr-1'} ml-1 inline-block`}
-                  keyword={keyword}
-                />
-              ))}
-          </span>
-          {description2}
-        </p>
+        <p>{description1}</p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {action.modifiers &&
+            Object.entries(action.modifiers).map(([stat, value], index) => (
+              <ThemeContainer
+                key={index}
+                className="mb-auto"
+                borderColor="transparent"
+                chamfer="small"
+              >
+                <div className="bg-tertiary flex w-full items-center justify-between p-3 px-4 clip-4">
+                  <h4>{capitalCase(stat)}</h4>
+                  <p
+                    className={`${index !== 0 && 'ml-1'} ${value > 0 || typeof value === 'string' ? 'text-accent' : 'text-error'} mr-1 inline-block font-semibold`}
+                  >
+                    {value}
+                  </p>
+                </div>
+              </ThemeContainer>
+            ))}
+          {action.keywordModifiers.length > 0 &&
+            action.keywordModifiers.map((keyword, index) => (
+              <ItemCardSmall
+                key={index}
+                className={`${index !== action.keywordModifiers.length - 1 && 'mr-1'} bg-tertiary p-3 px-4`}
+                heading={<h4>{keyword.keyword.name}</h4>}
+              >
+                <p>{keyword.keyword.description}</p>
+              </ItemCardSmall>
+            ))}
+        </div>
+        {description2 && <p>{description2}</p>}
       </div>
     </ThemeContainer>
   );

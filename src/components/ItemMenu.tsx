@@ -11,6 +11,7 @@ import VehicleIcon from './icons/VehicleIcon';
 import DroneIcon from './icons/DroneIcon';
 import { SortedInventory } from 'src/types/character';
 import { Item } from 'src/types/item';
+import PotionIcon from './icons/PotionIcon';
 
 const ItemMenu = ({
   equipment,
@@ -52,8 +53,11 @@ const ItemMenu = ({
     case 'augmentations':
       itemList = equipment?.augmentations || [];
       break;
-    case 'item':
-      itemList = equipment?.items || [];
+    case 'reusables':
+      itemList = equipment?.reusables || [];
+      break;
+    case 'consumables':
+      itemList = equipment?.consumables || [];
       break;
     case 'vehicle':
       itemList = equipment?.vehicles || [];
@@ -88,7 +92,7 @@ const ItemMenu = ({
 
   return (
     <div ref={listRef} className="w-full flex-col gap-2">
-      <div className="col-span-2 grid grid-flow-col gap-2 sm:gap-4">
+      <div className="grid grid-flow-col gap-2 sm:gap-4">
         {(category === 'equipment' || mode === 'equipment') && (
           <>
             <BtnAuth
@@ -110,10 +114,16 @@ const ItemMenu = ({
               {mobile ? <CyberIcon className="size-8" /> : 'Augmentations'}
             </BtnAuth>
             <BtnAuth
-              active={tab === 'item' ? true : false}
-              onClick={() => setTab('item')}
+              active={tab === 'reusables' ? true : false}
+              onClick={() => setTab('reusables')}
             >
-              {mobile ? <InventoryIcon className="size-8" /> : 'Items'}
+              {mobile ? <InventoryIcon className="size-8" /> : 'Reusables'}
+            </BtnAuth>
+            <BtnAuth
+              active={tab === 'consumables' ? true : false}
+              onClick={() => setTab('consumables')}
+            >
+              {mobile ? <PotionIcon className="size-8" /> : 'Consumables'}
             </BtnAuth>
           </>
         )}

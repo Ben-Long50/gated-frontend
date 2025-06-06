@@ -94,7 +94,7 @@ const Deployments = () => {
   const cardRef = useRef(null);
   const [cardHeight, setCardHeight] = useState<number | null>(null);
 
-  const { itemStats } = useItemStats([activeItem]);
+  const { itemStats } = useItemStats(activeItem);
 
   useLayoutEffect(() => {
     if (cardRef.current) {
@@ -144,7 +144,7 @@ const Deployments = () => {
               >
                 <StatBars
                   cardWidth={cardRef.current?.offsetWidth}
-                  stats={itemStats[0]}
+                  stats={itemStats}
                 />
               </div>
             </div>

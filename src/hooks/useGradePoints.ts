@@ -4,7 +4,7 @@ import useItemStats from './useItemStats';
 import gradePointMap from './gradePointMap';
 
 const useGradePoints = (form: FormApi, item: Item) => {
-  const { powerLevel } = useItemStats([item]);
+  const { powerLevel } = useItemStats(item);
 
   const newGrade = useStore(form.store, (state) => state.values.grade);
 

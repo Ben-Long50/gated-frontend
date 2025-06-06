@@ -208,7 +208,7 @@ const CharacterSheet = () => {
             maxCyber: filteredCharacter.stats.maxCyber,
             cyber: filteredCharacter.stats.cyber,
             weight: filteredCharacter.stats.weight,
-            maxWeight: filteredCharacter.stats.maxWeight,
+            maxEquip: filteredCharacter.stats.maxEquip,
           }}
           characterId={character.id}
         />

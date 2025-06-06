@@ -9,6 +9,8 @@ import { Perk } from 'src/types/perk';
 import ItemCardSmall from './ItemCardSmall';
 import ModifierTag from './ModifierTag';
 import ArrowHeader4 from './ArrowHeader4';
+import ThemeContainer from './ThemeContainer';
+import { capitalCase } from 'change-case';
 
 const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -125,14 +127,27 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
           ))
         )}
       </div>
-      {perk.modifiers?.length > 0 && (
-        <div className="flex w-full flex-wrap gap-4">
-          {perk.modifiers?.map((modifier: Modifier, index: number) => {
-            return <ModifierTag key={index} modifier={modifier} />;
-          })}
+      <p className="text-secondary">{perk.description}</p>
+      {perk.modifiers && (
+        <div className="flex flex-col gap-4">
+          {Object.entries(perk.modifiers).map(([stat, value], index) => (
+            <ThemeContainer
+              key={index}
+              borderColor="transparent"
+              chamfer="small"
+            >
+              <div className="bg-tertiary flex w-full items-center justify-between p-3 px-4 clip-4">
+                <h4>{capitalCase(stat)}</h4>
+                <p
+                  className={`${index !== 0 && 'ml-1'} ${value > 0 || typeof value === 'string' ? 'text-accent' : 'text-error'} mr-1 inline-block font-semibold`}
+                >
+                  {capitalCase(value)}
+                </p>
+              </div>
+            </ThemeContainer>
+          ))}
         </div>
       )}
-      <p className="text-secondary">{perk.description}</p>
     </ItemCardSmall>
   );
 };

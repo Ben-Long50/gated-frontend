@@ -44,7 +44,7 @@ interface CharacterStats {
   currentSanity?: number;
   maxCyber?: number;
   cyber?: number;
-  maxWeight?: number;
+  maxEquip?: number;
   weight?: number;
   injuries?: number;
   insanities?: number;

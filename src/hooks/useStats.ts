@@ -1,7 +1,7 @@
 import useAttributeTree from './useAttributeTree';
 import { AttributeTree } from 'src/types/attributeTree';
 import { Perk } from 'src/types/perk';
-import { SortedInventory } from 'src/types/character';
+import { CharacterStats, SortedInventory } from 'src/types/character';
 import { Item, Stats } from 'src/types/item';
 import { useMemo } from 'react';
 import { Action } from 'src/types/action';
@@ -14,27 +14,10 @@ const useStats = (
 ) => {
   const tree = useAttributeTree(attributTree);
 
-  const weaponWeight = useMemo(
-    () =>
-      equipment?.weapons?.reduce((sum: number, weapon: Item) => {
-        if (weapon.stats.weight) {
-          return sum + weapon.stats.weight;
-        }
-        return sum;
-      }, 0) || 0,
-    [equipment],
-  );
-
   const armorWeight = useMemo(
     () =>
       equipment?.armors?.reduce((sum: number, armor: Item) => {
-        if (
-          armor.stats.weight &&
-          armor.stats.currentPower !== null &&
-          armor.stats.currentPower === 0
-        ) {
-          return sum + armor.stats.weight;
-        } else if (armor.stats.weight && !armor.stats.power) {
+        if (armor.stats.weight && !armor.stats.currentPower) {
           return sum + armor.stats.weight;
         }
         return sum;
@@ -42,25 +25,27 @@ const useStats = (
     [equipment],
   );
 
-  const itemWeight = useMemo(
-    () =>
-      equipment?.items?.reduce((sum: number, item: Item) => {
+  const nonArmorWeight = useMemo(() => {
+    const itemArray = [
+      ...(equipment?.weapons || []),
+      ...(equipment?.reusables || []),
+      ...(equipment?.consumables || []),
+    ];
+
+    return (
+      itemArray.reduce((sum: number, item: Item) => {
         if (item.stats.weight) {
           return sum + item.stats.weight;
         }
         return sum;
-      }, 0) || 0,
-    [equipment],
-  );
+      }, 0) || 0
+    );
+  }, [equipment]);
 
   const armorValue = useMemo(
     () =>
       equipment?.armors?.reduce((sum: number, armor: Item) => {
-        if (
-          armor.stats.armor &&
-          armor.stats.currentBlock &&
-          armor.stats.currentBlock > 0
-        ) {
+        if (armor.stats.armor && armor.stats.currentBlock) {
           return sum + armor.stats.armor;
         }
         return sum;
@@ -71,11 +56,7 @@ const useStats = (
   const wardValue = useMemo(
     () =>
       equipment?.armors?.reduce((sum: number, armor: Item) => {
-        if (
-          armor.stats.ward &&
-          armor.stats.currentBlock &&
-          armor.stats.currentBlock > 0
-        ) {
+        if (armor.stats.ward && armor.stats.currentBlock) {
           return sum + armor.stats.ward;
         }
         return sum;
@@ -103,7 +84,7 @@ const useStats = (
     armor: 0 + armorValue,
     ward: 0 + wardValue,
     evasion: 1,
-    weight: 0 + weaponWeight + armorWeight + itemWeight,
+    weight: 0 + nonArmorWeight + armorWeight,
     cyber: 0 + equippedCyber,
     permanentInjuries: 5,
     permanentInsanities: 5,
@@ -125,45 +106,51 @@ const useStats = (
     shootingTn: tree.getPoints('violence', 'shooting'),
     subterfugeTn: tree.getPoints('violence', 'subterfuge'),
     thresholdTn: tree.getPoints('violence', 'threshold'),
-  };
+  } as CharacterStats;
 
-  const calculateBonus = (modifiers: Stats) => {
+  const calculateBonus = (modifiers: CharacterStats) => {
     Object.entries(modifiers).forEach(([stat, value]) => {
-      const currentValue = stats[stat];
+      const currentValue = stats[stat as keyof CharacterStats] || 0;
 
       if (typeof value === 'number') {
-        stats[stat] = currentValue + value;
+        stats[stat as keyof CharacterStats] = currentValue + value;
       } else if (
         ['chromebits', 'hardwired', 'motorized', 'networked'].some(
           (item) => item === value,
         )
       ) {
-        stats[stat] = currentValue + tree.getPoints('cybernetica', value);
+        stats[stat as keyof CharacterStats] =
+          currentValue + tree.getPoints('cybernetica', value);
       } else if (
         ['gestalt', 'godhead', 'mysticism', 'outerworld'].some(
           (item) => item === value,
         )
       ) {
-        stats[stat] = currentValue + tree.getPoints('esoterica', value);
+        stats[stat as keyof CharacterStats] =
+          currentValue + tree.getPoints('esoterica', value);
       } else if (
         ['barter', 'rhetoric', 'erudition', 'treatment'].some(
           (item) => item === value,
         )
       ) {
-        stats[stat] = currentValue + tree.getPoints('peace', value);
+        stats[stat as keyof CharacterStats] =
+          currentValue + tree.getPoints('peace', value);
       } else if (
         ['assault', 'shooting', 'subterfuge', 'threshold'].some(
           (item) => item === value,
         )
       ) {
-        stats[stat] = currentValue + tree.getPoints('violence', value);
+        stats[stat as keyof CharacterStats] =
+          currentValue + tree.getPoints('violence', value);
       }
     });
   };
 
-  actions?.forEach((action) => {
-    if (!action.modifiers) return;
+  const activeActions = actions.filter(
+    (action) => action.active && action.modifiers,
+  );
 
+  activeActions?.forEach((action) => {
     calculateBonus(action.modifiers);
   });
 

@@ -382,7 +382,7 @@ const ActionForm = () => {
           )}
         </actionForm.Field>
         <Divider />
-        <ModifierField form={actionForm} />
+
         <ArrowHeader2 title="Action Costs" />
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
           <actionForm.Field name="costs.actionPoints">
@@ -457,7 +457,8 @@ const ActionForm = () => {
           </actionForm.Field>
         </div>
         <Divider />
-        <KeywordLinkField form={actionForm} />
+        <ModifierField form={actionForm} />
+        <KeywordLinkField title="Trait Modifiers" form={actionForm} />
         <Divider />
         <BtnRect
           ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}

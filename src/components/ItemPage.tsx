@@ -59,7 +59,7 @@ const ItemPage = ({
     category,
   );
 
-  const { itemStats, itemKeywords, powerLevel } = useItemStats([item]);
+  const { itemStats, itemKeywords, powerLevel } = useItemStats(item);
 
   const linkedWeapons =
     item?.itemLinkReference?.items.filter((item) =>
@@ -104,13 +104,9 @@ const ItemPage = ({
           </div>
         )}
       </div>
-      <div className="relative flex h-full w-full flex-col gap-8 sm:flex-row sm:gap-12">
+      <div className="relative grid h-full w-full grid-rows-2 gap-8 sm:grid-cols-2 sm:grid-rows-1">
         {item.picture?.imageUrl && (
-          <ItemPicture
-            key={item.id}
-            className={`timing w-full sm:w-2/5`}
-            item={item}
-          />
+          <ItemPicture key={item.id} className={`timing w-full`} item={item} />
         )}
         <div className="flex w-full flex-col gap-4">
           {item.conditions.length > 0 && (
@@ -160,7 +156,7 @@ const ItemPage = ({
               <div className="flex flex-col gap-4">
                 {itemKeywords &&
                   itemKeywords.length > 0 &&
-                  itemKeywords[0]?.map(
+                  itemKeywords?.map(
                     (item: { keyword: Keyword; value: number | null }) => {
                       return (
                         <ItemCardSmall
@@ -199,7 +195,7 @@ const ItemPage = ({
           ref={cardRef}
           className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-8 px-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 border-x-2 border-gray-400 border-opacity-50`}
         >
-          <StatBars stats={itemStats[0]} cardWidth={cardWidth} />
+          <StatBars stats={itemStats} cardWidth={cardWidth} />
         </div>
       )}
       <p className="self-start">{item.description}</p>
