@@ -26,6 +26,7 @@ import useCharacter from 'src/hooks/useCharacter';
 import CharacterPicture from './CharacterPicture';
 import CharacterStatBars from './CharacterStatBars';
 import Tag from './Tag';
+import { capitalCase } from 'change-case';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -53,6 +54,11 @@ const CharacterSheet = () => {
 
   const isLoading = characterLoading || inventoryLoading;
   const isPending = characterPending || inventoryPending;
+
+  const height =
+    typeof filteredCharacter.height === 'number'
+      ? `${Math.floor(filteredCharacter.height / 12)}' ${filteredCharacter.height % 12}"`
+      : filteredCharacter.height;
 
   if (isLoading || isPending) {
     return <Loading />;
@@ -90,13 +96,13 @@ const CharacterSheet = () => {
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Height
             </h3>
-            <p className="text-xl">{filteredCharacter.height}in</p>
+            <p className="text-xl">{height}</p>
           </div>
           <div className="flex flex-col items-center gap-1">
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Weight
             </h3>
-            <p className="text-xl">{filteredCharacter.weight}lbs</p>
+            <p className="text-xl">{filteredCharacter.weight} lbs</p>
           </div>
           <div className="flex flex-col items-center gap-1">
             <h3 className="text-primary text-xl font-semibold tracking-widest">
@@ -108,7 +114,7 @@ const CharacterSheet = () => {
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Sex
             </h3>
-            <p className="text-xl">{filteredCharacter.sex}</p>
+            <p className="text-xl">{capitalCase(filteredCharacter.sex)}</p>
           </div>
         </div>
       </div>

@@ -56,9 +56,7 @@ const useCharacter = (character: Character) => {
       age:
         characterOwner || character?.preferences?.age ? character?.age : '???',
       sex:
-        characterOwner || character?.preferences?.sex
-          ? character?.preferences?.sex
-          : '???',
+        characterOwner || character?.preferences?.sex ? character?.sex : '???',
       backstory:
         characterOwner || character?.preferences.backstory
           ? character?.backstory
