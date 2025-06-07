@@ -14,6 +14,7 @@ import { Keyword } from 'src/types/keyword';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
+import { capitalCase } from 'change-case';
 
 const KeywordForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -84,9 +85,7 @@ const KeywordForm = () => {
           keywordForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">
-          {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Trait'}
-        </h1>
+        <h1 className="text-center">{capitalCase(mode) + ' Trait'}</h1>
         <Divider />
         <ArrowHeader2 title="Trait Information" />
         <keywordForm.Field
@@ -153,7 +152,7 @@ const KeywordForm = () => {
           </keywordForm.Field>
         </div>
         <BtnRect
-          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          ariaLabel={capitalCase(mode)}
           type="submit"
           className="group w-full"
         >
@@ -163,7 +162,7 @@ const KeywordForm = () => {
               size={1.15}
             />
           ) : (
-            mode.charAt(0).toUpperCase() + mode.slice(1)
+            capitalCase(mode)
           )}
         </BtnRect>
       </form>

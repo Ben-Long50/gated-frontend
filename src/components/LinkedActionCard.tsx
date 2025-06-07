@@ -10,7 +10,6 @@ import ThemeContainer from './ThemeContainer';
 import ActionStatBars from './ActionStatBars';
 import { capitalCase } from 'change-case';
 import { Link } from 'react-router-dom';
-import Tag from './Tag';
 import ActionRadialMenu from './ActionRadialMenu';
 import ItemCardSmall from './ItemCardSmall';
 
@@ -24,12 +23,6 @@ const LinkedActionCard = ({
   const { accentPrimary } = useContext(ThemeContext);
 
   const costLength = action?.costs ? Object.keys(action.costs).length : 0;
-
-  const modifiers = action.modifiers
-    ? Object.entries(action.modifiers).map(
-        ([stat, value]) => `${value} ${capitalCase(stat)}`,
-      )
-    : null;
 
   const description = action.description.split(/\[stats\]/);
 
@@ -71,16 +64,14 @@ const LinkedActionCard = ({
             {action.roll.map((roll, index) => (
               <div key={index} className="flex items-center gap-4">
                 <DieIcon className="text-secondary size-8" />
-                <p className="font-semibold">
-                  {roll.attribute[0].toUpperCase() + roll.attribute.slice(1)}
-                </p>
+                <p className="font-semibold">{capitalCase(roll.attribute)}</p>
                 <Icon
                   className="text-secondary"
                   path={mdiTriangleDown}
                   size={0.35}
                   rotate={-90}
                 />
-                <p>{roll.skill[0].toUpperCase() + roll.skill.slice(1)}</p>
+                <p>{capitalCase(roll.skill)}</p>
               </div>
             ))}
           </div>

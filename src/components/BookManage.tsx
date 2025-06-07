@@ -10,6 +10,7 @@ import useCreateBookSectionMutation from '../hooks/useCreateBookSectionMutation/
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import useDeleteBookSectionMutation from '../hooks/useDeleteBookSectionMutation/useDeleteBookSectionMutation';
+import { capitalCase } from 'change-case';
 
 const BookManage = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -78,9 +79,7 @@ const BookManage = () => {
                 key={section.id}
               >
                 <div className="flex w-full justify-between">
-                  <h3>
-                    {section.title[0].toUpperCase() + section.title.slice(1)}
-                  </h3>
+                  <h3>{capitalCase(section.title)}</h3>
                   <div className="flex items-center gap-8">
                     <button
                       className="text-accent hover:underline"
@@ -102,10 +101,7 @@ const BookManage = () => {
                             className={`mb-auto flex w-full items-center justify-between px-8`}
                             key={entry.id}
                           >
-                            <p>
-                              {entry.title[0].toUpperCase() +
-                                entry.title.slice(1)}
-                            </p>
+                            <p>{capitalCase(entry.title)}</p>
                             <p>{entry.page}</p>
                           </div>
                         );

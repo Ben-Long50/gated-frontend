@@ -57,7 +57,7 @@ const useCharacter = (character: Character) => {
         characterOwner || character?.preferences?.age ? character?.age : '???',
       sex:
         characterOwner || character?.preferences?.sex
-          ? character?.sex.charAt(0).toUpperCase() + character?.sex.slice(1)
+          ? character?.preferences?.sex
           : '???',
       backstory:
         characterOwner || character?.preferences.backstory

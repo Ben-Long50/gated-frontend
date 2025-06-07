@@ -14,6 +14,7 @@ import { Condition } from 'src/types/condition';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import InputSelectField from './InputSelectField';
+import { capitalCase } from 'change-case';
 
 const ConditionForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -83,9 +84,7 @@ const ConditionForm = () => {
           conditionForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">
-          {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Condition'}
-        </h1>
+        <h1 className="text-center">{capitalCase(mode) + ' Condition'}</h1>
         <Divider />
         <ArrowHeader2 title="Condition Information" />
         <conditionForm.Field
@@ -133,7 +132,7 @@ const ConditionForm = () => {
           )}
         </conditionForm.Field>
         <BtnRect
-          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          ariaLabel={capitalCase(mode)}
           type="submit"
           className="group w-full"
         >
@@ -143,7 +142,7 @@ const ConditionForm = () => {
               size={1.15}
             />
           ) : (
-            mode.charAt(0).toUpperCase() + mode.slice(1)
+            capitalCase(mode)
           )}
         </BtnRect>
       </form>

@@ -111,7 +111,7 @@ const usePerks = (attributeTree?: AttributeTree) => {
 
   const filteredPerkTree: Partial<PerkTree> = sortPerks(
     Object.entries(perkTree)
-      .filter(([attribute]) =>
+      .filter(([attribute, skills]) =>
         attribute.toLowerCase().includes(attributeQuery.toLowerCase()),
       )
       .flatMap(([_, skills]) =>
@@ -140,6 +140,8 @@ const usePerks = (attributeTree?: AttributeTree) => {
   }
 
   const filterPerks = (query: string) => {
+    console.log(query);
+
     setQuery(query);
   };
 

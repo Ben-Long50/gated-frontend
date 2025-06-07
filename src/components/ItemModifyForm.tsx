@@ -29,6 +29,7 @@ import Modal from './Modal';
 import useCharacterQuery from 'src/hooks/useCharacterQuery/useCharacterQuery';
 import useItemStats from 'src/hooks/useItemStats';
 import BtnIcon from './buttons/BtnIcon';
+import { capitalCase } from 'change-case';
 
 const ItemModifyForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -42,7 +43,7 @@ const ItemModifyForm = () => {
   const itemId = parts[parts.length - 2];
   const category = parts[parts.length - 3];
 
-  const categoryName = category.charAt(0).toUpperCase() + category.slice(1);
+  const categoryName = capitalCase(category);
 
   const toggleTutorialModal = () => setTutorialModal(!tutorialModal);
 
@@ -309,7 +310,7 @@ const ItemModifyForm = () => {
                         return (
                           <>
                             <h4 className="w-full">
-                              {stat.charAt(0).toUpperCase() + stat.slice(1)}{' '}
+                              {capitalCase(stat)}{' '}
                               <span className="text-tertiary ml-2 text-base font-normal">
                                 ({gradePointMap[stat](currentLevel + 1)} GP)
                               </span>
@@ -406,7 +407,7 @@ const ItemModifyForm = () => {
             }
           </itemModifyForm.Subscribe>
           <BtnRect
-            ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+            ariaLabel={capitalCase(mode)}
             type="submit"
             className="group w-full"
           >
@@ -416,7 +417,7 @@ const ItemModifyForm = () => {
                 size={1.15}
               />
             ) : (
-              mode.charAt(0).toUpperCase() + mode.slice(1)
+              capitalCase(mode)
             )}
           </BtnRect>
         </form>

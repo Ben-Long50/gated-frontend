@@ -34,6 +34,7 @@ import Modal from './Modal';
 import CharacterPictureRound from './CharacterPictureRound';
 import ArrowHeader2 from './ArrowHeader2';
 import useCharacters from 'src/hooks/useCharacters';
+import { capitalCase } from 'change-case';
 
 const RollSimulator = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -315,9 +316,7 @@ const RollSimulator = () => {
                           <InputFieldCheckbox
                             key={modifier}
                             field={field}
-                            label={
-                              modifier[0].toUpperCase() + modifier.slice(1)
-                            }
+                            label={capitalCase(modifier)}
                             value={modifier}
                             checked={field.state.value.includes(modifier)}
                             onChange={(value: string) => {

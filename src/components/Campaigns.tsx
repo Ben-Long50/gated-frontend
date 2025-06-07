@@ -7,6 +7,7 @@ import useCampaignsQuery from '../hooks/useCampaignsQuery/useCampaignsQuery';
 import BtnRect from './buttons/BtnRect';
 import { Link, useSearchParams } from 'react-router-dom';
 import { User } from 'src/types/user';
+import { capitalCase } from 'change-case';
 
 const Campaigns = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -44,9 +45,7 @@ const Campaigns = () => {
   if (!campaigns || campaignList.length === 0) {
     return (
       <div className="flex w-full max-w-5xl flex-col items-center gap-8">
-        <h1>
-          {campaignType[0].toUpperCase() + campaignType.slice(1) + ' Campaigns'}
-        </h1>
+        <h1>{capitalCase(campaignType) + ' Campaigns'}</h1>
         <h3 className="text-center">
           No campaigns found. If you want to be the game master of an upcoming
           campaign, head to the campaign creation page. Otherwise wait for
@@ -63,9 +62,7 @@ const Campaigns = () => {
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8">
-      <h1>
-        {campaignType[0].toUpperCase() + campaignType.slice(1) + ' Campaigns'}
-      </h1>
+      <h1>{capitalCase(campaignType) + ' Campaigns'}</h1>
       <div className="flex w-full flex-col gap-8">
         {campaignList.map((campaign: Campaign) => (
           <CampaignCard key={campaign.id} campaign={campaign} />

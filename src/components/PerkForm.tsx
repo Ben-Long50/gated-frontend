@@ -13,10 +13,10 @@ import Loading from './Loading';
 import useDeletePerkMutation from '../hooks/useDeletePerkMutation/useDeletePerkMutation';
 import usePerks from '../hooks/usePerks';
 import { Perk } from 'src/types/perk';
-import { Modifier } from 'src/types/modifier';
 import ModifierField from './form_fields/ModifierField';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
+import { capitalCase } from 'change-case';
 
 const PerkForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -105,9 +105,7 @@ const PerkForm = () => {
           perkForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">
-          {mode.charAt(0).toUpperCase() + mode.slice(1) + ' Perk'}
-        </h1>
+        <h1 className="text-center">{capitalCase(mode) + ' Perk'}</h1>
         <Divider />
         <ArrowHeader2 title="Perk Information" />
         <perkForm.Field
@@ -156,7 +154,7 @@ const PerkForm = () => {
           )}
         </div>
         <BtnRect
-          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          ariaLabel={capitalCase(mode)}
           type="submit"
           className="group w-full"
         >
@@ -166,7 +164,7 @@ const PerkForm = () => {
               size={1.15}
             />
           ) : (
-            mode.charAt(0).toUpperCase() + mode.slice(1)
+            capitalCase(mode)
           )}
         </BtnRect>
       </form>

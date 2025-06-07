@@ -9,6 +9,7 @@ import useClearCartMutation from '../hooks/useClearCartMutation/useClearCartMuta
 import useCompletePurchaseMutation from '../hooks/useCompletePurchaseMutation/useCompletePurchaseMutation';
 import ArrowHeader2 from './ArrowHeader2';
 import useCharacters from 'src/hooks/useCharacters';
+import { capitalCase } from 'change-case';
 
 const Cart = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -172,7 +173,7 @@ const Cart = () => {
             <ArrowHeader2
               className="w-full text-left"
               key={key}
-              title={key.charAt(0).toUpperCase() + key.slice(1)}
+              title={capitalCase(key)}
             />
             <div className="flex w-full flex-col gap-4">
               {value.map((reference) => (

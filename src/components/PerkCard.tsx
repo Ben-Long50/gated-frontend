@@ -4,10 +4,8 @@ import { useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
-import { Modifier } from 'src/types/modifier';
 import { Perk } from 'src/types/perk';
 import ItemCardSmall from './ItemCardSmall';
-import ModifierTag from './ModifierTag';
 import ArrowHeader4 from './ArrowHeader4';
 import ThemeContainer from './ThemeContainer';
 import { capitalCase } from 'change-case';
@@ -86,11 +84,7 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
               {points > 0 && (
                 <div className="flex items-center gap-2">
                   <div className="flex items-center justify-between">
-                    <ArrowHeader4
-                      title={
-                        attribute.charAt(0).toUpperCase() + attribute.slice(1)
-                      }
-                    />
+                    <ArrowHeader4 title={capitalCase(attribute)} />
                   </div>
                   <div className="flex gap-2">
                     {Array.from({ length: points }).map((_, index) => (
@@ -107,9 +101,7 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
               {skillPoints.map(([skill, points]) => {
                 return (
                   <div key={skill} className="flex items-center gap-2">
-                    <ArrowHeader4
-                      title={skill[0].toUpperCase() + skill.slice(1)}
-                    />
+                    <ArrowHeader4 title={capitalCase(skill)} />
                     <div className="flex gap-2">
                       {Array.from({ length: points }).map((_, index) => (
                         <Icon
@@ -141,7 +133,7 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
                 <p
                   className={`${index !== 0 && 'ml-1'} ${value > 0 || typeof value === 'string' ? 'text-accent' : 'text-error'} mr-1 inline-block font-semibold`}
                 >
-                  {capitalCase(value)}
+                  {typeof value === 'number' ? value : capitalCase(value)}
                 </p>
               </div>
             </ThemeContainer>

@@ -13,6 +13,7 @@ import { mdiSync } from '@mdi/js';
 import { Condition } from 'src/types/condition';
 import InputFieldBasic from './InputFieldBasic';
 import { useLocation } from 'react-router-dom';
+import { capitalCase } from 'change-case';
 
 const Conditions = ({
   title,
@@ -118,9 +119,7 @@ const Conditions = ({
                 <ArrowHeader2
                   title={
                     category.length > 0
-                      ? category[0].toUpperCase() +
-                        category.slice(1) +
-                        ' Conditions'
+                      ? capitalCase(category) + ' Conditions'
                       : 'All Conditions'
                   }
                 />

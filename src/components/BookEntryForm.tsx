@@ -12,6 +12,7 @@ import useDeleteBookEntryMutation from '../hooks/useDeleteBookEntryMutation/useD
 import LexicalEditor from './lexical/LexicalEditor';
 import SelectField from './SelectField';
 import useBookSectionsQuery from '../hooks/useBookSectionsQuery/useBookSectionsQuery';
+import { capitalCase } from 'change-case';
 
 const BookEntryForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -112,8 +113,7 @@ const BookEntryForm = () => {
                     {bookSections?.map((section) => {
                       return (
                         <option key={section.id} value={section.id}>
-                          {section.title[0].toUpperCase() +
-                            section.title.slice(1)}
+                          {capitalCase(section.title)}
                         </option>
                       );
                     })}
@@ -166,7 +166,7 @@ const BookEntryForm = () => {
         </bookEntryForm.Field>
         <div className="flex w-full flex-col gap-4">
           <div className="flex w-full items-center justify-between gap-8">
-            <BtnRect type="submit" className="group w-full">
+            <BtnRect ariaLabel="Submit" type="submit" className="group w-full">
               {createBookEntry.isPending ? (
                 <Loading
                   className="group-hover:text-yellow-300 dark:text-gray-900"

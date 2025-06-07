@@ -6,6 +6,7 @@ import { useContext, useState } from 'react';
 import { ThemeContext } from 'src/contexts/ThemeContext';
 import Divider from '../Divider';
 import ArrowHeader4 from '../ArrowHeader4';
+import { capitalCase } from 'change-case';
 
 const NpcPreferenceField = ({ form }: { form: FormApi }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -102,9 +103,7 @@ const NpcPreferenceField = ({ form }: { form: FormApi }) => {
                                 >
                                   <ArrowHeader4
                                     className={`${field.state.value ? 'text-accent' : 'text-secondary'}`}
-                                    title={
-                                      key.charAt(0).toUpperCase() + key.slice(1)
-                                    }
+                                    title={capitalCase(key)}
                                   />
                                   <input
                                     id={key}

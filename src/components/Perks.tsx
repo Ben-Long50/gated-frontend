@@ -8,32 +8,32 @@ import InputField from './InputField';
 import Loading from './Loading';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
-import { AttributeName, SkillName } from 'src/types/attributeTree';
+import {
+  AttributeName,
+  AttributeTree,
+  SkillName,
+} from 'src/types/attributeTree';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
-import { PerkTree } from 'src/types/perk';
-import { ItemObject } from 'src/types/global';
 import { useLocation } from 'react-router-dom';
 
 const Perks = ({
   title,
   field,
   forcedMode,
-  perkTree,
-  toggleFormLink,
+  attributeTree,
 }: {
   title?: string;
   field?: FieldApi;
   forcedMode?: string;
-  perkTree?: Partial<PerkTree>;
-  toggleFormLink?: (mode: ItemObject) => void;
+  attributeTree?: AttributeTree;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const location = useLocation();
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = forcedMode || parts[parts.length - 2];
 
-  const perks = usePerks();
+  const perks = usePerks(attributeTree);
 
   const searchForm = useForm({
     defaultValues: {
@@ -140,11 +140,7 @@ const Perks = ({
         className="w-full"
         borderColor={accentPrimary}
       >
-        <PerkList
-          perkTree={perkTree || perks.filteredPerkTree}
-          mode={mode}
-          field={field}
-        />
+        <PerkList perkTree={perks.filteredPerkTree} mode={mode} field={field} />
       </ThemeContainer>
     </div>
   );

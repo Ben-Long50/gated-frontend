@@ -27,6 +27,7 @@ import useCreateItemMutation from 'src/hooks/useCreateItemMutation/useCreateItem
 import useDeleteItemMutation from 'src/hooks/useDeleteItemMutation/useDeleteItemMutation';
 import VehicleLinkField from './form_fields/VehicleLinkField';
 import useCreateItemCopyMutation from 'src/hooks/useCreateItemCopyMutation/useCreateItemCopyMutation';
+import { capitalCase } from 'change-case';
 
 const ItemForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -98,7 +99,7 @@ const ItemForm = () => {
   };
 
   const categoryName = (() => {
-    const name = category.charAt(0).toUpperCase() + category.slice(1);
+    const name = capitalCase(category);
     return name.slice(0, -1);
   })();
 
@@ -244,9 +245,7 @@ const ItemForm = () => {
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          <h1>
-            {mode.charAt(0).toUpperCase() + mode.slice(1) + ' ' + categoryName}
-          </h1>
+          <h1>{capitalCase(mode) + ' ' + categoryName}</h1>
         </div>
         <Divider />
         <ArrowHeader2 title={categoryName + ' Information'} />
@@ -424,7 +423,7 @@ const ItemForm = () => {
           )}
         </itemForm.Subscribe>
         <BtnRect
-          ariaLabel={mode.charAt(0).toUpperCase() + mode.slice(1)}
+          ariaLabel={capitalCase(mode)}
           type="submit"
           className="group w-full"
         >
@@ -434,7 +433,7 @@ const ItemForm = () => {
               size={1.15}
             />
           ) : (
-            mode.charAt(0).toUpperCase() + mode.slice(1)
+            capitalCase(mode)
           )}
         </BtnRect>
         {itemId && item?.baseItemId === null && (

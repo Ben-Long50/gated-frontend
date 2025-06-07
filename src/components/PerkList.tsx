@@ -2,6 +2,7 @@ import PerkCard from './PerkCard';
 import { Perk, PerkTree } from 'src/types/perk';
 import ArrowHeader2 from './ArrowHeader2';
 import { FieldApi } from '@tanstack/react-form';
+import { capitalCase } from 'change-case';
 
 const PerkList = ({
   field,
@@ -23,18 +24,14 @@ const PerkList = ({
             0,
           ) > 0 && (
             <div key={perkType} className="flex flex-col gap-8 p-4 sm:p-8">
-              <ArrowHeader2
-                title={perkType.charAt(0).toUpperCase() + perkType.slice(1)}
-              />
+              <ArrowHeader2 title={capitalCase(perkType)} />
               {Object.entries(skills).map(([skill, perkList]) => {
                 {
                   return (
                     perkList.length > 0 && (
                       <div className="flex flex-col gap-4" key={skill}>
                         <div className="flex items-center justify-between gap-2">
-                          <h3 className="mr-auto">
-                            {skill.charAt(0).toUpperCase() + skill.slice(1)}
-                          </h3>
+                          <h3 className="mr-auto">{capitalCase(skill)}</h3>
                           <h4>({perkList.length})</h4>
                         </div>
                         <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">

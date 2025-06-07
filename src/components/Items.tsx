@@ -97,7 +97,7 @@ const Items = ({
               {(field) => (
                 <InputField
                   className="w-full"
-                  label={`Search ${category.charAt(0).toUpperCase() + category.slice(1)}`}
+                  label={`Search ${capitalCase(category)}`}
                   field={field}
                   onChange={() => {
                     items.filterByQuery(field.state.value);

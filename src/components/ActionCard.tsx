@@ -47,10 +47,7 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
               <div key={index} className="flex items-center gap-4">
                 <DieIcon className="text-secondary size-8" />
                 <p className="font-semibold">
-                  {roll.attribute
-                    ? roll.attribute.charAt(0).toUpperCase() +
-                      roll.attribute.slice(1)
-                    : undefined}
+                  {roll.attribute ? capitalCase(roll.attribute) : undefined}
                 </p>
                 {roll.skill && (
                   <>
@@ -60,12 +57,7 @@ const ActionCard = ({ action, mode }: { action: Action; mode?: string }) => {
                       size={0.35}
                       rotate={-90}
                     />
-                    <p>
-                      {roll.skill
-                        ? roll.skill.charAt(0).toUpperCase() +
-                          roll.skill.slice(1)
-                        : undefined}
-                    </p>
+                    <p>{roll.skill ? capitalCase(roll.skill) : undefined}</p>
                   </>
                 )}
               </div>

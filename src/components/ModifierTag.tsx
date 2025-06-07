@@ -2,6 +2,7 @@ import { Modifier } from 'src/types/modifier';
 import DieIcon from './icons/DieIcon';
 import Icon from '@mdi/react';
 import { mdiTriangleDown } from '@mdi/js';
+import { capitalCase } from 'change-case';
 
 const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
   let symbol = '';
@@ -48,7 +49,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
       {modifier.valueType === 'attribute' && modifier.attribute && (
         <>
           <p className="text-center font-semibold">
-            {modifier.attribute[0].toUpperCase() + modifier.attribute?.slice(1)}
+            {capitalCase(modifier.attribute)}
           </p>
           <Icon
             className="text-secondary shrink-0"
@@ -61,7 +62,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
       {modifier.valueType === 'skill' && modifier.skill && (
         <>
           <p className="text-center font-semibold">
-            {modifier.skill[0].toUpperCase() + modifier.skill?.slice(1)}
+            {capitalCase(modifier.skill)}
           </p>
           <Icon
             className="text-secondary shrink-0"
@@ -87,9 +88,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
       {modifier.valueType === 'attribute' && modifier.attribute && (
         <>
           <DieIcon className="text-secondary size-8 shrink-0" />
-          <p className="font-semibold">
-            {modifier.attribute[0].toUpperCase() + modifier.attribute?.slice(1)}
-          </p>
+          <p className="font-semibold">{capitalCase(modifier.attribute)}</p>
           <Icon
             className="text-secondary shrink-0"
             path={mdiTriangleDown}
@@ -101,9 +100,7 @@ const ModifierTag = ({ modifier }: { modifier: Modifier }) => {
       {modifier.valueType === 'skill' && modifier.skill && (
         <>
           <DieIcon className="text-secondary size-8 shrink-0" />
-          <p className="font-semibold">
-            {modifier.skill[0].toUpperCase() + modifier.skill?.slice(1)}
-          </p>
+          <p className="font-semibold">{capitalCase(modifier.skill)}</p>
           <Icon
             className="text-secondary shrink-0"
             path={mdiTriangleDown}

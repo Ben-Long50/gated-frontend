@@ -2,20 +2,19 @@ import { FormApi, FormState } from '@tanstack/react-form';
 import FormLinkModal from './FormLinkModal';
 import { useState } from 'react';
 import BtnRect from '../buttons/BtnRect';
-import ItemCardSmall from '../ItemCardSmall';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
-import ArrowHeader2 from '../ArrowHeader2';
 import Perks from '../Perks';
-import { Perk, PerkTree } from 'src/types/perk';
+import { Perk } from 'src/types/perk';
 import PerkCard from '../PerkCard';
+import { AttributeTree } from 'src/types/attributeTree';
 
 const PerkLinkField = ({
   form,
-  perkTree,
+  attributeTree,
 }: {
   form: FormApi;
-  perkTree: Partial<PerkTree>;
+  attributeTree: AttributeTree;
 }) => {
   const [perksOpen, setPerksOpen] = useState(false);
 
@@ -40,8 +39,7 @@ const PerkLinkField = ({
                         title="Link Perks"
                         forcedMode="form"
                         field={field}
-                        toggleFormLink={toggleFormLink}
-                        perkTree={perkTree}
+                        attributeTree={attributeTree}
                       />
                     )}
                   </FormLinkModal>

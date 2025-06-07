@@ -13,6 +13,7 @@ import { mdiSync } from '@mdi/js';
 import { Keyword } from 'src/types/keyword';
 import InputFieldBasic from './InputFieldBasic';
 import { useLocation } from 'react-router-dom';
+import { capitalCase } from 'change-case';
 
 const Keywords = ({
   title,
@@ -125,7 +126,7 @@ const Keywords = ({
               <ArrowHeader2
                 title={
                   category.length > 0
-                    ? category[0].toUpperCase() + category.slice(1) + ' Traits'
+                    ? capitalCase(category) + ' Traits'
                     : 'All Traits'
                 }
               />

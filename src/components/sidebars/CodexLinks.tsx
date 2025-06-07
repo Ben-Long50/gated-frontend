@@ -20,6 +20,7 @@ import LinkSidebar from './LinkSidebar';
 import ModificationIcon from '../icons/ModificationIcon';
 import DroneIcon from '../icons/DroneIcon';
 import PotionIcon from '../icons/PotionIcon';
+import { capitalCase } from 'change-case';
 
 const CodexLinks = ({
   sidebarVisibility,
@@ -58,13 +59,13 @@ const CodexLinks = ({
           return (
             <LinkSublistSidebar
               key={section.id}
-              title={section.title[0].toUpperCase() + section.title.slice(1)}
+              title={capitalCase(section.title)}
             >
               {section.entries?.map((entry) => {
                 return (
                   <SubLinkSidebar
                     key={entry.id}
-                    title={entry.title[0].toUpperCase() + entry.title.slice(1)}
+                    title={capitalCase(entry.title)}
                     path={`codex/book/${entry.id}`}
                     setSidebarVisibility={setSidebarVisibility}
                   />

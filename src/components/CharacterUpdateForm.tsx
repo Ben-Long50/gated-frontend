@@ -477,7 +477,7 @@ const CharacterUpdateForm = () => {
         <div className="flex flex-col gap-4">
           <PerkLinkField
             form={characterUpdateForm}
-            perkTree={perks.filteredPerkTree}
+            attributeTree={attributeTree.tree}
           />
         </div>
         <Divider />
