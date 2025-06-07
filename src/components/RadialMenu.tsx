@@ -135,7 +135,6 @@ const RadialMenu = ({
                       e.preventDefault();
                       e.stopPropagation();
                       if (onClick) onClick(e);
-                      toggleMenuVisibility();
                     }
                   : undefined
               }
