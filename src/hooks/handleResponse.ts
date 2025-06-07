@@ -1,6 +1,8 @@
 const handleResponse = async (response) => {
   if (response.status === 401) {
     throw new Error(`${response.statusText}. Sign in to complete this action`);
+  } else if (response.status === 429) {
+    throw new Error(`${response.statusText}. Too many requests`);
   } else if (response.status === 400) {
     const data = await response.json();
     const errorMessages = data.errors?.map(

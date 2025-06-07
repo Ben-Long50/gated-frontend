@@ -9,6 +9,7 @@ import Divider from './Divider';
 import { Affiliation } from 'src/types/faction';
 import BtnAuth from './buttons/BtnAuth';
 import AffiliationCard from './AffiliationCard';
+import CoverPicture from './CoverPicture';
 
 const Faction = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -40,16 +41,7 @@ const Faction = () => {
 
   return (
     <>
-      {faction.picture?.imageUrl && (
-        <div className="absolute top-0 -z-10 mx-auto flex aspect-[10/3] min-h-[500px] max-w-9xl justify-center overflow-hidden">
-          <img
-            className="w-full object-cover object-center"
-            src={`${faction.picture?.imageUrl}`}
-            alt="Faction cover image"
-          />
-          <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#141417] to-transparent" />
-        </div>
-      )}
+      {faction.picture?.imageUrl && <CoverPicture picture={faction.picture} />}
       <div className="flex w-full max-w-5xl flex-col gap-8">
         <div className="timing flex w-full items-center justify-between">
           <h1 className="text-shadow w-full text-center font-zen text-5xl text-shadow-blur-0 text-shadow-x-2 text-shadow-y-2 text-shadow-black">

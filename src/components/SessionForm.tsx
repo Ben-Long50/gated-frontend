@@ -9,7 +9,6 @@ import { useParams } from 'react-router-dom';
 import LexicalEditor from './lexical/LexicalEditor';
 import { mdiClose } from '@mdi/js';
 import Icon from '@mdi/react';
-import { ThemeContext } from '../contexts/ThemeContext';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import { Character } from 'src/types/character';
@@ -18,10 +17,10 @@ import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import InputSelectField from './InputSelectField';
 import useSessionQuery from '../hooks/useSessionQuery/useSessionQuery';
 import PictureField from './form_fields/PictureField';
+import useCampaignCharactersQuery from 'src/hooks/useCampaignCharactersQuery/useCampaignCharactersQuery';
 
 const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
-  const { accentPrimary } = useContext(ThemeContext);
   const { campaignId, sessionId } = useParams();
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
@@ -32,6 +31,15 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
     isPending: campaignPending,
   } = useCampaignQuery(apiUrl, Number(campaignId));
 
+  const {
+    playerCharacters,
+    nonPlayerCharacters,
+    isLoading: charactersLoading,
+  } = useCampaignCharactersQuery(
+    apiUrl,
+    campaign?.characters.map((character) => character.id) || [],
+  );
+
   const createSession = useCreateSessionMutation(
     apiUrl,
     Number(campaignId),
@@ -39,24 +47,15 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
     Number(sessionId),
   );
 
+  console.log(campaign);
   const {
     data: session,
     isLoading: sessionLoading,
     isPaused: sessionPending,
   } = useSessionQuery(apiUrl, Number(campaignId), Number(sessionId));
 
-  const isLoading = campaignLoading || sessionLoading;
+  const isLoading = campaignLoading || sessionLoading || charactersLoading;
   const isPending = campaignPending || sessionPending;
-
-  const playerCharacters =
-    campaign?.characters.filter(
-      (character: Character) => character.playerCharacter === true,
-    ) || [];
-
-  const nonPlayerCharacters =
-    campaign?.characters.filter(
-      (character: Character) => character.playerCharacter === false,
-    ) || [];
 
   const sessionPlayerCharacters =
     session?.characters.filter((character) => character.playerCharacter) || [];

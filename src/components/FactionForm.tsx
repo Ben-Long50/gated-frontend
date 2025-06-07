@@ -16,6 +16,7 @@ import useFactionQuery from '../hooks/useFactionQuery/useFactionQuery';
 import ArrowHeader2 from './ArrowHeader2';
 import useUpdateFactionMutation from '../hooks/useUpdateFactionMutation/useUpdateFactionMutation';
 import useDeleteFactionMutation from '../hooks/useDeleteFactionMutation/useDeleteFactionMutation';
+import PictureField from './form_fields/PictureField';
 
 const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -57,8 +58,10 @@ const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const factionForm = useForm({
     defaultValues: {
+      id: factionId || 0,
       name: faction?.name || '',
       picture: faction?.picture || '',
+      position: faction?.picture?.position || { x: 50, y: 50 },
       background:
         faction?.background || ({} as { html: string; nodes: string }),
     },
@@ -73,7 +76,6 @@ const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      formData.append('factionId', JSON.stringify(factionId || 0));
       if (mode === 'create' || mode === 'update') {
         await updateFaction.mutate(formData);
       }
@@ -139,46 +141,14 @@ const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
             <InputField className="grow" label="Faction name" field={field} />
           )}
         </factionForm.Field>
-        <ThemeContainer
-          className="mx-auto w-full"
-          chamfer="medium"
-          borderColor={accentPrimary}
-        >
-          {!imagePreview ? (
-            <label className="flex aspect-[5/2] w-full cursor-pointer flex-col items-center justify-center">
-              <div className="flex flex-col items-center justify-center gap-2 pb-6 pt-5">
-                <Icon className="text-tertiary" path={mdiImagePlus} size={3} />
-                <p className="text-tertiary font-semibold">
-                  Upload faction cover picture
-                </p>
-                <p className="text-tertiary">PNG, JPG, JPEG</p>
-              </div>
-              <input
-                id="file"
-                type="file"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-            </label>
-          ) : (
-            <div className="bg-secondary relative flex aspect-[5/2] w-full items-center justify-center overflow-hidden bg-black clip-6">
-              <img
-                className="fade-in-bottom"
-                src={imagePreview}
-                alt="Preview"
-              />
-              <button
-                className="text-secondary absolute right-2 top-2"
-                onClick={() => {
-                  factionForm.setFieldValue('picture', '');
-                  setImagePreview('');
-                }}
-              >
-                <Icon path={mdiCloseBox} size={1.5} />
-              </button>
-            </div>
-          )}
-        </ThemeContainer>
+        <PictureField
+          form={factionForm}
+          sizeInfo={{
+            aspectRatio: '10/3',
+            minHeight: '',
+            maxHeight: '',
+          }}
+        />
         <Divider />
         <ArrowHeader2 title="Faction Background" />
         <factionForm.Field

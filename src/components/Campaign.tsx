@@ -22,6 +22,8 @@ import BtnRect from './buttons/BtnRect';
 import useJoinCampaignMutation from '../hooks/useJoinCampaignMutation/useJoinCampaignMutation';
 import ArrowHeader3 from './ArrowHeader3';
 import useCampaignCharactersQuery from 'src/hooks/useCampaignCharactersQuery/useCampaignCharactersQuery';
+import CoverPicture from './CoverPicture';
+import { capitalCase } from 'change-case';
 
 const Campaign = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -29,11 +31,10 @@ const Campaign = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const [tab, setTab] = useState('sessions');
 
-  const {
-    data: campaign,
-    isLoading: campaignLoading,
-    isError,
-  } = useCampaignQuery(apiUrl, Number(campaignId));
+  const { data: campaign, isLoading: campaignLoading } = useCampaignQuery(
+    apiUrl,
+    Number(campaignId),
+  );
 
   const {
     playerCharacters,
@@ -52,55 +53,42 @@ const Campaign = () => {
 
   if (isLoading) return <Loading />;
 
-  if (isError) {
-    throw new Error('Failed to load campaign info');
+  if (!campaign) {
+    throw new Error('Failed to find campaign');
   }
 
   return (
     <>
-      <div className="absolute top-0 -z-10 mx-auto aspect-[10/3] h-[500px] w-dvw max-w-9xl overflow-hidden">
-        <img
-          className="h-full w-full object-cover"
-          src={`${campaign.picture?.imageUrl}`}
-          alt="Campaign cover image"
-          style={{
-            objectPosition: campaign.picture?.position
-              ? `${campaign.picture?.position.x}% ${campaign.picture?.position.y}%`
-              : '50% 50%',
-            maskImage: 'linear-gradient(black 0%, transparent 100%',
-          }}
-        />
-        <div className="absolute right-6 top-6 flex flex-col items-center gap-4">
-          <div className="relative">
-            <img
-              className="size-10 shrink-0 rounded-full"
-              src={`${campaign.owner.profilePicture}`}
-              alt="Owner"
-            />
-            <Icon
-              path={mdiCrown}
-              className="text-accent absolute -right-2 -top-2 size-5"
-            />
-          </div>
+      {campaign.picture?.imageUrl && (
+        <CoverPicture picture={campaign.picture}>
+          <div className="absolute right-6 top-6 flex flex-col items-center gap-4">
+            <div className="relative">
+              <AccountPicture key={campaign.owner.id} user={campaign.owner} />
+              <Icon
+                path={mdiCrown}
+                className="text-accent absolute -right-2 -top-2 size-5"
+              />
+            </div>
 
-          <Icon path={mdiCircle} className="text-tertiary size-2" />
-          {campaign.players.map((player: User) => (
-            <AccountPicture key={player.id} user={player} />
-          ))}
-          {campaign.pendingPlayers.map((player: User) => (
-            <AccountPicture
-              key={player.id}
-              className="opacity-50"
-              user={player}
-            />
-          ))}
-        </div>
-      </div>
+            <Icon path={mdiCircle} className="text-secondary size-2" />
+            {campaign.players.map((player: User) => (
+              <AccountPicture key={player.id} user={player} />
+            ))}
+            {campaign.pendingPlayers.map((player: User) => (
+              <AccountPicture
+                key={player.id}
+                className="opacity-50"
+                user={player}
+              />
+            ))}
+          </div>
+        </CoverPicture>
+      )}
       <div className="flex w-full max-w-7xl flex-col items-center gap-8">
         <h1 className="text-shadow text-center font-zen text-5xl text-shadow-x-2 text-shadow-y-2 text-shadow-black">
-          {campaign.name}
+          {capitalCase(campaign.name)}
         </h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-center gap-4">
           <LocationIcon className="text-accent size-8" />
           <h2 className="text-accent text-shadow text-shadow-x-2 text-shadow-y-2 text-shadow-zinc-950">
             {campaign.location}

@@ -10,6 +10,9 @@ import Divider from './Divider';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import BtnRect from './buttons/BtnRect';
 import { LayoutContext } from '../contexts/LayoutContext';
+import CoverPicture from './CoverPicture';
+import { capitalCase } from 'change-case';
+import CharacterPictureRound from './CharacterPictureRound';
 
 const Session = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -35,9 +38,6 @@ const Session = () => {
   const sessionPlayerCharacters =
     session?.characters.filter((character) => character.playerCharacter) || [];
 
-  const sessionNonPlayerCharacters =
-    session?.characters.filter((character) => !character.playerCharacter) || [];
-
   if (isLoading || isPending) {
     return <Loading />;
   }
@@ -48,21 +48,7 @@ const Session = () => {
 
   return (
     <>
-      {session.picture?.imageUrl && (
-        <div className="absolute top-0 -z-10 mx-auto flex aspect-[10/3] min-h-[500px] max-w-9xl justify-center overflow-hidden">
-          <img
-            className="w-full object-cover object-center"
-            src={`${session.picture?.imageUrl}`}
-            alt="Session cover image"
-            style={{
-              objectPosition: session.picture?.position
-                ? `${session.picture?.position.x}% ${session.picture?.position.y}%`
-                : '50% 50%',
-              maskImage: 'linear-gradient(black 0%, transparent 100%',
-            }}
-          />
-        </div>
-      )}
+      {session.picture?.imageUrl && <CoverPicture picture={session.picture} />}
       <div className="flex w-full max-w-5xl flex-col gap-4">
         {mobile ? (
           <div className="flex w-full flex-col items-start justify-between gap-4">
@@ -80,16 +66,19 @@ const Session = () => {
             </h1>
           </div>
         ) : (
-          <div className="flex w-full items-start justify-between gap-8">
-            <p className="whitespace-nowrap">
-              {'Session ' + session.sessionNumber}
-            </p>
+          <div>
+            <div className="flex w-full items-start justify-between gap-8">
+              <p className="whitespace-nowrap">
+                {'Session ' + session.sessionNumber}
+              </p>
+
+              <p className="whitespace-nowrap">
+                {format(session.createdAt, 'PP')}
+              </p>
+            </div>
             <h1 className="text-shadow text-center font-zen text-5xl text-shadow-x-2 text-shadow-y-2 text-shadow-black">
-              {session.name}
+              {capitalCase(session.name)}
             </h1>
-            <p className="whitespace-nowrap">
-              {format(session.createdAt, 'PP')}
-            </p>
           </div>
         )}
         <Divider />
@@ -102,11 +91,7 @@ const Session = () => {
               >
                 <Link to={`characters/${character.id}`}>
                   <div className="flex items-center gap-4">
-                    <img
-                      className="size-14 rounded-full shadow-md shadow-black"
-                      src={character.picture.imageUrl}
-                      alt={`${character.firstName} ${character.lastName}'s picture`}
-                    />
+                    <CharacterPictureRound character={character} />
                     <ArrowHeader3
                       title={character.firstName + ' ' + character.lastName}
                     />

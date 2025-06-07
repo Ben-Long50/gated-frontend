@@ -15,8 +15,11 @@ const useCreateSessionMutation = (
     onSuccess: () => {
       if (sessionId) {
         setFormMessage('Session successfully updated');
-        return queryClient.invalidateQueries({
+        queryClient.invalidateQueries({
           queryKey: ['session', sessionId],
+        });
+        return queryClient.invalidateQueries({
+          queryKey: ['campaign', campaignId],
         });
       } else {
         setFormMessage('Session successfully created');

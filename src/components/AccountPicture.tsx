@@ -12,13 +12,13 @@ const AccountPicture = ({
     user?.profilePicture ? (
       <img
         key={user.id}
-        className={`${className} size-10 shrink-0 rounded-full shadow shadow-black`}
+        className={`${className} size-10 shrink-0 rounded-full shadow-md shadow-black`}
         src={user.profilePicture}
         alt="Profile"
       />
     ) : (
       <div
-        className={`${className} flex size-10 shrink-0 items-center justify-center rounded-full bg-yellow-300`}
+        className={`${className} flex size-10 shrink-0 items-center justify-center rounded-full bg-yellow-300 shadow-md shadow-black`}
       >
         <p className="pt-1 text-2xl font-semibold !text-zinc-900">
           {user.username[0].toUpperCase()}
@@ -26,7 +26,7 @@ const AccountPicture = ({
       </div>
     )
   ) : (
-    <CharacterIcon className="text-secondary size-10" />
+    <CharacterIcon className="text-secondary size-10 shadow-md shadow-black" />
   );
 };
 
