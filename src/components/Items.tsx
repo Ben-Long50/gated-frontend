@@ -14,6 +14,7 @@ import { useLocation, useSearchParams } from 'react-router-dom';
 import ItemCard from './ItemCard';
 import ItemCardMobile from './ItemCardMobile';
 import InputSelectField from './InputSelectField';
+import { capitalCase } from 'change-case';
 
 const Items = ({
   title,

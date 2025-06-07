@@ -266,7 +266,6 @@ const StatFields = ({
           </>
         )}
       </div>
-      <Divider />
     </>
   );
 };

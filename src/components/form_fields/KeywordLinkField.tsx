@@ -33,7 +33,7 @@ const KeywordLinkField = ({
   const toggleKeywords = () => setKeywordsOpen((prev) => !prev);
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <>
       <form.Subscribe selector={(state: FormState) => state.values.keywords}>
         {(keywords: { keyword: Keyword; value?: number }[]) => (
           <>
@@ -49,13 +49,12 @@ const KeywordLinkField = ({
                     modalOpen={keywordsOpen}
                     toggleModal={toggleKeywords}
                   >
-                    {({ toggleFormLink }) => (
+                    {() => (
                       <>
                         <Keywords
                           title="Link Traits"
                           forcedMode="form"
                           field={field}
-                          toggleFormLink={toggleFormLink}
                           keywordType={keywordType}
                         />
                         <BtnRect
@@ -73,68 +72,63 @@ const KeywordLinkField = ({
                       </>
                     )}
                   </FormLinkModal>
-                  <div
-                    className={`${className ? className : 'flex flex-col gap-4'}`}
-                  >
-                    {keywords.map(
-                      (keyword: { keyword: Keyword; value?: number }) => {
-                        return (
-                          <div
-                            className="flex items-center"
+                  {keywords.map(
+                    (keyword: { keyword: Keyword; value?: number }) => {
+                      return (
+                        <div
+                          className="flex items-center"
+                          key={keyword.keyword.id}
+                        >
+                          <ItemCardSmall
                             key={keyword.keyword.id}
+                            heading={
+                              <div className="flex w-full items-center justify-between">
+                                <h3>
+                                  {keyword.value
+                                    ? keyword.keyword?.name.replace(
+                                        /X/g,
+                                        keyword.value.toString(),
+                                      )
+                                    : keyword.keyword?.name}
+                                </h3>
+                                {mode === 'modify' && (
+                                  <p className="text-tertiary pr-2">
+                                    ({keyword.keyword.gpCost} GP)
+                                  </p>
+                                )}
+                              </div>
+                            }
                           >
-                            <ItemCardSmall
-                              key={keyword.keyword.id}
-                              heading={
-                                <div className="flex w-full items-center justify-between">
-                                  <h3>
-                                    {keyword.value
-                                      ? keyword.keyword?.name.replace(
-                                          /X/g,
-                                          keyword.value.toString(),
-                                        )
-                                      : keyword.keyword?.name}
-                                  </h3>
-                                  {mode === 'modify' && (
-                                    <p className="text-tertiary pr-2">
-                                      ({keyword.keyword.gpCost} GP)
-                                    </p>
-                                  )}
-                                </div>
-                              }
-                            >
-                              <p>
-                                {keyword.value
-                                  ? keyword.keyword?.description.replace(
-                                      /X/g,
-                                      keyword.value.toString(),
-                                    )
-                                  : keyword.keyword?.description}
-                              </p>
-                            </ItemCardSmall>
-                            <button
-                              onClick={() => {
-                                field.handleChange(
-                                  field.state.value.filter(
-                                    (item: {
-                                      keyword: Keyword;
-                                      value?: number;
-                                    }) =>
-                                      item.keyword.id !== keyword.keyword.id,
-                                  ),
-                                );
-                              }}
-                            >
-                              <Icon
-                                path={mdiClose}
-                                className="text-tertiary hover:text-accent timing size-10"
-                              />
-                            </button>
-                          </div>
-                        );
-                      },
-                    )}
-                  </div>
+                            <p>
+                              {keyword.value
+                                ? keyword.keyword?.description.replace(
+                                    /X/g,
+                                    keyword.value.toString(),
+                                  )
+                                : keyword.keyword?.description}
+                            </p>
+                          </ItemCardSmall>
+                          <button
+                            onClick={() => {
+                              field.handleChange(
+                                field.state.value.filter(
+                                  (item: {
+                                    keyword: Keyword;
+                                    value?: number;
+                                  }) => item.keyword.id !== keyword.keyword.id,
+                                ),
+                              );
+                            }}
+                          >
+                            <Icon
+                              path={mdiClose}
+                              className="text-tertiary hover:text-accent timing size-10"
+                            />
+                          </button>
+                        </div>
+                      );
+                    },
+                  )}
                 </>
               )}
             </form.Field>
@@ -152,7 +146,7 @@ const KeywordLinkField = ({
       >
         Link Traits
       </BtnRect>
-    </div>
+    </>
   );
 };
 

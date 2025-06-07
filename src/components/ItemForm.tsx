@@ -386,6 +386,7 @@ const ItemForm = () => {
         <itemForm.Subscribe selector={(state) => state.values.itemTypes}>
           {(itemTypes) => (
             <div className="flex flex-col gap-4">
+              <Divider />
               <KeywordLinkField form={itemForm} />
               <Divider />
               {itemTypes.includes('weapon') && (

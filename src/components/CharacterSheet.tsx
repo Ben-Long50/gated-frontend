@@ -274,7 +274,9 @@ const CharacterSheet = () => {
                   Permanent Injuries
                 </h3>
                 <div className="flex items-center gap-2">
-                  {Array.from({ length: 5 }).map((_, index) =>
+                  {Array.from({
+                    length: filteredCharacter.stats.permanentInjuries,
+                  }).map((_, index) =>
                     index < filteredCharacter.stats.injuries ? (
                       <InjuryIcon key={index} className="size-8" />
                     ) : (
@@ -293,7 +295,9 @@ const CharacterSheet = () => {
                   Permanent Insanities
                 </h3>
                 <div className="flex items-center gap-2">
-                  {Array.from({ length: 5 }).map((_, index) =>
+                  {Array.from({
+                    length: filteredCharacter.stats.permanentInsanities,
+                  }).map((_, index) =>
                     index < filteredCharacter.stats.insanities ? (
                       <InsanityIcon key={index} className="size-7" />
                     ) : (
