@@ -52,6 +52,7 @@ export default {
         '1/2': '50%',
       },
       backgroundColor: {
+        'zinc-925': 'rgb(17, 17, 19)',
         'zinc-850': 'rgb(31, 31, 34)',
         'zinc-150': 'rgb(236, 236, 238)',
       },
