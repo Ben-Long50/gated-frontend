@@ -52,10 +52,10 @@ const CharacterRadialMenu = ({
   };
 
   const path = (() => {
-    if (parts.includes('campaigns')) {
-      return `characters/${character.id}`;
-    } else {
+    if (parts.includes('characters')) {
       return `${character.id}`;
+    } else {
+      return `characters/${character.id}`;
     }
   })();
 
@@ -94,11 +94,6 @@ const CharacterRadialMenu = ({
   if (affiliationMenu)
     return (
       <RadialMenu className={`${className}`} size="large">
-        <div className="flex justify-center">
-          <p className="text-2xl font-semibold !text-inherit">
-            {filteredCharacter.profits || 0}
-          </p>
-        </div>
         <div onClick={() => navigate(`${path}/affiliations/create`)}>
           <Icon className="text-inherit" path={mdiPlus} />
         </div>
