@@ -1,16 +1,24 @@
 import { useQueries } from '@tanstack/react-query';
 import getCharacter from '../useCharacterQuery/getCharacter';
 
-const useUserCharactersQuery = (apiUrl: string, characterIds: number[]) => {
+const useCharacterQueries = (characterIds: number[]) => {
   return useQueries({
     queries: characterIds.map((characterId) => ({
       queryKey: ['character', characterId],
-      queryFn: () => getCharacter(apiUrl, characterId),
+      queryFn: () => getCharacter.fetch(characterId),
       enabled: !!characterId,
     })),
     combine: (results) => {
       return {
         characters: results.map((result) => result.data),
+        playerCharacters:
+          results
+            .map((result) => result.data)
+            .filter((character) => character?.playerCharacter) || [],
+        nonPlayerCharacters:
+          results
+            .map((result) => result.data)
+            .filter((character) => !character?.playerCharacter) || [],
         isLoading: results.some((result) => result.isLoading),
         isPending: results.some((result) => result.isPending),
       };
@@ -18,4 +26,4 @@ const useUserCharactersQuery = (apiUrl: string, characterIds: number[]) => {
   });
 };
 
-export default useUserCharactersQuery;
+export default useCharacterQueries;

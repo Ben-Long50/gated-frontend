@@ -25,6 +25,7 @@ import useCampaignCharactersQuery from 'src/hooks/useCampaignCharactersQuery/use
 import CoverPicture from './CoverPicture';
 import { capitalCase } from 'change-case';
 import { LayoutContext } from 'src/contexts/LayoutContext';
+import useCharacterQueries from 'src/hooks/useCharactersQuery/useCharacterQueries';
 
 const Campaign = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -42,8 +43,7 @@ const Campaign = () => {
     playerCharacters,
     nonPlayerCharacters,
     isLoading: charactersLoading,
-  } = useCampaignCharactersQuery(
-    apiUrl,
+  } = useCharacterQueries(
     campaign?.characters.map((character) => character.id) || [],
   );
 

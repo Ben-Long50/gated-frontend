@@ -2,7 +2,7 @@ import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import useCharactersQuery from './useCharactersQuery/useCharactersQuery';
 import { Character } from 'src/types/character';
-import useUserCharactersQuery from './useCharactersQuery/useUserCharactersQuery';
+import useCharacterQueries from './useCharactersQuery/useCharacterQueries';
 
 const useCharacters = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -10,8 +10,7 @@ const useCharacters = () => {
   const { data: characterIds, isLoading: idsLoading } =
     useCharactersQuery(apiUrl);
 
-  const { characters, isLoading: charactersLoading } = useUserCharactersQuery(
-    apiUrl,
+  const { characters, isLoading: charactersLoading } = useCharacterQueries(
     characterIds?.map((character) => character.id) || [],
   );
 

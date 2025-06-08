@@ -1,20 +1,10 @@
 import { CharacterInventory } from 'src/types/character';
-import useInventoryItemsQuery from './useInventoryItemsQuery/useInventoryItemsQuery';
-import { useContext, useMemo } from 'react';
-import { AuthContext } from 'src/contexts/AuthContext';
+import useInventoryItemQueries from './useInventoryItemQueries/useInventoryItemQueries';
+import { useMemo } from 'react';
 
 const useInventory = (inventory: CharacterInventory) => {
-  const { apiUrl } = useContext(AuthContext);
-
-  const itemInfo =
-    inventory?.items?.map((item) => ({
-      category: item?.itemTypes[0],
-      id: item?.id,
-    })) || [];
-
-  const { items, isLoading, isPending } = useInventoryItemsQuery(
-    apiUrl,
-    itemInfo,
+  const { items, isLoading, isPending } = useInventoryItemQueries(
+    inventory?.items?.map((item) => item.id),
   );
 
   const sortedInventory = useMemo(
