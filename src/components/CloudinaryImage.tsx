@@ -18,7 +18,7 @@ const CloudinaryImage = ({
   position: Position;
   alt: string;
   onClick?: () => void;
-  style: object;
+  style?: object;
 }) => {
   let responsiveUrl;
 

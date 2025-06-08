@@ -10,12 +10,20 @@ const CharacterPictureRound = ({
 }) => {
   return (
     <div className="z-10 aspect-square size-12 shrink-0 overflow-hidden rounded-full shadow-md shadow-black">
-      <CloudinaryImage
-        className={`${className}`}
-        url={character.picture?.imageUrl}
-        alt={`${character.firstName} ${character.lastName}'s image`}
-        position={character.picture?.position}
-      />
+      {character.picture?.imageUrl ? (
+        <CloudinaryImage
+          className={`${className}`}
+          url={character.picture?.imageUrl}
+          alt={`${character.firstName} ${character.lastName}'s image`}
+          position={character.picture?.position}
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center bg-yellow-300">
+          <h2 className="size-10 pl-0.5 pt-1.5 text-center !text-zinc-950">
+            {character.firstName ? character.firstName[0] : character.name[0]}
+          </h2>
+        </div>
+      )}
     </div>
   );
 };

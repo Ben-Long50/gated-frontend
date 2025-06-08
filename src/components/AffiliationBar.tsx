@@ -7,14 +7,18 @@ const AffiliationBar = ({
   field,
   value,
   className,
+  onClick,
 }: {
   field?: FieldApi;
   value?: number;
   className?: string;
+  onClick?: (value: number) => void;
 }) => {
-  const [hoverValue, setHoverValue] = useState<number | null>(value || null);
+  const [hoverValue, setHoverValue] = useState<number | null>(null);
 
   const affiliationValue = field?.state?.value ?? value;
+
+  const activeBar = field || onClick;
 
   return (
     <div className={`${className} flex w-full flex-col`}>
@@ -37,7 +41,7 @@ const AffiliationBar = ({
           {Array.from({ length: 10 }).map((_, index) => (
             <button
               key={index}
-              className={`${index === 9 && 'rounded-r'} ${index === 0 && 'rounded-l'} relative ${affiliationValue < index - 4 && 'bg-zinc-500'} ${hoverValue !== null && hoverValue >= index && field && 'bg-opacity-60'} w-full ${hoverValue !== null && hoverValue < index && affiliationValue >= index - 4 && field && 'bg-zinc-500 bg-opacity-60'} ${!field && 'cursor-default'} timing`}
+              className={`${index === 9 && 'rounded-r'} ${index === 0 && 'rounded-l'} relative ${affiliationValue < index - 4 && 'bg-zinc-500'} ${hoverValue !== null && hoverValue >= index && activeBar && 'bg-opacity-60'} w-full ${hoverValue !== null && hoverValue < index && affiliationValue >= index - 4 && activeBar && 'bg-zinc-500 bg-opacity-60'} ${!activeBar && 'cursor-default'} timing`}
               onMouseMove={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const isLeftHalf = e.clientX < rect.left + rect.width / 2;
@@ -48,10 +52,12 @@ const AffiliationBar = ({
                 e.preventDefault();
                 const rect = e.currentTarget.getBoundingClientRect();
                 const isLeftHalf = e.clientX < rect.left + rect.width / 2;
+                const newValue = isLeftHalf ? index - 5 : index - 4;
                 if (!value && field) {
-                  return isLeftHalf
-                    ? field.handleChange(index - 5)
-                    : field.handleChange(index - 4);
+                  field.handleChange(newValue);
+                }
+                if (onClick) {
+                  onClick(newValue);
                 }
               }}
             >

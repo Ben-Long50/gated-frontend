@@ -61,7 +61,7 @@ const Session = () => {
                 {format(session.createdAt, 'PP')}
               </p>
             </div>
-            <h1 className="text-shadow text-center font-zen text-5xl text-shadow-x-2 text-shadow-y-2 text-shadow-black">
+            <h1 className="w-full text-center font-zen text-4xl sm:text-5xl">
               {session.name}
             </h1>
           </div>

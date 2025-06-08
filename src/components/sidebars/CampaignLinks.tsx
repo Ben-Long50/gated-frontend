@@ -11,6 +11,7 @@ import useCampaignQuery from '../../hooks/useCampaignQuery/useCampaignQuery';
 import Loading from '../Loading';
 import { Session } from 'src/types/campaign';
 import SessionIcon from '../icons/SessionIcon';
+import AffiliationIcon from '../icons/AffiliationIcon';
 
 const CampaignLinks = ({
   sidebarVisibility,
@@ -134,6 +135,15 @@ const CampaignLinks = ({
               setSidebarVisibility={setSidebarVisibility}
             />
           </LinkListSidebar>
+          <LinkSidebar
+            title="Affiliations"
+            icon={
+              <AffiliationIcon className="bg-secondary z-10 size-12 shrink-0 p-1" />
+            }
+            path={`campaigns/${campaignId}/affiliations`}
+            sidebarVisibility={sidebarVisibility}
+            setSidebarVisibility={setSidebarVisibility}
+          />
           <LinkSidebar
             title="Roll Simulator"
             icon={

@@ -24,9 +24,7 @@ const ArrowHeader4 = ({
         size={0.375}
         rotate={reverse ? 90 : -90}
       />
-      <h4 className={`${className ? '!text-inherit' : 'text-primary'} `}>
-        {title}
-      </h4>
+      <h4>{title}</h4>
     </div>
   );
 };

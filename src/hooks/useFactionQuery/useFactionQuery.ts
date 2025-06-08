@@ -6,6 +6,7 @@ const useFactionQuery = (apiUrl: string, factionId: number) => {
     queryKey: ['faction', factionId],
     queryFn: async () => await getFaction(apiUrl, factionId),
     throwOnError: false,
+    enabled: !!factionId,
   });
 };
 

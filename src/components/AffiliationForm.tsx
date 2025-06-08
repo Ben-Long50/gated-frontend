@@ -18,7 +18,10 @@ import useAffiliationQuery from '../hooks/useAffiliationQuery/useAffiliationQuer
 import useDeleteAffiliationMutation from '../hooks/useDeleteAffiliationMutation/useDeleteAffiliationMutation';
 import useFactionQuery from '../hooks/useFactionQuery/useFactionQuery';
 import ArrowHeader3 from './ArrowHeader3';
-import useCharacters from 'src/hooks/useCharacters';
+import useCharacterQuery from 'src/hooks/useCharacterQuery/useCharacterQuery';
+import useCampaignQuery from 'src/hooks/useCampaignQuery/useCampaignQuery';
+import ArrowHeader4 from './ArrowHeader4';
+import CharacterPictureRound from './CharacterPictureRound';
 
 const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);
@@ -27,7 +30,19 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const { activeCharacter, isLoading: characterLoading } = useCharacters();
+  const {
+    data: character,
+    isLoading: characterLoading,
+    isPending: characterPending,
+  } = useCharacterQuery(apiUrl, Number(characterId));
+
+  const {
+    data: campaign,
+    isLoading: campaignLoading,
+    isPending: campaignPending,
+  } = useCampaignQuery(apiUrl, character?.campaignId);
+
+  console.log(character, campaign);
 
   const {
     data: faction,
@@ -41,9 +56,11 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
     isPending: affiliationPending,
   } = useAffiliationQuery(apiUrl, Number(affiliationId));
 
-  const isLoading = characterLoading || factionLoading || affiliationLoading;
+  const isLoading =
+    characterLoading || campaignLoading || factionLoading || affiliationLoading;
 
-  const isPending = factionPending || affiliationPending;
+  const isPending =
+    characterPending || campaignPending || factionPending || affiliationPending;
 
   const createAffiliation = useCreateAffiliationMutation(
     apiUrl,
@@ -79,7 +96,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const secondaryCharacter =
     affiliation?.characters.find(
-      (character: Character) => activeCharacter?.id !== Number(characterId),
+      (character: Character) => character?.id !== Number(characterId),
     ) || null;
 
   const handleDelete = () => {
@@ -125,17 +142,17 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
     },
   });
 
-  if (isLoading || isPending) return <Loading />;
+  if (isLoading) return <Loading />;
 
-  if (!activeCharacter?.campaign) {
+  if (!campaign) {
     return (
-      <div className="flex max-w-5xl flex-col items-center gap-8">
+      <div className="flex w-full max-w-7xl flex-col items-center gap-8">
         <h1 className="w-full text-center">Create Affiliation</h1>
         <h3 className="text-center">
           Your active character is not associated with a campaign. Update your
           character information with a campaign to access affiliations.
         </h3>
-        <Link to={`/glam/characters/${activeCharacter?.id}`}>
+        <Link to={`/glam/characters/${character?.id}`}>
           <BtnRect type="button" ariaLabel="Character sheet">
             Character Sheet
           </BtnRect>
@@ -205,11 +222,11 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                           label="Campaign Factions"
                           options={
                             factionId
-                              ? activeCharacter?.campaign.factions.filter(
+                              ? campaign?.factions.filter(
                                   (faction: Faction) =>
                                     faction.id !== Number(factionId),
                                 )
-                              : activeCharacter?.campaign.factions
+                              : campaign?.factions
                           }
                         />
                       )}
@@ -223,10 +240,10 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                           label="Campaign Gangs"
                           options={
                             gangId
-                              ? activeCharacter?.campaign.gangs.filter(
+                              ? campaign?.gangs.filter(
                                   (gang: Gang) => gang.id !== Number(gangId),
                                 )
-                              : activeCharacter?.campaign.gangs
+                              : campaign?.gangs
                           }
                         />
                       )}
@@ -240,11 +257,11 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                           label="Campaign Characters"
                           options={
                             characterId
-                              ? activeCharacter?.campaign.characters.filter(
+                              ? campaign?.characters.filter(
                                   (character: Character) =>
                                     character.id !== Number(characterId),
                                 )
-                              : activeCharacter?.campaign.characters
+                              : campaign?.characters
                           }
                         />
                       )}
@@ -260,24 +277,16 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
         >
           {characterId && (
             <div className={`flex items-center gap-4 justify-self-start`}>
-              <img
-                className={`${mobile ? 'size-14' : 'size-20'} rounded-full object-cover shadow-md shadow-black`}
-                src={activeCharacter?.picture.imageUrl}
-              />
-              <ArrowHeader3
-                title={
-                  activeCharacter?.firstName + ' ' + activeCharacter?.lastName
-                }
+              <CharacterPictureRound character={character} />
+              <ArrowHeader4
+                title={character?.firstName + ' ' + character?.lastName}
               />
             </div>
           )}
           {factionId && (
             <div className={`flex items-center gap-4 justify-self-start`}>
-              <img
-                className={`${mobile ? 'size-14' : 'size-20'} rounded-full object-cover shadow-md shadow-black`}
-                src={faction.picture.imageUrl}
-              />
-              <ArrowHeader3 title={faction.name} />
+              <CharacterPictureRound character={faction} />
+              <ArrowHeader4 title={faction.name} />
             </div>
           )}
           <AffiliationIcon
@@ -298,16 +307,12 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                       <div
                         className={`flex items-center gap-4 justify-self-end`}
                       >
-                        <ArrowHeader3
+                        <ArrowHeader4
                           className="text-right"
                           title={faction.name}
                           reverse={true}
                         />
-                        <img
-                          className={`${mobile ? 'size-14' : 'size-20'} rounded-full shadow-md shadow-black`}
-                          src={faction.picture?.imageUrl}
-                          alt={faction.name + "'s picture"}
-                        />
+                        <CharacterPictureRound character={faction} />
                       </div>
                     )
                   );
@@ -319,25 +324,14 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
                       <div
                         className={`flex items-center gap-4 justify-self-end`}
                       >
-                        <ArrowHeader3
+                        <ArrowHeader4
                           className="text-right"
                           title={
-                            activeCharacter?.firstName +
-                            ' ' +
-                            activeCharacter?.lastName
+                            character?.firstName + ' ' + character?.lastName
                           }
                           reverse={true}
                         />
-                        <img
-                          className={`${mobile ? 'size-14' : 'size-20'} rounded-full shadow-md shadow-black`}
-                          src={activeCharacter?.picture?.imageUrl}
-                          alt={
-                            activeCharacter?.firstName +
-                            ' ' +
-                            activeCharacter?.lastName +
-                            "'s picture"
-                          }
-                        />
+                        <CharacterPictureRound character={character} />
                       </div>
                     )
                   );

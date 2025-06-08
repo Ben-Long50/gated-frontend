@@ -2,6 +2,7 @@ import { Route } from 'react-router-dom';
 import AffiliationForm from 'src/components/AffiliationForm';
 import Affiliations from 'src/components/Affiliations';
 import Cart from 'src/components/Cart';
+import CharacterAffiliations from 'src/components/CharacterAffiliations';
 import CharacterForm from 'src/components/CharacterForm';
 import CharacterList from 'src/components/CharacterList';
 import CharacterSheet from 'src/components/CharacterSheet';
@@ -90,7 +91,10 @@ const CharacterRoutes = () => {
           <Route path="modifications" element={<Inventory />} />
         </Route>
       </Route>
-      <Route path=":characterId/affiliations" element={<Affiliations />} />
+      <Route
+        path=":characterId/affiliations"
+        element={<CharacterAffiliations />}
+      />
       <Route
         path=":characterId/affiliations/create"
         element={<AffiliationForm title="Create" mode="create" />}

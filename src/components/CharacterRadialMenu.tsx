@@ -12,12 +12,13 @@ import ProfitsIcon from './icons/ProfitsIcon';
 import Icon from '@mdi/react';
 import {
   mdiArrowULeftBottom,
-  mdiCurrencyUsd,
+  mdiCardTextOutline,
   mdiMinus,
   mdiPlus,
 } from '@mdi/js';
 import useProfitsMutation from 'src/hooks/useProfitsMutation/useProfitsMutation';
 import useCharacter from 'src/hooks/useCharacter';
+import AffiliationIcon from './icons/AffiliationIcon';
 
 const CharacterRadialMenu = ({
   character,
@@ -29,6 +30,7 @@ const CharacterRadialMenu = ({
   const { apiUrl, user } = useContext(AuthContext);
   const [conditionModal, setConditionModal] = useState(false);
   const [profitMenu, setProfitMenu] = useState(false);
+  const [affiliationMenu, setAffiliationMenu] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const parts = location.pathname.split('/');
@@ -45,6 +47,10 @@ const CharacterRadialMenu = ({
     setProfitMenu(!profitMenu);
   };
 
+  const toggleAffiliationMenu = () => {
+    setAffiliationMenu(!affiliationMenu);
+  };
+
   const path = (() => {
     if (parts.includes('campaigns')) {
       return `characters/${character.id}`;
@@ -53,7 +59,63 @@ const CharacterRadialMenu = ({
     }
   })();
 
-  return !profitMenu ? (
+  if (profitMenu)
+    return (
+      <RadialMenu className={`${className}`} size="large">
+        <div className="flex justify-center">
+          <p className="text-2xl font-semibold !text-inherit">
+            {filteredCharacter.profits || 0}
+          </p>
+        </div>
+        <div
+          onClick={() => {
+            editProfits.mutate(1);
+          }}
+        >
+          <Icon className="text-inherit" path={mdiPlus} />
+        </div>
+        <div
+          onClick={() => {
+            toggleProfitMenu();
+          }}
+        >
+          <Icon className="text-inherit" path={mdiArrowULeftBottom} />
+        </div>
+        <div
+          onClick={() => {
+            editProfits.mutate(-1);
+          }}
+        >
+          <Icon className="text-inherit" path={mdiMinus} />
+        </div>
+      </RadialMenu>
+    );
+
+  if (affiliationMenu)
+    return (
+      <RadialMenu className={`${className}`} size="large">
+        <div className="flex justify-center">
+          <p className="text-2xl font-semibold !text-inherit">
+            {filteredCharacter.profits || 0}
+          </p>
+        </div>
+        <div onClick={() => navigate(`${path}/affiliations/create`)}>
+          <Icon className="text-inherit" path={mdiPlus} />
+        </div>
+        <div
+          onClick={() => {
+            toggleAffiliationMenu();
+          }}
+        >
+          <Icon className="text-inherit" path={mdiArrowULeftBottom} />
+        </div>
+        <div onClick={() => navigate(`${path}/affiliations`)}>
+          <Icon path={mdiCardTextOutline} className="size-8 text-inherit" />
+        </div>
+      </RadialMenu>
+    );
+
+  return (
     <RadialMenu className={`${className}`} size="large">
       <div
         onClick={() => toggleConditionModal()}
@@ -89,34 +151,12 @@ const CharacterRadialMenu = ({
       >
         <ProfitsIcon className="text-inherit" />
       </div>
-    </RadialMenu>
-  ) : (
-    <RadialMenu className={`${className}`} size="large">
-      <div className="flex justify-center">
-        <p className="text-2xl font-semibold !text-inherit">
-          {filteredCharacter.profits || 0}
-        </p>
-      </div>
       <div
         onClick={() => {
-          editProfits.mutate(1);
+          toggleAffiliationMenu();
         }}
       >
-        <Icon className="text-inherit" path={mdiPlus} />
-      </div>
-      <div
-        onClick={() => {
-          toggleProfitMenu();
-        }}
-      >
-        <Icon className="text-inherit" path={mdiArrowULeftBottom} />
-      </div>
-      <div
-        onClick={() => {
-          editProfits.mutate(-1);
-        }}
-      >
-        <Icon className="text-inherit" path={mdiMinus} />
+        <AffiliationIcon className="text-inherit" />
       </div>
     </RadialMenu>
   );

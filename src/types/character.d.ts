@@ -2,6 +2,7 @@ import { Action } from './action';
 import { AttributeTree } from './attributeTree';
 import { Campaign } from './campaign';
 import { Condition } from './condition';
+import { Affiliation } from './faction';
 import { Gang } from './gang';
 import { Item } from './item';
 import { Perk } from './perk';
@@ -35,6 +36,7 @@ interface Character {
   conditions: { condition: Condition; stacks: number | null }[];
   characterCart: CharacterCart;
   characterInventory: CharacterInventory;
+  affiliations: Affiliation[];
 }
 
 interface CharacterStats {

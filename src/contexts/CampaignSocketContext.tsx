@@ -1,5 +1,5 @@
 import { createContext, useEffect } from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { socket } from '../socket';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -7,7 +7,6 @@ const CampaignSocketContext = createContext({ socket });
 
 export const CampaignSocketProvider = () => {
   const queryClient = useQueryClient();
-  const { campaignId } = useParams();
 
   useEffect(() => {
     socket.connect();
@@ -25,6 +24,12 @@ export const CampaignSocketProvider = () => {
     socket.on('item', (itemId) => {
       queryClient.invalidateQueries({
         queryKey: ['item', itemId],
+      });
+    });
+
+    socket.on('affiliation', (affiliationId) => {
+      queryClient.invalidateQueries({
+        queryKey: ['affiliation', affiliationId],
       });
     });
 

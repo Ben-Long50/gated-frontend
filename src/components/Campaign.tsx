@@ -24,9 +24,11 @@ import ArrowHeader3 from './ArrowHeader3';
 import useCampaignCharactersQuery from 'src/hooks/useCampaignCharactersQuery/useCampaignCharactersQuery';
 import CoverPicture from './CoverPicture';
 import { capitalCase } from 'change-case';
+import { LayoutContext } from 'src/contexts/LayoutContext';
 
 const Campaign = () => {
   const { apiUrl, user } = useContext(AuthContext);
+  const { mobile } = useContext(LayoutContext);
   const { campaignId } = useParams();
   const { accentPrimary } = useContext(ThemeContext);
   const [tab, setTab] = useState('sessions');
@@ -61,7 +63,60 @@ const Campaign = () => {
     <>
       {campaign.picture?.imageUrl && (
         <CoverPicture picture={campaign.picture}>
-          <div className="absolute right-6 top-6 flex flex-col items-center gap-4">
+          {!mobile && (
+            <div className="absolute right-6 top-6 flex flex-col items-center gap-4">
+              <div className="relative">
+                <AccountPicture key={campaign.owner.id} user={campaign.owner} />
+                <Icon
+                  path={mdiCrown}
+                  className="text-accent absolute -right-2 -top-2 size-5"
+                />
+              </div>
+
+              <Icon path={mdiCircle} className="text-secondary size-2" />
+              {campaign.players.map((player: User) => (
+                <AccountPicture key={player.id} user={player} />
+              ))}
+              {campaign.pendingPlayers.map((player: User) => (
+                <AccountPicture
+                  key={player.id}
+                  className="opacity-50"
+                  user={player}
+                />
+              ))}
+            </div>
+          )}
+        </CoverPicture>
+      )}
+      <div className="flex w-full max-w-7xl flex-col items-center gap-8">
+        <h1 className="w-full text-center font-zen text-4xl sm:text-5xl">
+          {capitalCase(campaign.name)}
+        </h1>
+        <div className="flex items-center justify-center gap-4">
+          <LocationIcon className="text-accent size-8" />
+          <h2 className="text-accent">{campaign.location}</h2>
+        </div>
+        {pendingIds?.includes(user?.id) && (
+          <BtnRect
+            type="button"
+            ariaLabel="Join campaign"
+            onClick={(e) => {
+              e.preventDefault();
+              joinCampaign.mutate();
+            }}
+          >
+            {joinCampaign.isPending ? (
+              <Loading
+                className="group-hover:text-yellow-300 dark:text-gray-900"
+                size={1.15}
+              />
+            ) : (
+              'Join Campaign'
+            )}
+          </BtnRect>
+        )}
+        {mobile && (
+          <div className="flex items-center gap-4">
             <div className="relative">
               <AccountPicture key={campaign.owner.id} user={campaign.owner} />
               <Icon
@@ -82,36 +137,6 @@ const Campaign = () => {
               />
             ))}
           </div>
-        </CoverPicture>
-      )}
-      <div className="flex w-full max-w-7xl flex-col items-center gap-8">
-        <h1 className="text-shadow text-center font-zen text-5xl text-shadow-x-2 text-shadow-y-2 text-shadow-black">
-          {capitalCase(campaign.name)}
-        </h1>
-        <div className="flex items-center justify-center gap-4">
-          <LocationIcon className="text-accent size-8" />
-          <h2 className="text-accent text-shadow text-shadow-x-2 text-shadow-y-2 text-shadow-zinc-950">
-            {campaign.location}
-          </h2>
-        </div>
-        {pendingIds?.includes(user?.id) && (
-          <BtnRect
-            type="button"
-            ariaLabel="Join campaign"
-            onClick={(e) => {
-              e.preventDefault();
-              joinCampaign.mutate();
-            }}
-          >
-            {joinCampaign.isPending ? (
-              <Loading
-                className="group-hover:text-yellow-300 dark:text-gray-900"
-                size={1.15}
-              />
-            ) : (
-              'Join Campaign'
-            )}
-          </BtnRect>
         )}
         <div className={`mt-28 flex w-full flex-col gap-4`}>
           <ThemeContainer borderColor={accentPrimary} chamfer="medium">

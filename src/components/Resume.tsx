@@ -24,9 +24,11 @@ const Resume = () => {
     isError,
   } = useCharacterQuery(apiUrl, Number(characterId));
 
-  const filteredCharacter = useCharacter(character);
+  const { filteredCharacter } = useCharacter(character);
 
   let content;
+
+  console.log(filteredCharacter);
 
   switch (resume) {
     case 'Backstory':

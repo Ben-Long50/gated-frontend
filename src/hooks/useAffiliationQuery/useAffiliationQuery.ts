@@ -6,6 +6,7 @@ const useAffiliationQuery = (apiUrl: string, affiliationId: number) => {
     queryKey: ['affiliation', affiliationId],
     queryFn: async () => await getCampaign(apiUrl, affiliationId),
     throwOnError: false,
+    enabled: !!affiliationId,
   });
 };
 

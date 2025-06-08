@@ -10,6 +10,7 @@ import { Affiliation } from 'src/types/faction';
 import BtnAuth from './buttons/BtnAuth';
 import AffiliationCard from './AffiliationCard';
 import CoverPicture from './CoverPicture';
+import useAffiliationQueries from 'src/hooks/useAffiliationQueries/useAffiliationQueries';
 
 const Faction = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -17,25 +18,32 @@ const Faction = () => {
 
   const {
     data: faction,
-    isLoading,
+    isLoading: factionLoading,
     isPending,
   } = useFactionQuery(apiUrl, Number(factionId));
+
+  const { data: affiliations, isLoading: affiliationsLoading } =
+    useAffiliationQueries(
+      apiUrl,
+      faction?.affiliations.map((affiliation: Affiliation) => affiliation.id) ||
+        [],
+    );
 
   const backgroundRef = useRef<HTMLDivElement>(null);
   const affiliationRef = useRef<HTMLDivElement>(null);
 
-  const affiliations = faction
-    ? {
-        factionAffiliations:
-          faction.affiliations.filter(
-            (affiliation: Affiliation) => affiliation.factions.length > 1,
-          ) || [],
-        characterAffiliations:
-          faction.affiliations.filter(
-            (affiliation: Affiliation) => affiliation.characters.length > 0,
-          ) || [],
-      }
-    : null;
+  const sortedAffiliations = {
+    factionAffiliations:
+      affiliations?.filter(
+        (affiliation: Affiliation) => affiliation?.factions.length > 1,
+      ) || [],
+    characterAffiliations:
+      affiliations?.filter(
+        (affiliation: Affiliation) => affiliation?.characters.length > 0,
+      ) || [],
+  };
+
+  const isLoading = factionLoading || affiliationsLoading;
 
   if (isLoading || isPending) return <Loading />;
 
@@ -44,7 +52,7 @@ const Faction = () => {
       {faction.picture?.imageUrl && <CoverPicture picture={faction.picture} />}
       <div className="flex w-full max-w-5xl flex-col gap-8">
         <div className="timing flex w-full items-center justify-between">
-          <h1 className="text-shadow w-full text-center font-zen text-5xl text-shadow-blur-0 text-shadow-x-2 text-shadow-y-2 text-shadow-black">
+          <h1 className="w-full text-center font-zen text-4xl md:text-5xl">
             {faction.name}
           </h1>
         </div>
@@ -79,10 +87,10 @@ const Faction = () => {
           </>
         )}
         <div className="flex flex-col gap-8" ref={affiliationRef}>
-          {affiliations?.factionAffiliations.length > 0 && (
+          {sortedAffiliations?.factionAffiliations.length > 0 && (
             <>
               <ArrowHeader2 title="Faction Affiliations" />
-              {affiliations?.factionAffiliations.map(
+              {sortedAffiliations?.factionAffiliations.map(
                 (affiliation: Affiliation) => (
                   <AffiliationCard
                     key={affiliation.id}
@@ -94,10 +102,10 @@ const Faction = () => {
               )}
             </>
           )}
-          {affiliations?.characterAffiliations.length > 0 && (
+          {sortedAffiliations?.characterAffiliations.length > 0 && (
             <>
               <ArrowHeader2 title="Character Affiliations" />
-              {affiliations?.characterAffiliations.map(
+              {sortedAffiliations?.characterAffiliations.map(
                 (affiliation: Affiliation) => (
                   <AffiliationCard
                     key={affiliation.id}

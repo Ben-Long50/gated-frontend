@@ -16,6 +16,8 @@ import ItemPageWrapper from 'src/components/ItemPageWrapper';
 import Deployments from 'src/components/Deployments';
 import ResumeForm from 'src/components/ResumeForm';
 import { CampaignSocketProvider } from 'src/contexts/CampaignSocketContext';
+import CampaignAffiliations from 'src/components/CampaignAffiliations';
+import CharacterAffiliations from 'src/components/CharacterAffiliations';
 
 const CampaignRoutes = () => {
   return (
@@ -59,9 +61,15 @@ const CampaignRoutes = () => {
             <Route path="resume" element={<Resume />} />
             <Route path="resume/update" element={<ResumeForm />} />
             <Route path="update" element={<CharacterUpdateForm />} />
+            <Route path="affiliations" element={<CharacterAffiliations />} />
+            <Route
+              path="affiliations/create"
+              element={<AffiliationForm title="Create" mode="create" />}
+            />
           </Route>
         </Route>
         {SessionRoutes()}
+        <Route path="affiliations" element={<CampaignAffiliations />} />
         <Route path="rollSimulator" element={<RollSimulator />} />
       </Route>
       <Route
