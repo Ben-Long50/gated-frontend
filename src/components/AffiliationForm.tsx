@@ -17,7 +17,6 @@ import useUpdateAffiliationMutation from '../hooks/useUpdateAffiliationMutation/
 import useAffiliationQuery from '../hooks/useAffiliationQuery/useAffiliationQuery';
 import useDeleteAffiliationMutation from '../hooks/useDeleteAffiliationMutation/useDeleteAffiliationMutation';
 import useFactionQuery from '../hooks/useFactionQuery/useFactionQuery';
-import ArrowHeader3 from './ArrowHeader3';
 import useCharacterQuery from 'src/hooks/useCharacterQuery/useCharacterQuery';
 import useCampaignQuery from 'src/hooks/useCampaignQuery/useCampaignQuery';
 import ArrowHeader4 from './ArrowHeader4';
@@ -41,8 +40,6 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
     isLoading: campaignLoading,
     isPending: campaignPending,
   } = useCampaignQuery(apiUrl, character?.campaignId);
-
-  console.log(character, campaign);
 
   const {
     data: faction,

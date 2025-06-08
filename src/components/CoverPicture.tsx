@@ -9,7 +9,7 @@ const CoverPicture = ({
   children?: ReactNode;
 }) => {
   return (
-    <div className="absolute top-0 -z-10 mx-auto flex aspect-[10/3] min-h-[500px] w-full max-w-9xl justify-center overflow-hidden shadow-lg shadow-black xl:rounded-b-xl">
+    <div className="absolute top-0 -z-10 mx-auto flex h-[400px] w-full max-w-9xl justify-center overflow-hidden shadow-lg shadow-black sm:h-[500px] xl:rounded-b-xl">
       <div className="absolute inset-0 w-full bg-black opacity-60" />
       <img
         className="w-full border-opacity-50 object-cover object-center filter"
@@ -19,7 +19,6 @@ const CoverPicture = ({
           objectPosition: picture?.position
             ? `${picture?.position.x}% ${picture?.position.y}%`
             : '50% 50%',
-          //   maskImage: 'linear-gradient(black 0%, transparent 100%',
         }}
       />
       {children}

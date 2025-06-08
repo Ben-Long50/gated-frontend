@@ -28,8 +28,6 @@ const Resume = () => {
 
   let content;
 
-  console.log(filteredCharacter);
-
   switch (resume) {
     case 'Backstory':
       content = filteredCharacter?.backstory?.html;

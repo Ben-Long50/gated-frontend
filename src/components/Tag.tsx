@@ -70,7 +70,6 @@ const Tag = ({
       <div
         className={`${className} bg-primary relative z-20 cursor-pointer rounded border border-yellow-300 border-opacity-50 px-2 text-base shadow-md shadow-black`}
         onClick={(e) => {
-          console.log(1);
           e.preventDefault();
           e.stopPropagation();
           toggleDescription();

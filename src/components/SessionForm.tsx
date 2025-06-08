@@ -47,7 +47,6 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
     Number(sessionId),
   );
 
-  console.log(campaign);
   const {
     data: session,
     isLoading: sessionLoading,

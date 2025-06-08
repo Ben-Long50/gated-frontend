@@ -80,7 +80,6 @@ const CodexSearch = () => {
             const descMatch = item.description
               ?.toLowerCase()
               .includes(descFilter);
-            console.log(category);
 
             const categoryMatch = item.keywords
               ? !hasCategoryFilter ||

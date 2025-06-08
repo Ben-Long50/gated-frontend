@@ -138,7 +138,7 @@ const Campaign = () => {
             ))}
           </div>
         )}
-        <div className={`mt-28 flex w-full flex-col gap-4`}>
+        <div className={`mt-14 flex w-full flex-col gap-4 sm:mt-28`}>
           <ThemeContainer borderColor={accentPrimary} chamfer="medium">
             <div className="flex flex-col gap-4 p-4 sm:p-8">
               <div className="grid grid-cols-2 gap-4">
@@ -201,46 +201,48 @@ const Campaign = () => {
             </div>
           </ThemeContainer>
           <Divider className="col-span-2" />
-          <div className="col-span-2 flex flex-col items-start gap-8">
-            {playerCharacters?.length > 0 && (
-              <>
-                <ArrowHeader2 title="Player Characters" />
-                {playerCharacters?.map((character: Character) => (
-                  <CharacterCard
-                    key={character?.id}
-                    character={character}
-                    path={`characters`}
-                  />
-                ))}
-              </>
-            )}
-            {nonPlayerCharacters?.length > 0 && (
-              <>
-                <ArrowHeader2 title="Non-player Characters" />
-                {nonPlayerCharacters?.map((character: Character) => (
-                  <CharacterCard
-                    key={character?.id}
-                    character={character}
-                    path={`characters`}
-                  />
-                ))}
-              </>
-            )}
-          </div>
+          {[...playerCharacters, ...nonPlayerCharacters].length > 0 && (
+            <>
+              <div className="col-span-2 flex flex-col items-start gap-8">
+                {playerCharacters?.length > 0 && (
+                  <>
+                    <ArrowHeader2 title="Player Characters" />
+                    {playerCharacters?.map((character: Character) => (
+                      <CharacterCard
+                        key={character?.id}
+                        character={character}
+                        path={`characters`}
+                      />
+                    ))}
+                  </>
+                )}
+                {nonPlayerCharacters?.length > 0 && (
+                  <>
+                    <ArrowHeader2 title="Non-player Characters" />
+                    {nonPlayerCharacters?.map((character: Character) => (
+                      <CharacterCard
+                        key={character?.id}
+                        character={character}
+                        path={`characters`}
+                      />
+                    ))}
+                  </>
+                )}
+              </div>
+              <Divider />
+            </>
+          )}
 
           {campaign.ownerId === user?.id && (
-            <>
-              <Divider />
-              <Link className="col-start-2" to={`update`}>
-                <BtnRect
-                  className="w-full"
-                  type="button"
-                  ariaLabel="Update campaign"
-                >
-                  Update Campaign
-                </BtnRect>
-              </Link>
-            </>
+            <Link className="col-start-2" to={`update`}>
+              <BtnRect
+                className="w-full"
+                type="button"
+                ariaLabel="Update campaign"
+              >
+                Update Campaign
+              </BtnRect>
+            </Link>
           )}
         </div>
       </div>

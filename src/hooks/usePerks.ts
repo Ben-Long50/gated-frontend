@@ -140,8 +140,6 @@ const usePerks = (attributeTree?: AttributeTree) => {
   }
 
   const filterPerks = (query: string) => {
-    console.log(query);
-
     setQuery(query);
   };
 

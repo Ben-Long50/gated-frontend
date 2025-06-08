@@ -16,7 +16,6 @@ const FormLinkModal = ({
   children: (args: { toggleFormLink: (item: Item) => void }) => ReactNode;
 }) => {
   const toggleFormLink = (targetItem: Item) => {
-    console.log(field.state.value);
     if (!field.state.value.some((item: Item) => item.id === targetItem.id)) {
       field.handleChange([...field.state.value, targetItem]);
     } else {
