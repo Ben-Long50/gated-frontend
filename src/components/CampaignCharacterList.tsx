@@ -1,22 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import CharacterCard from './CharacterCard';
-import BtnRect from './buttons/BtnRect';
-import {
-  Link,
-  useLocation,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Loading from './Loading';
-import ThemeContainer from './ThemeContainer';
-import useSetActiveCharacterMutation from '../hooks/useSetActiveCharacterMutation/useSetActiveCharacterMutation';
-import { useForm } from '@tanstack/react-form';
-import SelectField from './SelectField';
 import { Character } from 'src/types/character';
-import { ThemeContext } from '../contexts/ThemeContext';
-import ArrowHeader2 from './ArrowHeader2';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
+import useCampaignCharactersQuery from 'src/hooks/useCampaignCharactersQuery/useCampaignCharactersQuery';
+import useCharacters from 'src/hooks/useCharacters';
 
 const CampaignCharacterList = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -34,23 +24,23 @@ const CampaignCharacterList = () => {
     }
   }, [searchParams]);
 
+  const { data: campaign, isLoading: campaignLoading } = useCampaignQuery(
+    apiUrl,
+    Number(campaignId),
+  );
+
   const {
-    data: campaign,
-    isLoading,
-    isPending,
-  } = useCampaignQuery(apiUrl, campaignId);
+    playerCharacters,
+    nonPlayerCharacters,
+    isLoading: charactersLoading,
+  } = useCampaignCharactersQuery(
+    apiUrl,
+    campaign?.characters.map((character) => character.id) || [],
+  );
 
-  const playerCharacters =
-    campaign?.characters.filter(
-      (character: Character) => character.playerCharacter === true,
-    ) || [];
+  const isLoading = campaignLoading || charactersLoading;
 
-  const nonPlayerCharacters =
-    campaign?.characters.filter(
-      (character: Character) => character.playerCharacter === false,
-    ) || [];
-
-  if (isLoading || isPending) {
+  if (isLoading) {
     return <Loading />;
   }
 

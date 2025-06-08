@@ -78,9 +78,11 @@ const CampaignAffiliations = () => {
                   field={field}
                   label="Select Entity"
                   options={[
-                    ...(campaign?.factions || []),
-                    ...(campaign?.characters.sort(
-                      (a, b) => a.firstName - b.firstName,
+                    ...(campaign?.factions.sort((a, b) =>
+                      a.name.localeCompare(b.name),
+                    ) || []),
+                    ...(campaign?.characters.sort((a, b) =>
+                      a.firstName.localeCompare(b.firstName),
                     ) || []),
                   ]}
                 />
