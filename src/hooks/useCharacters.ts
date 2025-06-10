@@ -1,8 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Character } from 'src/types/character';
 import useCharacterQueries from './useCharactersQuery/useCharacterQueries';
+import useCharactersQuery from './useCharactersQuery/useCharactersQuery';
 
-const useCharacters = (characterIds: number[]) => {
+const useCharacters = () => {
+  const { data: characterIds, isLoading: idsLoading } = useCharactersQuery();
+
   const { characters, isLoading: charactersLoading } = useCharacterQueries(
     characterIds?.map((character) => character.id) || [],
   );
@@ -58,7 +61,7 @@ const useCharacters = (characterIds: number[]) => {
     filterByQuery,
     filterByCampaign,
     resetList,
-    isLoading: charactersLoading,
+    isLoading: idsLoading || charactersLoading,
   };
 };
 

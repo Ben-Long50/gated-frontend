@@ -17,22 +17,18 @@ import InputField from './InputField';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
 import { Campaign } from 'src/types/campaign';
-import useCharactersQuery from 'src/hooks/useCharactersQuery/useCharactersQuery';
 
 const CharacterList = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
-
-  const { data: characterIds, isLoading: idsLoading } =
-    useCharactersQuery(apiUrl);
 
   const {
     characters,
     activeCharacter,
     filterByCampaign,
     filterByQuery,
-    isLoading: charactersLoading,
-  } = useCharacters(characterIds || []);
+    isLoading,
+  } = useCharacters();
 
   const { data: campaigns } = useCampaignsQuery(apiUrl);
 
@@ -54,8 +50,6 @@ const CharacterList = () => {
       activeForm.reset();
     },
   });
-
-  const isLoading = idsLoading || charactersLoading;
 
   if (isLoading) {
     return <Loading />;

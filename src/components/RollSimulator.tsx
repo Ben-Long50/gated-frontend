@@ -35,7 +35,6 @@ import CharacterPictureRound from './CharacterPictureRound';
 import ArrowHeader2 from './ArrowHeader2';
 import useCharacters from 'src/hooks/useCharacters';
 import { capitalCase } from 'change-case';
-import useCharactersQuery from 'src/hooks/useCharactersQuery/useCharactersQuery';
 
 const RollSimulator = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -48,10 +47,7 @@ const RollSimulator = () => {
     Number(campaignId),
   );
 
-  const { data: characterIds, isLoading: idsLoading } =
-    useCharactersQuery(apiUrl);
-
-  const { activeCharacter } = useCharacters(characterIds || []);
+  const { activeCharacter } = useCharacters();
 
   const { filteredActions: actions } = useActions();
 

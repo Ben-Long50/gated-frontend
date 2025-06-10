@@ -4,7 +4,6 @@ import { useLocation, useParams } from 'react-router-dom';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import FormLayout from 'src/layouts/FormLayout';
-import { Stats } from 'src/types/item';
 import { Keyword } from 'src/types/keyword';
 import TextAreaField from './TextAreaField';
 import PictureField from './form_fields/PictureField';
@@ -30,6 +29,7 @@ import useCharacterQuery from 'src/hooks/useCharacterQuery/useCharacterQuery';
 import useItemStats from 'src/hooks/useItemStats';
 import BtnIcon from './buttons/BtnIcon';
 import { capitalCase } from 'change-case';
+import gradePointMap from '../hooks/gradePointMap';
 
 const ItemModifyForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -49,11 +49,7 @@ const ItemModifyForm = () => {
 
   const { data: character } = useCharacterQuery(Number(characterId));
 
-  const { data: item, isLoading } = useItemQuery(
-    apiUrl,
-    Number(itemId),
-    category,
-  );
+  const { data: item, isLoading } = useItemQuery(Number(itemId));
 
   const deleteItem = useDeleteItemMutation(
     apiUrl,
@@ -81,6 +77,14 @@ const ItemModifyForm = () => {
     itemModifyForm.reset();
   };
 
+  const upgradableStats = item?.stats
+    ? Object.fromEntries(
+        Object.keys(item?.stats)
+          .filter((stat) => gradePointMap[stat])
+          .map((stat) => [stat, 0]),
+      )
+    : {};
+
   const itemModifyForm = useForm({
     defaultValues: {
       id: item?.id ?? null,
@@ -89,9 +93,7 @@ const ItemModifyForm = () => {
       description: item?.description ?? '',
       picture: item?.picture ?? '',
       position: item?.picture?.position ?? { x: 50, y: 50 },
-      modifiedStats:
-        item?.modifiedStats ||
-        Object.fromEntries(Object.keys(item?.stats).map((stat) => [stat, 0])),
+      modifiedStats: item?.modifiedStats || upgradableStats,
       keywords:
         item?.modifiedKeywords ||
         ([] as { keyword: Keyword; value: number | null }[]),
@@ -138,13 +140,8 @@ const ItemModifyForm = () => {
 
   const { itemStats } = useItemStats(item);
 
-  const {
-    gradePointMap,
-    availableGp,
-    upgradePrice,
-    powerLevel,
-    upgradedPowerLevel,
-  } = useGradePoints(itemModifyForm, item);
+  const { availableGp, upgradePrice, powerLevel, upgradedPowerLevel } =
+    useGradePoints(itemModifyForm, item);
 
   itemModifyForm.setFieldValue('upgradePrice', upgradePrice);
 
@@ -273,64 +270,66 @@ const ItemModifyForm = () => {
             </p>
           </div>
           <div className="grid w-full grid-cols-[1fr_auto_auto_auto_auto_auto] items-center gap-x-2 gap-y-6 border-x-2 border-gray-400 border-opacity-50 px-6">
-            {itemStats &&
-              Object.entries(itemStats).map(([stat, value]) => {
-                const exists =
-                  itemModifyForm.getFieldValue(`modifiedStats[${stat}]`) !==
-                  undefined;
-                return (
-                  exists && (
-                    <itemModifyForm.Field
-                      name={`modifiedStats[${stat}]`}
-                      key={stat}
-                    >
-                      {(field) => {
-                        const currentLevel =
-                          field.state.value + item?.stats[stat];
-                        return (
-                          <>
-                            <h4 className="w-full">
-                              {capitalCase(stat)}{' '}
-                              <span className="text-tertiary ml-2 text-base font-normal">
-                                ({gradePointMap[stat](currentLevel + 1)} GP)
-                              </span>
-                            </h4>
-                            <p className="mr-3 font-semibold !text-green-400">
-                              {field.state.value > 0
-                                ? `+${field.state.value}`
-                                : ''}
-                            </p>
-                            <BtnIcon
-                              path={mdiMinus}
-                              active={field.state.value > 0}
-                              onClick={() =>
-                                field.handleChange(field.state.value - 1)
-                              }
-                            />
-                            <p className="min-w-8 text-center">
-                              {value + field.state.value}
-                            </p>
-                            <BtnIcon
-                              path={mdiPlus}
-                              active={
-                                availableGp >= gradePointMap[stat](currentLevel)
-                              }
-                              onClick={() =>
-                                field.handleChange(field.state.value + 1)
-                              }
-                            />
-                            <p className="text-tertiary text-sm">
-                              {item?.modifiedStats &&
-                                item?.modifiedStats[stat] &&
-                                `( ${item?.modifiedStats[stat]} )`}
-                            </p>
-                          </>
-                        );
-                      }}
-                    </itemModifyForm.Field>
-                  )
-                );
-              })}
+            <itemModifyForm.Field name="modifiedStats">
+              {(field) =>
+                Object.keys(field.state.value).map((stat) => (
+                  <itemModifyForm.Field
+                    name={`modifiedStats[${stat}]`}
+                    key={stat}
+                  >
+                    {(subField) => {
+                      const currentLevel =
+                        subField.state.value + item?.stats[stat];
+
+                      const nextLevelGradePoints = gradePointMap[stat](
+                        currentLevel + 1,
+                      );
+
+                      const currentLevelGradePoints =
+                        gradePointMap[stat](currentLevel);
+
+                      return (
+                        <>
+                          <h4 className="w-full">
+                            {capitalCase(stat)}{' '}
+                            <span className="text-tertiary ml-2 text-base font-normal">
+                              ({nextLevelGradePoints} GP)
+                            </span>
+                          </h4>
+                          <p className="mr-3 font-semibold !text-green-400">
+                            {subField.state.value > 0
+                              ? `+${subField.state.value}`
+                              : ''}
+                          </p>
+                          <BtnIcon
+                            path={mdiMinus}
+                            active={subField.state.value > 0}
+                            onClick={() =>
+                              subField.handleChange(subField.state.value - 1)
+                            }
+                          />
+                          <p className="min-w-8 text-center">
+                            {item?.stats[stat] + subField.state.value}
+                          </p>
+                          <BtnIcon
+                            path={mdiPlus}
+                            active={availableGp >= currentLevelGradePoints}
+                            onClick={() =>
+                              subField.handleChange(subField.state.value + 1)
+                            }
+                          />
+                          <p className="text-tertiary text-sm">
+                            {item?.modifiedStats &&
+                              item?.modifiedStats[stat] &&
+                              `( ${item?.modifiedStats[stat]} )`}
+                          </p>
+                        </>
+                      );
+                    }}
+                  </itemModifyForm.Field>
+                ))
+              }
+            </itemModifyForm.Field>
           </div>
           <Divider />
           <KeywordList

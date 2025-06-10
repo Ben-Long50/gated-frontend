@@ -13,8 +13,6 @@ import Icon from '@mdi/react';
 import CharacterIcon from '../icons/CharacterIcon';
 import CharacterPictureRound from '../CharacterPictureRound';
 import useCharacters from 'src/hooks/useCharacters';
-import useCharactersQuery from 'src/hooks/useCharactersQuery/useCharactersQuery';
-import { AuthContext } from 'src/contexts/AuthContext';
 
 const Sidebar = ({
   sidebarVisibility,
@@ -29,14 +27,11 @@ const Sidebar = ({
   navbarRef: RefObject;
   children: ReactNode;
 }) => {
-  const { apiUrl } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
 
   const sidebarRef = useRef(null);
 
-  const { data: characterIds } = useCharactersQuery(apiUrl);
-
-  const { activeCharacter, isLoading } = useCharacters(characterIds || []);
+  const { activeCharacter, isLoading } = useCharacters();
 
   const cartLength = useMemo(() => {
     return Object.values(activeCharacter?.characterCart || {})
