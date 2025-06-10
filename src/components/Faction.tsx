@@ -95,8 +95,6 @@ const Faction = () => {
                   <AffiliationCard
                     key={affiliation.id}
                     affiliation={affiliation}
-                    entityType="faction"
-                    primaryEntity={faction}
                   />
                 ),
               )}
@@ -110,9 +108,6 @@ const Faction = () => {
                   <AffiliationCard
                     key={affiliation.id}
                     affiliation={affiliation}
-                    entityType="character"
-                    primaryEntity={faction}
-                    path="affiliations"
                   />
                 ),
               )}

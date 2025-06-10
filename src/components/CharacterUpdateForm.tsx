@@ -1,8 +1,7 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import InputField from './InputField';
 import { ThemeContext } from '../contexts/ThemeContext';
 import BtnRect from './buttons/BtnRect';
-import AttributeCard from './AttributeCard';
 import { AuthContext } from '../contexts/AuthContext';
 import { useForm, ValidationError } from '@tanstack/react-form';
 import StatBar from './StatBar';
@@ -30,6 +29,8 @@ import NpcPreferenceField from './form_fields/NpcPreferenceField';
 import PictureField from './form_fields/PictureField';
 import useCharacter from 'src/hooks/useCharacter';
 import AttributeField from './form_fields/AttributeField';
+import CyberIcon from './icons/CyberIcon';
+import EquipIcon from './icons/EquipIcon';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -301,150 +302,201 @@ const CharacterUpdateForm = () => {
             </div>
           </div>
         </div>
-        <div
-          className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2' : 'gap-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
+        <characterUpdateForm.Subscribe
+          selector={(state) => state.values.attributes}
         >
-          {character?.stats.currentHealth !== undefined && (
-            <characterUpdateForm.Field name="stats.currentHealth">
-              {(field) => (
-                <StatBar
-                  title="Health"
-                  current={field.state.value}
-                  total={character?.stats.maxHealth}
-                  color={statColorMap['Health']}
-                  cardWidth={cardRef.current?.offsetWidth}
-                  mutation={(value: number) =>
-                    field.handleChange(field.state.value + value)
-                  }
-                  mode="adjustable"
-                >
-                  <HealthIcon className="text-secondary size-8" />
-                </StatBar>
-              )}
-            </characterUpdateForm.Field>
-          )}
-          {character?.stats.currentSanity !== undefined && (
-            <characterUpdateForm.Field name="stats.currentSanity">
-              {(field) => (
-                <StatBar
-                  title="Sanity"
-                  current={field.state.value}
-                  total={character?.stats.maxSanity}
-                  color={statColorMap['Sanity']}
-                  cardWidth={cardRef.current?.offsetWidth}
-                  mutation={(value: number) =>
-                    field.handleChange(field.state.value + value)
-                  }
-                  mode="adjustable"
-                >
-                  <SanityIcon className="text-secondary size-8" />
-                </StatBar>
-              )}
-            </characterUpdateForm.Field>
-          )}
-          <characterUpdateForm.Field
-            name="stats.injuries"
-            validators={{
-              onChange: ({ value }) => {
-                if (value > character?.stats.permanentInjuries) {
-                  return 'Cannot exceed max injuries';
-                } else if (value < 0) {
-                  return 'Injuries cannot be lower than 0';
-                }
-                return undefined;
-              },
-            }}
-          >
-            {(field) => (
-              <>
-                {!mobile && <h4>Injuries</h4>}
-                <div
-                  className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center justify-self-end`}
-                >
-                  {Array.from({
-                    length: character?.stats.permanentInjuries,
-                  }).map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (field.state.value === 1 && index === 0) {
-                          field.handleChange(index);
-                        } else {
-                          field.handleChange(index + 1);
+          {(attributes) => (
+            <>
+              <div
+                className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2' : 'gap-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
+              >
+                {character?.stats.currentHealth !== undefined && (
+                  <characterUpdateForm.Field name="stats.currentHealth">
+                    {(field) => (
+                      <StatBar
+                        title="Health"
+                        current={field.state.value}
+                        total={
+                          character?.stats.maxHealth +
+                          (attributes.violence.skills.threshold.points -
+                            character?.attributes.violence.skills.threshold
+                              .points) *
+                            2
                         }
-                      }}
-                    >
-                      {index < field.state.value ? (
-                        <InjuryIcon
-                          key={index}
-                          className="text-secondary size-7 shrink-0 sm:size-8"
-                        />
-                      ) : (
-                        <Icon
-                          path={mdiCircleOutline}
-                          key={index}
-                          className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
-                        />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </characterUpdateForm.Field>
-          <characterUpdateForm.Field
-            name="stats.insanities"
-            validators={{
-              onChange: ({ value }) => {
-                if (value > character?.stats.permanentInsanities) {
-                  return 'Cannot exceed max insanities';
-                } else if (value < 0) {
-                  return 'Insanities cannot be lower than 0';
-                }
-                return undefined;
-              },
-            }}
-          >
-            {(field) => (
-              <>
-                {!mobile && <h4>Insanities</h4>}
-                <div
-                  className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center justify-self-end`}
-                >
-                  {Array.from({
-                    length: character?.stats.permanentInsanities,
-                  }).map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (field.state.value === 1 && index === 0) {
-                          field.handleChange(index);
-                        } else {
-                          field.handleChange(index + 1);
+                        color={statColorMap['Health']}
+                        cardWidth={cardRef.current?.offsetWidth}
+                        mutation={(value: number) =>
+                          field.handleChange(field.state.value + value)
                         }
-                      }}
-                    >
-                      {index < field.state.value ? (
-                        <InsanityIcon
-                          key={index}
-                          className="text-secondary size-7 shrink-0 sm:size-8"
-                        />
-                      ) : (
-                        <Icon
-                          path={mdiCircleOutline}
-                          key={index}
-                          className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
-                        />
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </characterUpdateForm.Field>
-        </div>
+                        mode="adjustable"
+                      >
+                        <HealthIcon className="text-secondary size-8" />
+                      </StatBar>
+                    )}
+                  </characterUpdateForm.Field>
+                )}
+                {character?.stats.currentSanity !== undefined && (
+                  <characterUpdateForm.Field name="stats.currentSanity">
+                    {(field) => (
+                      <StatBar
+                        title="Sanity"
+                        current={field.state.value}
+                        total={
+                          character?.stats.maxSanity +
+                          (attributes.esoterica.skills.mysticism.points -
+                            character?.attributes.esoterica.skills.mysticism
+                              .points)
+                        }
+                        color={statColorMap['Sanity']}
+                        cardWidth={cardRef.current?.offsetWidth}
+                        mutation={(value: number) =>
+                          field.handleChange(field.state.value + value)
+                        }
+                        mode="adjustable"
+                      >
+                        <SanityIcon className="text-secondary size-8" />
+                      </StatBar>
+                    )}
+                  </characterUpdateForm.Field>
+                )}
+                <StatBar
+                  title="Cyber"
+                  current={
+                    character?.stats.maxCyber +
+                      attributes.cybernetica.skills.chromebits.points || 0
+                  }
+                  total={
+                    character?.stats.maxCyber +
+                    attributes.cybernetica.skills.chromebits.points -
+                    character?.attributes.cybernetica.skills.chromebits.points
+                  }
+                  color="rgb(52 211 153)"
+                  cardWidth={cardRef.current?.offsetWidth}
+                >
+                  <CyberIcon className="text-secondary size-8" />
+                </StatBar>
+                <StatBar
+                  title="Equip"
+                  current={
+                    character?.stats.maxEquip +
+                      attributes.violence.skills.threshold.points || 0
+                  }
+                  total={
+                    character?.stats.maxEquip +
+                    attributes.violence.skills.threshold.points -
+                    character?.attributes.violence.skills.threshold.points
+                  }
+                  color="rgb(251 191 36)"
+                  cardWidth={cardRef.current?.offsetWidth}
+                >
+                  <EquipIcon className="text-secondary size-8" />
+                </StatBar>
+                <characterUpdateForm.Field
+                  name="stats.injuries"
+                  validators={{
+                    onChange: ({ value }) => {
+                      if (value > character?.stats.permanentInjuries) {
+                        return 'Cannot exceed max injuries';
+                      } else if (value < 0) {
+                        return 'Injuries cannot be lower than 0';
+                      }
+                      return undefined;
+                    },
+                  }}
+                >
+                  {(field) => (
+                    <>
+                      {!mobile && <h4>Injuries</h4>}
+                      <div
+                        className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center justify-self-end`}
+                      >
+                        {Array.from({
+                          length: character?.stats.permanentInjuries,
+                        }).map((_, index) => (
+                          <button
+                            key={index}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (field.state.value === 1 && index === 0) {
+                                field.handleChange(index);
+                              } else {
+                                field.handleChange(index + 1);
+                              }
+                            }}
+                          >
+                            {index < field.state.value ? (
+                              <InjuryIcon
+                                key={index}
+                                className="text-secondary size-7 shrink-0 sm:size-8"
+                              />
+                            ) : (
+                              <Icon
+                                path={mdiCircleOutline}
+                                key={index}
+                                className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
+                              />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </characterUpdateForm.Field>
+                <characterUpdateForm.Field
+                  name="stats.insanities"
+                  validators={{
+                    onChange: ({ value }) => {
+                      if (value > character?.stats.permanentInsanities) {
+                        return 'Cannot exceed max insanities';
+                      } else if (value < 0) {
+                        return 'Insanities cannot be lower than 0';
+                      }
+                      return undefined;
+                    },
+                  }}
+                >
+                  {(field) => (
+                    <>
+                      {!mobile && <h4>Insanities</h4>}
+                      <div
+                        className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center justify-self-end`}
+                      >
+                        {Array.from({
+                          length: character?.stats.permanentInsanities,
+                        }).map((_, index) => (
+                          <button
+                            key={index}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (field.state.value === 1 && index === 0) {
+                                field.handleChange(index);
+                              } else {
+                                field.handleChange(index + 1);
+                              }
+                            }}
+                          >
+                            {index < field.state.value ? (
+                              <InsanityIcon
+                                key={index}
+                                className="text-secondary size-7 shrink-0 sm:size-8"
+                              />
+                            ) : (
+                              <Icon
+                                path={mdiCircleOutline}
+                                key={index}
+                                className="text-tertiary size-7 shrink-0 p-1 sm:size-8"
+                              />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </characterUpdateForm.Field>
+              </div>
+            </>
+          )}
+        </characterUpdateForm.Subscribe>
         <ArrowHeader2 title="Attributes and Skills" />
         <AttributeField form={characterUpdateForm} />
         <Divider />
@@ -453,12 +505,18 @@ const CharacterUpdateForm = () => {
           Select the perks associated with your character. Available perks are
           only shown if you meet the attribute and skill point requirements
         </p>
-        <div className="flex flex-col gap-4">
-          <PerkLinkField
-            form={characterUpdateForm}
-            attributeTree={character.attributes}
-          />
-        </div>
+        <characterUpdateForm.Subscribe
+          selector={(state) => state.values.attributes}
+        >
+          {(attributes) => (
+            <div className="flex flex-col gap-4">
+              <PerkLinkField
+                form={characterUpdateForm}
+                attributeTree={attributes}
+              />
+            </div>
+          )}
+        </characterUpdateForm.Subscribe>
         <Divider />
         <div className="flex flex-col gap-4 sm:gap-8">
           <BtnRect

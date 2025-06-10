@@ -44,7 +44,8 @@
     "react-perfect-scrollbar": "^1.5.8",
     "react-router-dom": "^6.23.1",
     "romans": "^3.0.0",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.5",

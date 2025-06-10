@@ -29,6 +29,7 @@ import { Perk } from 'src/types/perk';
 import NpcPreferenceField from './form_fields/NpcPreferenceField';
 import PictureField from './form_fields/PictureField';
 import AttributeField from './form_fields/AttributeField';
+import { useShallow } from 'zustand/react/shallow';
 
 const CharacterForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -100,14 +101,12 @@ const CharacterForm = () => {
 
   const perks = useStore(characterForm.store, (state) => state.values.perks);
 
-  const attributes = characterForm.getFieldValue('attributes');
-
   const { stats } = useStats(
     {
       items: [],
     } as unknown as SortedInventory,
     [],
-    attributes,
+    emptyAttributeTree,
     perks,
   );
 
@@ -227,98 +226,132 @@ const CharacterForm = () => {
             </div>
           </div>
         </div>
-        <div className={`grid w-full grid-cols-[auto_auto_1fr_auto] gap-4`}>
-          <StatBar
-            title="Health"
-            current={stats.maxHealth}
-            total={stats.maxHealth}
-            color="rgb(248 113 113)"
-            cardWidth={cardRef.current?.offsetWidth}
-          >
-            <HealthIcon className="text-secondary size-8" />
-          </StatBar>
-          <StatBar
-            title="Sanity"
-            current={stats.maxSanity}
-            total={stats.maxSanity}
-            color="rgb(96 165 250)"
-            cardWidth={cardRef.current?.offsetWidth}
-          >
-            <SanityIcon className="text-secondary size-8" />
-          </StatBar>
-          <StatBar
-            title="Cyber"
-            current={stats.maxCyber}
-            total={stats.maxCyber}
-            color="rgb(52 211 153)"
-            cardWidth={cardRef.current?.offsetWidth}
-          >
-            <CyberIcon className="text-secondary size-8" />
-          </StatBar>
-          <StatBar
-            title="Equip"
-            current={stats.maxEquip}
-            total={stats.maxEquip}
-            color="rgb(251 191 36)"
-            cardWidth={cardRef.current?.offsetWidth}
-          >
-            <EquipIcon className="text-secondary size-8" />
-          </StatBar>
-        </div>
-        <div className="flex flex-wrap justify-around gap-6">
-          <div className="flex flex-col items-center gap-2" key={'speed'}>
-            {layoutSize !== 'xsmall' && (
-              <h3 className="text-primary text-xl font-semibold tracking-widest">
-                Speed
-              </h3>
-            )}
-            <div className="flex items-center justify-center gap-2">
-              <SpeedIcon className="text-secondary size-8" />
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                {stats.speed}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col items-center gap-2" key={'evasion'}>
-            {layoutSize !== 'xsmall' && (
-              <h3 className="text-primary text-xl font-semibold tracking-widest">
-                Evasion
-              </h3>
-            )}
-            <div className="flex items-center justify-center gap-2">
-              <EvasionIcon className="text-secondary size-8" />
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                {stats.evasion}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col items-center gap-2" key={'armor'}>
-            {layoutSize !== 'xsmall' && (
-              <h3 className="text-primary text-xl font-semibold tracking-widest">
-                Armor
-              </h3>
-            )}
-            <div className="flex items-center justify-center gap-2">
-              <ArmorIcon className="text-secondary size-8" />
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                {stats.armor}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col items-center gap-2" key={'ward'}>
-            {layoutSize !== 'xsmall' && (
-              <h3 className="text-primary text-xl font-semibold tracking-widest sm:text-2xl">
-                Ward
-              </h3>
-            )}
-            <div className="flex items-center justify-center gap-2">
-              <WardIcon className="text-secondary size-8" />
-              <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                {stats.ward}
-              </p>
-            </div>
-          </div>
-        </div>
+        <characterForm.Subscribe selector={(state) => state.values.attributes}>
+          {(attributes) => (
+            <>
+              <div
+                className={`grid w-full grid-cols-[auto_auto_1fr_auto] gap-4`}
+              >
+                <StatBar
+                  title="Health"
+                  current={
+                    stats.maxHealth +
+                      attributes.violence.skills.threshold.points * 2 || 0
+                  }
+                  total={
+                    stats.maxHealth +
+                    attributes.violence.skills.threshold.points * 2
+                  }
+                  color="rgb(248 113 113)"
+                  cardWidth={cardRef.current?.offsetWidth}
+                >
+                  <HealthIcon className="text-secondary size-8" />
+                </StatBar>
+                <StatBar
+                  title="Sanity"
+                  current={
+                    stats.maxSanity +
+                      attributes.esoterica.skills.mysticism.points || 0
+                  }
+                  total={
+                    stats.maxSanity +
+                    attributes.esoterica.skills.mysticism.points
+                  }
+                  color="rgb(96 165 250)"
+                  cardWidth={cardRef.current?.offsetWidth}
+                >
+                  <SanityIcon className="text-secondary size-8" />
+                </StatBar>
+                <StatBar
+                  title="Cyber"
+                  current={
+                    stats.maxCyber +
+                      attributes.cybernetica.skills.chromebits.points || 0
+                  }
+                  total={
+                    stats.maxCyber +
+                    attributes.cybernetica.skills.chromebits.points
+                  }
+                  color="rgb(52 211 153)"
+                  cardWidth={cardRef.current?.offsetWidth}
+                >
+                  <CyberIcon className="text-secondary size-8" />
+                </StatBar>
+                <StatBar
+                  title="Equip"
+                  current={
+                    stats.maxEquip +
+                      attributes.violence.skills.threshold.points || 0
+                  }
+                  total={
+                    stats.maxEquip + attributes.violence.skills.threshold.points
+                  }
+                  color="rgb(251 191 36)"
+                  cardWidth={cardRef.current?.offsetWidth}
+                >
+                  <EquipIcon className="text-secondary size-8" />
+                </StatBar>
+              </div>
+              <div className="flex flex-wrap justify-around gap-6">
+                <div className="flex flex-col items-center gap-2" key={'speed'}>
+                  {layoutSize !== 'xsmall' && (
+                    <h3 className="text-primary text-xl font-semibold tracking-widest">
+                      Speed
+                    </h3>
+                  )}
+                  <div className="flex items-center justify-center gap-2">
+                    <SpeedIcon className="text-secondary size-8" />
+                    <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                      {stats.speed + attributes.violence.skills.assault.points}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className="flex flex-col items-center gap-2"
+                  key={'evasion'}
+                >
+                  {layoutSize !== 'xsmall' && (
+                    <h3 className="text-primary text-xl font-semibold tracking-widest">
+                      Evasion
+                    </h3>
+                  )}
+                  <div className="flex items-center justify-center gap-2">
+                    <EvasionIcon className="text-secondary size-8" />
+                    <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                      {stats.evasion}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center gap-2" key={'armor'}>
+                  {layoutSize !== 'xsmall' && (
+                    <h3 className="text-primary text-xl font-semibold tracking-widest">
+                      Armor
+                    </h3>
+                  )}
+                  <div className="flex items-center justify-center gap-2">
+                    <ArmorIcon className="text-secondary size-8" />
+                    <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                      {stats.armor}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-col items-center gap-2" key={'ward'}>
+                  {layoutSize !== 'xsmall' && (
+                    <h3 className="text-primary text-xl font-semibold tracking-widest sm:text-2xl">
+                      Ward
+                    </h3>
+                  )}
+                  <div className="flex items-center justify-center gap-2">
+                    <WardIcon className="text-secondary size-8" />
+                    <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
+                      {stats.ward}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </characterForm.Subscribe>
         <Divider />
         <ArrowHeader2 title="Attributes and skills" />
         <div className="flex w-full flex-col gap-3 border-l-2 border-gray-400 border-opacity-50 pl-4">
