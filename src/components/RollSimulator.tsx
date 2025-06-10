@@ -47,7 +47,7 @@ const RollSimulator = () => {
     Number(campaignId),
   );
 
-  const { activeCharacter } = useCharacters();
+  const { activeCharacter, isLoading: charactersLoading } = useCharacters();
 
   const { filteredActions: actions } = useActions();
 
@@ -81,7 +81,7 @@ const RollSimulator = () => {
 
   const { emptyAttributeTree } = useAttributeTree();
 
-  if (campaignLoading || idsLoading) return <Loading />;
+  if (campaignLoading || charactersLoading) return <Loading />;
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-8">
@@ -352,29 +352,30 @@ const RollSimulator = () => {
                     state.values.modifiers,
                   ]}
                 >
-                  {([attribute, skill, dice, modifiers]) => (
-                    <>
-                      <DieIcon className="text-secondary size-10" />
-                      <Icon
-                        className="text-primary"
-                        path={mdiTriangleDown}
-                        size={0.375}
-                        rotate={-90}
-                      />
-                      <h2 className="pt-1">
-                        {skill
-                          ? activeCharacter?.attributes[attribute]?.points +
-                            activeCharacter?.attributes[attribute]?.skills[
-                              skill
-                            ].points +
-                            dice +
-                            (modifiers?.includes('push') ? 2 : 0)
-                          : activeCharacter?.attributes[attribute]?.points +
+                  {([attribute, skill, dice, modifiers]) => {
+                    const attributePoints =
+                      activeCharacter?.attributes[attribute]?.points || 0;
+                    const skillPoints =
+                      activeCharacter?.attributes[attribute]?.skills[skill]
+                        ?.points || 0;
+                    return (
+                      <>
+                        <DieIcon className="text-secondary size-10" />
+                        <Icon
+                          className="text-primary"
+                          path={mdiTriangleDown}
+                          size={0.375}
+                          rotate={-90}
+                        />
+                        <h2 className="pt-1">
+                          {attributePoints +
+                            skillPoints +
                             dice +
                             (modifiers?.includes('push') ? 2 : 0)}
-                      </h2>
-                    </>
-                  )}
+                        </h2>
+                      </>
+                    );
+                  }}
                 </rollForm.Subscribe>
               </div>
               <BtnRect
