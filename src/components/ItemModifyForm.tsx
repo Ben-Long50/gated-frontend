@@ -93,7 +93,7 @@ const ItemModifyForm = () => {
       description: item?.description ?? '',
       picture: item?.picture ?? '',
       position: item?.picture?.position ?? { x: 50, y: 50 },
-      modifiedStats: item?.modifiedStats || upgradableStats,
+      modifiedStats: { ...upgradableStats, ...item?.modifiedStats },
       keywords:
         item?.modifiedKeywords ||
         ([] as { keyword: Keyword; value: number | null }[]),
@@ -137,8 +137,6 @@ const ItemModifyForm = () => {
       },
     },
   });
-
-  const { itemStats } = useItemStats(item);
 
   const { availableGp, upgradePrice, powerLevel, upgradedPowerLevel } =
     useGradePoints(itemModifyForm, item);
