@@ -56,51 +56,53 @@ const AttributeCard = ({
         </div>
       </div>
       <div className="flex flex-col gap-2 border-l-2 border-gray-400 border-opacity-50 pl-4">
-        {Object.entries(skills).map(([skill, { points }]) => (
-          <li
-            className="flex w-full flex-wrap items-center justify-between gap-1"
-            key={skill}
-          >
-            <h4>{capitalCase(skill)}</h4>
-            <div className="flex gap-2 sm:gap-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index}>
-                  {mobile ? (
-                    index < points ? (
+        {Object.entries(skills)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([skill, { points }]) => (
+            <li
+              className="flex w-full flex-wrap items-center justify-between gap-1"
+              key={skill}
+            >
+              <h4>{capitalCase(skill)}</h4>
+              <div className="flex gap-2 sm:gap-4">
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div key={index}>
+                    {mobile ? (
+                      index < points ? (
+                        <Icon
+                          key={index}
+                          className="text-primary"
+                          path={mdiCircle}
+                          size={0.7}
+                        />
+                      ) : (
+                        <Icon
+                          key={index}
+                          className="text-tertiary"
+                          path={mdiCircleOutline}
+                          size={0.7}
+                        />
+                      )
+                    ) : index < points ? (
                       <Icon
                         key={index}
+                        path={mdiSquare}
+                        size={1}
                         className="text-primary"
-                        path={mdiCircle}
-                        size={0.7}
                       />
                     ) : (
                       <Icon
                         key={index}
+                        path={mdiSquareOutline}
+                        size={1}
                         className="text-tertiary"
-                        path={mdiCircleOutline}
-                        size={0.7}
                       />
-                    )
-                  ) : index < points ? (
-                    <Icon
-                      key={index}
-                      path={mdiSquare}
-                      size={1}
-                      className="text-primary"
-                    />
-                  ) : (
-                    <Icon
-                      key={index}
-                      path={mdiSquareOutline}
-                      size={1}
-                      className="text-tertiary"
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          </li>
-        ))}
+                    )}
+                  </div>
+                ))}
+              </div>
+            </li>
+          ))}
       </div>
     </>
   );

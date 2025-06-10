@@ -81,8 +81,9 @@ const AttributeField = ({ form }: { form: FormApi }) => {
                     </div>
                     <div>
                       <div className="flex flex-col gap-2 border-l-2 border-gray-400 border-opacity-50 pl-4">
-                        {Object.keys(subfield.state.value.skills).map(
-                          (skill) => (
+                        {Object.keys(subfield.state.value.skills)
+                          .sort((a, b) => a.localeCompare(b))
+                          .map((skill) => (
                             <div
                               key={skill}
                               className="flex items-center justify-between gap-4"
@@ -146,8 +147,7 @@ const AttributeField = ({ form }: { form: FormApi }) => {
                                 )}
                               </form.Field>
                             </div>
-                          ),
-                        )}
+                          ))}
                       </div>
                     </div>
                   </div>
