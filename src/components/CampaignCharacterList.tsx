@@ -34,7 +34,6 @@ const CampaignCharacterList = () => {
     nonPlayerCharacters,
     isLoading: charactersLoading,
   } = useCampaignCharactersQuery(
-    apiUrl,
     campaign?.characters.map((character) => character.id) || [],
   );
 
@@ -54,11 +53,15 @@ const CampaignCharacterList = () => {
       <div className="grid w-full grid-flow-row gap-10">
         {characters === 'playerCharacters' &&
           playerCharacters?.map((character: Character) => {
-            return <CharacterCard key={character.id} character={character} />;
+            return (
+              <CharacterCard key={character.id} characterId={character.id} />
+            );
           })}
         {characters === 'nonPlayerCharacters' &&
           nonPlayerCharacters?.map((character: Character) => {
-            return <CharacterCard key={character.id} character={character} />;
+            return (
+              <CharacterCard key={character.id} characterId={character.id} />
+            );
           })}
       </div>
     </div>

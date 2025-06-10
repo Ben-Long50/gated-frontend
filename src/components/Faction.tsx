@@ -11,6 +11,7 @@ import BtnAuth from './buttons/BtnAuth';
 import AffiliationCard from './AffiliationCard';
 import CoverPicture from './CoverPicture';
 import useAffiliationQueries from 'src/hooks/useAffiliationQueries/useAffiliationQueries';
+import Campaign from './Campaign';
 
 const Faction = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -24,7 +25,6 @@ const Faction = () => {
 
   const { data: affiliations, isLoading: affiliationsLoading } =
     useAffiliationQueries(
-      apiUrl,
       faction?.affiliations.map((affiliation: Affiliation) => affiliation.id) ||
         [],
     );
@@ -119,16 +119,17 @@ const Faction = () => {
             </>
           )}
         </div>
-
-        <Link className="w-full" to={`update`}>
-          <BtnRect
-            ariaLabel="Update faction information"
-            className="w-full sm:w-1/2 sm:justify-self-end"
-            type="button"
-          >
-            Update faction info
-          </BtnRect>
-        </Link>
+        {user?.id === faction.campaign.ownerId && (
+          <Link className="w-full" to={`update`}>
+            <BtnRect
+              ariaLabel="Update faction information"
+              className="w-full sm:w-1/2 sm:justify-self-end"
+              type="button"
+            >
+              Update faction info
+            </BtnRect>
+          </Link>
+        )}
       </div>
     </>
   );

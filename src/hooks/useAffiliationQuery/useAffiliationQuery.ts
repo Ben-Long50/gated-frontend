@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import getCampaign from './getAffiliation';
+import getAffiliation from './getAffiliation';
 
-const useAffiliationQuery = (apiUrl: string, affiliationId: number) => {
+const useAffiliationQuery = (affiliationId: number) => {
   return useQuery({
     queryKey: ['affiliation', affiliationId],
-    queryFn: async () => await getCampaign(apiUrl, affiliationId),
+    queryFn: () => getAffiliation.fetch(affiliationId),
     throwOnError: false,
     enabled: !!affiliationId,
   });

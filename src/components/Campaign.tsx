@@ -21,7 +21,6 @@ import { Faction } from 'src/types/faction';
 import BtnRect from './buttons/BtnRect';
 import useJoinCampaignMutation from '../hooks/useJoinCampaignMutation/useJoinCampaignMutation';
 import ArrowHeader3 from './ArrowHeader3';
-import useCampaignCharactersQuery from 'src/hooks/useCampaignCharactersQuery/useCampaignCharactersQuery';
 import CoverPicture from './CoverPicture';
 import { capitalCase } from 'change-case';
 import { LayoutContext } from 'src/contexts/LayoutContext';
@@ -207,42 +206,35 @@ const Campaign = () => {
                 {playerCharacters?.length > 0 && (
                   <>
                     <ArrowHeader2 title="Player Characters" />
-                    {playerCharacters?.map((character: Character) => (
-                      <CharacterCard
-                        key={character?.id}
-                        character={character}
-                        path={`characters`}
-                      />
+                    {playerCharacters?.map((character: Character, index) => (
+                      <CharacterCard key={index} characterId={character.id} />
                     ))}
                   </>
                 )}
                 {nonPlayerCharacters?.length > 0 && (
                   <>
                     <ArrowHeader2 title="Non-player Characters" />
-                    {nonPlayerCharacters?.map((character: Character) => (
-                      <CharacterCard
-                        key={character?.id}
-                        character={character}
-                        path={`characters`}
-                      />
+                    {nonPlayerCharacters?.map((character: Character, index) => (
+                      <CharacterCard key={index} characterId={character.id} />
                     ))}
                   </>
                 )}
               </div>
-              <Divider />
             </>
           )}
-
           {campaign.ownerId === user?.id && (
-            <Link className="col-start-2" to={`update`}>
-              <BtnRect
-                className="w-full"
-                type="button"
-                ariaLabel="Update campaign"
-              >
-                Update Campaign
-              </BtnRect>
-            </Link>
+            <>
+              <Divider />
+              <Link className="col-start-2" to={`update`}>
+                <BtnRect
+                  className="w-full"
+                  type="button"
+                  ariaLabel="Update campaign"
+                >
+                  Update Campaign
+                </BtnRect>
+              </Link>
+            </>
           )}
         </div>
       </div>

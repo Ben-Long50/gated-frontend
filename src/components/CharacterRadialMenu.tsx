@@ -35,7 +35,7 @@ const CharacterRadialMenu = ({
   const location = useLocation();
   const parts = location.pathname.split('/');
 
-  const { filteredCharacter } = useCharacter(character);
+  const { filteredCharacter } = useCharacter(character.id);
 
   const editProfits = useProfitsMutation(apiUrl, character.id);
 

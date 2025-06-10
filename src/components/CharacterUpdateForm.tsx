@@ -5,7 +5,6 @@ import BtnRect from './buttons/BtnRect';
 import AttributeCard from './AttributeCard';
 import { AuthContext } from '../contexts/AuthContext';
 import { useForm, ValidationError } from '@tanstack/react-form';
-import useAttributeTree from '../hooks/useAttributeTree';
 import StatBar from './StatBar';
 import usePerks from '../hooks/usePerks';
 import Icon from '@mdi/react';
@@ -18,7 +17,6 @@ import useUpdateCharacterMutation from '../hooks/useCharacterUpdateMutation/useC
 import useDeleteCharacterMutation from '../hooks/useDeleteCharacterMutation/useDeleteCharacterMutation';
 import Loading from './Loading';
 import FormLayout from '../layouts/FormLayout';
-import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import { Perk } from 'src/types/perk';
 import InputFieldRadio from './InputFieldRadio';
 import ArrowHeader2 from './ArrowHeader2';
@@ -31,6 +29,7 @@ import PerkLinkField from './form_fields/PerkLinkField';
 import NpcPreferenceField from './form_fields/NpcPreferenceField';
 import PictureField from './form_fields/PictureField';
 import useCharacter from 'src/hooks/useCharacter';
+import AttributeField from './form_fields/AttributeField';
 
 const CharacterUpdateForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -49,22 +48,15 @@ const CharacterUpdateForm = () => {
   } = useCampaignsQuery(apiUrl);
 
   const {
-    data: character,
+    filteredCharacter: character,
     isLoading: characterLoading,
     isPending: characterPending,
-  } = useCharacterQuery(apiUrl, Number(characterId));
+  } = useCharacter(Number(characterId));
 
-  const {
-    filteredCharacter,
-    isLoading: inventoryLoading,
-    isPending: inventoryPending,
-  } = useCharacter(character);
+  const isLoading = characterLoading || campaignsLoading;
+  const isPending = characterPending || campaignsPending;
 
-  const isLoading = characterLoading || campaignsLoading || inventoryLoading;
-  const isPending = characterPending || campaignsPending || inventoryPending;
-
-  const attributeTree = useAttributeTree(filteredCharacter?.attributes);
-  const perks = usePerks(attributeTree?.tree);
+  const perks = usePerks(character?.attributes);
 
   const updateCharacter = useUpdateCharacterMutation(
     apiUrl,
@@ -87,46 +79,48 @@ const CharacterUpdateForm = () => {
 
   const characterUpdateForm = useForm({
     defaultValues: {
-      playerCharacter: filteredCharacter?.playerCharacter ?? '',
-      campaignId: filteredCharacter?.campaign ?? null,
+      playerCharacter: character?.playerCharacter ?? '',
+      campaignId: character?.campaign ?? null,
       preferences: {
-        firstName: filteredCharacter?.preferences?.firstName ?? true,
-        lastName: filteredCharacter?.preferences?.lastName ?? true,
-        age: filteredCharacter?.preferences?.age ?? true,
-        height: filteredCharacter?.preferences?.height ?? true,
-        weight: filteredCharacter?.preferences?.weight ?? true,
-        sex: filteredCharacter?.preferences?.sex ?? true,
-        picture: filteredCharacter?.preferences?.picture ?? true,
-        backstory: filteredCharacter?.preferences?.backstory ?? true,
-        level: filteredCharacter?.preferences?.level ?? true,
-        profits: filteredCharacter?.preferences?.profits ?? true,
-        stats: filteredCharacter?.preferences?.stats ?? true,
-        attributes: filteredCharacter?.preferences?.attributes ?? true,
-        perks: filteredCharacter?.preferences?.perks ?? true,
-        equipment: filteredCharacter?.preferences?.equipment ?? true,
+        firstName: character?.preferences?.firstName ?? true,
+        lastName: character?.preferences?.lastName ?? true,
+        age: character?.preferences?.age ?? true,
+        height: character?.preferences?.height ?? true,
+        weight: character?.preferences?.weight ?? true,
+        sex: character?.preferences?.sex ?? true,
+        picture: character?.preferences?.picture ?? true,
+        backstory: character?.preferences?.backstory ?? true,
+        level: character?.preferences?.level ?? true,
+        profits: character?.preferences?.profits ?? true,
+        stats: character?.preferences?.stats ?? true,
+        attributes: character?.preferences?.attributes ?? true,
+        perks: character?.preferences?.perks ?? true,
+        equipment: character?.preferences?.equipment ?? true,
       },
-      firstName: filteredCharacter?.firstName ?? '',
-      lastName: filteredCharacter?.lastName ?? '',
-      level: filteredCharacter?.level ?? '',
-      profits: filteredCharacter?.profits ?? '',
+      firstName: character?.firstName ?? '',
+      lastName: character?.lastName ?? '',
+      level: character?.level ?? '',
+      profits: character?.profits ?? '',
       stats: {
-        currentHealth: filteredCharacter?.stats.currentHealth ?? '',
-        currentSanity: filteredCharacter?.stats.currentSanity ?? '',
-        injuries: filteredCharacter?.stats.injuries ?? '',
-        insanities: filteredCharacter?.stats.insanities ?? '',
+        currentHealth: character?.stats.currentHealth ?? '',
+        currentSanity: character?.stats.currentSanity ?? '',
+        injuries: character?.stats.injuries ?? '',
+        insanities: character?.stats.insanities ?? '',
       },
-      picture: filteredCharacter?.picture ?? '',
-      position: filteredCharacter?.picture?.position ?? { x: 50, y: 50 },
-      height: filteredCharacter?.height ?? '',
-      weight: filteredCharacter?.weight ?? '',
-      age: filteredCharacter?.age ?? '',
-      sex: filteredCharacter?.sex ?? '',
-      attributes: filteredCharacter?.attributes ?? '',
-      perks: filteredCharacter?.perks ?? ([] as Perk[]),
+      picture: character?.picture ?? '',
+      position: character?.picture?.position ?? { x: 50, y: 50 },
+      height: character?.height ?? '',
+      weight: character?.weight ?? '',
+      age: character?.age ?? '',
+      sex: character?.sex ?? '',
+      attributes: character?.attributes ?? '',
+      perks: character?.perks ?? ([] as Perk[]),
     },
     onSubmit: async ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
+
       const formData = new FormData();
+
       Object.entries(value).forEach(([key, val]) => {
         if (key === 'perks') {
           const perkIds = val.map((perk: Perk) => perk.id) || [];
@@ -144,10 +138,6 @@ const CharacterUpdateForm = () => {
       updateCharacter.mutate(formData);
     },
   });
-
-  useEffect(() => {
-    characterUpdateForm.setFieldValue('attributes', attributeTree.tree);
-  }, [attributeTree, characterUpdateForm]);
 
   if (perks.isLoading || perks.isPending || isLoading || isPending) {
     return <Loading />;
@@ -314,13 +304,13 @@ const CharacterUpdateForm = () => {
         <div
           className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2' : 'gap-4'} grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
         >
-          {filteredCharacter?.stats.currentHealth !== undefined && (
+          {character?.stats.currentHealth !== undefined && (
             <characterUpdateForm.Field name="stats.currentHealth">
               {(field) => (
                 <StatBar
                   title="Health"
                   current={field.state.value}
-                  total={filteredCharacter?.stats.maxHealth}
+                  total={character?.stats.maxHealth}
                   color={statColorMap['Health']}
                   cardWidth={cardRef.current?.offsetWidth}
                   mutation={(value: number) =>
@@ -333,13 +323,13 @@ const CharacterUpdateForm = () => {
               )}
             </characterUpdateForm.Field>
           )}
-          {filteredCharacter?.stats.currentSanity !== undefined && (
+          {character?.stats.currentSanity !== undefined && (
             <characterUpdateForm.Field name="stats.currentSanity">
               {(field) => (
                 <StatBar
                   title="Sanity"
                   current={field.state.value}
-                  total={filteredCharacter?.stats.maxSanity}
+                  total={character?.stats.maxSanity}
                   color={statColorMap['Sanity']}
                   cardWidth={cardRef.current?.offsetWidth}
                   mutation={(value: number) =>
@@ -356,7 +346,7 @@ const CharacterUpdateForm = () => {
             name="stats.injuries"
             validators={{
               onChange: ({ value }) => {
-                if (value > filteredCharacter?.stats.permanentInjuries) {
+                if (value > character?.stats.permanentInjuries) {
                   return 'Cannot exceed max injuries';
                 } else if (value < 0) {
                   return 'Injuries cannot be lower than 0';
@@ -372,9 +362,10 @@ const CharacterUpdateForm = () => {
                   className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center justify-self-end`}
                 >
                   {Array.from({
-                    length: filteredCharacter?.stats.permanentInjuries,
+                    length: character?.stats.permanentInjuries,
                   }).map((_, index) => (
                     <button
+                      key={index}
                       onClick={(e) => {
                         e.preventDefault();
                         if (field.state.value === 1 && index === 0) {
@@ -406,7 +397,7 @@ const CharacterUpdateForm = () => {
             name="stats.insanities"
             validators={{
               onChange: ({ value }) => {
-                if (value > filteredCharacter?.stats.permanentInsanities) {
+                if (value > character?.stats.permanentInsanities) {
                   return 'Cannot exceed max insanities';
                 } else if (value < 0) {
                   return 'Insanities cannot be lower than 0';
@@ -422,9 +413,10 @@ const CharacterUpdateForm = () => {
                   className={`${mobile ? 'col-span-4 gap-0' : 'col-span-3 gap-2'} flex grow items-center justify-self-end`}
                 >
                   {Array.from({
-                    length: filteredCharacter?.stats.permanentInsanities,
+                    length: character?.stats.permanentInsanities,
                   }).map((_, index) => (
                     <button
+                      key={index}
                       onClick={(e) => {
                         e.preventDefault();
                         if (field.state.value === 1 && index === 0) {
@@ -454,20 +446,7 @@ const CharacterUpdateForm = () => {
           </characterUpdateForm.Field>
         </div>
         <ArrowHeader2 title="Attributes and Skills" />
-        <div className="flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
-          {Object.entries(attributeTree.tree).map(
-            ([attribute, { points, skills }]) => (
-              <div key={attribute}>
-                <AttributeCard
-                  attribute={attribute}
-                  points={points}
-                  skills={skills}
-                  updatePoints={attributeTree.updatePoints}
-                />
-              </div>
-            ),
-          )}
-        </div>
+        <AttributeField form={characterUpdateForm} />
         <Divider />
         <ArrowHeader2 title="Manage Perks" />
         <p className="text-secondary border-l-2 border-gray-400 border-opacity-50 pl-4">
@@ -477,7 +456,7 @@ const CharacterUpdateForm = () => {
         <div className="flex flex-col gap-4">
           <PerkLinkField
             form={characterUpdateForm}
-            attributeTree={attributeTree.tree}
+            attributeTree={character.attributes}
           />
         </div>
         <Divider />

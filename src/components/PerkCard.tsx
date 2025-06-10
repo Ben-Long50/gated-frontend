@@ -14,17 +14,15 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
 
-  const attributePoints = Object.entries(perk.requirements).map(
-    ([attribute, { points, skills }]) => [attribute, Number(points)],
-  ) as [string, number][];
+  const attributes = Object.entries(perk.attributes)
+    .map(([attribute, { points }]) => [attribute, points])
+    .filter(([_, points]) => points > 0);
 
-  const skillPoints = Object.entries(perk.requirements).flatMap(
-    ([attribute, { points, skills }]) =>
-      Object.entries(skills).map(([skill, points]) => [
-        skill,
-        Number(points.points),
-      ]),
-  ) as [string, number][];
+  const skills = Object.values(perk.attributes).flatMap(({ skills }) =>
+    Object.entries(skills)
+      .map(([skill, points]) => [skill, points.points])
+      .filter(([_, points]) => points > 0),
+  );
 
   return (
     <ItemCardSmall
@@ -32,20 +30,20 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
         <div className="flex w-full items-center justify-between gap-4 pr-3">
           <h3>{perk.name}</h3>
           <div className="ml-auto flex flex-col items-end justify-center gap-1">
-            {attributePoints.map(([attribute, points]) => {
+            {attributes.map(([attribute, points]) => {
               return (
                 <div className="flex items-center gap-2" key={attribute}>
                   {Array.from({ length: points }).map((_, index) => (
                     <Icon
                       key={index}
                       path={mdiCircle}
-                      className="size-6 text-yellow-300"
+                      className="text-accent size-6"
                     />
                   ))}
                 </div>
               );
             })}
-            {skillPoints.map(([skill, points]) => {
+            {skills.map(([skill, points]) => {
               return (
                 <div className="flex items-center gap-1" key={skill}>
                   {points === 4 ? (
@@ -57,7 +55,7 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
                       <Icon
                         key={index}
                         path={mdiCircle}
-                        className="size-4 shrink-0 text-gray-200"
+                        className="text-secondary size-4 shrink-0"
                       />
                     ))
                   )}
@@ -75,50 +73,44 @@ const PerkCard = ({ perk, mode }: { perk: Perk; mode?: string }) => {
         </div>
       }
     >
-      <div className="list-disc">
-        {Object.entries(perk.requirements).length === 0 ? (
-          <ArrowHeader4 title="No skill requirements" />
-        ) : (
-          attributePoints.map(([attribute, points]) => (
-            <li key={attribute} className="flex flex-col gap-2">
-              {points > 0 && (
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center justify-between">
-                    <ArrowHeader4 title={capitalCase(attribute)} />
-                  </div>
-                  <div className="flex gap-2">
-                    {Array.from({ length: points }).map((_, index) => (
-                      <Icon
-                        key={index}
-                        path={mdiSquare}
-                        size={1}
-                        color={accentPrimary}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-              {skillPoints.map(([skill, points]) => {
-                return (
-                  <div key={skill} className="flex items-center gap-2">
-                    <ArrowHeader4 title={capitalCase(skill)} />
-                    <div className="flex gap-2">
-                      {Array.from({ length: points }).map((_, index) => (
-                        <Icon
-                          className="text-primary"
-                          key={index}
-                          path={mdiSquare}
-                          size={1}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </li>
-          ))
-        )}
-      </div>
+      {attributes.length === 0 && skills.length === 0 ? (
+        <ArrowHeader4 title="No skill requirements" />
+      ) : (
+        <div>
+          {attributes.map(([attribute, points]) => (
+            <div key={attribute} className="flex items-center gap-2">
+              <div className="flex items-center justify-between">
+                <ArrowHeader4 title={capitalCase(attribute)} />
+              </div>
+              <div className="flex gap-2">
+                {Array.from({ length: points }).map((_, index) => (
+                  <Icon
+                    key={index}
+                    path={mdiSquare}
+                    size={1}
+                    color={accentPrimary}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+          {skills.map(([skill, points]) => (
+            <div key={skill} className="flex items-center gap-2">
+              <ArrowHeader4 title={capitalCase(skill)} />
+              <div className="flex gap-2">
+                {Array.from({ length: points }).map((_, index) => (
+                  <Icon
+                    className="text-primary"
+                    key={index}
+                    path={mdiSquare}
+                    size={1}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
       <p className="text-secondary">{perk.description}</p>
       {perk.modifiers && (
         <div className="flex flex-col gap-4">

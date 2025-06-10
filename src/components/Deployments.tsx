@@ -6,7 +6,6 @@ import { useLocation, useParams } from 'react-router-dom';
 import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
 import InventoryModal from './InventoryModal';
-import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import DeploymentsList from './DeploymentsList';
 import ThemeContainer from './ThemeContainer';
 import ItemPicture from './ItemPicture';
@@ -21,7 +20,7 @@ import { DroneControls, VehicleControls } from './ItemCardControls';
 import useItemStats from 'src/hooks/useItemStats';
 
 const Deployments = () => {
-  const { apiUrl, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { characterId } = useParams();
@@ -55,41 +54,39 @@ const Deployments = () => {
   };
 
   const {
-    data: character,
+    filteredCharacter: character,
     isLoading,
     isPending,
-  } = useCharacterQuery(apiUrl, Number(characterId));
-
-  const { filteredCharacter } = useCharacter(character);
+  } = useCharacter(Number(characterId));
 
   const activeItem = useMemo(() => {
     switch (active?.category) {
       case 'vehicle':
         return (
-          filteredCharacter?.equipment?.vehicles.filter(
+          character?.equipment?.vehicles.filter(
             (vehicle: Item) => vehicle.id === active.id,
           )[0] || null
         );
       case 'drone':
         return (
-          filteredCharacter?.equipment?.drones.filter(
+          character?.equipment?.drones.filter(
             (drone: Item) => drone.id === active.id,
           )[0] || null
         );
       default:
         return null;
     }
-  }, [active, filteredCharacter]);
+  }, [active, character]);
 
   const weapons = useMemo(() => {
     return (
-      filteredCharacter?.equipment?.weapons.filter((weapon: Item) =>
+      character?.equipment?.weapons.filter((weapon: Item) =>
         activeItem?.itemLinkReference?.items.some(
           (item: Item) => item.id === weapon.id,
         ),
       ) || []
     );
-  }, [activeItem, filteredCharacter]);
+  }, [activeItem, character]);
 
   const cardRef = useRef(null);
   const [cardHeight, setCardHeight] = useState<number | null>(null);
@@ -195,7 +192,7 @@ const Deployments = () => {
                 </BtnRect>
                 <InventoryModal
                   character={character}
-                  inventory={filteredCharacter.inventory}
+                  inventory={character.inventory}
                   active={active}
                   toggleModal={toggleInventoryOpen}
                   toggleActive={toggleActive}
@@ -205,7 +202,7 @@ const Deployments = () => {
             )}
           </div>
           <DeploymentsList
-            equipment={filteredCharacter.equipment}
+            equipment={character.equipment}
             active={active}
             toggleActive={toggleActive}
           />

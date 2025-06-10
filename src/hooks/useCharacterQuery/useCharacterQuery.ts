@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import getCharacter from './getCharacter';
 import { Character } from 'src/types/character';
 
-const useCharacterQuery = (apiUrl: string, characterId: number) => {
+const useCharacterQuery = (characterId: number) => {
   return useQuery<Character>({
-    queryKey: ['character', Number(characterId)],
-    queryFn: async () => await getCharacter(apiUrl, characterId),
+    queryKey: ['character', characterId],
+    queryFn: () => getCharacter.fetch(characterId),
     throwOnError: false,
     enabled: !!characterId,
   });

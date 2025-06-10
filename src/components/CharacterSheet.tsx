@@ -16,7 +16,6 @@ import BtnRect from './buttons/BtnRect';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
 import Loading from './Loading';
-import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import ArrowHeader2 from './ArrowHeader2';
 import ArrowHeader1 from './ArrowHeader1';
 import ArrowHeader3 from './ArrowHeader3';
@@ -30,7 +29,7 @@ import { capitalCase } from 'change-case';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { apiUrl, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
 
   const [infoVisibility, setInfoVisibility] = useState(mobile ? false : true);
@@ -40,32 +39,18 @@ const CharacterSheet = () => {
   const { characterId } = useParams();
 
   const {
-    data: character,
-    isLoading: characterLoading,
-    isPending: characterPending,
-    isError: characterError,
-  } = useCharacterQuery(apiUrl, Number(characterId));
-
-  const {
-    filteredCharacter,
-    isLoading: inventoryLoading,
-    isPending: inventoryPending,
-  } = useCharacter(character);
-
-  const isLoading = characterLoading || inventoryLoading;
-  const isPending = characterPending || inventoryPending;
+    filteredCharacter: character,
+    isLoading,
+    isPending,
+  } = useCharacter(Number(characterId));
 
   const height =
-    typeof filteredCharacter.height === 'number'
-      ? `${Math.floor(filteredCharacter.height / 12)}' ${filteredCharacter.height % 12}"`
-      : filteredCharacter.height;
+    typeof character?.height === 'number'
+      ? `${Math.floor(character?.height / 12)}' ${character?.height % 12}"`
+      : character?.height;
 
   if (isLoading || isPending) {
     return <Loading />;
-  }
-
-  if (characterError) {
-    throw new Error('Could not find character');
   }
 
   return (
@@ -79,16 +64,14 @@ const CharacterSheet = () => {
           >
             <div className="flex h-full w-full items-center justify-between gap-4 p-4">
               <ArrowHeader1
-                title={
-                  filteredCharacter.firstName + ' ' + filteredCharacter.lastName
-                }
+                title={character?.firstName + ' ' + character?.lastName}
               />
-              <h1 className="text-accent">{filteredCharacter.level}</h1>
+              <h1 className="text-accent">{character?.level}</h1>
             </div>
           </ThemeContainer>
           <div className="flex flex-col items-center gap-1">
             <h3 className="text-xl">Profits</h3>
-            <p className="text-xl">{filteredCharacter.profits}p</p>
+            <p className="text-xl">{character?.profits}p</p>
           </div>
         </div>
         <div className="flex w-full items-center justify-evenly gap-2 sm:gap-8 lg:w-auto lg:justify-center">
@@ -102,24 +85,24 @@ const CharacterSheet = () => {
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Weight
             </h3>
-            <p className="text-xl">{filteredCharacter.weight} lbs</p>
+            <p className="text-xl">{character?.weight} lbs</p>
           </div>
           <div className="flex flex-col items-center gap-1">
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Age
             </h3>
-            <p className="text-xl">{filteredCharacter.age}</p>
+            <p className="text-xl">{character?.age}</p>
           </div>
           <div className="flex flex-col items-center gap-1">
             <h3 className="text-primary text-xl font-semibold tracking-widest">
               Sex
             </h3>
-            <p className="text-xl">{capitalCase(filteredCharacter.sex)}</p>
+            <p className="text-xl">{capitalCase(character?.sex)}</p>
           </div>
         </div>
       </div>
       <div className="grid gap-8 max-sm:grid-flow-row sm:grid-cols-2">
-        {filteredCharacter.picture.imageUrl && (
+        {character?.picture.imageUrl && (
           <CharacterPicture character={character} />
         )}
         <ThemeContainer
@@ -132,10 +115,7 @@ const CharacterSheet = () => {
             <div className="flex w-full items-center justify-between">
               <ArrowHeader3
                 title={
-                  filteredCharacter.firstName +
-                  ' ' +
-                  filteredCharacter.lastName +
-                  "'s Info"
+                  character?.firstName + ' ' + character?.lastName + "'s Info"
                 }
               />
               <button
@@ -151,26 +131,26 @@ const CharacterSheet = () => {
                   <>
                     <h4>Character Type</h4>
                     <Icon path={mdiTriangleDown} size={0.375} rotate={-90} />
-                    {filteredCharacter.playerCharacter ? (
+                    {character?.playerCharacter ? (
                       <p>Player Character</p>
                     ) : (
                       <p>Non-player Character</p>
                     )}
                   </>
-                  {filteredCharacter ? (
+                  {character ? (
                     <>
                       <h4>Campaign</h4>
                       <Icon path={mdiTriangleDown} size={0.375} rotate={-90} />
-                      <p>{filteredCharacter.campaign?.name || 'N/A'}</p>
+                      <p>{character?.campaign?.name || 'N/A'}</p>
                     </>
                   ) : (
                     <p>No campaign</p>
                   )}
-                  {filteredCharacter ? (
+                  {character ? (
                     <>
                       <h4>Gang</h4>
                       <Icon path={mdiTriangleDown} size={0.375} rotate={-90} />
-                      <p>{filteredCharacter.gang?.name || 'N/A'}</p>
+                      <p>{character?.gang?.name || 'N/A'}</p>
                     </>
                   ) : (
                     <p>No campaign</p>
@@ -191,11 +171,11 @@ const CharacterSheet = () => {
           </div>
         </ThemeContainer>
       </div>
-      {filteredCharacter.conditions.length > 0 && (
+      {character?.conditions.length > 0 && (
         <div
           className={`${cardRef.current?.offsetWidth < 500 ? 'px-2' : 'px-4'} flex grow flex-wrap items-center justify-start gap-1`}
         >
-          {filteredCharacter.conditions?.map((condition) => (
+          {character?.conditions?.map((condition) => (
             <Tag key={condition.id} condition={condition} />
           ))}
         </div>
@@ -207,14 +187,14 @@ const CharacterSheet = () => {
         <CharacterStatBars
           cardWidth={cardRef.current?.offsetWidth}
           stats={{
-            maxHealth: filteredCharacter.stats.maxHealth,
-            maxSanity: filteredCharacter.stats.maxSanity,
-            currentHealth: filteredCharacter.stats.currentHealth,
-            currentSanity: filteredCharacter.stats.currentSanity,
-            maxCyber: filteredCharacter.stats.maxCyber,
-            cyber: filteredCharacter.stats.cyber,
-            weight: filteredCharacter.stats.weight,
-            maxEquip: filteredCharacter.stats.maxEquip,
+            maxHealth: character?.stats.maxHealth,
+            maxSanity: character?.stats.maxSanity,
+            currentHealth: character?.stats.currentHealth,
+            currentSanity: character?.stats.currentSanity,
+            maxCyber: character?.stats.maxCyber,
+            cyber: character?.stats.cyber,
+            weight: character?.stats.weight,
+            maxEquip: character?.stats.maxEquip,
           }}
           characterId={character.id}
         />
@@ -230,7 +210,7 @@ const CharacterSheet = () => {
                 <div className="flex items-center justify-center gap-4">
                   <SpeedIcon className="size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.speed}
+                    {character?.stats.speed}
                   </p>
                 </div>
               </div>
@@ -241,7 +221,7 @@ const CharacterSheet = () => {
                 <div className="flex items-center justify-center gap-4">
                   <EvasionIcon className="size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.evasion}
+                    {character?.stats.evasion}
                   </p>
                 </div>
               </div>
@@ -252,7 +232,7 @@ const CharacterSheet = () => {
                 <div className="flex items-center justify-center gap-4">
                   <ArmorIcon className="size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.armor}
+                    {character?.stats.armor}
                   </p>
                 </div>
               </div>
@@ -263,7 +243,7 @@ const CharacterSheet = () => {
                 <div className="flex items-center justify-center gap-4">
                   <WardIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.ward}
+                    {character?.stats.ward}
                   </p>
                 </div>
               </div>
@@ -275,9 +255,9 @@ const CharacterSheet = () => {
                 </h3>
                 <div className="flex items-center gap-2">
                   {Array.from({
-                    length: filteredCharacter.stats.permanentInjuries,
+                    length: character?.stats.permanentInjuries,
                   }).map((_, index) =>
-                    index < filteredCharacter.stats.injuries ? (
+                    index < character?.stats.injuries ? (
                       <InjuryIcon key={index} className="size-8" />
                     ) : (
                       <Icon
@@ -296,9 +276,9 @@ const CharacterSheet = () => {
                 </h3>
                 <div className="flex items-center gap-2">
                   {Array.from({
-                    length: filteredCharacter.stats.permanentInsanities,
+                    length: character?.stats.permanentInsanities,
                   }).map((_, index) =>
-                    index < filteredCharacter.stats.insanities ? (
+                    index < character?.stats.insanities ? (
                       <InsanityIcon key={index} className="size-7" />
                     ) : (
                       <Icon
@@ -315,8 +295,9 @@ const CharacterSheet = () => {
           </div>
         </ThemeContainer>
         <div className="mb-auto flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
-          {Object.entries(filteredCharacter.attributes).map(
-            ([attribute, { points, skills }]) => (
+          {Object.entries(character?.attributes)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([attribute, { points, skills }]) => (
               <ThemeContainer
                 key={attribute}
                 chamfer="medium"
@@ -330,16 +311,15 @@ const CharacterSheet = () => {
                   />
                 </div>
               </ThemeContainer>
-            ),
-          )}
+            ))}
         </div>
       </div>
       <ThemeContainer chamfer="medium" borderColor={accentPrimary}>
         <div className="p-4">
           <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
             <ArrowHeader2 className="col-span-2" title="Perks" />
-            {filteredCharacter.perks ? (
-              filteredCharacter.perks.map((perk) => {
+            {character?.perks ? (
+              character?.perks.map((perk) => {
                 return <PerkCard key={perk.name} perk={perk} />;
               })
             ) : (

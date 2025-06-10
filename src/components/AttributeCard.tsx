@@ -15,15 +15,13 @@ const AttributeCard = ({
   attribute,
   points,
   skills,
-  updatePoints,
 }: {
   attribute: string;
   points: number;
   skills: object;
-  updatePoints: (attribute: string, value: number, skill?: string) => void;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { layoutSize } = useContext(LayoutContext);
+  const { mobile } = useContext(LayoutContext);
 
   return (
     <>
@@ -31,14 +29,8 @@ const AttributeCard = ({
         <ArrowHeader3 title={capitalCase(attribute)} />
         <div className="flex gap-2 sm:gap-4">
           {Array.from({ length: 4 }).map((_, index) => (
-            <button
-              key={index}
-              onClick={(e) => {
-                e.preventDefault();
-                updatePoints(attribute, index + 1);
-              }}
-            >
-              {layoutSize === 'small' || layoutSize === 'xsmall' ? (
+            <div key={index}>
+              {mobile ? (
                 index < points ? (
                   <Icon key={index} path={mdiCircle} size={0.7} color="gold" />
                 ) : (
@@ -59,11 +51,11 @@ const AttributeCard = ({
                   color={accentPrimary}
                 />
               )}
-            </button>
+            </div>
           ))}
         </div>
       </div>
-      <div className="flex flex-col gap-3 border-l-2 border-gray-400 border-opacity-50 pl-4">
+      <div className="flex flex-col gap-2 border-l-2 border-gray-400 border-opacity-50 pl-4">
         {Object.entries(skills).map(([skill, { points }]) => (
           <li
             className="flex w-full flex-wrap items-center justify-between gap-1"
@@ -72,14 +64,8 @@ const AttributeCard = ({
             <h4>{capitalCase(skill)}</h4>
             <div className="flex gap-2 sm:gap-4">
               {Array.from({ length: 4 }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    updatePoints(attribute, index + 1, skill);
-                  }}
-                >
-                  {layoutSize === 'small' || layoutSize === 'xsmall' ? (
+                <div key={index}>
+                  {mobile ? (
                     index < points ? (
                       <Icon
                         key={index}
@@ -110,7 +96,7 @@ const AttributeCard = ({
                       className="text-tertiary"
                     />
                   )}
-                </button>
+                </div>
               ))}
             </div>
           </li>

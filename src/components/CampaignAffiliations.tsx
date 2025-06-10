@@ -27,7 +27,6 @@ const CampaignAffiliations = () => {
 
   const { data: affiliations, isLoading: affiliationsLoading } =
     useAffiliationQueries(
-      apiUrl,
       campaign?.affiliations.map((affiliation) => affiliation.id) || [],
     );
 

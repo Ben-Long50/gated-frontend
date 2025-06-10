@@ -18,7 +18,7 @@ const Notes = () => {
     isLoading: characterLoading,
     isPending: characterPending,
     isError: characterError,
-  } = useCharacterQuery(apiUrl, Number(characterId));
+  } = useCharacterQuery(Number(characterId));
 
   const {
     data: session,

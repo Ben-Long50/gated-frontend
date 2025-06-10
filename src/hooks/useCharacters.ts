@@ -1,15 +1,8 @@
-import { useContext, useMemo, useState } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
-import useCharactersQuery from './useCharactersQuery/useCharactersQuery';
+import { useMemo, useState } from 'react';
 import { Character } from 'src/types/character';
 import useCharacterQueries from './useCharactersQuery/useCharacterQueries';
 
-const useCharacters = () => {
-  const { apiUrl } = useContext(AuthContext);
-
-  const { data: characterIds, isLoading: idsLoading } =
-    useCharactersQuery(apiUrl);
-
+const useCharacters = (characterIds: number[]) => {
   const { characters, isLoading: charactersLoading } = useCharacterQueries(
     characterIds?.map((character) => character.id) || [],
   );
@@ -65,7 +58,7 @@ const useCharacters = () => {
     filterByQuery,
     filterByCampaign,
     resetList,
-    isLoading: idsLoading || charactersLoading,
+    isLoading: charactersLoading,
   };
 };
 

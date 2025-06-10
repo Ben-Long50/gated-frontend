@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 const useInventory = (inventory: CharacterInventory) => {
   const { items, isLoading, isPending } = useInventoryItemQueries(
-    inventory?.items?.map((item) => item.id),
+    inventory?.items.map((item) => item.id) || [],
   );
 
   const sortedInventory = useMemo(

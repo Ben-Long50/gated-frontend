@@ -17,18 +17,22 @@ import InputField from './InputField';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
 import { Campaign } from 'src/types/campaign';
+import useCharactersQuery from 'src/hooks/useCharactersQuery/useCharactersQuery';
 
 const CharacterList = () => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+
+  const { data: characterIds, isLoading: idsLoading } =
+    useCharactersQuery(apiUrl);
 
   const {
     characters,
     activeCharacter,
     filterByCampaign,
     filterByQuery,
-    isLoading,
-  } = useCharacters();
+    isLoading: charactersLoading,
+  } = useCharacters(characterIds || []);
 
   const { data: campaigns } = useCampaignsQuery(apiUrl);
 
@@ -50,6 +54,8 @@ const CharacterList = () => {
       activeForm.reset();
     },
   });
+
+  const isLoading = idsLoading || charactersLoading;
 
   if (isLoading) {
     return <Loading />;
@@ -123,7 +129,10 @@ const CharacterList = () => {
         </form>
       </ThemeContainer>
       {activeCharacter && (
-        <CharacterCard key={activeCharacter.id} character={activeCharacter} />
+        <CharacterCard
+          key={activeCharacter.id}
+          characterId={activeCharacter.id}
+        />
       )}
       {!characters || characters?.length === 0 ? (
         <div className="flex w-full flex-col items-center justify-center gap-8">
@@ -136,9 +145,9 @@ const CharacterList = () => {
         </div>
       ) : (
         <div className="grid w-full grid-flow-row gap-10">
-          {characters?.map((character: Character) => {
-            return <CharacterCard key={character.id} character={character} />;
-          })}
+          {characters?.map((character: Character) => (
+            <CharacterCard key={character.id} characterId={character.id} />
+          ))}
         </div>
       )}
     </div>

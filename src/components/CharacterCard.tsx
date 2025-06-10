@@ -7,22 +7,24 @@ import ArmorIcon from './icons/ArmorIcon';
 import EvasionIcon from './icons/EvasionIcon';
 import SpeedIcon from './icons/SpeedIcon';
 import CloudinaryImage from './CloudinaryImage';
-import { Character } from 'src/types/character';
 import ArrowHeader1 from './ArrowHeader2';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
-import useCharacter from 'src/hooks/useCharacter';
 import Tag from './Tag';
 import CharacterRadialMenu from './CharacterRadialMenu';
 import CharacterStatBars from './CharacterStatBars';
+import useCharacter from 'src/hooks/useCharacter';
+import Loading from './Loading';
 
-const CharacterCard = ({ character }: { character: Character }) => {
+const CharacterCard = ({ characterId }: { characterId: number }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { mobile } = useContext(LayoutContext);
 
+  const { filteredCharacter: character, isLoading } = useCharacter(characterId);
+
   const cardRef = useRef(null);
 
-  const { filteredCharacter } = useCharacter(character);
+  if (isLoading) return <Loading />;
 
   return (
     <ThemeContainer
@@ -33,9 +35,9 @@ const CharacterCard = ({ character }: { character: Character }) => {
       <div ref={cardRef} className="grid sm:grid-cols-[1fr_4fr]">
         <div className="absolute left-0 top-0 flex h-full w-[375px] items-center overflow-hidden rounded-bl clip-6">
           <CloudinaryImage
-            url={character.picture?.imageUrl}
-            alt={`${character.firstName} ${character.lastName}'s image`}
-            position={character.picture?.position}
+            url={character?.picture?.imageUrl}
+            alt={`${character?.firstName} ${character.lastName}'s image`}
+            position={character?.picture?.position}
             style={{
               maskImage: 'linear-gradient(to right, black 0%, transparent 90%',
             }}
@@ -48,24 +50,22 @@ const CharacterCard = ({ character }: { character: Character }) => {
           <CharacterRadialMenu character={character} />
           <div className="flex w-full items-center justify-between gap-4">
             <ArrowHeader1
-              title={
-                filteredCharacter.firstName + ' ' + filteredCharacter.lastName
-              }
+              title={character?.firstName + ' ' + character?.lastName}
             />
             {!mobile && (
               <div className="flex grow flex-wrap items-center justify-start gap-1">
-                {filteredCharacter.conditions?.map((condition) => (
+                {character?.conditions?.map((condition) => (
                   <Tag key={condition.id} condition={condition} />
                 ))}
               </div>
             )}
             <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
-              {filteredCharacter.level}
+              {character?.level}
             </p>
           </div>
           {mobile && (
             <div className="flex grow flex-wrap items-center justify-start gap-1">
-              {filteredCharacter.conditions?.map((condition) => (
+              {character?.conditions?.map((condition) => (
                 <Tag
                   key={condition.id}
                   condition={{
@@ -81,10 +81,10 @@ const CharacterCard = ({ character }: { character: Character }) => {
           >
             <CharacterStatBars
               stats={{
-                maxHealth: filteredCharacter.stats.maxHealth,
-                maxSanity: filteredCharacter.stats.maxSanity,
-                currentHealth: filteredCharacter.stats.currentHealth,
-                currentSanity: filteredCharacter.stats.currentSanity,
+                maxHealth: character?.stats.maxHealth,
+                maxSanity: character?.stats.maxSanity,
+                currentHealth: character?.stats.currentHealth,
+                currentSanity: character?.stats.currentSanity,
               }}
               cardWidth={cardRef.current?.offsetWidth}
               characterId={character.id}
@@ -105,7 +105,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
                 <div className="flex items-center justify-center gap-2">
                   <SpeedIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.speed}
+                    {character?.stats.speed}
                   </p>
                 </div>
               </div>
@@ -118,7 +118,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
                 <div className="flex items-center justify-center gap-2">
                   <EvasionIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.evasion}
+                    {character?.stats.evasion}
                   </p>
                 </div>
               </div>
@@ -131,7 +131,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
                 <div className="flex items-center justify-center gap-2">
                   <ArmorIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.armor}
+                    {character?.stats.armor}
                   </p>
                 </div>
               </div>
@@ -144,7 +144,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
                 <div className="flex items-center justify-center gap-2">
                   <WardIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.ward}
+                    {character?.stats.ward}
                   </p>
                 </div>
               </div>
@@ -159,7 +159,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
                 <div className="flex items-center justify-center gap-2">
                   <InjuryIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.injuries || 0}
+                    {character?.stats.injuries || 0}
                   </p>
                 </div>
               </div>
@@ -172,7 +172,7 @@ const CharacterCard = ({ character }: { character: Character }) => {
                 <div className="flex items-center justify-center gap-2">
                   <InsanityIcon className="text-secondary size-8" />
                   <p className="text-secondary text-xl sm:pt-1 sm:text-2xl">
-                    {filteredCharacter.stats.insanities || 0}
+                    {character?.stats.insanities || 0}
                   </p>
                 </div>
               </div>

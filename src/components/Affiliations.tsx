@@ -12,13 +12,13 @@ const Affiliations = ({
 }) => {
   const sortedAffiliations = {
     factionAffiliations:
-      affiliations.filter(
-        (affiliation: Affiliation) => affiliation.factions.length > 0,
+      affiliations?.filter(
+        (affiliation: Affiliation) => affiliation?.factions.length > 0,
       ) || [],
     gangAffiliations: [],
     characterAffiliations:
-      affiliations.filter(
-        (affiliation: Affiliation) => affiliation.characters.length > 1,
+      affiliations?.filter(
+        (affiliation: Affiliation) => affiliation?.characters.length > 1,
       ) || [],
   };
 

@@ -5,7 +5,7 @@ import { Character } from 'src/types/character';
 const useCharactersQuery = (apiUrl: string) => {
   return useQuery<Character[]>({
     queryKey: ['characters'],
-    queryFn: async () => await getCharacters(apiUrl),
+    queryFn: () => getCharacters(apiUrl),
   });
 };
 

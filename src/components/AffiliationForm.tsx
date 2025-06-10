@@ -33,7 +33,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
     data: character,
     isLoading: characterLoading,
     isPending: characterPending,
-  } = useCharacterQuery(apiUrl, Number(characterId));
+  } = useCharacterQuery(Number(characterId));
 
   const {
     data: campaign,
@@ -51,7 +51,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
     data: affiliation,
     isLoading: affiliationLoading,
     isPending: affiliationPending,
-  } = useAffiliationQuery(apiUrl, Number(affiliationId));
+  } = useAffiliationQuery(Number(affiliationId));
 
   const isLoading =
     characterLoading || campaignLoading || factionLoading || affiliationLoading;

@@ -19,17 +19,16 @@ import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
 import InventoryModal from './InventoryModal';
-import useCharacterQuery from '../hooks/useCharacterQuery/useCharacterQuery';
 import useCharacter from 'src/hooks/useCharacter';
 import ItemCard from './ItemCard';
 import ItemCardMobile from './ItemCardMobile';
 import EquipmentIcon from './icons/EquipmentIcon';
 import CharacterIcon from './icons/CharacterIcon';
-import useItemStats from 'src/hooks/useItemStats';
 import CharacterStatBars from './CharacterStatBars';
+import CharacterPicture from './CharacterPicture';
 
 const Equipment = () => {
-  const { apiUrl, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { characterId } = useParams();
   const location = useLocation();
@@ -65,83 +64,66 @@ const Equipment = () => {
   const activeRef = useRef(null);
 
   const {
-    data: character,
-    isLoading: characterLoading,
-    isPending: characterPending,
-  } = useCharacterQuery(apiUrl, Number(characterId));
-
-  const {
-    filteredCharacter,
-    isLoading: inventoryLoading,
-    isPending: inventoryPending,
-  } = useCharacter(character);
+    filteredCharacter: character,
+    isLoading,
+    isPending,
+  } = useCharacter(Number(characterId));
 
   // const { powerLevel } = useItemStats(
-  //   filteredCharacter?.equipment
-  //     ? Object.values(filteredCharacter?.equipment).flatMap((value) => value)
+  //   character?.equipment
+  //     ? Object.values(character?.equipment).flatMap((value) => value)
   //     : null,
   // );
 
   const powerLevel = 0;
 
-  const isLoading = characterLoading || inventoryLoading;
-  const isPending = characterPending || inventoryPending;
-
   const activeItem = useMemo(() => {
     switch (active?.category) {
       case 'weapon':
         return (
-          filteredCharacter.equipment?.weapons.filter(
+          character?.equipment?.weapons.filter(
             (weapon: Item) => weapon.id === active.id,
           )[0] || null
         );
       case 'armors':
         return (
-          filteredCharacter.equipment?.armors.filter(
+          character?.equipment?.armors.filter(
             (armor: Item) => armor.id === active.id,
           )[0] || null
         );
       case 'augmentations':
         return (
-          filteredCharacter.equipment?.augmentations.filter(
+          character?.equipment?.augmentations.filter(
             (cybernetic: Item) => cybernetic.id === active.id,
           )[0] || null
         );
-      case 'item':
+      case 'reusable':
         return (
-          filteredCharacter.equipment?.items.filter(
+          character?.equipment?.reusables.filter(
+            (item: Item) => item.id === active.id,
+          )[0] || null
+        );
+      case 'consumable':
+        return (
+          character?.equipment?.consumables.filter(
             (item: Item) => item.id === active.id,
           )[0] || null
         );
       default:
         return;
     }
-  }, [active, filteredCharacter]);
+  }, [active, character]);
 
-  const namePrefix =
-    filteredCharacter.firstName + ' ' + filteredCharacter.lastName + "'s";
+  const namePrefix = character?.firstName + ' ' + character?.lastName + "'s";
 
   if (isLoading || isPending) return <Loading />;
-
-  if (!character) return <h1>Character not found</h1>;
 
   return (
     <div className="relative flex w-full max-w-9xl flex-col items-center gap-8">
       <h1 className="text-center">{namePrefix + ' ' + 'Equipment'}</h1>
       <div className="flex w-full flex-col gap-8 sm:flex-row">
-        {filteredCharacter.picture.imageUrl && (
-          <ThemeContainer
-            className="size mx-auto mb-auto aspect-square w-full max-w-60"
-            chamfer="medium"
-            borderColor={accentPrimary}
-            overflowHidden={true}
-          >
-            <img
-              className="clip-6"
-              src={filteredCharacter.picture.imageUrl}
-              alt="Preview"
-            />
-          </ThemeContainer>
+        {character?.picture?.imageUrl && (
+          <CharacterPicture className="min-w-60" character={character} />
         )}
         <div
           ref={cardRef}
@@ -150,16 +132,16 @@ const Equipment = () => {
           <CharacterStatBars
             cardWidth={cardRef.current?.offsetWidth}
             stats={{
-              maxHealth: filteredCharacter.stats.maxHealth,
-              maxSanity: filteredCharacter.stats.maxSanity,
-              currentHealth: filteredCharacter.stats.currentHealth,
-              currentSanity: filteredCharacter.stats.currentSanity,
-              maxCyber: filteredCharacter.stats.maxCyber,
-              cyber: filteredCharacter.stats.cyber,
-              weight: filteredCharacter.stats.weight,
-              maxEquip: filteredCharacter.stats.maxEquip,
+              maxHealth: character?.stats.maxHealth,
+              maxSanity: character?.stats.maxSanity,
+              currentHealth: character?.stats.currentHealth,
+              currentSanity: character?.stats.currentSanity,
+              maxCyber: character?.stats.maxCyber,
+              cyber: character?.stats.cyber,
+              weight: character?.stats.weight,
+              maxEquip: character?.stats.maxEquip,
             }}
-            characterId={character.id}
+            characterId={character?.id}
           />
         </div>
       </div>
@@ -183,7 +165,7 @@ const Equipment = () => {
             ))}
           <div className="flex items-center justify-between">
             <ArrowHeader2 title="Equipped Items" />
-            {character.userId === user?.id && (
+            {character?.userId === user?.id && (
               <>
                 <BtnRect
                   ariaLabel="Open inventory"
@@ -197,7 +179,7 @@ const Equipment = () => {
                 </BtnRect>
                 <InventoryModal
                   character={character}
-                  inventory={filteredCharacter?.inventory}
+                  inventory={character?.inventory}
                   active={active}
                   toggleActive={toggleActive}
                   toggleModal={toggleInventoryOpen}
@@ -213,7 +195,7 @@ const Equipment = () => {
           >
             <div className="bg-primary p-4">
               <EquipmentList
-                equipment={filteredCharacter?.equipment}
+                equipment={character?.equipment}
                 active={active}
                 toggleActive={toggleActive}
               />
@@ -246,7 +228,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
-                {filteredCharacter.level}
+                {character?.level}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -257,7 +239,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
-                {filteredCharacter.stats.speed}
+                {character?.stats.speed}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -268,7 +250,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
-                {filteredCharacter.stats.armor}
+                {character?.stats.armor}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -279,7 +261,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
-                {filteredCharacter.stats.ward}
+                {character?.stats.ward}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -290,7 +272,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
-                {filteredCharacter.stats.evasion}
+                {character?.stats.evasion}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -301,7 +283,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
-                {filteredCharacter.stats.injuries || 0}
+                {character?.stats.injuries || 0}
               </p>
             </div>
             <div className="flex items-center justify-between gap-2">
@@ -312,7 +294,7 @@ const Equipment = () => {
                 </h3>
               </div>
               <p className="text-secondary min-w-6 text-center text-xl sm:pt-1 sm:text-2xl">
-                {filteredCharacter.stats.insanities || 0}
+                {character?.stats.insanities || 0}
               </p>
             </div>
             {/* {Object.keys(rollBonuses).length > 0 && (
@@ -341,16 +323,15 @@ const Equipment = () => {
                 )}
               </>
             )} */}
-            {filteredCharacter?.actions &&
-              filteredCharacter?.actions.length > 0 && (
-                <>
-                  <Divider />
-                  <ArrowHeader3 title="Unique Actions" />
-                  {filteredCharacter?.actions.map((action: Action) => (
-                    <ActionCard key={action?.id} action={action} />
-                  ))}
-                </>
-              )}
+            {character?.actions && character?.actions.length > 0 && (
+              <>
+                <Divider />
+                <ArrowHeader3 title="Unique Actions" />
+                {character?.actions.map((action: Action) => (
+                  <ActionCard key={action?.id} action={action} />
+                ))}
+              </>
+            )}
           </div>
         </ThemeContainer>
       </div>

@@ -1,5 +1,6 @@
 import { create, keyResolver, windowScheduler } from '@yornaath/batshit';
 import handleResponse from '../handleResponse';
+import { Character } from 'src/types/character';
 
 const getCharacter = create({
   fetcher: async (characterIds: number[]) => {
@@ -10,7 +11,7 @@ const getCharacter = create({
         credentials: 'include',
       },
     );
-    const data = await handleResponse(response);
+    const data: Character[] = await handleResponse(response);
 
     return data;
   },

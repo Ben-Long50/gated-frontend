@@ -6,7 +6,7 @@ interface Perk {
   name: string;
   description: string;
   modifiers: Stats;
-  requirements: Partial<AttributeTree>;
+  attributes: AttributeTree;
 }
 
 export interface PerkTree {

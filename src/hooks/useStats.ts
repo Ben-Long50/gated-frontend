@@ -1,19 +1,16 @@
-import useAttributeTree from './useAttributeTree';
 import { AttributeTree } from 'src/types/attributeTree';
 import { Perk } from 'src/types/perk';
 import { CharacterStats, SortedInventory } from 'src/types/character';
-import { Item, Stats } from 'src/types/item';
+import { Item } from 'src/types/item';
 import { useMemo } from 'react';
 import { Action } from 'src/types/action';
 
 const useStats = (
   equipment: SortedInventory | null,
   actions: Action[],
-  attributTree: Partial<AttributeTree>,
+  attributeTree: AttributeTree,
   perks?: Perk[],
 ) => {
-  const tree = useAttributeTree(attributTree);
-
   const armorWeight = useMemo(
     () =>
       equipment?.armors?.reduce((sum: number, armor: Item) => {
@@ -75,93 +72,118 @@ const useStats = (
     [equipment],
   );
 
-  const stats = {
-    maxHealth: 10 + tree.getPoints('violence', 'threshold') * 2,
-    maxSanity: 5 + tree.getPoints('esoterica', 'mysticism') * 1,
-    maxEquip: 10 + tree.getPoints('violence', 'threshold') * 1,
-    maxCyber: 4 + tree.getPoints('cybernetica', 'chromebits') * 1,
-    speed: 4 + tree.getPoints('violence', 'assault') * 1,
-    armor: 0 + armorValue,
-    ward: 0 + wardValue,
-    evasion: 1,
-    weight: 0 + nonArmorWeight + armorWeight,
-    cyber: 0 + equippedCyber,
-    permanentInjuries: 5,
-    permanentInsanities: 5,
-    actions: 3,
-    reactions: 1,
-    chomebitsTn: tree.getPoints('cybernetica', 'chromebits'),
-    hardwiredTn: tree.getPoints('cybernetica', 'hardwired'),
-    motorizedTn: tree.getPoints('cybernetica', 'motorized'),
-    networkedTn: tree.getPoints('cybernetica', 'networked'),
-    gestaltTn: tree.getPoints('esoterica', 'gestalt'),
-    godheadTn: tree.getPoints('esoterica', 'godhead'),
-    mysticismTn: tree.getPoints('esoterica', 'mysticism'),
-    outerworldTn: tree.getPoints('esoterica', 'outerworld'),
-    barterTn: tree.getPoints('peace', 'barter'),
-    rhetoricTn: tree.getPoints('peace', 'rhetoric'),
-    eruditionTn: tree.getPoints('peace', 'erudition'),
-    treatmentTn: tree.getPoints('peace', 'treatment'),
-    assaultTn: tree.getPoints('violence', 'assault'),
-    shootingTn: tree.getPoints('violence', 'shooting'),
-    subterfugeTn: tree.getPoints('violence', 'subterfuge'),
-    thresholdTn: tree.getPoints('violence', 'threshold'),
-  } as CharacterStats;
-
-  const calculateBonus = (modifiers: CharacterStats) => {
-    Object.entries(modifiers).forEach(([stat, value]) => {
-      const currentValue = stats[stat as keyof CharacterStats] || 0;
-
-      if (typeof value === 'number') {
-        stats[stat as keyof CharacterStats] = currentValue + value;
-      } else if (
-        ['chromebits', 'hardwired', 'motorized', 'networked'].some(
-          (item) => item === value,
-        )
-      ) {
-        stats[stat as keyof CharacterStats] =
-          currentValue + tree.getPoints('cybernetica', value);
-      } else if (
-        ['gestalt', 'godhead', 'mysticism', 'outerworld'].some(
-          (item) => item === value,
-        )
-      ) {
-        stats[stat as keyof CharacterStats] =
-          currentValue + tree.getPoints('esoterica', value);
-      } else if (
-        ['barter', 'rhetoric', 'erudition', 'treatment'].some(
-          (item) => item === value,
-        )
-      ) {
-        stats[stat as keyof CharacterStats] =
-          currentValue + tree.getPoints('peace', value);
-      } else if (
-        ['assault', 'shooting', 'subterfuge', 'threshold'].some(
-          (item) => item === value,
-        )
-      ) {
-        stats[stat as keyof CharacterStats] =
-          currentValue + tree.getPoints('violence', value);
-      }
-    });
-  };
-
-  const activeActions = actions.filter(
-    (action) => action.active && action.modifiers,
+  const baseStats: CharacterStats = useMemo(
+    () => ({
+      maxHealth: 10 + attributeTree?.violence.skills.threshold.points * 2,
+      maxSanity: 5 + attributeTree?.esoterica.skills.mysticism.points * 1,
+      maxEquip: 10 + attributeTree?.violence.skills.threshold.points * 1,
+      maxCyber: 4 + attributeTree?.cybernetica.skills.chromebits.points * 1,
+      speed: 4 + attributeTree?.violence.skills.assault.points * 1,
+      armor: 0 + armorValue,
+      ward: 0 + wardValue,
+      evasion: 1,
+      weight: 0 + nonArmorWeight + armorWeight,
+      cyber: 0 + equippedCyber,
+      permanentInjuries: 5,
+      permanentInsanities: 5,
+      actions: 3,
+      reactions: 1,
+      chomebitsTn: attributeTree?.cybernetica.skills.chromebits.points,
+      hardwiredTn: attributeTree?.cybernetica.skills.hardwired.points,
+      motorizedTn: attributeTree?.cybernetica.skills.motorized.points,
+      networkedTn: attributeTree?.cybernetica.skills.networked.points,
+      gestaltTn: attributeTree?.esoterica.skills.gestalt.points,
+      godheadTn: attributeTree?.esoterica.skills.godhead.points,
+      mysticismTn: attributeTree?.esoterica.skills.mysticism.points,
+      outerworldTn: attributeTree?.esoterica.skills.outerworld.points,
+      barterTn: attributeTree?.peace.skills.barter.points,
+      rhetoricTn: attributeTree?.peace.skills.rhetoric.points,
+      eruditionTn: attributeTree?.peace.skills.erudition.points,
+      treatmentTn: attributeTree?.peace.skills.treatment.points,
+      assaultTn: attributeTree?.violence.skills.assault.points,
+      shootingTn: attributeTree?.violence.skills.shooting.points,
+      subterfugeTn: attributeTree?.violence.skills.subterfuge.points,
+      thresholdTn: attributeTree?.violence.skills.threshold.points,
+    }),
+    [
+      armorValue,
+      wardValue,
+      nonArmorWeight,
+      armorWeight,
+      equippedCyber,
+      attributeTree,
+    ],
   );
 
-  activeActions?.forEach((action) => {
-    calculateBonus(action.modifiers);
-  });
+  const calculateBonus = (
+    base: CharacterStats,
+    modifiers: CharacterStats,
+  ): CharacterStats => {
+    const updated = { ...base };
 
-  perks?.forEach((perk) => {
-    if (!perk.modifiers) return;
+    Object.entries(modifiers).forEach(([stat, value]) => {
+      const currentValue = updated[stat as keyof CharacterStats] || 0;
 
-    calculateBonus(perk.modifiers);
-  });
+      if (typeof value === 'number') {
+        updated[stat as keyof CharacterStats] = currentValue + value;
+      } else if (
+        ['chromebits', 'hardwired', 'motorized', 'networked'].includes(value)
+      ) {
+        updated[stat as keyof CharacterStats] =
+          currentValue +
+          attributeTree.cybernetica.skills[
+            value as keyof typeof attributeTree.cybernetica.skills
+          ].points;
+      } else if (
+        ['gestalt', 'godhead', 'mysticism', 'outerworld'].includes(value)
+      ) {
+        updated[stat as keyof CharacterStats] =
+          currentValue +
+          attributeTree.esoterica.skills[
+            value as keyof typeof attributeTree.esoterica.skills
+          ].points;
+      } else if (
+        ['barter', 'rhetoric', 'erudition', 'treatment'].includes(value)
+      ) {
+        updated[stat as keyof CharacterStats] =
+          currentValue +
+          attributeTree.peace.skills[
+            value as keyof typeof attributeTree.peace.skills
+          ].points;
+      } else if (
+        ['assault', 'shooting', 'subterfuge', 'threshold'].includes(value)
+      ) {
+        updated[stat as keyof CharacterStats] =
+          currentValue +
+          attributeTree.violence.skills[
+            value as keyof typeof attributeTree.violence.skills
+          ].points;
+      }
+    });
+
+    return updated;
+  };
+
+  const finalStats = useMemo(() => {
+    let stats = { ...baseStats };
+
+    actions.forEach((action) => {
+      if (action.active && action.modifiers) {
+        stats = calculateBonus(stats, action.modifiers);
+      }
+    });
+
+    perks?.forEach((perk) => {
+      if (perk.modifiers) {
+        stats = calculateBonus(stats, perk.modifiers);
+      }
+    });
+
+    return stats;
+  }, [baseStats, actions, perks]);
 
   return {
-    stats,
+    stats: finalStats,
   };
 };
 

@@ -42,7 +42,7 @@ const ItemPage = ({
   category: string;
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
-  const { apiUrl, user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [cardWidth, setCardWidth] = useState(0);
   const [traitsExpanded, setTraitsExpanded] = useState(false);
   const [updateMode, setUpdateMode] = useState(false);
@@ -53,11 +53,7 @@ const ItemPage = ({
 
   const cardRef = useRef(null);
 
-  const { data: item, isLoading } = useItemQuery(
-    apiUrl,
-    Number(itemId),
-    category,
-  );
+  const { data: item, isLoading } = useItemQuery(Number(itemId));
 
   const { itemStats, itemKeywords, powerLevel } = useItemStats(item);
 

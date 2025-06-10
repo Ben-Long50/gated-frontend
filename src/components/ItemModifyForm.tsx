@@ -47,7 +47,7 @@ const ItemModifyForm = () => {
 
   const toggleTutorialModal = () => setTutorialModal(!tutorialModal);
 
-  const { data: character } = useCharacterQuery(apiUrl, Number(characterId));
+  const { data: character } = useCharacterQuery(Number(characterId));
 
   const { data: item, isLoading } = useItemQuery(
     apiUrl,
@@ -89,25 +89,9 @@ const ItemModifyForm = () => {
       description: item?.description ?? '',
       picture: item?.picture ?? '',
       position: item?.picture?.position ?? { x: 50, y: 50 },
-      modifiedStats: {
-        damage: item?.modifiedStats?.damage || 0,
-        salvo: item?.modifiedStats?.salvo || 0,
-        flurry: item?.modifiedStats?.flurry || 0,
-        range: item?.modifiedStats?.range || 0,
-        magCapacity: item?.modifiedStats?.magCapacity || 0,
-        magCount: item?.modifiedStats?.magCount || 0,
-        power: item?.modifiedStats?.power || 0,
-        armor: item?.modifiedStats?.armor || 0,
-        ward: item?.modifiedStats?.ward || 0,
-        block: item?.modifiedStats?.block || 0,
-        speed: item?.modifiedStats?.speed || 0,
-        agility: item?.modifiedStats?.agility || 0,
-        hull: item?.modifiedStats?.hull || 0,
-        cargo: item?.modifiedStats?.cargo || 0,
-        hangar: item?.modifiedStats?.hangar || 0,
-        pass: item?.modifiedStats?.pass || 0,
-        weapon: item?.modifiedStats?.weapon || 0,
-      } as Stats,
+      modifiedStats:
+        item?.modifiedStats ||
+        Object.fromEntries(Object.keys(item?.stats).map((stat) => [stat, 0])),
       keywords:
         item?.modifiedKeywords ||
         ([] as { keyword: Keyword; value: number | null }[]),
@@ -115,11 +99,7 @@ const ItemModifyForm = () => {
     },
     onSubmit: async ({ value }) => {
       const filteredStats = Object.fromEntries(
-        Object.entries(value.modifiedStats).map(([stat, value]) =>
-          item?.modifiedStats
-            ? [stat, value + item?.modifiedStats[stat] || 0]
-            : [stat, value],
-        ),
+        Object.entries(value.modifiedStats).filter(([_, val]) => val),
       );
 
       const { keywords, ...rest } = value;
@@ -425,37 +405,39 @@ const ItemModifyForm = () => {
       <Modal modalOpen={tutorialModal} toggleModal={toggleTutorialModal}>
         <h1 className="text-center">Item Modification System</h1>
         <Divider />
-        <p>
-          Welcome to Electric Death Online's item modification system. Using
-          this system, you can upgrade your weapons, armor and other items by
-          increasing the item's stats and adjusting the item's traits by either
-          upgrading the values on current traits or adding new ones.
-          <br />
-          <br />
-          Each grade level (denoted by the number of star icons on the item)
-          awards you 5 Grade Points (GP) to spend on upgrades. Each stat and
-          trait option costs a different number of grade points to upgrade
-          depending on how impactful that upgrade is to the overall power of the
-          item. For example, adding a point of damage to a weapon costs 10GP
-          while adding a point of Mag Capacity only costs 2GP.
-          <br />
-          <br />
-          Increasing the grade of your item is not free. Naturally, the higher
-          the price of the base item, the higher the price of each grade level
-          applied. Not only that, but grade levels become increasingly more
-          expensive to purchase for each level applied. Things can get expensive
-          real fast. Such is the cost of having a powerful item perfectly suited
-          to your build.
-          <br />
-          <br />
-          Once the purchase of an item modification is confirmed, you cannot
-          undo your chosen GP distribution, so be sure the chosen upgrades are
-          the ones you want to carry on the item forever.
-          <br />
-          <br />
-          To apply and purchase upgrades, follow this list:
-          <br />
-          <br />
+        <div>
+          <p>
+            Welcome to Electric Death Online's item modification system. Using
+            this system, you can upgrade your weapons, armor and other items by
+            increasing the item's stats and adjusting the item's traits by
+            either upgrading the values on current traits or adding new ones.
+            <br />
+            <br />
+            Each grade level (denoted by the number of star icons on the item)
+            awards you 5 Grade Points (GP) to spend on upgrades. Each stat and
+            trait option costs a different number of grade points to upgrade
+            depending on how impactful that upgrade is to the overall power of
+            the item. For example, adding a point of damage to a weapon costs
+            10GP while adding a point of Mag Capacity only costs 2GP.
+            <br />
+            <br />
+            Increasing the grade of your item is not free. Naturally, the higher
+            the price of the base item, the higher the price of each grade level
+            applied. Not only that, but grade levels become increasingly more
+            expensive to purchase for each level applied. Things can get
+            expensive real fast. Such is the cost of having a powerful item
+            perfectly suited to your build.
+            <br />
+            <br />
+            Once the purchase of an item modification is confirmed, you cannot
+            undo your chosen GP distribution, so be sure the chosen upgrades are
+            the ones you want to carry on the item forever.
+            <br />
+            <br />
+            To apply and purchase upgrades, follow this list:
+            <br />
+            <br />
+          </p>
           <ol>
             <li>
               Use the plus and minus buttons next to "Grade" to set the number
@@ -476,7 +458,7 @@ const ItemModifyForm = () => {
               purchase.
             </li>
           </ol>
-        </p>
+        </div>
 
         <BtnRect
           className="mt-4 w-full"

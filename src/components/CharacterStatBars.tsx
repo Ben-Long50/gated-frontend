@@ -23,7 +23,7 @@ const CharacterStatBars = ({
   const { apiUrl } = useContext(AuthContext);
   const { statColorMap } = useContext(ThemeContext);
 
-  const { data: character } = useCharacterQuery(apiUrl, Number(characterId));
+  const { data: character } = useCharacterQuery(Number(characterId));
 
   const editCurrentHealth = useCurrentHealthMutation(
     apiUrl,

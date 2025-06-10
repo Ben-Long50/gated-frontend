@@ -17,6 +17,7 @@ import ModifierField from './form_fields/ModifierField';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 import { capitalCase } from 'change-case';
+import AttributeField from './form_fields/AttributeField';
 
 const PerkForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -53,35 +54,19 @@ const PerkForm = () => {
   };
 
   const handleReset = async () => {
-    if (perkId) {
-      const { data: refetchedPerk } = await refetch();
-      attributeTree.setAttributeTree(
-        attributeTree.structureTree(refetchedPerk.requirements),
-      );
-      perkForm.reset({
-        name: refetchedPerk.name,
-        description: refetchedPerk.description,
-        modifiers: refetchedPerk.modifiers,
-        requirements: attributeTree.structureTree(refetchedPerk.requirements),
-      });
-    } else {
-      attributeTree.setAttributeTree(attributeTree.emptyAttributeTree);
-      perkForm.reset();
-    }
+    perkForm.reset();
   };
 
-  const attributeTree = useAttributeTree(perk?.requirements);
+  const { emptyAttributeTree } = useAttributeTree();
 
   const perkForm = useForm({
     defaultValues: {
       name: perk?.name ?? '',
       description: perk?.description || '',
       modifiers: perk?.modifiers || {},
-      requirements: attributeTree?.tree || null,
+      attributes: perk?.attributes || emptyAttributeTree,
     },
     onSubmit: async ({ value }) => {
-      value.requirements = attributeTree.destructureTree(value.requirements);
-
       await createPerk.mutate(value);
     },
   });
@@ -139,20 +124,7 @@ const PerkForm = () => {
         <Divider />
         <ModifierField form={perkForm} />
         <ArrowHeader2 title="Perk Requirements" />
-        <div className="flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
-          {Object.entries(attributeTree.tree).map(
-            ([attribute, { points, skills }]) => (
-              <div key={attribute}>
-                <AttributeCard
-                  attribute={attribute}
-                  points={points}
-                  skills={skills}
-                  updatePoints={attributeTree.updatePoints}
-                />
-              </div>
-            ),
-          )}
-        </div>
+        <AttributeField form={perkForm} />
         <BtnRect
           ariaLabel={capitalCase(mode)}
           type="submit"

@@ -1,12 +1,10 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import InputField from './InputField';
 import BtnRect from './buttons/BtnRect';
-import AttributeCard from './AttributeCard';
 import { AuthContext } from '../contexts/AuthContext';
 import { useForm, useStore, ValidationError } from '@tanstack/react-form';
 import useAttributeTree from '../hooks/useAttributeTree';
 import StatBar from './StatBar';
-import usePerks from '../hooks/usePerks';
 import useCreateCharacterMutation from '../hooks/useCreateCharacterMutation/useCreateCharacterMutation';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
@@ -20,7 +18,7 @@ import EquipIcon from './icons/EquipIcon';
 import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';
 import useStats from '../hooks/useStats';
-import { CharacterInventory } from 'src/types/character';
+import { SortedInventory } from 'src/types/character';
 import useCampaignsQuery from '../hooks/useCampaignsQuery/useCampaignsQuery';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
@@ -30,6 +28,7 @@ import PerkLinkField from './form_fields/PerkLinkField';
 import { Perk } from 'src/types/perk';
 import NpcPreferenceField from './form_fields/NpcPreferenceField';
 import PictureField from './form_fields/PictureField';
+import AttributeField from './form_fields/AttributeField';
 
 const CharacterForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -41,9 +40,7 @@ const CharacterForm = () => {
 
   const { data: campaigns } = useCampaignsQuery(apiUrl);
 
-  const attributeTree = useAttributeTree();
-
-  const perks = usePerks(attributeTree?.tree);
+  const { emptyAttributeTree } = useAttributeTree();
 
   const createCharacter = useCreateCharacterMutation(apiUrl, setFormMessage);
 
@@ -79,12 +76,12 @@ const CharacterForm = () => {
         currentHealth: 0,
         currentSanity: 0,
       },
-      attributes: attributeTree.tree,
+      attributes: emptyAttributeTree,
       perks: [] as Perk[],
     },
     onSubmit: ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
-
+      console.log(value);
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, value]) => {
@@ -97,34 +94,22 @@ const CharacterForm = () => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      createCharacter.mutate(formData);
+      // createCharacter.mutate(formData);
     },
   });
 
-  const perkIds = useStore(characterForm.store, (state) =>
-    state.values.perks.map((perk) => perk.id),
-  );
+  const perks = useStore(characterForm.store, (state) => state.values.perks);
 
-  const selectedPerks = perks
-    .flattenPerkTree(perks.filteredPerkTree)
-    .filter((perk) => perkIds.includes(perk.id));
+  const attributes = characterForm.getFieldValue('attributes');
 
   const { stats } = useStats(
     {
       items: [],
-    } as unknown as CharacterInventory,
+    } as unknown as SortedInventory,
     [],
-    attributeTree?.tree,
-    selectedPerks,
+    attributes,
+    perks,
   );
-
-  useEffect(() => {
-    characterForm.setFieldValue('attributes', attributeTree.tree);
-    characterForm.setFieldValue('stats.currentHealth', stats.maxHealth);
-    characterForm.setFieldValue('stats.currentSanity', stats.maxSanity);
-  }, [attributeTree, characterForm]);
-
-  if (perks.isPending) return <Loading />;
 
   return (
     <FormLayout createMutation={createCharacter} formMessage={formMessage}>
@@ -242,7 +227,6 @@ const CharacterForm = () => {
             </div>
           </div>
         </div>
-
         <div className={`grid w-full grid-cols-[auto_auto_1fr_auto] gap-4`}>
           <StatBar
             title="Health"
@@ -273,8 +257,8 @@ const CharacterForm = () => {
           </StatBar>
           <StatBar
             title="Equip"
-            current={stats.maxWeight}
-            total={stats.maxWeight}
+            current={stats.maxEquip}
+            total={stats.maxEquip}
             color="rgb(251 191 36)"
             cardWidth={cardRef.current?.offsetWidth}
           >
@@ -337,7 +321,7 @@ const CharacterForm = () => {
         </div>
         <Divider />
         <ArrowHeader2 title="Attributes and skills" />
-        <div className="flex w-full flex-col gap-3 border-l border-gray-400 pl-4">
+        <div className="flex w-full flex-col gap-3 border-l-2 border-gray-400 border-opacity-50 pl-4">
           <p className="text-secondary">
             Click the squares next to the attributes and skills below to
             allocate points. A new character starts with 6 attribute and 10
@@ -353,45 +337,61 @@ const CharacterForm = () => {
               Threshold — 1 point of Health and 1 point of Equip
             </li>
           </ul>
-          <p className="flex justify-between">
-            <span className="text-tertiary">Unallocated attribute points</span>
-            <span className="text-xl">
-              {6 - attributeTree.getAttributePoints()}
-            </span>
-          </p>
-          <p className="flex justify-between">
-            <span className="text-tertiary">Unallocated skill points</span>
-            <span className="text-xl">
-              {10 - attributeTree.getSkillPoints()}
-            </span>
-          </p>
+          <characterForm.Subscribe
+            selector={(state) => [
+              state.values.attributes,
+              state.values.attributes.cybernetica.skills,
+              state.values.attributes.esoterica.skills,
+              state.values.attributes.peace.skills,
+              state.values.attributes.violence.skills,
+            ]}
+          >
+            {([attributes, cybernetica, esoterica, peace, violence]) => {
+              const attributePoints = Object.values(attributes).reduce(
+                (sum, attribute) => sum + attribute.points,
+                0,
+              );
+
+              const skillPoints = Object.values({
+                ...cybernetica,
+                ...esoterica,
+                ...peace,
+                ...violence,
+              }).reduce((sum, skill) => sum + skill.points, 0);
+
+              return (
+                <>
+                  <p className="flex justify-between">
+                    <span className="text-tertiary">
+                      Unallocated attribute points
+                    </span>
+                    <span className="text-xl">{6 - attributePoints}</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span className="text-tertiary">
+                      Unallocated skill points
+                    </span>
+                    <span className="text-xl">{10 - skillPoints}</span>
+                  </p>
+                </>
+              );
+            }}
+          </characterForm.Subscribe>
         </div>
-        <div className="flex w-full grow flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-rows-2 lg:gap-10">
-          {Object.entries(attributeTree.tree).map(
-            ([attribute, { points, skills }]) => (
-              <div key={attribute}>
-                <AttributeCard
-                  attribute={attribute}
-                  points={points}
-                  skills={skills}
-                  updatePoints={attributeTree.updatePoints}
-                />
-              </div>
-            ),
-          )}
-        </div>
+        <AttributeField form={characterForm} />
         <Divider />
         <ArrowHeader2 title="Starting Perk" />
-        <p className="text-tertiary border-l border-gray-400 pl-4">
+        <p className="text-tertiary border-l-2 border-gray-400 border-opacity-50 pl-4">
           Select a starting perk for your character. Available perks are only
           shown if you meet the attribute and skill point requirements
         </p>
-        <div className="flex flex-col gap-4">
-          <PerkLinkField
-            form={characterForm}
-            perkTree={perks.filteredPerkTree}
-          />
-        </div>
+        <characterForm.Subscribe selector={(state) => state.values.attributes}>
+          {(attributes) => (
+            <div className="flex flex-col gap-4">
+              <PerkLinkField form={characterForm} attributeTree={attributes} />
+            </div>
+          )}
+        </characterForm.Subscribe>
         <Divider />
         <BtnRect
           ariaLabel="Create character"

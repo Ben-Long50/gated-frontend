@@ -35,6 +35,7 @@ import CharacterPictureRound from './CharacterPictureRound';
 import ArrowHeader2 from './ArrowHeader2';
 import useCharacters from 'src/hooks/useCharacters';
 import { capitalCase } from 'change-case';
+import useCharactersQuery from 'src/hooks/useCharactersQuery/useCharactersQuery';
 
 const RollSimulator = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -47,7 +48,10 @@ const RollSimulator = () => {
     Number(campaignId),
   );
 
-  const { activeCharacter, isLoading: characterLoading } = useCharacters();
+  const { data: characterIds, isLoading: idsLoading } =
+    useCharactersQuery(apiUrl);
+
+  const { activeCharacter } = useCharacters(characterIds || []);
 
   const { filteredActions: actions } = useActions();
 
@@ -70,8 +74,8 @@ const RollSimulator = () => {
     },
     onSubmit: ({ value }) => {
       const diceCount =
-        getPoints(value.attribute) +
-        getPoints(value.attribute, value.skill) +
+        activeCharacter.attributes[value.attribute].points +
+        activeCharacter.attributes[value.attribute].skills[value.skill].points +
         value.diceCount +
         (value.modifiers.includes('push') ? 2 : 0);
 
@@ -79,16 +83,9 @@ const RollSimulator = () => {
     },
   });
 
-  const selectedCharacter = useStore(
-    rollForm.store,
-    (state) => state.values.activeCharacter,
-  );
+  const { emptyAttributeTree } = useAttributeTree();
 
-  const { emptyAttributeTree, getPoints } = useAttributeTree(
-    selectedCharacter?.attributes,
-  );
-
-  if (campaignLoading || characterLoading) return <Loading />;
+  if (campaignLoading || idsLoading) return <Loading />;
 
   return (
     <div className="flex w-full max-w-5xl flex-col items-center gap-8">
@@ -370,11 +367,13 @@ const RollSimulator = () => {
                       />
                       <h2 className="pt-1">
                         {skill
-                          ? getPoints(attribute) +
-                            getPoints(attribute, skill) +
+                          ? activeCharacter?.attributes[attribute]?.points +
+                            activeCharacter?.attributes[attribute]?.skills[
+                              skill
+                            ].points +
                             dice +
                             (modifiers?.includes('push') ? 2 : 0)
-                          : getPoints(attribute) +
+                          : activeCharacter?.attributes[attribute]?.points +
                             dice +
                             (modifiers?.includes('push') ? 2 : 0)}
                       </h2>

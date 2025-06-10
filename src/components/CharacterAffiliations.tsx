@@ -1,6 +1,5 @@
 import Affiliations from './Affiliations';
 import { useContext } from 'react';
-import { AuthContext } from 'src/contexts/AuthContext';
 import { useParams } from 'react-router-dom';
 import Loading from './Loading';
 import ThemeContainer from './ThemeContainer';
@@ -16,18 +15,15 @@ import ArrowHeader3 from './ArrowHeader3';
 import useCharacterQuery from 'src/hooks/useCharacterQuery/useCharacterQuery';
 
 const CharacterAffiliations = () => {
-  const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { characterId } = useParams();
 
   const { data: character, isLoading: characterLoading } = useCharacterQuery(
-    apiUrl,
     Number(characterId),
   );
 
   const { data: affiliations, isLoading: affiliationsLoading } =
     useAffiliationQueries(
-      apiUrl,
       character?.affiliations.map((affiliation) => affiliation.id) || [],
     );
 
@@ -104,11 +100,7 @@ const CharacterAffiliations = () => {
           </div>
         </form>
       </ThemeContainer>
-      <searchForm.Subscribe selector={(state) => state.values.entity}>
-        {(entity) => (
-          <Affiliations affiliations={filteredAffiliations} entity={entity} />
-        )}
-      </searchForm.Subscribe>
+      <Affiliations affiliations={filteredAffiliations} entity={character} />
     </div>
   );
 };

@@ -1,11 +1,11 @@
 import { useQueries } from '@tanstack/react-query';
 import getCharacter from './getCharacter';
 
-const useCharacterQueries = (apiUrl: string, characterIds: number[]) => {
+const useCharacterQueries = (characterIds: number[]) => {
   return useQueries({
     queries: characterIds?.map((characterId) => ({
       queryKey: ['character', characterId],
-      queryFn: () => getCharacter(apiUrl, characterId),
+      queryFn: () => getCharacter.fetch(characterId),
       enabled: !!characterId,
     })),
   });

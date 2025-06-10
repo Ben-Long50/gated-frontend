@@ -26,7 +26,7 @@ interface Character {
   backstory: { html: string; nodes: string };
   firstTaste: { html: string; nodes: string };
   badMedicine: { html: string; nodes: string };
-  attributes: Partial<AttributeTree>;
+  attributes: AttributeTree;
   firstName: string;
   lastName: string;
   active: boolean;

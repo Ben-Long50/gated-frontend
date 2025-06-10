@@ -1,11 +1,11 @@
 import { useQueries } from '@tanstack/react-query';
 import getAffiliation from '../useAffiliationQuery/getAffiliation';
 
-const useAffiliationQueries = (apiUrl: string, affiliationIds: number[]) => {
+const useAffiliationQueries = (affiliationIds: number[]) => {
   return useQueries({
-    queries: affiliationIds.map((affiliationId) => ({
+    queries: affiliationIds?.map((affiliationId) => ({
       queryKey: ['affiliation', affiliationId],
-      queryFn: () => getAffiliation(apiUrl, affiliationId),
+      queryFn: () => getAffiliation.fetch(affiliationId),
       enabled: !!affiliationId,
     })),
     combine: (results) => {

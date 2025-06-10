@@ -4,15 +4,26 @@ import { Character } from 'src/types/character';
 import useStats from './useStats';
 import useAttributeTree from './useAttributeTree';
 import useInventory from './useInventory';
+import useCharacterQuery from './useCharacterQuery/useCharacterQuery';
 
-const useCharacter = (character: Character) => {
+const useCharacter = (characterId: number) => {
   const { user } = useContext(AuthContext);
 
-  const { tree, emptyAttributeTree } = useAttributeTree(character?.attributes);
+  const {
+    data: character,
+    isLoading: characterLoading,
+    isPending: characterPending,
+  } = useCharacterQuery(characterId);
 
-  const { inventory, equipment, actions, isLoading, isPending } = useInventory(
-    character?.characterInventory,
-  );
+  const { emptyAttributeTree } = useAttributeTree();
+
+  const {
+    inventory,
+    equipment,
+    actions,
+    isLoading: inventoryLoading,
+    isPending: inventoryPending,
+  } = useInventory(character?.characterInventory);
 
   const { stats } = useStats(
     equipment,
@@ -57,6 +68,10 @@ const useCharacter = (character: Character) => {
         characterOwner || character?.preferences?.age ? character?.age : '???',
       sex:
         characterOwner || character?.preferences?.sex ? character?.sex : '???',
+      picture:
+        characterOwner || character?.preferences?.picture
+          ? character?.picture
+          : false,
       backstory:
         characterOwner || character?.preferences.backstory
           ? character?.backstory
@@ -80,7 +95,7 @@ const useCharacter = (character: Character) => {
       ),
       attributes:
         characterOwner || character?.preferences?.attributes
-          ? tree
+          ? character.attributes
           : emptyAttributeTree,
       perks:
         characterOwner || character?.preferences?.perks
@@ -101,8 +116,8 @@ const useCharacter = (character: Character) => {
 
   return {
     filteredCharacter,
-    isLoading,
-    isPending,
+    isLoading: characterLoading || inventoryLoading,
+    isPending: characterPending || inventoryPending,
   };
 };
 

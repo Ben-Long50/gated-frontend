@@ -19,7 +19,7 @@ const ResumeForm = () => {
     data: character,
     isLoading,
     isPending,
-  } = useCharacterQuery(apiUrl, Number(characterId));
+  } = useCharacterQuery(Number(characterId));
 
   const updateCharacter = useUpdateCharacterMutation(
     apiUrl,
