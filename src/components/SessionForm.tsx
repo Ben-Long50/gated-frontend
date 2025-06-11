@@ -36,7 +36,6 @@ const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {
     nonPlayerCharacters,
     isLoading: charactersLoading,
   } = useCampaignCharactersQuery(
-    apiUrl,
     campaign?.characters.map((character) => character.id) || [],
   );
 

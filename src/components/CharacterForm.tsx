@@ -86,7 +86,11 @@ const CharacterForm = () => {
         ? value.npcTypes.filter((type) => type)
         : null;
 
-      console.log(value);
+      value.stats = {
+        currentHealth:
+          10 + value.attributes.violence.skills.threshold.points * 2,
+        currentSanity: 5 + value.attributes.esoterica.skills.mysticism.points,
+      };
 
       const formData = new FormData();
 
@@ -100,7 +104,7 @@ const CharacterForm = () => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      // createCharacter.mutate(formData);
+      createCharacter.mutate(formData);
     },
   });
 
