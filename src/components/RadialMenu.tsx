@@ -72,7 +72,9 @@ const RadialMenu = ({
       break;
   }
 
-  const segmentCount = Children.count(children);
+  const segmentCount = Children.toArray(children).filter((child) =>
+    isValidElement(child),
+  ).length;
 
   const diameter = radius ? radius * 2 : 192;
 
@@ -116,7 +118,7 @@ const RadialMenu = ({
           if (!isValidElement(child)) return null;
 
           const onClick = child.props?.onClick;
-          const active = child.props['data-active'] ?? true;
+          const active = true;
 
           return (
             <button

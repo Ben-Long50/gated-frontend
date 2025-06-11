@@ -13,11 +13,7 @@ const useEditCartMutation = (
   const timeoutRef = useRef(0);
 
   return useMutation({
-    mutationFn: (formData: {
-      itemId: number;
-      value: number;
-      referenceId?: number;
-    }) => {
+    mutationFn: (formData: { itemId: number; value: number }) => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }

@@ -113,7 +113,7 @@ const ItemCard = ({
               </div>
               <div className="z-20 flex grow items-start justify-end gap-4">
                 <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
-                {mode === 'codex' && <CartButton itemId={item?.id} />}
+                {mode === 'shop' && <CartButton itemId={item?.id} />}
               </div>
             </div>
             <div

@@ -63,25 +63,70 @@ const useItems = ({
 
   const [query, setQuery] = useState('');
   const [itemCategory, setItemCategory] = useState('');
+  const [priceFilter, setPriceFilter] = useState('');
+  const [rarity, setRarity] = useState('');
 
-  const filteredItems =
-    itemCategory.length > 0
-      ? categorizedItems
-          ?.filter((item: Item) =>
-            item.keywords.some(
-              (keyword) =>
-                camelCase(itemCategory) === camelCase(keyword.keyword.name),
-            ),
-          )
-          .filter((item: Item) =>
-            item.name.toLowerCase().includes(query.toLowerCase()),
-          )
-      : (categorizedItems?.filter((item: Item) =>
-          item.name.toLowerCase().includes(query.toLowerCase()),
-        ) ?? []);
+  const filterItems = (items: Item[]) => {
+    if (!items) return;
+    let filteredItems = items;
+    if (itemCategory) {
+      filteredItems = items.filter((item: Item) =>
+        item.keywords.some(
+          (keyword) =>
+            camelCase(itemCategory) === camelCase(keyword.keyword.name),
+        ),
+      );
+    }
+    if (query) {
+      filteredItems = filteredItems.filter((item: Item) =>
+        item.name.toLowerCase().includes(query.toLowerCase()),
+      );
+    }
+    if (priceFilter === 'lowToHigh') {
+      filteredItems = filteredItems.sort((a, b) => {
+        if (a.price === null) {
+          return -1;
+        } else if (b.price === null) {
+          return 1;
+        } else {
+          return a.price - b.price;
+        }
+      });
+    }
+    if (priceFilter === 'highToLow') {
+      filteredItems = filteredItems.sort((a, b) => {
+        if (b.price === null) {
+          return -1;
+        } else if (a.price === null) {
+          return 1;
+        } else {
+          return b.price - a.price;
+        }
+      });
+    }
+    if (!priceFilter) {
+      filteredItems = filteredItems.sort((a, b) =>
+        a.name.localeCompare(b.name),
+      );
+    }
+    if (rarity) {
+      filteredItems = filteredItems.filter((item) => item.rarity === rarity);
+    }
+    return filteredItems;
+  };
+
+  const filteredItems = filterItems(categorizedItems);
 
   const filterByQuery = (newQuery: string) => {
     setQuery(newQuery);
+  };
+
+  const filterByPrice = (direction: string) => {
+    setPriceFilter(direction);
+  };
+
+  const filterByRarity = (rarity: string) => {
+    setRarity(rarity);
   };
 
   const filterByCategory = (newCategory: string) => {
@@ -97,6 +142,8 @@ const useItems = ({
     filteredKeywords,
     filterByQuery,
     filterByCategory,
+    filterByPrice,
+    filterByRarity,
     resetList,
     isLoading,
     isPending,

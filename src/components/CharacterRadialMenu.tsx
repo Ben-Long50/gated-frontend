@@ -19,6 +19,8 @@ import {
 import useProfitsMutation from 'src/hooks/useProfitsMutation/useProfitsMutation';
 import useCharacter from 'src/hooks/useCharacter';
 import AffiliationIcon from './icons/AffiliationIcon';
+import ShopIcon from './icons/ShopIcon';
+import ShopModal from './ShopModal';
 
 const CharacterRadialMenu = ({
   character,
@@ -29,6 +31,7 @@ const CharacterRadialMenu = ({
 }) => {
   const { apiUrl, user } = useContext(AuthContext);
   const [conditionModal, setConditionModal] = useState(false);
+  const [shopModal, setShopModal] = useState(false);
   const [profitMenu, setProfitMenu] = useState(false);
   const [affiliationMenu, setAffiliationMenu] = useState(false);
   const navigate = useNavigate();
@@ -51,6 +54,13 @@ const CharacterRadialMenu = ({
     setAffiliationMenu(!affiliationMenu);
   };
 
+  const toggleShopModal = () => {
+    setShopModal(!shopModal);
+  };
+
+  const userPermissions =
+    character.userId === user?.id || character.campaign?.ownerId === user?.id;
+
   const path = (() => {
     if (parts.includes('characters')) {
       return `${character.id}`;
@@ -58,6 +68,8 @@ const CharacterRadialMenu = ({
       return `characters/${character.id}`;
     }
   })();
+
+  if (!user || !character) return;
 
   if (profitMenu)
     return (
@@ -112,20 +124,35 @@ const CharacterRadialMenu = ({
 
   return (
     <RadialMenu className={`${className}`} size="large">
-      <div
-        onClick={() => toggleConditionModal()}
-        data-active={
-          character.userId === user?.id ||
-          character.campaign?.ownerId === user?.id
-        }
-      >
-        <ConditionIcon className="size-8 text-inherit" />
-        <ConditionLinkField
-          character={character}
-          conditionModal={conditionModal}
-          toggleConditionModal={toggleConditionModal}
-        />
-      </div>
+      {userPermissions && (
+        <div onClick={() => toggleConditionModal()}>
+          <ConditionIcon className="text-inherit" />
+          <ConditionLinkField
+            character={character}
+            conditionModal={conditionModal}
+            toggleConditionModal={toggleConditionModal}
+          />
+        </div>
+      )}
+      {userPermissions && (
+        <div
+          onClick={() => {
+            toggleProfitMenu();
+          }}
+        >
+          <ProfitsIcon className="text-inherit" />
+        </div>
+      )}
+      {userPermissions && (
+        <div onClick={() => toggleShopModal()}>
+          <ShopIcon className="text-inherit" />
+          <ShopModal
+            modalOpen={shopModal}
+            toggleModal={toggleShopModal}
+            character={character}
+          />
+        </div>
+      )}
       <div onClick={() => navigate(`${path}/equipment`)}>
         <EquipmentIcon className="text-inherit" />
       </div>
@@ -134,17 +161,6 @@ const CharacterRadialMenu = ({
       </div>
       <div onClick={() => navigate(`${path}`)}>
         <CharacterIcon className="text-inherit" />
-      </div>
-      <div
-        onClick={() => {
-          toggleProfitMenu();
-        }}
-        data-active={
-          character.userId === user?.id ||
-          character.campaign?.ownerId === user?.id
-        }
-      >
-        <ProfitsIcon className="text-inherit" />
       </div>
       <div
         onClick={() => {

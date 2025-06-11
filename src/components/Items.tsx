@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, lazy, Suspense } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
@@ -11,20 +11,23 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import ItemCard from './ItemCard';
 import ItemCardMobile from './ItemCardMobile';
 import InputSelectField from './InputSelectField';
 import { capitalCase } from 'change-case';
+
+const LazyItemCard = lazy(() => import('./ItemCard'));
 
 const Items = ({
   title,
   itemList,
   forcedMode,
+  forcedCategory,
   toggleFormLink,
 }: {
   title?: string;
   itemList?: Item[];
   forcedMode?: string;
+  forcedCategory?: string;
   toggleFormLink?: (item: Item) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
@@ -33,7 +36,7 @@ const Items = ({
   const location = useLocation();
   const state = location.state;
   const parts = location.pathname.split('/').filter(Boolean);
-  const category = parts[parts.length - 1];
+  const category = forcedCategory || parts[parts.length - 1];
   const mode = forcedMode || parts[parts.length - 2];
 
   const heading = state ? state.title : title;
@@ -58,9 +61,13 @@ const Items = ({
     defaultValues: {
       category: '',
       query: '',
+      priceFilter: '',
+      rarity: '',
     },
     onSubmit: () => {
       items.filterByCategory('');
+      items.filterByPrice('');
+      items.filterByRarity('');
       items.filterByQuery('');
     },
   });
@@ -71,14 +78,14 @@ const Items = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-8">
-      <h1 className="text-center">{heading}</h1>
+      {heading && <h1 className="text-center">{heading}</h1>}
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
         borderColor={accentPrimary}
       >
         <div className="flex flex-col gap-4 p-4">
-          <div className="grid w-full grid-cols-2 items-center justify-between">
+          <div className="grid w-full grid-cols-2 items-center justify-between gap-4">
             <ArrowHeader2 title="Filter Options" />
             <searchForm.Field name="category">
               {(field) => (
@@ -88,6 +95,38 @@ const Items = ({
                   options={items.filteredKeywords || []}
                   onChange={() => {
                     items.filterByCategory(field.state.value);
+                  }}
+                />
+              )}
+            </searchForm.Field>
+            <searchForm.Field name="priceFilter">
+              {(field) => (
+                <InputSelectField
+                  className="w-full"
+                  label={`Filter By Price`}
+                  field={field}
+                  options={['lowToHigh', 'highToLow']}
+                  onChange={() => {
+                    items.filterByPrice(field.state.value);
+                  }}
+                />
+              )}
+            </searchForm.Field>
+            <searchForm.Field name="rarity">
+              {(field) => (
+                <InputSelectField
+                  className="w-full"
+                  label={`Rarity`}
+                  field={field}
+                  options={[
+                    'common',
+                    'uncommon',
+                    'rare',
+                    'blackMarket',
+                    'artifact',
+                  ]}
+                  onChange={() => {
+                    items.filterByRarity(field.state.value);
                   }}
                 />
               )}
@@ -153,12 +192,13 @@ const Items = ({
       {cardType === 'large' ? (
         items.filteredItems?.map((item: Item) => {
           return (
-            <ItemCard
-              key={item.id}
-              item={item}
-              mode={mode}
-              toggleFormLink={toggleFormLink}
-            />
+            <Suspense key={item.id} fallback={<Loading />}>
+              <LazyItemCard
+                item={item}
+                mode={mode}
+                toggleFormLink={toggleFormLink}
+              />
+            </Suspense>
           );
         })
       ) : (

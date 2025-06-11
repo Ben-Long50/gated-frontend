@@ -7,73 +7,63 @@ import BtnRect from './buttons/BtnRect';
 import CartCard from './CartCard';
 import useClearCartMutation from '../hooks/useClearCartMutation/useClearCartMutation';
 import useCompletePurchaseMutation from '../hooks/useCompletePurchaseMutation/useCompletePurchaseMutation';
-import ArrowHeader2 from './ArrowHeader2';
-import useCharacters from 'src/hooks/useCharacters';
-import { capitalCase } from 'change-case';
+import { useParams } from 'react-router-dom';
+import { Character } from 'src/types/character';
+import ArrowHeader3 from './ArrowHeader3';
+import useCharacter from 'src/hooks/useCharacter';
 
-const Cart = () => {
+const Cart = ({ character }: { character?: Character }) => {
   const { apiUrl } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
-
+  const { characterId } = useParams();
   const [deleteMode, setDeleteMode] = useState(false);
 
-  const { activeCharacter, isLoading } = useCharacters();
+  const { filteredCharacter } = useCharacter(Number(characterId));
+
+  const characterObj = character || filteredCharacter;
 
   const clearCart = useClearCartMutation(
     apiUrl,
-    activeCharacter?.id,
-    activeCharacter?.characterCart?.id,
+    characterObj?.id,
+    characterObj?.characterCart?.id,
     setDeleteMode,
   );
 
   const completePurchase = useCompletePurchaseMutation(
     apiUrl,
-    activeCharacter?.id,
-    activeCharacter?.characterInventory?.id,
+    characterObj?.id,
+    characterObj?.characterInventory?.id,
   );
 
-  if (isLoading) return <Loading />;
-
-  const cart = Object.fromEntries(
-    Object.entries(activeCharacter?.characterCart)
-      .filter(([key, value]) => Array.isArray(value) && value.length > 0)
-      .map(([key, value]) => [key, value]),
+  const totalPrice = Object.values(characterObj?.characterCart?.items).reduce(
+    (sum, itemReference) =>
+      itemReference.item.price
+        ? sum + itemReference.item.price * itemReference.quantity
+        : sum,
+    0,
   );
-
-  const totalPrice = Object.values(cart)
-    .flat()
-    .map(
-      (reference) =>
-        reference.quantity *
-        Object.values(reference).find((item) => typeof item === 'object').price,
-    )
-    .reduce((sum, item) => sum + item, 0);
 
   return (
     <form className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
-      <h1 className="text-center">
-        {activeCharacter?.firstName + ' ' + activeCharacter?.lastName + "'s"}{' '}
-        Cart
-      </h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
         borderColor={accentPrimary}
       >
-        <div className="flex w-full flex-col gap-4 p-4 sm:px-8">
+        <div className="flex w-full flex-col gap-4 p-4">
           <div className="flex w-full items-center justify-between gap-8">
-            <h3>Available profits</h3>
-            <h3 className="ml-auto">{activeCharacter?.profits}p</h3>
+            <ArrowHeader3 title="Available Profits" />
+            <h3 className="ml-auto">{characterObj?.profits}p</h3>
           </div>
 
           <div className="flex w-full items-center justify-between gap-8">
-            <h3>Cart total</h3>
+            <ArrowHeader3 title="Cart Total" />
             <div className="flex items-center gap-4">
               <h3 className="ml-auto">{totalPrice}p</h3>
               <p
-                className={`${activeCharacter?.profits - totalPrice < 0 && 'text-error'} text-base`}
+                className={`${characterObj?.profits - totalPrice < 0 && 'text-error'} text-base`}
               >
-                ({activeCharacter?.profits - totalPrice}p)
+                ({characterObj?.profits - totalPrice}p)
               </p>
             </div>
           </div>
@@ -138,56 +128,15 @@ const Cart = () => {
           )}
         </div>
       </ThemeContainer>
-      {Object.values(cart)
-        .filter((item) => Array.isArray(item))
-        .flat().length === 0 && <h2>Cart is empty</h2>}
-      {Object.entries(cart).map(([key, value]) => {
-        let itemType;
-        switch (key) {
-          case 'weapons':
-            itemType = 'weapon';
-            break;
-          case 'armor':
-            itemType = 'armor';
-            break;
-          case 'cybernetics':
-            itemType = 'cybernetic';
-            break;
-          case 'vehicles':
-            itemType = 'vehicle';
-            break;
-          case 'drones':
-            itemType = 'drone';
-            break;
-          case 'modifications':
-            itemType = 'modification';
-            break;
-          case 'items':
-            itemType = 'item';
-            break;
-          default:
-            break;
-        }
-        return (
-          <>
-            <ArrowHeader2
-              className="w-full text-left"
-              key={key}
-              title={capitalCase(key)}
-            />
-            <div className="flex w-full flex-col gap-4">
-              {value.map((reference) => (
-                <CartCard
-                  key={reference.id}
-                  item={reference[itemType]}
-                  quantity={reference.quantity}
-                  category={key}
-                />
-              ))}
-            </div>
-          </>
-        );
-      })}
+      {characterObj?.characterCart.items.map((itemReference) => (
+        <CartCard
+          key={itemReference.id}
+          item={itemReference.item}
+          quantity={itemReference.quantity}
+          characterId={characterObj?.id}
+          cartId={itemReference.characterCartId}
+        />
+      ))}
     </form>
   );
 };

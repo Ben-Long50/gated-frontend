@@ -34,7 +34,7 @@ const ItemRadialMenu = ({
       return `${item?.itemTypes[0]}s/${item?.id}`;
     } else if (parts.includes('codex') || parts.includes('inventory')) {
       return `${item?.id}`;
-    } else return '';
+    } else return ``;
   })();
 
   return (
