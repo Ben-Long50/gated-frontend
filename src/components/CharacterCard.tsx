@@ -15,6 +15,7 @@ import CharacterRadialMenu from './CharacterRadialMenu';
 import CharacterStatBars from './CharacterStatBars';
 import useCharacter from 'src/hooks/useCharacter';
 import Loading from './Loading';
+import { capitalCase } from 'change-case';
 
 const CharacterCard = ({ characterId }: { characterId: number }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -52,6 +53,13 @@ const CharacterCard = ({ characterId }: { characterId: number }) => {
             <ArrowHeader1
               title={character?.firstName + ' ' + character?.lastName}
             />
+            {character?.npcTypes?.length > 0 && (
+              <h4 className="text-tertiary">
+                (
+                {character.npcTypes.map((type) => capitalCase(type)).join(', ')}
+                )
+              </h4>
+            )}
             {!mobile && (
               <div className="flex grow flex-wrap items-center justify-start gap-1">
                 {character?.conditions?.map((condition) => (

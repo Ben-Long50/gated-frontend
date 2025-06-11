@@ -29,7 +29,6 @@ import { Perk } from 'src/types/perk';
 import NpcPreferenceField from './form_fields/NpcPreferenceField';
 import PictureField from './form_fields/PictureField';
 import AttributeField from './form_fields/AttributeField';
-import { useShallow } from 'zustand/react/shallow';
 
 const CharacterForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -48,6 +47,7 @@ const CharacterForm = () => {
   const characterForm = useForm({
     defaultValues: {
       playerCharacter: '' as string | boolean,
+      npcTypes: null as null | string[],
       campaignId: null,
       preferences: {
         firstName: true,
@@ -82,12 +82,17 @@ const CharacterForm = () => {
     },
     onSubmit: ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
+      value.npcTypes = value.npcTypes
+        ? value.npcTypes.filter((type) => type)
+        : null;
+
       console.log(value);
+
       const formData = new FormData();
 
       Object.entries(value).forEach(([key, value]) => {
         if (key === 'perks') {
-          const perkIds = value.map((perk: Perk) => perk.id) || [];
+          const perkIds = value?.map((perk: Perk) => perk.id) || [];
           formData.append(key, JSON.stringify(perkIds));
         } else if (key === 'picture' && value instanceof File) {
           formData.append(key, value);
@@ -131,6 +136,15 @@ const CharacterForm = () => {
               typeof value !== 'boolean'
                 ? 'You must choose whether this character is a playable character'
                 : undefined,
+          }}
+          listeners={{
+            onChange: ({ value }) => {
+              if (value) {
+                characterForm.setFieldValue('npcTypes', null);
+              } else if (!value) {
+                characterForm.setFieldValue('npcTypes', ['']);
+              }
+            },
           }}
         >
           {(field) => (

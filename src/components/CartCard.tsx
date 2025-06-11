@@ -25,8 +25,15 @@ const CartCard = ({
 
   const editCart = useEditCartMutation(apiUrl, Number(characterId), cartId);
 
+  const shopName = item?.characterInventory
+    ? item?.characterInventory.character.firstName +
+      ' ' +
+      item?.characterInventory.character.lastName +
+      "'s Shop"
+    : 'Global Shop';
+
   return (
-    <div className="w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-zinc-950">
+    <div className="w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-black">
       <div
         className={`${className} bg-secondary timing flex w-full flex-col pr-4 clip-4 sm:pr-6`}
       >
@@ -44,7 +51,13 @@ const CartCard = ({
             </div>
           )}
           <div className="flex grow items-center justify-between">
-            <h2 className={`${!item?.picture && 'py-5 pl-4'}`}>{item?.name}</h2>
+            <div className="flex flex-col items-start justify-center gap-1">
+              <h2 className={`${!item?.picture && 'py-5 pl-4'}`}>
+                {item?.name}
+              </h2>
+              <h4 className="text-tertiary">({shopName})</h4>
+            </div>
+
             <h3>{item.price * quantity}p</h3>
           </div>
           <div className="ml-auto grid grid-cols-3 items-end gap-2 sm:flex-row sm:items-center sm:gap-4">

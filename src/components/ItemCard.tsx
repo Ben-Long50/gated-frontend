@@ -27,11 +27,13 @@ import { mdiLinkBoxVariantOutline } from '@mdi/js';
 const ItemCard = ({
   item,
   mode,
+  character,
   toggleFormLink,
   ownerId,
 }: {
   item: Item;
   mode?: string;
+  character?: string;
   toggleFormLink?: (item: Item) => void;
   ownerId?: number;
 }) => {
@@ -113,7 +115,9 @@ const ItemCard = ({
               </div>
               <div className="z-20 flex grow items-start justify-end gap-4">
                 <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
-                {mode === 'shop' && <CartButton itemId={item?.id} />}
+                {mode === 'shop' && (
+                  <CartButton character={character} itemId={item?.id} />
+                )}
               </div>
             </div>
             <div

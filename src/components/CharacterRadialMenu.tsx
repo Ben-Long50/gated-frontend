@@ -17,7 +17,7 @@ import {
   mdiPlus,
 } from '@mdi/js';
 import useProfitsMutation from 'src/hooks/useProfitsMutation/useProfitsMutation';
-import useCharacter from 'src/hooks/useCharacter';
+import useCharacters from 'src/hooks/useCharacters';
 import AffiliationIcon from './icons/AffiliationIcon';
 import ShopIcon from './icons/ShopIcon';
 import ShopModal from './ShopModal';
@@ -38,7 +38,7 @@ const CharacterRadialMenu = ({
   const location = useLocation();
   const parts = location.pathname.split('/');
 
-  const { filteredCharacter } = useCharacter(character.id);
+  const { activeCharacter } = useCharacters();
 
   const editProfits = useProfitsMutation(apiUrl, character.id);
 
@@ -76,7 +76,7 @@ const CharacterRadialMenu = ({
       <RadialMenu className={`${className}`} size="large">
         <div className="flex justify-center">
           <p className="text-2xl font-semibold !text-inherit">
-            {filteredCharacter.profits || 0}
+            {character.profits || 0}
           </p>
         </div>
         <div
@@ -143,16 +143,6 @@ const CharacterRadialMenu = ({
           <ProfitsIcon className="text-inherit" />
         </div>
       )}
-      {userPermissions && (
-        <div onClick={() => toggleShopModal()}>
-          <ShopIcon className="text-inherit" />
-          <ShopModal
-            modalOpen={shopModal}
-            toggleModal={toggleShopModal}
-            character={character}
-          />
-        </div>
-      )}
       <div onClick={() => navigate(`${path}/equipment`)}>
         <EquipmentIcon className="text-inherit" />
       </div>
@@ -169,6 +159,17 @@ const CharacterRadialMenu = ({
       >
         <AffiliationIcon className="text-inherit" />
       </div>
+      {character.userId === user.id && (
+        <div onClick={() => toggleShopModal()}>
+          <ShopIcon className="text-inherit" />
+          <ShopModal
+            modalOpen={shopModal}
+            toggleModal={toggleShopModal}
+            character={character}
+            activeCharacter={character}
+          />
+        </div>
+      )}
     </RadialMenu>
   );
 };

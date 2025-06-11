@@ -39,7 +39,7 @@ const ItemForm = () => {
   const mode = parts[parts.length - 1];
   const category = itemId ? parts[parts.length - 3] : parts[parts.length - 2];
 
-  const { data: item } = useItemQuery(apiUrl, Number(itemId), category);
+  const { data: item } = useItemQuery(Number(itemId));
 
   const { filteredItems: weapons } = useItems({
     category: 'weapons',
@@ -75,7 +75,7 @@ const ItemForm = () => {
   const createItemCopy = useCreateItemCopyMutation(
     apiUrl,
     category,
-    itemId,
+    Number(itemId),
     setFormMessage,
   );
 

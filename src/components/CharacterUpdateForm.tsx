@@ -82,6 +82,8 @@ const CharacterUpdateForm = () => {
     defaultValues: {
       playerCharacter: character?.playerCharacter ?? '',
       campaignId: character?.campaign ?? null,
+      npcTypes:
+        character?.npcTypes ?? (character?.playerCharacter ? null : ['']),
       preferences: {
         firstName: character?.preferences?.firstName ?? true,
         lastName: character?.preferences?.lastName ?? true,
@@ -119,6 +121,9 @@ const CharacterUpdateForm = () => {
     },
     onSubmit: async ({ value }) => {
       value.campaignId = value.campaignId?.id ? value.campaignId.id : null;
+      value.npcTypes = value.npcTypes
+        ? value.npcTypes.filter((type) => type)
+        : null;
 
       const formData = new FormData();
 
@@ -174,6 +179,15 @@ const CharacterUpdateForm = () => {
               typeof value !== 'boolean'
                 ? 'You must choose whether this character is a playable character'
                 : undefined,
+          }}
+          listeners={{
+            onChange: ({ value }) => {
+              if (value) {
+                characterUpdateForm.setFieldValue('npcTypes', null);
+              } else if (!value) {
+                characterUpdateForm.setFieldValue('npcTypes', ['']);
+              }
+            },
           }}
         >
           {(field) => (
@@ -361,10 +375,7 @@ const CharacterUpdateForm = () => {
                 )}
                 <StatBar
                   title="Cyber"
-                  current={
-                    character?.stats.maxCyber +
-                      attributes.cybernetica.skills.chromebits.points || 0
-                  }
+                  current={character?.stats.cyber || 0}
                   total={
                     character?.stats.maxCyber +
                     attributes.cybernetica.skills.chromebits.points -
@@ -377,10 +388,7 @@ const CharacterUpdateForm = () => {
                 </StatBar>
                 <StatBar
                   title="Equip"
-                  current={
-                    character?.stats.maxEquip +
-                      attributes.violence.skills.threshold.points || 0
-                  }
+                  current={character?.stats.weight || 0}
                   total={
                     character?.stats.maxEquip +
                     attributes.violence.skills.threshold.points -

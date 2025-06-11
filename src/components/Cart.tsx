@@ -35,13 +35,15 @@ const Cart = ({ character }: { character?: Character }) => {
     characterObj?.characterInventory?.id,
   );
 
-  const totalPrice = Object.values(characterObj?.characterCart?.items).reduce(
-    (sum, itemReference) =>
-      itemReference.item.price
-        ? sum + itemReference.item.price * itemReference.quantity
-        : sum,
-    0,
-  );
+  const totalPrice = characterObj
+    ? Object.values(characterObj?.characterCart?.items).reduce(
+        (sum, itemReference) =>
+          itemReference.item.price
+            ? sum + itemReference.item.price * itemReference.quantity
+            : sum,
+        0,
+      )
+    : 0;
 
   return (
     <form className="flex w-full max-w-5xl flex-col items-center gap-6 sm:gap-8">
@@ -128,15 +130,18 @@ const Cart = ({ character }: { character?: Character }) => {
           )}
         </div>
       </ThemeContainer>
-      {characterObj?.characterCart.items.map((itemReference) => (
-        <CartCard
-          key={itemReference.id}
-          item={itemReference.item}
-          quantity={itemReference.quantity}
-          characterId={characterObj?.id}
-          cartId={itemReference.characterCartId}
-        />
-      ))}
+      {characterObj?.characterCart.items.map((itemReference) => {
+        console.log(itemReference.item);
+        return (
+          <CartCard
+            key={itemReference.id}
+            item={itemReference.item}
+            quantity={itemReference.quantity}
+            characterId={characterObj?.id}
+            cartId={itemReference.characterCartId}
+          />
+        );
+      })}
     </form>
   );
 };

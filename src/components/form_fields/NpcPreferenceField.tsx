@@ -7,6 +7,7 @@ import { ThemeContext } from 'src/contexts/ThemeContext';
 import Divider from '../Divider';
 import ArrowHeader4 from '../ArrowHeader4';
 import { capitalCase } from 'change-case';
+import InputSelectField from '../InputSelectField';
 
 const NpcPreferenceField = ({ form }: { form: FormApi }) => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -21,6 +22,22 @@ const NpcPreferenceField = ({ form }: { form: FormApi }) => {
       {(playerCharacter) =>
         playerCharacter === false && (
           <>
+            <form.Field name="npcTypes" mode="array">
+              {(field) =>
+                field.state.value &&
+                field.state.value.map((_, i) => (
+                  <form.Field key={i} name={`npcTypes[${i}]`}>
+                    {(subField) => (
+                      <InputSelectField
+                        field={subField}
+                        label="Npc Type"
+                        options={['shop']}
+                      />
+                    )}
+                  </form.Field>
+                ))
+              }
+            </form.Field>
             <BtnRect
               type="button"
               ariaLabel="NPC preferences"

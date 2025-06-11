@@ -115,7 +115,7 @@ const useCharacter = (characterId: number) => {
   );
 
   return {
-    filteredCharacter,
+    filteredCharacter: character ? filteredCharacter : null,
     isLoading: characterLoading || inventoryLoading,
     isPending: characterPending || inventoryPending,
   };

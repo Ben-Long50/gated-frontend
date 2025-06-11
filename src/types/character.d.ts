@@ -31,6 +31,7 @@ interface Character {
   lastName: string;
   active: boolean;
   playerCharacter: boolean;
+  npcTypes?: string[];
   preferences: CharacterPreferences;
   perks: Perk[];
   conditions: { condition: Condition; stacks: number | null }[];

@@ -21,21 +21,25 @@ const ShopModal = ({
   modalOpen,
   toggleModal,
   character,
+  activeCharacter,
 }: {
   modalOpen: boolean;
   toggleModal: () => void;
-  character: Character;
+  character?: Character;
+  activeCharacter: Character;
 }) => {
   const [tab, setTab] = useState('all');
 
   const cartLength = useMemo(() => {
-    return Object.values(character?.characterCart || {})
+    return Object.values(activeCharacter?.characterCart || {})
       .filter(Array.isArray)
       .flat()
       .reduce((sum, item) => sum + item.quantity, 0);
-  }, [character]);
+  }, [activeCharacter]);
 
-  const shopItems = character.playerCharacter ? null : character.inventory;
+  const { actions, ...inventoryItems } = character?.inventory ?? {};
+
+  const shopItems = null;
 
   const allShopItems = shopItems ? Object.values(shopItems).flat() : null;
 
@@ -58,7 +62,7 @@ const ShopModal = ({
         <h1 className="text-left">Shop {capitalCase(tab)}</h1>
       </div>
       <p className="absolute right-2 top-2 sm:right-4 sm:top-4">
-        {character.profits}p
+        {activeCharacter.profits}p
       </p>
       <div className="grid w-full grid-cols-7 gap-2 sm:gap-4">
         {shopItems && (
@@ -69,7 +73,7 @@ const ShopModal = ({
             <ShopIcon className="size-8" />
           </BtnAuth>
         )}
-        {(character.playerCharacter || shopItems.weapons.length) > 0 && (
+        {(!shopItems || shopItems.weapons.length) > 0 && (
           <BtnAuth
             active={tab === 'weapons' ? true : false}
             onClick={() => setTab('weapons')}
@@ -77,7 +81,7 @@ const ShopModal = ({
             <WeaponIcon className="size-8" />
           </BtnAuth>
         )}
-        {(character.playerCharacter || shopItems.armors.length > 0) && (
+        {(!shopItems || shopItems.armors.length > 0) && (
           <BtnAuth
             active={tab === 'armors' ? true : false}
             onClick={() => setTab('armors')}
@@ -85,7 +89,7 @@ const ShopModal = ({
             <ArmorIcon className="size-8" />
           </BtnAuth>
         )}
-        {(character.playerCharacter || shopItems.augmentations.length > 0) && (
+        {(!shopItems || shopItems.augmentations.length > 0) && (
           <BtnAuth
             active={tab === 'augmentations' ? true : false}
             onClick={() => setTab('augmentations')}
@@ -93,7 +97,7 @@ const ShopModal = ({
             <CyberIcon className="size-8" />
           </BtnAuth>
         )}
-        {(character.playerCharacter || shopItems.reusables.length > 0) && (
+        {(!shopItems || shopItems.reusables.length > 0) && (
           <BtnAuth
             active={tab === 'reusables' ? true : false}
             onClick={() => setTab('reusables')}
@@ -101,7 +105,7 @@ const ShopModal = ({
             <InventoryIcon className="size-8" />
           </BtnAuth>
         )}
-        {(character.playerCharacter || shopItems.consumables.length > 0) && (
+        {(!shopItems || shopItems.consumables.length > 0) && (
           <BtnAuth
             active={tab === 'consumables' ? true : false}
             onClick={() => setTab('consumables')}
@@ -109,7 +113,7 @@ const ShopModal = ({
             <PotionIcon className="size-8" />
           </BtnAuth>
         )}
-        {(character.playerCharacter || shopItems.vehicles.length > 0) && (
+        {(!shopItems || shopItems.vehicles.length > 0) && (
           <BtnAuth
             active={tab === 'vehicles' ? true : false}
             onClick={() => setTab('vehicles')}
@@ -117,7 +121,7 @@ const ShopModal = ({
             <VehicleIcon className="size-8" />
           </BtnAuth>
         )}
-        {(character.playerCharacter || shopItems.drones.length > 0) && (
+        {(!shopItems || shopItems.drones.length > 0) && (
           <BtnAuth
             active={tab === 'drones' ? true : false}
             onClick={() => setTab('drones')}
@@ -127,11 +131,12 @@ const ShopModal = ({
         )}
       </div>
       {tab === 'cart' ? (
-        <Cart character={character} />
+        <Cart character={activeCharacter} />
       ) : (
         <Items
           forcedMode="shop"
           forcedCategory={tab}
+          character={character}
           itemList={
             shopItems ? (tab === 'all' ? allShopItems : shopItems[tab]) : null
           }

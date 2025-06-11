@@ -22,12 +22,14 @@ const Items = ({
   itemList,
   forcedMode,
   forcedCategory,
+  character,
   toggleFormLink,
 }: {
   title?: string;
   itemList?: Item[];
   forcedMode?: string;
   forcedCategory?: string;
+  character?: string;
   toggleFormLink?: (item: Item) => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
@@ -196,6 +198,7 @@ const Items = ({
               <LazyItemCard
                 item={item}
                 mode={mode}
+                character={character}
                 toggleFormLink={toggleFormLink}
               />
             </Suspense>
