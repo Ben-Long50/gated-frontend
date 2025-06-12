@@ -14,16 +14,22 @@ const ErrorPage = () => {
             Error: <span className="text-error ml-2">{error.message}</span>
           </p>
         </div>
-        <CloudinaryImage
-          className="aspect-square !w-full max-w-[300px] rounded-full shadow-lg shadow-zinc-950 sm:max-w-[500px]"
-          url="https://res.cloudinary.com/dm4tmla72/image/upload/w_auto,c_scale/v1736199635/error_page_image_ugfdxr.jpg"
-          alt="Error page image"
-        />
+        <div className="aspect-square !w-full max-w-[300px] overflow-hidden rounded-full shadow-lg shadow-zinc-950 sm:max-w-[500px]">
+          <CloudinaryImage publicId={'error_page_image_ugfdxr.jpg'} />
+        </div>
+
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-8">
-          <BtnRect className="min-w-40" onClick={() => navigate(-1)}>
+          <BtnRect
+            type="button"
+            ariaLabel="Back"
+            className="min-w-40"
+            onClick={() => navigate(-1)}
+          >
             Go back
           </BtnRect>
           <BtnRect
+            type="button"
+            ariaLabel="Navigate to error report"
             className="min-w-40"
             onClick={() => navigate('/error/report')}
           >

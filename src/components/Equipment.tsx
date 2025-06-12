@@ -20,15 +20,16 @@ import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
 import useCharacter from 'src/hooks/useCharacter';
 import ItemCard from './ItemCard';
-import ItemCardMobile from './ItemCardMobile';
 import EquipmentIcon from './icons/EquipmentIcon';
 import CharacterIcon from './icons/CharacterIcon';
 import CharacterStatBars from './CharacterStatBars';
 import CharacterPicture from './CharacterPicture';
 import useModalStore from 'src/stores/modalStore';
+import { LayoutContext } from 'src/contexts/LayoutContext';
 
 const Equipment = () => {
   const { user } = useContext(AuthContext);
+  const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { characterId } = useParams();
   const location = useLocation();
@@ -125,7 +126,7 @@ const Equipment = () => {
     <div className="relative flex w-full max-w-9xl flex-col items-center gap-8">
       <h1 className="text-center">{namePrefix + ' ' + 'Equipment'}</h1>
       <div className="flex w-full flex-col gap-8 sm:flex-row">
-        {character?.picture?.imageUrl && (
+        {character?.picture?.publicId && (
           <CharacterPicture className="min-w-60" character={character} />
         )}
         <div
@@ -150,22 +151,15 @@ const Equipment = () => {
       </div>
       <div className="flex w-full flex-col justify-start gap-8 lg:flex-row">
         <div ref={activeRef} className="col-span-2 flex w-full flex-col gap-8">
-          {activeItem &&
-            (activeRef.current?.offsetWidth < 500 ? (
-              <ItemCardMobile
-                key={active.id}
-                item={activeItem}
-                mode={mode}
-                ownerId={character?.userId}
-              />
-            ) : (
-              <ItemCard
-                key={active.id}
-                item={activeItem}
-                mode={mode}
-                ownerId={character?.userId}
-              />
-            ))}
+          {activeItem && (
+            <ItemCard
+              key={active.id}
+              item={activeItem}
+              mode={mode}
+              cardType={mobile ? 'small' : 'large'}
+              ownerId={character?.userId}
+            />
+          )}
           <div className="flex items-center justify-between">
             <ArrowHeader2 title="Equipped Items" />
             {character?.userId === user?.id && (
@@ -189,7 +183,7 @@ const Equipment = () => {
             borderColor={accentPrimary}
             overflowHidden={true}
           >
-            <div className="bg-primary p-4">
+            <div className="p-4">
               <EquipmentList
                 equipment={character?.equipment}
                 active={active}
@@ -293,32 +287,6 @@ const Equipment = () => {
                 {character?.stats.insanities || 0}
               </p>
             </div>
-            {/* {Object.keys(rollBonuses).length > 0 && (
-              <>
-                <Divider />
-                <ArrowHeader3 title="Roll Bonuses" />
-                {Object.entries(rollBonuses).map(
-                  ([action, bonus]: [string, number], index: number) => (
-                    <div
-                      className="flex items-center justify-between gap-4"
-                      key={index}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-0.5">
-                          {Array.from({ length: bonus }).map((_, index) => (
-                            <DieIcon
-                              key={index}
-                              className="text-secondary size-8 shrink-0"
-                            />
-                          ))}
-                        </div>
-                        <h4>{action}</h4>
-                      </div>
-                    </div>
-                  ),
-                )}
-              </>
-            )} */}
             {character?.actions && character?.actions.length > 0 && (
               <>
                 <Divider />

@@ -15,6 +15,7 @@ import {
 import useSignoutMutation from '../../hooks/useSignoutMutation/useSignoutMutation';
 import LinkListSidebar from './LinkListSidebar';
 import ConditionIcon from '../icons/ConditionIcon';
+import SubLinkSidebar from './SubLinkSidebar';
 
 const AccountLinks = ({
   sidebarVisibility,
@@ -76,40 +77,19 @@ const AccountLinks = ({
           }
           title="Admin Tools"
         >
-          <LinkSidebar
+          <SubLinkSidebar
             path={`account/${user?.id}/patchNotes/create`}
             title="Create Patch Notes"
-            icon={
-              <Icon
-                path={mdiNoteMultipleOutline}
-                className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit"
-              />
-            }
-            sidebarVisibility={sidebarVisibility}
             setSidebarVisibility={setSidebarVisibility}
           />
-          <LinkSidebar
+          <SubLinkSidebar
             path={`account/${user?.id}/adminTools`}
             title="Error Reports"
-            icon={
-              <Icon
-                path={mdiAlertCircleOutline}
-                className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit"
-              />
-            }
-            sidebarVisibility={sidebarVisibility}
             setSidebarVisibility={setSidebarVisibility}
           />
-          <LinkSidebar
+          <SubLinkSidebar
             path={`account/${user?.id}/userPermissions`}
             title="User Account Permissions"
-            icon={
-              <Icon
-                path={mdiLockOpenOutline}
-                className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit"
-              />
-            }
-            sidebarVisibility={sidebarVisibility}
             setSidebarVisibility={setSidebarVisibility}
           />
         </LinkListSidebar>

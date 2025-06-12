@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, lazy, Suspense } from 'react';
+import { useContext, useState } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import InputField from './InputField';
@@ -195,19 +195,24 @@ const Items = ({
           </div>
         </div>
       </ThemeContainer>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        items?.map((item: Item) => (
-          <ItemCard
-            key={item.id}
-            item={item}
-            mode={mode}
-            character={character}
-            toggleFormLink={toggleFormLink}
-          />
-        ))
-      )}
+      <div
+        className={`${cardType === 'small' ? 'grid-cols-[repeat(auto-fit,_minmax(400px,_1fr))] gap-4' : 'grid-cols-1 gap-8'} grid w-full`}
+      >
+        {isLoading ? (
+          <Loading />
+        ) : (
+          items?.map((item: Item) => (
+            <ItemCard
+              key={item.id}
+              item={item}
+              mode={mode}
+              cardType={cardType}
+              character={character}
+              toggleFormLink={toggleFormLink}
+            />
+          ))
+        )}
+      </div>
     </div>
   );
 };

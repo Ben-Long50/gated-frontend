@@ -1,6 +1,6 @@
 import { Affiliation } from 'src/types/faction';
 import ThemeContainer from './ThemeContainer';
-import { useContext } from 'react';
+import { Fragment, useContext } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import AffiliationBar from './AffiliationBar';
 import AffiliationIcon from './icons/AffiliationIcon';
@@ -37,7 +37,7 @@ const AffiliationCard = ({ affiliation }: { affiliation: Affiliation }) => {
               : entity.name;
 
             return (
-              <>
+              <Fragment key={index}>
                 <div
                   className={`${index === 0 ? 'mr-auto justify-start' : 'ml-auto justify-end'} flex w-3/4 items-center gap-4`}
                 >
@@ -56,7 +56,7 @@ const AffiliationCard = ({ affiliation }: { affiliation: Affiliation }) => {
                     className={`${mobile ? 'size-10' : 'size-12'} text-tertiary place-self-center`}
                   />
                 )}
-              </>
+              </Fragment>
             );
           })}
         </div>

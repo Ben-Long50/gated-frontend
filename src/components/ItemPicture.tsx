@@ -1,10 +1,6 @@
 import { useContext } from 'react';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { WeaponWithKeywords } from 'src/types/weapon';
-import { ArmorWithKeywords } from 'src/types/armor';
-import { CyberneticWithKeywords } from 'src/types/cybernetic';
-import { VehicleWithWeapons } from 'src/types/vehicle';
 import CloudinaryImage from './CloudinaryImage';
 import { Item } from 'src/types/item';
 
@@ -12,12 +8,7 @@ const ItemPicture = ({
   item,
   className,
 }: {
-  item:
-    | WeaponWithKeywords
-    | ArmorWithKeywords
-    | CyberneticWithKeywords
-    | VehicleWithWeapons
-    | Item;
+  item: Item;
   className?: string;
 }) => {
   const { accentPrimary, rarityColorMap } = useContext(ThemeContext);
@@ -36,8 +27,8 @@ const ItemPicture = ({
       />
       <CloudinaryImage
         className="timing w-full clip-6"
-        url={item.picture?.imageUrl}
-        alt={item.name + ' ' + 'picture'}
+        position={item.picture?.position}
+        publicId={item.picture?.publicId}
       />
     </ThemeContainer>
   );

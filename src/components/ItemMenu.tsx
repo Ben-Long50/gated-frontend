@@ -94,7 +94,7 @@ const ItemMenu = ({
   }
 
   return (
-    <div ref={listRef} className="w-full flex-col gap-2">
+    <div ref={listRef} className="flex w-full flex-col gap-4">
       <div className="grid grid-flow-col gap-2 sm:gap-4">
         {parts.includes('equipment') && (
           <>

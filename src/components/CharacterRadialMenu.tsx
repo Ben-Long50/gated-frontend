@@ -40,9 +40,27 @@ const CharacterRadialMenu = ({
 
   const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
 
+  const path = (() => {
+    if (parts.includes('characters')) {
+      return `${character.id}`;
+    } else {
+      return `characters/${character.id}`;
+    }
+  })();
+
   const openConditionModal = () => {
     setBackgroundPath(location.pathname);
-    navigate(`${character.id}/conditions`);
+    navigate(`${path}/conditions`);
+  };
+
+  const openAffiliationModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate(`${path}/affiliations`);
+  };
+
+  const openShopModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate(`${path}/shop/global`);
   };
 
   const toggleProfitMenu = () => {
@@ -53,26 +71,8 @@ const CharacterRadialMenu = ({
     setAffiliationMenu(!affiliationMenu);
   };
 
-  const openAffiliationModal = () => {
-    setBackgroundPath(location.pathname);
-    navigate(`${character.id}/affiliations`);
-  };
-
-  const openShopModal = () => {
-    setBackgroundPath(location.pathname);
-    navigate(`${character.id}/shop/global`);
-  };
-
   const userPermissions =
     character.userId === user?.id || character.campaign?.ownerId === user?.id;
-
-  const path = (() => {
-    if (parts.includes('characters')) {
-      return `${character.id}`;
-    } else {
-      return `characters/${character.id}`;
-    }
-  })();
 
   if (!user || !character) return;
 

@@ -57,13 +57,12 @@ const ShopModal = () => {
         <CharacterPictureRound character={character} />
         <h1 className="text-left">Shop {capitalCase(category)}</h1>
       </div>
-      <p className="absolute right-2 top-2 sm:right-4 sm:top-4">
+      <p className="absolute right-2 top-12 sm:right-4 sm:top-14">
         {character?.profits}p
       </p>
-      <div className="grid w-full grid-flow-col gap-2">
+      <div className="grid w-full grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] gap-2">
         {shopItems && (
           <BtnAuth
-            className="w-full"
             active={category === 'all' ? true : false}
             onClick={() => navigate('all')}
           >

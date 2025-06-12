@@ -1,29 +1,24 @@
-import { useContext, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
-import { ThemeContext } from '../contexts/ThemeContext';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
-import InventoryModal from './modals/InventoryModal';
 import DeploymentsList from './DeploymentsList';
-import ThemeContainer from './ThemeContainer';
-import ItemPicture from './ItemPicture';
-import StatBars from './StatBars';
 import ArrowHeader1 from './ArrowHeader1';
 import useCharacter from 'src/hooks/useCharacter';
 import { Item } from 'src/types/item';
 import ItemCard from './ItemCard';
-import ItemCardMobile from './ItemCardMobile';
 import { LayoutContext } from 'src/contexts/LayoutContext';
 import { DroneControls, VehicleControls } from './ItemCardControls';
-import useItemStats from 'src/hooks/useItemStats';
 import useModalStore from 'src/stores/modalStore';
+import ThemeContainer from './ThemeContainer';
+import { ThemeContext } from 'src/contexts/ThemeContext';
 
 const Deployments = () => {
   const { user } = useContext(AuthContext);
-  const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const { mobile } = useContext(LayoutContext);
   const { characterId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -106,7 +101,11 @@ const Deployments = () => {
       <div className="flex w-full flex-col items-start gap-8">
         <div className="flex w-full flex-col gap-8">
           {activeItem !== null && (
-            <ItemCard ownerId={character.userId} item={activeItem} />
+            <ItemCard
+              cardType={mobile ? 'small' : 'large'}
+              ownerId={character.userId}
+              item={activeItem}
+            />
           )}
           {activeItem !== null && active.category === 'vehicle' && (
             <VehicleControls
@@ -121,28 +120,21 @@ const Deployments = () => {
             <div className="flex flex-col gap-8">
               <ArrowHeader2 title="Weapons" />
               <div className="grid gap-8 xl:grid-cols-2">
-                {weapons?.map((weapon: Item) =>
-                  mobile ? (
-                    <ItemCardMobile
-                      key={weapon.id}
-                      item={weapon}
-                      mode={mode}
-                      ownerId={character?.userId}
-                    />
-                  ) : (
-                    <ItemCard
-                      key={weapon.id}
-                      item={weapon}
-                      mode={mode}
-                      ownerId={character?.userId}
-                    />
-                  ),
-                )}
+                {weapons?.map((weapon: Item) => (
+                  <ItemCard
+                    key={weapon.id}
+                    cardType={mobile ? 'small' : 'large'}
+                    item={weapon}
+                    mode={mode}
+                    ownerId={character?.userId}
+                  />
+                ))}
               </div>
             </div>
           )}
           <div className="flex items-center justify-between">
             <ArrowHeader2 title="Deployed Items" />
+
             {character.userId === user?.id && (
               <>
                 <BtnRect
@@ -159,11 +151,15 @@ const Deployments = () => {
               </>
             )}
           </div>
-          <DeploymentsList
-            equipment={character.equipment}
-            active={active}
-            toggleActive={toggleActive}
-          />
+          <ThemeContainer borderColor={accentPrimary} chamfer="medium">
+            <div className="p-4">
+              <DeploymentsList
+                equipment={character.equipment}
+                active={active}
+                toggleActive={toggleActive}
+              />
+            </div>
+          </ThemeContainer>
         </div>
       </div>
     </div>

@@ -87,7 +87,7 @@ const LinkedActionCard = ({
           </div>
         )}
         <p>{description1}</p>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
           {action.modifiers &&
             Object.entries(action.modifiers).map(([stat, value], index) => (
               <ThemeContainer

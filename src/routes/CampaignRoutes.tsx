@@ -17,8 +17,16 @@ import Deployments from 'src/components/Deployments';
 import ResumeForm from 'src/components/ResumeForm';
 import { CampaignSocketProvider } from 'src/contexts/CampaignSocketContext';
 import CampaignAffiliations from 'src/components/CampaignAffiliations';
-import CharacterAffiliations from 'src/components/CharacterAffiliations';
 import RollModal from 'src/components/modals/RollModal';
+import CharacterModalRoutes from './CharacterModalRoutes';
+import PerkLinkModal from 'src/components/modals/PerkLinkModal';
+import NpcPreferenceModal from 'src/components/modals/NpcPreferenceModal';
+import Cart from 'src/components/Cart';
+import InventoryModal from 'src/components/modals/InventoryModal';
+import Inventory from 'src/components/Inventory';
+import ItemUpgradeForm from 'src/components/ItemUpgradeForm';
+import KeywordLinkModal from 'src/components/modals/KeywordLinkModal';
+import ItemUpgradeTutorialModal from 'src/components/modals/tutorials/ItemUpgradeTutorialModal';
 
 const CampaignRoutes = () => {
   return (
@@ -36,38 +44,38 @@ const CampaignRoutes = () => {
             path="update"
             element={<FactionForm title="Update" mode="update" />}
           />
-          <Route
-            path="affiliations/:affiliationId/update"
-            element={<AffiliationForm title="Update" mode="update" />}
-          />
         </Route>
         <Route path="characters">
           <Route index element={<CampaignCharacterList />} />
           <Route path=":characterId">
             <Route index element={<CharacterSheet />} />
-            <Route path="equipment" element={<Equipment />}>
-              <Route path="inventory" element={<Equipment />} />
+            <Route path="update" element={<CharacterUpdateForm />}>
+              <Route path="perks" element={<PerkLinkModal />} />
+              <Route path="npcPreferences" element={<NpcPreferenceModal />} />
             </Route>
-            <Route
-              path="equipment/:category/:itemId"
-              element={<ItemPageWrapper />}
-            />
-            <Route path="deployments" element={<Deployments />}>
-              <Route path="inventory" element={<Equipment />} />
-            </Route>
-            <Route
-              path="deployments/:category/:itemId"
-              element={<ItemPageWrapper />}
-            />
             <Route path="resume" element={<Resume />} />
             <Route path="resume/update" element={<ResumeForm />} />
-            <Route path="update" element={<CharacterUpdateForm />} />
-            <Route path="affiliations" element={<CharacterAffiliations />} />
-            <Route
-              path="affiliations/create"
-              element={<AffiliationForm title="Create" mode="create" />}
-            />
+            <Route path="equipment" element={<Equipment />}>
+              <Route path="inventory" element={<InventoryModal />} />
+            </Route>
+            <Route path="deployments" element={<Deployments />}>
+              <Route path="inventory" element={<InventoryModal />} />
+            </Route>
+            <Route path="inventory">
+              <Route path=":category">
+                <Route index element={<Inventory />} />
+                <Route path=":itemId" element={<ItemPageWrapper />} />
+                <Route path=":itemId/upgrade" element={<ItemUpgradeForm />}>
+                  <Route path="traits" element={<KeywordLinkModal />} />
+                  <Route
+                    path="tutorial"
+                    element={<ItemUpgradeTutorialModal />}
+                  />
+                </Route>
+              </Route>
+            </Route>
           </Route>
+          {CharacterModalRoutes()}
         </Route>
         {SessionRoutes()}
         <Route path="affiliations" element={<CampaignAffiliations />} />

@@ -17,6 +17,8 @@
   },
   "proxy": "http://localhost:3000",
   "dependencies": {
+    "@cloudinary/react": "^1.14.3",
+    "@cloudinary/url-gen": "^1.21.0",
     "@designbycode/tailwindcss-text-shadow": "^2.2.1",
     "@lexical/html": "^0.23.1",
     "@lexical/link": "^0.23.1",
@@ -41,6 +43,7 @@
     "motion": "^12.0.11",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-intersection-observer": "^9.16.0",
     "react-perfect-scrollbar": "^1.5.8",
     "react-router-dom": "^6.23.1",
     "romans": "^3.0.0",

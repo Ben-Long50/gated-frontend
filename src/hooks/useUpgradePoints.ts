@@ -1,33 +1,33 @@
 import { FormApi, useStore } from '@tanstack/react-form';
 import { Item } from 'src/types/item';
 import useItemStats from './useItemStats';
-import gradePointMap from './gradePointMap';
+import upgradePointMap from './upgradePointMap';
 
-const useGradePoints = (form: FormApi, item: Item) => {
+const useUpgradePoints = (form: FormApi, item: Item) => {
   const { powerLevel } = useItemStats(item);
 
   const newGrade = useStore(form.store, (state) => state.values.grade);
 
   const newStats = useStore(form.store, (state) => state.values.modifiedStats);
 
-  const usedGp = (
-    Object.entries(newStats) as [keyof typeof gradePointMap, number][]
+  const usedUp = (
+    Object.entries(newStats) as [keyof typeof upgradePointMap, number][]
   ).reduce((sum, [stat, value]) => {
     let level =
       item?.modifiedStats && item?.modifiedStats[stat]
         ? value - item?.modifiedStats[stat]
         : value;
-    let totalGpCost = 0;
+    let totalUpCost = 0;
     for (level; level > 0; level--) {
-      totalGpCost =
+      totalUpCost =
         item?.stats && item.stats[stat]
-          ? gradePointMap[stat](level + item.stats[stat]) + totalGpCost
-          : gradePointMap[stat](level) + totalGpCost;
+          ? upgradePointMap[stat](level + item.stats[stat]) + totalUpCost
+          : upgradePointMap[stat](level) + totalUpCost;
     }
-    return sum + totalGpCost;
+    return sum + totalUpCost;
   }, 0);
 
-  const availableGp = (newGrade - item?.grade) * 5 - usedGp;
+  const availableUp = (newGrade - item?.grade) * 5 - usedUp;
 
   const upgradePrice = (() => {
     let cost = 0;
@@ -39,10 +39,10 @@ const useGradePoints = (form: FormApi, item: Item) => {
 
   const upgradedPowerLevel = powerLevel
     ? (
-        Object.entries(newStats) as [keyof typeof gradePointMap, number][]
+        Object.entries(newStats) as [keyof typeof upgradePointMap, number][]
       ).reduce((sum, [stat, value]) => {
-        if (gradePointMap[stat]) {
-          return sum + gradePointMap[stat](value);
+        if (upgradePointMap[stat]) {
+          return sum + upgradePointMap[stat](value);
         } else {
           return sum;
         }
@@ -50,12 +50,12 @@ const useGradePoints = (form: FormApi, item: Item) => {
     : null;
 
   return {
-    gradePointMap,
-    availableGp,
+    upgradePointMap,
+    availableUp,
     upgradePrice,
     powerLevel,
     upgradedPowerLevel,
   };
 };
 
-export default useGradePoints;
+export default useUpgradePoints;

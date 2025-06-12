@@ -1,4 +1,4 @@
-const gradePointMap = {
+const upgradePointMap = {
   damage: (level: number) => Math.ceil(5 * (level * 0.1 + 1)),
   salvo: (level: number) => Math.ceil(5 * (level * 0.1 + 1)),
   flurry: (level: number) => Math.ceil(5 * (level * 0.1 + 1)),
@@ -18,4 +18,4 @@ const gradePointMap = {
   weapon: (level: number) => Math.ceil(20 * level),
 };
 
-export default gradePointMap;
+export default upgradePointMap;

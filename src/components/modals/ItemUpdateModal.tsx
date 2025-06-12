@@ -13,22 +13,17 @@ import Loading from '../Loading';
 import ItemPicture from '../ItemPicture';
 import useItemUpdateMutation from 'src/hooks/useItemUpdateMutation/useItemUpdateMutation';
 import { useForm } from '@tanstack/react-form';
-import { useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 import { extractKeywordListIds } from '../../utils/extractIds';
 import ArrowHeader4 from '../ArrowHeader4';
 
-const ItemUpdateModal = ({
-  item,
-  toggleUpdateMode,
-}: {
-  item: Item;
-  updateMode: boolean;
-  toggleUpdateMode: () => void;
-}) => {
+const ItemUpdateModal = () => {
   const { apiUrl } = useContext(AuthContext);
   const { characterId } = useParams();
   const parts = location.pathname.split('/').filter(Boolean);
   const category = parts[parts.length - 2];
+
+  const { item } = useOutletContext() || {};
 
   const { data: baseItem, isLoading } = useItemQuery(Number(item.baseItemId));
 
@@ -37,7 +32,6 @@ const ItemUpdateModal = ({
     category,
     Number(item.id),
     Number(characterId),
-    toggleUpdateMode,
   );
 
   const itemUpdateForm = useForm({

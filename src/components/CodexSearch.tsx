@@ -19,7 +19,6 @@ import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
 import { LayoutContext } from '../contexts/LayoutContext';
 import ItemCard from './ItemCard';
-import ItemCardMobile from './ItemCardMobile';
 import { AuthContext } from 'src/contexts/AuthContext';
 import { Item } from 'src/types/item';
 import { Action } from 'src/types/action';
@@ -283,13 +282,9 @@ const CodexSearch = () => {
               <div
                 className={`${cardType === 'small' ? 'grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8' : 'flex w-full flex-col gap-8'}`}
               >
-                {filteredItems.map((item) =>
-                  cardType === 'large' ? (
-                    <ItemCard key={item.id} item={item} mode="search" />
-                  ) : (
-                    <ItemCardMobile key={item.id} item={item} mode="search" />
-                  ),
-                )}
+                {filteredItems.map((item) => (
+                  <ItemCard key={item.id} item={item} mode="search" />
+                ))}
               </div>
             </>
           )}

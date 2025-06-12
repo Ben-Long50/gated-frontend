@@ -2,7 +2,7 @@ import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
 import Icon from '@mdi/react';
@@ -26,11 +26,11 @@ import ItemCardSmall from './ItemCardSmall';
 import { Keyword } from 'src/types/keyword';
 import { Item } from 'src/types/item';
 import useItemStats from 'src/hooks/useItemStats';
-import ItemUpdateModal from './modals/ItemUpdateModal';
 import LinkedItemCard from './LinkedItemCard';
 import LinkedActionCard from './LinkedActionCard';
 import ItemRadialMenu from './ItemRadialMenu';
 import Tag from './Tag';
+import useModalStore from 'src/stores/modalStore';
 
 const ItemPage = ({
   itemId,
@@ -43,18 +43,16 @@ const ItemPage = ({
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [cardWidth, setCardWidth] = useState(0);
   const [traitsExpanded, setTraitsExpanded] = useState(false);
-  const [updateMode, setUpdateMode] = useState(false);
 
   const location = useLocation();
   const parts = location.pathname.split('/');
 
-  const toggleUpdateMode = () => {
-    setUpdateMode(!updateMode);
-  };
-
   const cardRef = useRef(null);
+
+  const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
 
   const { data: item, isLoading } = useItemQuery(Number(itemId));
 
@@ -314,7 +312,7 @@ const ItemPage = ({
             className="group flex items-center gap-4 py-2"
             onClick={() => {
               if (item.baseItem && item.updatedAt < item.baseItem.updatedAt) {
-                toggleUpdateMode();
+                navigate('update');
               }
             }}
           >
@@ -348,11 +346,7 @@ const ItemPage = ({
               </>
             )}
           </button>
-          <ItemUpdateModal
-            item={item}
-            updateMode={updateMode}
-            toggleUpdateMode={toggleUpdateMode}
-          />
+          <Outlet context={{ item }} />
         </div>
       )}
 
@@ -368,10 +362,14 @@ const ItemPage = ({
           </BtnRect>
         </Link>
       )}
-      {mode === 'inventory' && (
-        <Link className="w-full self-end sm:max-w-1/3" to={`modify`}>
+      {(parts.includes('inventory') || parts.includes('equipment')) && (
+        <Link
+          className="w-full self-end sm:max-w-1/3"
+          to="upgrade/tutorial"
+          onClick={() => setBackgroundPath(`${location.pathname}/upgrade`)}
+        >
           <BtnRect ariaLabel="Navigate to modify weapon form" type="button">
-            {'Modify ' + item.name}
+            {'Upgrade ' + item.name}
           </BtnRect>
         </Link>
       )}

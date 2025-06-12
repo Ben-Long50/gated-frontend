@@ -22,7 +22,7 @@ import useCampaignQuery from 'src/hooks/useCampaignQuery/useCampaignQuery';
 import ArrowHeader4 from './ArrowHeader4';
 import CharacterPictureRound from './CharacterPictureRound';
 
-const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
+const AffiliationForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
   const { factionId, gangId, characterId, affiliationId } = useParams();
@@ -131,11 +131,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
           formData.append(key, JSON.stringify(value));
         }
       });
-      if (mode === 'create') {
-        await createAffiliation.mutate(formData);
-      } else if (mode === 'update') {
-        await updateAffiliation.mutate(value.value);
-      }
+      await createAffiliation.mutate(formData);
     },
   });
 
@@ -179,96 +175,94 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
           affiliationForm.handleSubmit();
         }}
       >
-        <h1 className="text-center">{title} Affiliation</h1>
-        {mode !== 'update' && (
-          <div
-            className={`${mobile ? 'flex-col gap-4' : 'flex-row gap-8'} flex w-full`}
+        <h1 className="text-center">Create Affiliation</h1>
+        <div
+          className={`${mobile ? 'flex-col gap-4' : 'flex-row gap-8'} flex w-full`}
+        >
+          <affiliationForm.Field
+            name="affiliationType"
+            listeners={{
+              onChange: ({ value }) => {
+                affiliationForm.reset({
+                  affiliationType: value,
+                  faction: '',
+                  gang: '',
+                  character: '',
+                  value: 0,
+                });
+              },
+            }}
           >
-            <affiliationForm.Field
-              name="affiliationType"
-              listeners={{
-                onChange: ({ value }) => {
-                  affiliationForm.reset({
-                    affiliationType: value,
-                    faction: '',
-                    gang: '',
-                    character: '',
-                    value: 0,
-                  });
-                },
-              }}
-            >
-              {(field) => (
-                <InputSelectField
-                  field={field}
-                  label="Affilitation Type"
-                  options={['toFaction', 'toGang', 'toCharacter']}
-                />
-              )}
-            </affiliationForm.Field>
-            <affiliationForm.Subscribe
-              selector={(state) => state.values.affiliationType}
-            >
-              {(type) => (
-                <>
-                  {type === 'toFaction' && (
-                    <affiliationForm.Field name="faction">
-                      {(field) => (
-                        <InputSelectField
-                          field={field}
-                          label="Campaign Factions"
-                          options={
-                            factionId
-                              ? campaign?.factions.filter(
-                                  (faction: Faction) =>
-                                    faction.id !== Number(factionId),
-                                )
-                              : campaign?.factions
-                          }
-                        />
-                      )}
-                    </affiliationForm.Field>
-                  )}
-                  {type === 'toGang' && (
-                    <affiliationForm.Field name="gang">
-                      {(field) => (
-                        <InputSelectField
-                          field={field}
-                          label="Campaign Gangs"
-                          options={
-                            gangId
-                              ? campaign?.gangs.filter(
-                                  (gang: Gang) => gang.id !== Number(gangId),
-                                )
-                              : campaign?.gangs
-                          }
-                        />
-                      )}
-                    </affiliationForm.Field>
-                  )}
-                  {type === 'toCharacter' && (
-                    <affiliationForm.Field name="character">
-                      {(field) => (
-                        <InputSelectField
-                          field={field}
-                          label="Campaign Characters"
-                          options={
-                            characterId
-                              ? campaign?.characters.filter(
-                                  (character: Character) =>
-                                    character.id !== Number(characterId),
-                                )
-                              : campaign?.characters
-                          }
-                        />
-                      )}
-                    </affiliationForm.Field>
-                  )}
-                </>
-              )}
-            </affiliationForm.Subscribe>
-          </div>
-        )}
+            {(field) => (
+              <InputSelectField
+                field={field}
+                label="Affilitation Type"
+                options={['toFaction', 'toGang', 'toCharacter']}
+              />
+            )}
+          </affiliationForm.Field>
+          <affiliationForm.Subscribe
+            selector={(state) => state.values.affiliationType}
+          >
+            {(type) => (
+              <>
+                {type === 'toFaction' && (
+                  <affiliationForm.Field name="faction">
+                    {(field) => (
+                      <InputSelectField
+                        field={field}
+                        label="Campaign Factions"
+                        options={
+                          factionId
+                            ? campaign?.factions.filter(
+                                (faction: Faction) =>
+                                  faction.id !== Number(factionId),
+                              )
+                            : campaign?.factions
+                        }
+                      />
+                    )}
+                  </affiliationForm.Field>
+                )}
+                {type === 'toGang' && (
+                  <affiliationForm.Field name="gang">
+                    {(field) => (
+                      <InputSelectField
+                        field={field}
+                        label="Campaign Gangs"
+                        options={
+                          gangId
+                            ? campaign?.gangs.filter(
+                                (gang: Gang) => gang.id !== Number(gangId),
+                              )
+                            : campaign?.gangs
+                        }
+                      />
+                    )}
+                  </affiliationForm.Field>
+                )}
+                {type === 'toCharacter' && (
+                  <affiliationForm.Field name="character">
+                    {(field) => (
+                      <InputSelectField
+                        field={field}
+                        label="Campaign Characters"
+                        options={
+                          characterId
+                            ? campaign?.characters.filter(
+                                (character: Character) =>
+                                  character.id !== Number(characterId),
+                              )
+                            : campaign?.characters
+                        }
+                      />
+                    )}
+                  </affiliationForm.Field>
+                )}
+              </>
+            )}
+          </affiliationForm.Subscribe>
+        </div>
         <div
           className={`${mobile ? 'grid-rows-[auto_auto_auto] place-items-center' : 'grid-cols-[1fr_auto_1fr] gap-8'} grid items-center`}
         >
@@ -346,7 +340,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
         </div>
         <BtnRect
           type="submit"
-          ariaLabel={title + ' affiliation'}
+          ariaLabel="Create affiliation"
           className="group w-full"
         >
           {createAffiliation.isPending ? (
@@ -355,7 +349,7 @@ const AffiliationForm = ({ title, mode }: { title: string; mode?: string }) => {
               size={1.15}
             />
           ) : (
-            title
+            'Create'
           )}
         </BtnRect>
       </form>

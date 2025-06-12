@@ -74,7 +74,6 @@ const RollSimulator = () => {
         (value.modifiers.includes('push') ? 2 : 0);
 
       calculateSuccesses(diceCount, value.modifiers);
-      openRollModal();
     },
   });
 
@@ -381,6 +380,7 @@ const RollSimulator = () => {
                 ariaLabel="Roll dice"
                 type="submit"
                 className="w-full min-w-28 self-end"
+                onClick={() => openRollModal()}
               >
                 Roll
               </BtnRect>

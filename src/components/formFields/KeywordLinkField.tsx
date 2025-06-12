@@ -58,19 +58,38 @@ const KeywordLinkField = ({
                                 key={keyword.keyword.id}
                                 heading={
                                   <div className="flex w-full items-center justify-between">
-                                    <h3>
+                                    <h4>
                                       {keyword.value
                                         ? keyword.keyword?.name.replace(
                                             /X/g,
                                             keyword.value.toString(),
                                           )
                                         : keyword.keyword?.name}
-                                    </h3>
-                                    {mode === 'modify' && (
-                                      <p className="text-tertiary pr-2">
+                                    </h4>
+                                    {mode === 'upgrade' && (
+                                      <p className="text-tertiary ml-auto pr-2">
                                         ({keyword.keyword.gpCost} GP)
                                       </p>
                                     )}
+                                    <button
+                                      onClick={() => {
+                                        field.handleChange(
+                                          field.state.value.filter(
+                                            (item: {
+                                              keyword: Keyword;
+                                              value?: number;
+                                            }) =>
+                                              item.keyword.id !==
+                                              keyword.keyword.id,
+                                          ),
+                                        );
+                                      }}
+                                    >
+                                      <Icon
+                                        path={mdiClose}
+                                        className="text-tertiary hover:text-accent timing -m-2 mr-1 size-9"
+                                      />
+                                    </button>
                                   </div>
                                 }
                               >
@@ -83,24 +102,6 @@ const KeywordLinkField = ({
                                     : keyword.keyword?.description}
                                 </p>
                               </ItemCardSmall>
-                              <button
-                                onClick={() => {
-                                  field.handleChange(
-                                    field.state.value.filter(
-                                      (item: {
-                                        keyword: Keyword;
-                                        value?: number;
-                                      }) =>
-                                        item.keyword.id !== keyword.keyword.id,
-                                    ),
-                                  );
-                                }}
-                              >
-                                <Icon
-                                  path={mdiClose}
-                                  className="text-tertiary hover:text-accent timing size-10"
-                                />
-                              </button>
                             </div>
                           );
                         },

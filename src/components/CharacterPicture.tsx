@@ -22,9 +22,8 @@ const CharacterPicture = ({
     >
       <CloudinaryImage
         className={`${className}`}
-        url={character.picture?.imageUrl}
-        alt={`${character.firstName} ${character.lastName}'s image`}
-        position={character.picture?.position}
+        publicId={character?.picture?.publicId}
+        position={character?.picture?.position}
       />
     </ThemeContainer>
   );

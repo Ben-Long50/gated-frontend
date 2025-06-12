@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import { useContext, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { Outlet, useLocation, useParams } from 'react-router-dom';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import FormLayout from 'src/layouts/FormLayout';
@@ -21,35 +21,30 @@ import {
   extractItemListIds,
   extractKeywordListIds,
 } from 'src/utils/extractIds';
-import useGradePoints from 'src/hooks/useGradePoints';
 import KeywordLinkField from './formFields/KeywordLinkField';
 import KeywordList from './KeywordList';
-import Modal from './modals/Modal';
 import useCharacterQuery from 'src/hooks/useCharacterQuery/useCharacterQuery';
-import useItemStats from 'src/hooks/useItemStats';
 import BtnIcon from './buttons/BtnIcon';
 import { capitalCase } from 'change-case';
-import gradePointMap from '../hooks/gradePointMap';
+import upgradePointMap from '../hooks/upgradePointMap';
+import useUpgradePoints from 'src/hooks/useUpgradePoints';
 
-const ItemModifyForm = () => {
+const ItemUpgradeForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
-  const [tutorialModal, setTutorialModal] = useState(true);
-  const { characterId } = useParams();
+  const { characterId, itemId, category } = useParams();
   const location = useLocation();
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
-  const itemId = parts[parts.length - 2];
-  const category = parts[parts.length - 3];
 
-  const categoryName = capitalCase(category);
+  const categoryName = capitalCase(category).slice(0, -1);
 
-  const toggleTutorialModal = () => setTutorialModal(!tutorialModal);
+  const { data: character, isLoading: characterLoading } = useCharacterQuery(
+    Number(characterId),
+  );
 
-  const { data: character } = useCharacterQuery(Number(characterId));
-
-  const { data: item, isLoading } = useItemQuery(Number(itemId));
+  const { data: item, isLoading: itemLoading } = useItemQuery(Number(itemId));
 
   const deleteItem = useDeleteItemMutation(
     apiUrl,
@@ -80,7 +75,7 @@ const ItemModifyForm = () => {
   const upgradableStats = item?.stats
     ? Object.fromEntries(
         Object.keys(item?.stats)
-          .filter((stat) => gradePointMap[stat])
+          .filter((stat) => upgradePointMap[stat])
           .map((stat) => [stat, 0]),
       )
     : {};
@@ -131,19 +126,19 @@ const ItemModifyForm = () => {
     },
     validators: {
       onSubmit: () => {
-        if (availableGp < 0) {
+        if (availableUp < 0) {
           return 'You do not have enough available GP to complete the chosen upgrades';
         }
       },
     },
   });
 
-  const { availableGp, upgradePrice, powerLevel, upgradedPowerLevel } =
-    useGradePoints(itemModifyForm, item);
+  const { availableUp, upgradePrice, powerLevel, upgradedPowerLevel } =
+    useUpgradePoints(itemModifyForm, item);
 
   itemModifyForm.setFieldValue('upgradePrice', upgradePrice);
 
-  if (isLoading) return <Loading />;
+  if (itemLoading || characterLoading) return <Loading />;
 
   return (
     <>
@@ -165,7 +160,7 @@ const ItemModifyForm = () => {
             itemModifyForm.handleSubmit();
           }}
         >
-          <h1 className="text-center">Modify {item?.name}</h1>
+          <h1 className="text-center">Upgrade {item?.name}</h1>
           <Divider />
           <ArrowHeader2 title={categoryName + ' Information'} />
           <div className="grid w-full gap-8 max-sm:col-span-2 max-sm:grid-flow-row sm:grid-cols-2">
@@ -175,7 +170,7 @@ const ItemModifyForm = () => {
             />
             <div className="flex flex-col gap-8">
               <div className="flex items-center justify-between gap-4">
-                <ArrowHeader3 title="Grade" />
+                <ArrowHeader3 title="Upgrade" />
                 <itemModifyForm.Field name="grade">
                   {(field) => (
                     <div className="flex w-1/2 items-center gap-2">
@@ -259,11 +254,11 @@ const ItemModifyForm = () => {
           </div>
           <Divider />
           <div className="flex items-center justify-between gap-8">
-            <ArrowHeader2 title="Grade Point Distribution" />
+            <ArrowHeader2 title="Upgrade Point Distribution" />
             <p>
-              Available GP -{' '}
-              <span className={`${availableGp < 0 && 'text-error'}`}>
-                ( {availableGp} )
+              Available UP -{' '}
+              <span className={`${availableUp < 0 && 'text-error'}`}>
+                ( {availableUp} )
               </span>
             </p>
           </div>
@@ -279,19 +274,19 @@ const ItemModifyForm = () => {
                       const currentLevel =
                         subField.state.value + item?.stats[stat];
 
-                      const nextLevelGradePoints = gradePointMap[stat](
+                      const nextLevelUpgradePoints = upgradePointMap[stat](
                         currentLevel + 1,
                       );
 
-                      const currentLevelGradePoints =
-                        gradePointMap[stat](currentLevel);
+                      const currentLevelUpgradePoints =
+                        upgradePointMap[stat](currentLevel);
 
                       return (
                         <>
                           <h4 className="w-full">
                             {capitalCase(stat)}{' '}
                             <span className="text-tertiary ml-2 text-base font-normal">
-                              ({nextLevelGradePoints} GP)
+                              ({nextLevelUpgradePoints} GP)
                             </span>
                           </h4>
                           <p className="mr-3 font-semibold !text-green-400">
@@ -311,7 +306,7 @@ const ItemModifyForm = () => {
                           </p>
                           <BtnIcon
                             path={mdiPlus}
-                            active={availableGp >= currentLevelGradePoints}
+                            active={availableUp >= currentLevelUpgradePoints}
                             onClick={() =>
                               subField.handleChange(subField.state.value + 1)
                             }
@@ -338,8 +333,6 @@ const ItemModifyForm = () => {
           <KeywordLinkField
             title="Upgraded Traits"
             mode={mode}
-            className="grid grid-cols-1 gap-4 sm:grid-cols-2"
-            keywordType={category}
             form={itemModifyForm}
           />
           <Divider />
@@ -399,78 +392,9 @@ const ItemModifyForm = () => {
           </BtnRect>
         </form>
       </FormLayout>
-      <Modal modalOpen={tutorialModal} toggleModal={toggleTutorialModal}>
-        <h1 className="text-center">Item Modification System</h1>
-        <Divider />
-        <div>
-          <p>
-            Welcome to Electric Death Online's item modification system. Using
-            this system, you can upgrade your weapons, armor and other items by
-            increasing the item's stats and adjusting the item's traits by
-            either upgrading the values on current traits or adding new ones.
-            <br />
-            <br />
-            Each grade level (denoted by the number of star icons on the item)
-            awards you 5 Grade Points (GP) to spend on upgrades. Each stat and
-            trait option costs a different number of grade points to upgrade
-            depending on how impactful that upgrade is to the overall power of
-            the item. For example, adding a point of damage to a weapon costs
-            10GP while adding a point of Mag Capacity only costs 2GP.
-            <br />
-            <br />
-            Increasing the grade of your item is not free. Naturally, the higher
-            the price of the base item, the higher the price of each grade level
-            applied. Not only that, but grade levels become increasingly more
-            expensive to purchase for each level applied. Things can get
-            expensive real fast. Such is the cost of having a powerful item
-            perfectly suited to your build.
-            <br />
-            <br />
-            Once the purchase of an item modification is confirmed, you cannot
-            undo your chosen GP distribution, so be sure the chosen upgrades are
-            the ones you want to carry on the item forever.
-            <br />
-            <br />
-            To apply and purchase upgrades, follow this list:
-            <br />
-            <br />
-          </p>
-          <ol>
-            <li>
-              Use the plus and minus buttons next to "Grade" to set the number
-              of grade levels you want to purchase for the item. GP
-              corresponding to the set grade level will be shown below.
-            </li>
-            <li>
-              Use the plus and minus buttons next to each stat to spend your
-              available GP on permanent stat bonuses.
-            </li>
-            <li>
-              When all your GP is allocated, you can view the final price of the
-              chosen upgrades at the bottom of the form.
-            </li>
-            <li>
-              Click the "Modify" button to confirm your item's upgrades. Profits
-              will automatically be deducted from your character for the
-              purchase.
-            </li>
-          </ol>
-        </div>
-
-        <BtnRect
-          className="mt-4 w-full"
-          type="button"
-          ariaLabel="Close tutorial"
-          onClick={(e) => {
-            e.preventDefault();
-            setTutorialModal(false);
-          }}
-        >
-          Close
-        </BtnRect>
-      </Modal>
+      {parts[parts.length - 1] === 'tutorial' && <Outlet />}
     </>
   );
 };
 
-export default ItemModifyForm;
+export default ItemUpgradeForm;

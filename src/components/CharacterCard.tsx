@@ -36,8 +36,7 @@ const CharacterCard = ({ characterId }: { characterId: number }) => {
       <div ref={cardRef} className="grid sm:grid-cols-[1fr_4fr]">
         <div className="absolute left-0 top-0 flex h-full w-[375px] items-center overflow-hidden rounded-bl clip-6">
           <CloudinaryImage
-            url={character?.picture?.imageUrl}
-            alt={`${character?.firstName} ${character.lastName}'s image`}
+            publicId={character?.picture?.publicId}
             position={character?.picture?.position}
             style={{
               maskImage: 'linear-gradient(to right, black 0%, transparent 90%',

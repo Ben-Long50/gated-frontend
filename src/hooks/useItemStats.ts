@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Item, Stats } from 'src/types/item';
-import gradePointMap from './gradePointMap';
+import gradePointMap from './upgradePointMap';
 import { Keyword } from 'src/types/keyword';
 
 const useItemStats = (item: Item) => {

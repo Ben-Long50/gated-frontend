@@ -174,11 +174,18 @@ const InputSelectField = ({
             ))}
           </div>
         </div>
-        <Icon
-          className="timing text-tertiary absolute right-2 top-2 size-9 rounded-full"
-          path={mdiChevronDown}
-          rotate={focus ? 180 : 0}
-        />
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            setFocus(!focus);
+          }}
+        >
+          <Icon
+            className="timing text-tertiary absolute right-2 top-2 size-9 rounded-full"
+            path={mdiChevronDown}
+            rotate={focus ? 180 : 0}
+          />
+        </button>
       </ThemeContainer>
 
       {field.state.meta.errors &&

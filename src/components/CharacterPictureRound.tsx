@@ -13,9 +13,8 @@ const CharacterPictureRound = ({
       {character.picture?.imageUrl ? (
         <CloudinaryImage
           className={`${className}`}
-          url={character.picture?.imageUrl}
-          alt={`${character.firstName} ${character.lastName}'s image`}
-          position={character.picture?.position}
+          publicId={character?.picture?.publicId}
+          position={character?.picture?.position}
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center bg-yellow-300">

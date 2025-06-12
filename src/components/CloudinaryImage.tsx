@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { AdvancedImage, lazyload, responsive } from '@cloudinary/react';
+import { Cloudinary } from '@cloudinary/url-gen';
 
 type Position = {
   x: number;
@@ -6,55 +7,43 @@ type Position = {
 };
 
 const CloudinaryImage = ({
-  className,
-  url,
+  publicId,
   position,
-  alt,
+  className,
   onClick,
   style,
 }: {
+  publicId: string;
+  position?: Position;
   className?: string;
-  url: string;
-  position: Position;
-  alt: string;
   onClick?: () => void;
   style?: object;
 }) => {
-  let responsiveUrl;
+  const cld = new Cloudinary({
+    cloud: {
+      cloudName: import.meta.env.VITE_CLOUD_NAME,
+    },
+  });
 
-  if (url) {
-    const splitUrl = url?.split('upload/');
-
-    responsiveUrl = splitUrl[0]
-      .concat('upload/w_auto,c_scale/')
-      .concat(splitUrl[1]);
-  }
-
-  useEffect(() => {
-    if (window.cloudinary) {
-      const cl = window.cloudinary.Cloudinary.new({
-        cloud_name: import.meta.env.VITE_CLOUD_NAME,
-      });
-
-      cl.responsive();
-    }
-  }, []);
+  const responsiveImage = cld.image(publicId);
 
   return (
-    <img
-      className={`${className} cld-responsive bg-primary h-full w-full object-cover`}
-      style={{
-        objectPosition: position ? `${position.x}% ${position.y}%` : '50% 50%',
-        ...style,
-      }}
-      data-src={responsiveUrl}
-      loading="lazy"
-      alt={alt}
-      onClick={onClick}
-    />
+    <div className={`${className} bg-primary h-full w-full`} onClick={onClick}>
+      <AdvancedImage
+        style={{
+          width: '100%',
+          minHeight: '100%',
+          objectFit: 'cover',
+          objectPosition: position
+            ? `${position.x}% ${position.y}%`
+            : '50% 50%',
+          ...style,
+        }}
+        cldImg={responsiveImage}
+        plugins={[responsive({ steps: 100 }), lazyload()]}
+      />
+    </div>
   );
 };
-
-CloudinaryImage.displayName = 'CloudinaryImage';
 
 export default CloudinaryImage;

@@ -1,5 +1,9 @@
 import RootPortal from '../../layouts/RootPortal';
 import { ReactNode } from 'react';
+import BtnIcon from '../buttons/BtnIcon';
+import { mdiClose } from '@mdi/js';
+import { useNavigate } from 'react-router-dom';
+import useModalStore from 'src/stores/modalStore';
 
 const Modal = ({
   children,
@@ -8,6 +12,8 @@ const Modal = ({
   children: ReactNode;
   className?: string;
 }) => {
+  const navigate = useNavigate();
+  const backgroundPath = useModalStore((state) => state.backgroundPath);
   return (
     <RootPortal>
       <div
@@ -16,6 +22,12 @@ const Modal = ({
           e.stopPropagation();
         }}
       >
+        <BtnIcon
+          active={true}
+          onClick={() => navigate(backgroundPath)}
+          path={mdiClose}
+          className="absolute right-2 top-2"
+        />
         {children}
       </div>
     </RootPortal>

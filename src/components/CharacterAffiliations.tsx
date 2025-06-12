@@ -1,6 +1,6 @@
 import Affiliations from './Affiliations';
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Loading from './Loading';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from 'src/contexts/ThemeContext';
@@ -13,8 +13,11 @@ import { Faction } from 'src/types/faction';
 import { Character } from 'src/types/character';
 import ArrowHeader3 from './ArrowHeader3';
 import useCharacterQuery from 'src/hooks/useCharacterQuery/useCharacterQuery';
+import BtnRect from './buttons/BtnRect';
+import BtnAuth from './buttons/BtnAuth';
 
 const CharacterAffiliations = () => {
+  const navigate = useNavigate();
   const { accentPrimary } = useContext(ThemeContext);
   const { characterId } = useParams();
 
@@ -64,7 +67,7 @@ const CharacterAffiliations = () => {
 
   return (
     <div className="flex w-full max-w-7xl flex-col items-center gap-8">
-      <h1 className="text-center">{`${character?.firstName} ${character?.lastName}'s Affiliations`}</h1>
+      <h1 className="text-center">{`${character?.firstName}'s Affiliations`}</h1>
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"
@@ -73,8 +76,10 @@ const CharacterAffiliations = () => {
         <form className="flex w-full flex-col gap-4 p-4">
           <div className="grid w-full items-center gap-4 max-sm:grid-flow-row sm:grid-flow-col sm:gap-8">
             <ArrowHeader3 title="Affiliation Options" />
+            <BtnAuth onClick={() => navigate('create')}>
+              Create Affiliation
+            </BtnAuth>
           </div>
-
           <div className="flex w-full items-center gap-4">
             <searchForm.Field name="entity">
               {(field) => (
