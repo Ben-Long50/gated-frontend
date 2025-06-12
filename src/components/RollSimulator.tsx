@@ -68,11 +68,12 @@ const RollSimulator = () => {
     },
     onSubmit: ({ value }) => {
       const diceCount =
-        activeCharacter.attributes[value.attribute].points +
-        activeCharacter.attributes[value.attribute].skills[value.skill].points +
+        (activeCharacter.attributes[value.attribute]?.points || 0) +
+        (activeCharacter.attributes[value.attribute]?.skills[value.skill]
+          ?.points || 0) +
         value.diceCount +
         (value.modifiers.includes('push') ? 2 : 0);
-
+      console.log(diceCount);
       calculateSuccesses(diceCount, value.modifiers);
     },
   });

@@ -10,7 +10,12 @@ import ArrowHeader2 from './ArrowHeader2';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
-import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import {
+  useLocation,
+  useOutletContext,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import InputSelectField from './InputSelectField';
 import { capitalCase } from 'change-case';
 import ItemCard from './ItemCard';
@@ -39,6 +44,8 @@ const Items = ({
   const { category } = useParams();
   const mode = forcedMode || parts[parts.length - 2];
 
+  const { categorizedShopItems } = useOutletContext() || {};
+
   const heading = state ? state.title : title;
 
   const include = searchParams.getAll('include');
@@ -59,7 +66,7 @@ const Items = ({
     isLoading,
   } = useItems({
     category: forcedCategory || category,
-    itemList: itemList || undefined,
+    itemList: categorizedShopItems || itemList || undefined,
     includedKeywords: include.length > 0 ? include : undefined,
     excludedKeywords: exclude.length > 0 ? exclude : undefined,
     subcategory: augmentType,

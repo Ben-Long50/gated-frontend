@@ -8,7 +8,6 @@ import PotionIcon from '../icons/PotionIcon';
 import Modal from './Modal';
 import VehicleIcon from '../icons/VehicleIcon';
 import DroneIcon from '../icons/DroneIcon';
-import { capitalCase } from 'change-case';
 import Icon from '@mdi/react';
 import { mdiCartOutline } from '@mdi/js';
 import CharacterPictureRound from '../CharacterPictureRound';
@@ -25,6 +24,7 @@ const ShopModal = () => {
   const { characterId, shopId } = useParams();
 
   const { filteredCharacter: character } = useCharacter(Number(characterId));
+  const { filteredCharacter: shop } = useCharacter(Number(shopId));
 
   const cartLength = useMemo(() => {
     return Object.values(character?.characterCart || {})
@@ -33,11 +33,17 @@ const ShopModal = () => {
       .reduce((sum, item) => sum + item.quantity, 0);
   }, [character]);
 
-  const { filteredCharacter: shop } = useCharacter(Number(shopId));
-
   const { actions, ...shopItems } = shop?.inventory ?? {};
 
-  const allShopItems = shopId ? Object.values(shopItems).flat() : null;
+  const categorizedShopItems = useMemo(
+    () =>
+      shopId
+        ? category === 'all'
+          ? Object.values(shopItems).flat()
+          : shopItems[category]
+        : null,
+    [category, shopId],
+  );
 
   return (
     <Modal className="h-full">
@@ -54,14 +60,20 @@ const ShopModal = () => {
         </p>
       </button>
       <div className="flex w-full items-center justify-center gap-4 px-8">
-        <CharacterPictureRound character={character} />
-        <h1 className="text-left">Shop {capitalCase(category)}</h1>
+        {shopId ? (
+          <CharacterPictureRound character={shop} />
+        ) : (
+          <CharacterPictureRound character={character} />
+        )}
+        <h1 className="text-left">
+          {shopId ? `${shop?.firstName}'s Shop` : 'Global Shop'}
+        </h1>
       </div>
       <p className="absolute right-2 top-12 sm:right-4 sm:top-14">
         {character?.profits}p
       </p>
       <div className="grid w-full grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))] gap-2">
-        {shopItems && (
+        {shopId && (
           <BtnAuth
             active={category === 'all' ? true : false}
             onClick={() => navigate('all')}
@@ -69,7 +81,7 @@ const ShopModal = () => {
             <ShopIcon className="size-8" />
           </BtnAuth>
         )}
-        {(!allShopItems || shopItems.weapons?.length) > 0 && (
+        {(!categorizedShopItems || shopItems.weapons?.length) > 0 && (
           <BtnAuth
             active={category === 'weapons' ? true : false}
             onClick={() => navigate('weapons')}
@@ -77,7 +89,7 @@ const ShopModal = () => {
             <WeaponIcon className="size-8" />
           </BtnAuth>
         )}
-        {(!allShopItems || shopItems.armors?.length > 0) && (
+        {(!categorizedShopItems || shopItems.armors?.length > 0) && (
           <BtnAuth
             active={category === 'armors' ? true : false}
             onClick={() => navigate('armors')}
@@ -85,7 +97,7 @@ const ShopModal = () => {
             <ArmorIcon className="size-8" />
           </BtnAuth>
         )}
-        {(!allShopItems || shopItems.augmentations?.length > 0) && (
+        {(!categorizedShopItems || shopItems.augmentations?.length > 0) && (
           <BtnAuth
             active={category === 'augmentations' ? true : false}
             onClick={() => navigate('augmentations')}
@@ -93,7 +105,7 @@ const ShopModal = () => {
             <CyberIcon className="size-8" />
           </BtnAuth>
         )}
-        {(!allShopItems || shopItems.reusables?.length > 0) && (
+        {(!categorizedShopItems || shopItems.reusables?.length > 0) && (
           <BtnAuth
             active={category === 'reusables' ? true : false}
             onClick={() => navigate('reusables')}
@@ -101,7 +113,7 @@ const ShopModal = () => {
             <InventoryIcon className="size-8" />
           </BtnAuth>
         )}
-        {(!allShopItems || shopItems.consumables?.length > 0) && (
+        {(!categorizedShopItems || shopItems.consumables?.length > 0) && (
           <BtnAuth
             active={category === 'consumables' ? true : false}
             onClick={() => navigate('consumables')}
@@ -109,7 +121,7 @@ const ShopModal = () => {
             <PotionIcon className="size-8" />
           </BtnAuth>
         )}
-        {(!allShopItems || shopItems.vehicles?.length > 0) && (
+        {(!categorizedShopItems || shopItems.vehicles?.length > 0) && (
           <BtnAuth
             active={category === 'vehicles' ? true : false}
             onClick={() => navigate('vehicles')}
@@ -117,7 +129,7 @@ const ShopModal = () => {
             <VehicleIcon className="size-8" />
           </BtnAuth>
         )}
-        {(!allShopItems || shopItems.drones?.length > 0) && (
+        {(!categorizedShopItems || shopItems.drones?.length > 0) && (
           <BtnAuth
             active={category === 'drones' ? true : false}
             onClick={() => navigate('drones')}
@@ -127,7 +139,7 @@ const ShopModal = () => {
         )}
       </div>
       <Divider className="my-0" />
-      <Outlet context={{ character, allShopItems }} />
+      <Outlet context={{ character, categorizedShopItems }} />
     </Modal>
   );
 };

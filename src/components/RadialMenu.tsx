@@ -119,7 +119,7 @@ const RadialMenu = ({
           if (!isValidElement(child)) return null;
 
           const onClick = child.props?.onClick;
-          const active = true;
+          const active = child.props['data-active'] ?? true;
 
           return (
             <button

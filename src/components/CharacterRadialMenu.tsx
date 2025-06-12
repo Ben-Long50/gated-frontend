@@ -19,8 +19,8 @@ import {
 import useProfitsMutation from 'src/hooks/useProfitsMutation/useProfitsMutation';
 import AffiliationIcon from './icons/AffiliationIcon';
 import ShopIcon from './icons/ShopIcon';
-import ShopModal from './modals/ShopModal';
 import useModalStore from 'src/stores/modalStore';
+import useCharacters from 'src/hooks/useCharacters';
 
 const CharacterRadialMenu = ({
   character,
@@ -35,6 +35,8 @@ const CharacterRadialMenu = ({
   const [profitMenu, setProfitMenu] = useState(false);
   const [affiliationMenu, setAffiliationMenu] = useState(false);
   const navigate = useNavigate();
+
+  const { activeCharacter } = useCharacters();
 
   const editProfits = useProfitsMutation(apiUrl, character.id);
 
@@ -60,7 +62,11 @@ const CharacterRadialMenu = ({
 
   const openShopModal = () => {
     setBackgroundPath(location.pathname);
-    navigate(`${path}/shop/global`);
+    if (character.npcTypes?.includes('shop') && character.userId !== user.id) {
+      navigate(`characters/${activeCharacter?.id}/shop/${character.id}/all`);
+    } else {
+      navigate(`${path}/shop/global/weapons`);
+    }
   };
 
   const toggleProfitMenu = () => {
@@ -159,7 +165,8 @@ const CharacterRadialMenu = ({
       >
         <AffiliationIcon className="text-inherit" />
       </div>
-      {character.userId === user.id && (
+      {(character.userId === user.id ||
+        character.npcTypes?.includes('shop')) && (
         <div onClick={() => openShopModal()}>
           <ShopIcon className="text-inherit" />
         </div>

@@ -2,7 +2,6 @@ import { Route } from 'react-router-dom';
 import AffiliationForm from 'src/components/AffiliationForm';
 import Cart from 'src/components/Cart';
 import CharacterAffiliations from 'src/components/CharacterAffiliations';
-import CharacterList from 'src/components/CharacterList';
 import ConditionModal from 'src/components/modals/ConditionModal';
 import ItemPageWrapper from 'src/components/ItemPageWrapper';
 import Items from 'src/components/Items';
@@ -23,7 +22,7 @@ const CharacterModalRoutes = () => {
           <Route path=":category" element={<Items />} />
           <Route path=":category/:itemId" element={<ItemPageWrapper />} />
         </Route>
-        <Route path=":shopId" element={<CharacterList />}>
+        <Route path=":shopId" element={<ShopModal />}>
           <Route path="cart" element={<Cart />} />
           <Route path=":category" element={<Items />} />
           <Route path=":category/:itemId" element={<ItemPageWrapper />} />

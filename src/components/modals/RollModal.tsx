@@ -22,7 +22,7 @@ const RollModal = () => {
   return (
     <Modal className="h-full">
       <h1>Roll Results</h1>
-      <div className="scrollbar-primary-2 grid grid-cols-3 gap-4 overflow-y-auto sm:gap-12">
+      <div className="scrollbar-primary-2 grid shrink-0 grid-cols-3 gap-4 overflow-y-auto sm:gap-12">
         {diceArray.map((number: number, index) => {
           const modifiers = rollForm.getFieldValue('modifiers');
           const lucky =
@@ -71,7 +71,7 @@ const RollModal = () => {
           }
         })}
       </div>
-      <div className="absolute bottom-0 w-full p-4 sm:p-8">
+      <div className="sticky bottom-0 mt-auto w-full">
         <ThemeContainer borderColor={accentPrimary} chamfer="medium">
           <div className="flex w-full flex-col gap-4 p-4 sm:p-8">
             <div className="grid grid-cols-[1fr_auto] gap-y-4">
