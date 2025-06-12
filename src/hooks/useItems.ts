@@ -124,7 +124,7 @@ const useItems = ({
 
   const filteredItems = useMemo(
     () => filterItems(categorizedItems),
-    [query, priceFilter, rarity, category, categorizedItems],
+    [query, priceFilter, rarity, category, itemCategory, categorizedItems],
   );
 
   const filterByQuery = (newQuery: string) => {

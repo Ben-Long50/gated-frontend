@@ -38,7 +38,7 @@ const CartCard = ({
         className={`${className} bg-secondary timing flex w-full flex-col pr-4 clip-4 sm:pr-6`}
       >
         <div className="relative flex h-full items-center">
-          {item?.picture.imageUrl && (
+          {item?.picture?.publicId && (
             <div
               className="group relative size-24 shrink-0 overflow-hidden pl-1"
               style={{ backgroundColor: rarityColorMap[item?.rarity] }}
