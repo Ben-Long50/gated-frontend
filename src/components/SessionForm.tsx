@@ -16,7 +16,7 @@ import useCreateSessionMutation from '../hooks/useCreateSessionMutation/useCreat
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import InputSelectField from './InputSelectField';
 import useSessionQuery from '../hooks/useSessionQuery/useSessionQuery';
-import PictureField from './form_fields/PictureField';
+import PictureField from './formFields/PictureField';
 import useCampaignCharactersQuery from 'src/hooks/useCampaignCharactersQuery/useCampaignCharactersQuery';
 
 const SessionForm = ({ title, mode }: { title: string; mode?: string }) => {

@@ -2,7 +2,7 @@ import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
 import Icon from '@mdi/react';
@@ -26,7 +26,7 @@ import ItemCardSmall from './ItemCardSmall';
 import { Keyword } from 'src/types/keyword';
 import { Item } from 'src/types/item';
 import useItemStats from 'src/hooks/useItemStats';
-import ItemUpdateModal from './ItemUpdateModal';
+import ItemUpdateModal from './modals/ItemUpdateModal';
 import LinkedItemCard from './LinkedItemCard';
 import LinkedActionCard from './LinkedActionCard';
 import ItemRadialMenu from './ItemRadialMenu';
@@ -46,6 +46,9 @@ const ItemPage = ({
   const [cardWidth, setCardWidth] = useState(0);
   const [traitsExpanded, setTraitsExpanded] = useState(false);
   const [updateMode, setUpdateMode] = useState(false);
+
+  const location = useLocation();
+  const parts = location.pathname.split('/');
 
   const toggleUpdateMode = () => {
     setUpdateMode(!updateMode);
@@ -353,12 +356,9 @@ const ItemPage = ({
         </div>
       )}
 
-      {((mode === 'codex' && user?.role === 'ADMIN') ||
-        (mode === 'codex' && user?.role === 'SUPERADMIN')) && (
-        <Link
-          className="w-full self-end sm:max-w-1/3"
-          to={`/glam/codex/${category}/${item.id}/update`}
-        >
+      {((parts.includes('codex') && user?.role === 'ADMIN') ||
+        (parts.includes('codex') && user?.role === 'SUPERADMIN')) && (
+        <Link className="w-full self-end sm:max-w-1/3" to="update">
           <BtnRect
             ariaLabel="Navigat to edit weapon form"
             type="button"

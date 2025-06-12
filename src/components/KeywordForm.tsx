@@ -7,7 +7,7 @@ import { useForm } from '@tanstack/react-form';
 import useCreateKeywordMutation from '../hooks/useCreateKeywordMutation/useCreateKeywordMutation';
 import FormLayout from '../layouts/FormLayout';
 import Loading from './Loading';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useDeleteKeywordMutation from '../hooks/useDeleteKeywordMutation/useDeleteKeywordMutation';
 import useKeywords from '../hooks/useKeywords';
 import { Keyword } from 'src/types/keyword';
@@ -15,15 +15,26 @@ import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import { capitalCase } from 'change-case';
+import useModalStore from 'src/stores/modalStore';
 
 const KeywordForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
   const { keywordId } = useParams();
+  const navigate = useNavigate();
   const location = useLocation();
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
+
+  const { setBackgroundPath } = useModalStore(
+    (state) => state.setBackgroundPath,
+  );
+
+  const openKeywordLinkModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate('traits');
+  };
 
   const keywords = useKeywords();
 

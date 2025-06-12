@@ -24,11 +24,11 @@ import useCampaignsQuery from '../hooks/useCampaignsQuery/useCampaignsQuery';
 import InputSelectField from './InputSelectField';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
-import PerkLinkField from './form_fields/PerkLinkField';
-import NpcPreferenceField from './form_fields/NpcPreferenceField';
-import PictureField from './form_fields/PictureField';
+import PerkLinkField from './formFields/PerkLinkField';
+import NpcPreferenceField from './formFields/NpcPreferenceField';
+import PictureField from './formFields/PictureField';
 import useCharacter from 'src/hooks/useCharacter';
-import AttributeField from './form_fields/AttributeField';
+import AttributeField from './formFields/AttributeField';
 import CyberIcon from './icons/CyberIcon';
 import EquipIcon from './icons/EquipIcon';
 

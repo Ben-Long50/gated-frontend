@@ -1,4 +1,4 @@
-import { useForm, useStore } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
 import useActions from '../hooks/useActions';
 import ArrowHeader3 from './ArrowHeader3';
 import ThemeContainer from './ThemeContainer';
@@ -11,35 +11,26 @@ import Loading from './Loading';
 import BtnRect from './buttons/BtnRect';
 import DieIcon from './icons/DieIcon';
 import Icon from '@mdi/react';
-import {
-  mdiCheckCircleOutline,
-  mdiCloseOutline,
-  mdiTriangleDown,
-} from '@mdi/js';
+import { mdiTriangleDown } from '@mdi/js';
 import InputFieldCheckbox from './InputFieldCheckbox';
-import Die3Icon from './icons/Die3Icon';
-import Die2Icon from './icons/Die2Icon';
-import Die6Icon from './icons/Die6Icon';
 import InputField from './InputField';
-import Die1Icon from './icons/Die1Icon';
-import Die5Icon from './icons/Die5Icon';
-import Die4Icon from './icons/Die4Icon';
 import useRoll from '../hooks/useRoll';
 import { AttributeName, SkillName } from 'src/types/attributeTree';
 import InputSelectField from './InputSelectField';
-import { useParams } from 'react-router-dom';
+import { Outlet, useParams, useNavigate } from 'react-router-dom';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import { LayoutContext } from '../contexts/LayoutContext';
-import Modal from './Modal';
 import CharacterPictureRound from './CharacterPictureRound';
 import ArrowHeader2 from './ArrowHeader2';
 import useCharacters from 'src/hooks/useCharacters';
 import { capitalCase } from 'change-case';
+import useModalStore from 'src/stores/modalStore';
 
 const RollSimulator = () => {
   const { apiUrl, user } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const navigate = useNavigate();
   const { campaignId } = useParams();
 
   const { data: campaign, isLoading: campaignLoading } = useCampaignQuery(
@@ -56,6 +47,13 @@ const RollSimulator = () => {
 
   const resetDice = () => {
     setDiceArray([]);
+  };
+
+  const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
+
+  const openRollModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate('rollResults');
   };
 
   const rollForm = useForm({
@@ -76,6 +74,7 @@ const RollSimulator = () => {
         (value.modifiers.includes('push') ? 2 : 0);
 
       calculateSuccesses(diceCount, value.modifiers);
+      openRollModal();
     },
   });
 
@@ -389,149 +388,7 @@ const RollSimulator = () => {
           </form>
         </div>
       </ThemeContainer>
-      <Modal
-        modalOpen={rolling || diceArray.length > 0}
-        toggleModal={resetDice}
-      >
-        <ThemeContainer
-          className="h-80dvh min-h-50dvh w-full max-w-3xl"
-          chamfer="medium"
-          borderColor={accentPrimary}
-        >
-          <div
-            className={`flex h-full flex-col justify-between gap-4 p-4 sm:p-8`}
-          >
-            <div className="scrollbar-primary-2 grid grid-cols-3 place-items-start overflow-y-auto">
-              {diceArray.map((number: number, index) => {
-                const modifiers = rollForm.getFieldValue('modifiers');
-                const lucky =
-                  modifiers.includes('lucky') && !modifiers.includes('unlucky');
-                const unlucky =
-                  modifiers.includes('unlucky') && !modifiers.includes('lucky');
-                switch (number) {
-                  case 1:
-                    return (
-                      <div key={index} className="relative h-full w-full">
-                        <Die1Icon className="text-primary" />
-                        {!rolling &&
-                          rollForm
-                            .getFieldValue('modifiers')
-                            .includes('dooming') && (
-                            <div className="absolute inset-3 flex items-center justify-center">
-                              <Icon
-                                path={mdiCloseOutline}
-                                className="w-3/5 text-red-500"
-                              />
-                            </div>
-                          )}
-                      </div>
-                    );
-                  case 2:
-                    return (
-                      <Die2Icon key={index} className="text-primary w-full" />
-                    );
-                  case 3:
-                    return (
-                      <Die3Icon key={index} className="text-primary w-full" />
-                    );
-                  case 4:
-                    return (
-                      <div key={index} className="relative h-full w-full">
-                        <Die4Icon className="text-primary" />
-                        {!rolling && lucky && (
-                          <div className="absolute inset-3 flex items-center justify-center">
-                            <Icon
-                              path={mdiCheckCircleOutline}
-                              className="w-3/5 text-green-500"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    );
-                  case 5:
-                    return (
-                      <div key={index} className="relative h-full w-full">
-                        <Die5Icon className="text-primary" />
-                        {!rolling && !unlucky && (
-                          <div className="absolute inset-3 flex items-center justify-center">
-                            <Icon
-                              path={mdiCheckCircleOutline}
-                              className="w-3/5 text-green-500"
-                            />
-                          </div>
-                        )}
-                      </div>
-                    );
-                  case 6:
-                    return (
-                      <div key={index} className="relative h-full w-full">
-                        <Die6Icon className="text-primary" />
-                        {!rolling &&
-                          (!modifiers.includes('booming') ? (
-                            <div className="absolute inset-3 flex items-center justify-center">
-                              <Icon
-                                path={mdiCheckCircleOutline}
-                                className="w-3/5 text-green-500"
-                              />
-                            </div>
-                          ) : (
-                            <div className="absolute inset-3">
-                              <Icon
-                                path={mdiCheckCircleOutline}
-                                className="absolute left-0 top-0 w-3/5 text-green-500"
-                              />
-                              <Icon
-                                path={mdiCheckCircleOutline}
-                                className="absolute bottom-0 right-0 w-3/5 text-green-500"
-                              />
-                            </div>
-                          ))}
-                      </div>
-                    );
-                  default:
-                    return;
-                }
-              })}
-            </div>
-            <div className="flex flex-col gap-4">
-              {!rolling && (
-                <div className="grid grid-cols-[auto_auto_1fr] gap-x-8 gap-y-4">
-                  <h2>Successes</h2>
-                  <Icon
-                    className="text-primary place-self-center"
-                    path={mdiTriangleDown}
-                    size={0.5}
-                    rotate={-90}
-                  />
-                  <h2>{successes}</h2>
-                  <h2>Success Rate</h2>
-                  <Icon
-                    className="text-primary place-self-center"
-                    path={mdiTriangleDown}
-                    size={0.5}
-                    rotate={-90}
-                  />
-                  <h2>
-                    {Math.floor((successes / diceArray.length) * 100 || 0) +
-                      '%'}
-                  </h2>
-                </div>
-              )}
-              <BtnRect
-                type="button"
-                ariaLabel="Reroll"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  rollForm.handleSubmit();
-                }}
-              >
-                Reroll
-              </BtnRect>
-            </div>
-          </div>
-        </ThemeContainer>
-      </Modal>
+      <Outlet context={{ rollForm, diceArray, rolling, successes }} />
     </div>
   );
 };

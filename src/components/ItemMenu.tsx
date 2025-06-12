@@ -31,9 +31,9 @@ const ItemMenu = ({
     : parts[parts.length - 2];
 
   const [tab, setTab] = useState(() => {
-    if (category === 'equipment' || mode === 'equipment') {
+    if (parts.includes('equipment')) {
       return 'weapon';
-    } else if (category === 'deployments' || mode === 'deployments') {
+    } else if (parts.includes('deployments')) {
       return 'vehicle';
     }
     return '';
@@ -80,7 +80,10 @@ const ItemMenu = ({
           : 'grid grid-cols-2';
       break;
     case 'deployments':
-      listLayoutClasses = 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3';
+      listLayoutClasses =
+        listRef.current?.offsetWidth < 700
+          ? 'grid grid-cols-1'
+          : 'grid grid-cols-2';
       break;
     case 'inventory':
       listLayoutClasses = 'grid grid-cols-3 sm:grid-cols-6';
@@ -93,7 +96,7 @@ const ItemMenu = ({
   return (
     <div ref={listRef} className="w-full flex-col gap-2">
       <div className="grid grid-flow-col gap-2 sm:gap-4">
-        {(category === 'equipment' || mode === 'equipment') && (
+        {parts.includes('equipment') && (
           <>
             <BtnAuth
               active={tab === 'weapon' ? true : false}
@@ -127,7 +130,7 @@ const ItemMenu = ({
             </BtnAuth>
           </>
         )}
-        {(category === 'deployments' || mode === 'deployments') && (
+        {parts.includes('deployments') && (
           <>
             <BtnAuth
               active={tab === 'vehicle' ? true : false}

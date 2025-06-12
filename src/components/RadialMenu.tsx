@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { Outlet } from 'react-router-dom';
 
 const RadialMenu = ({
   className,
@@ -157,6 +158,7 @@ const RadialMenu = ({
           );
         })}
       </div>
+      <Outlet />
     </div>
   );
 };

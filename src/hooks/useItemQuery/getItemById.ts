@@ -1,5 +1,6 @@
 import { create, keyResolver, windowScheduler } from '@yornaath/batshit';
 import handleResponse from '../handleResponse';
+import { Item } from 'src/types/item';
 
 const getItemById = create({
   fetcher: async (itemIds: number[]) => {
@@ -10,7 +11,7 @@ const getItemById = create({
         credentials: 'include',
       },
     );
-    const data = await handleResponse(response);
+    const data: Item[] = await handleResponse(response);
     return data;
   },
   resolver: keyResolver('id'),

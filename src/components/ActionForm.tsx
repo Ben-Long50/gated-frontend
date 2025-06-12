@@ -16,11 +16,12 @@ import useActions from '../hooks/useActions';
 import { Action, ActionCosts } from 'src/types/action';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
-import ModifierField from './form_fields/ModifierField';
+import ModifierField from './formFields/ModifierField';
 import InputSelectField from './InputSelectField';
 import { extractKeywordListIds } from '../utils/extractIds';
-import KeywordLinkField from './form_fields/KeywordLinkField';
+import KeywordLinkField from './formFields/KeywordLinkField';
 import { capitalCase } from 'change-case';
+import { Keyword } from 'src/types/keyword';
 
 const ActionForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -28,8 +29,8 @@ const ActionForm = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const { actionId } = useParams();
   const location = useLocation();
-  const parts = location.pathname.split('/').filter(Boolean);
-  const mode = parts[parts.length - 1];
+  const parts = location.pathname.split('/');
+  const mode = parts.includes('update') ? 'Update' : 'Create';
 
   const actions = useActions();
 
@@ -96,13 +97,13 @@ const ActionForm = () => {
         Object.entries(value.costs).filter(([_, value]) => value),
       ) as ActionCosts;
 
-      const { keywordModifiers, ...rest } = value;
+      const { keywords, ...rest } = value;
 
       const data = {
         ...rest,
         actionSubtypes: filteredSubtypes,
         costs: filteredCosts,
-        keywordModifierIds: extractKeywordListIds(value.keywords),
+        keywordModifierIds: extractKeywordListIds(keywords),
       };
 
       await createAction.mutate(data);

@@ -1,47 +1,42 @@
 import { FormApi, FormState } from '@tanstack/react-form';
-import FormLinkModal from './FormLinkModal';
-import { useState } from 'react';
 import BtnRect from '../buttons/BtnRect';
 import ArrowHeader2 from '../ArrowHeader2';
 import { Item } from 'src/types/item';
 import ItemCard from '../ItemCard';
-import Items from '../Items';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
+import useModalStore from 'src/stores/modalStore';
+import { capitalCase } from 'change-case';
 
-const WeaponLinkField = ({
+const ItemLinkField = ({
   form,
-  weaponList,
+  category,
 }: {
   form: FormApi;
-  weaponList?: Item[];
+  category: string;
 }) => {
-  const [weaponsOpen, setWeaponsOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { linkCategory } = useParams();
 
-  const toggleWeapons = () => setWeaponsOpen((prev) => !prev);
+  const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
+
+  const openItemModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate(category);
+  };
 
   return (
     <>
       <form.Subscribe selector={(state: FormState) => state.values.weapons}>
         {(weapons: Item[]) => (
           <>
-            {weapons.length > 0 && <ArrowHeader2 title="Linked Weapons" />}
-            <form.Field name="weapons">
+            {weapons.length > 0 && (
+              <ArrowHeader2 title={'Linked ' + capitalCase(category)} />
+            )}
+            <form.Field name={category}>
               {(field) => (
                 <>
-                  <FormLinkModal
-                    key="weapons"
-                    field={field}
-                    modalOpen={weaponsOpen}
-                    toggleModal={toggleWeapons}
-                  >
-                    {({ toggleFormLink }) => (
-                      <Items
-                        title="Link Weapons"
-                        itemList={weaponList}
-                        forcedMode="form"
-                        toggleFormLink={toggleFormLink}
-                      />
-                    )}
-                  </FormLinkModal>
+                  {linkCategory && <Outlet context={{ field, category }} />}
                   {weapons.map((weapon: Item) => {
                     return (
                       <button
@@ -66,17 +61,17 @@ const WeaponLinkField = ({
       </form.Subscribe>
       <BtnRect
         className="w-1/3 min-w-48 self-end"
-        ariaLabel="Open link weapon modal"
+        ariaLabel="Open link item modal"
         type="button"
         onClick={(e) => {
           e.preventDefault();
-          toggleWeapons();
+          openItemModal();
         }}
       >
-        Link Weapons
+        {'Link ' + capitalCase(category)}
       </BtnRect>
     </>
   );
 };
 
-export default WeaponLinkField;
+export default ItemLinkField;

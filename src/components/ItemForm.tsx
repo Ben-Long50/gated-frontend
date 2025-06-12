@@ -12,20 +12,20 @@ import { Keyword } from 'src/types/keyword';
 import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import { Action } from 'src/types/action';
-import ActionLinkField from './form_fields/ActionLinkField';
-import ArmorLinkField from './form_fields/ArmorLinkField';
-import WeaponLinkField from './form_fields/WeaponLinkField';
-import KeywordLinkField from './form_fields/KeywordLinkField';
+import ActionLinkField from './formFields/ActionLinkField';
+import ArmorLinkField from './formFields/ArmorLinkField';
+import ItemLinkField from './formFields/ItemLinkField';
+import KeywordLinkField from './formFields/KeywordLinkField';
 import { extractItemListIds, extractKeywordListIds } from '../utils/extractIds';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import { Item, Stats } from 'src/types/item';
 import useItems from 'src/hooks/useItems';
-import PictureField from './form_fields/PictureField';
-import RarityField from './form_fields/RarityField';
-import StatFields from './form_fields/StatFields';
+import PictureField from './formFields/PictureField';
+import RarityField from './formFields/RarityField';
+import StatFields from './formFields/StatFields';
 import useCreateItemMutation from 'src/hooks/useCreateItemMutation/useCreateItemMutation';
 import useDeleteItemMutation from 'src/hooks/useDeleteItemMutation/useDeleteItemMutation';
-import VehicleLinkField from './form_fields/VehicleLinkField';
+import VehicleLinkField from './formFields/VehicleLinkField';
 import useCreateItemCopyMutation from 'src/hooks/useCreateItemCopyMutation/useCreateItemCopyMutation';
 import { capitalCase } from 'change-case';
 
@@ -33,11 +33,10 @@ const ItemForm = () => {
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
-  const { itemId } = useParams();
+  const { itemId, category } = useParams();
   const location = useLocation();
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = parts[parts.length - 1];
-  const category = itemId ? parts[parts.length - 3] : parts[parts.length - 2];
 
   const { data: item } = useItemQuery(Number(itemId));
 
@@ -99,8 +98,7 @@ const ItemForm = () => {
   };
 
   const categoryName = (() => {
-    const name = capitalCase(category);
-    return name.slice(0, -1);
+    return category.slice(0, -1);
   })();
 
   const itemForm = useForm({
@@ -245,24 +243,24 @@ const ItemForm = () => {
         }}
       >
         <div className="flex items-center justify-center gap-4">
-          <h1>{capitalCase(mode) + ' ' + categoryName}</h1>
+          <h1>{capitalCase(mode) + ' ' + capitalCase(categoryName)}</h1>
         </div>
         <Divider />
-        <ArrowHeader2 title={categoryName + ' Information'} />
+        <ArrowHeader2 title={capitalCase(categoryName) + ' Information'} />
         <div className="flex w-full gap-4 lg:gap-8">
           <itemForm.Field
             name="name"
             validators={{
               onChange: ({ value }) =>
                 value.length < 2
-                  ? `${categoryName} name must be at least 2 characters long`
+                  ? `${capitalCase(categoryName)} name must be at least 2 characters long`
                   : undefined,
             }}
           >
             {(field) => (
               <InputField
                 className="grow"
-                label={categoryName + ' Name'}
+                label={capitalCase(categoryName) + ' Name'}
                 field={field}
               />
             )}
@@ -362,13 +360,13 @@ const ItemForm = () => {
             validators={{
               onChange: ({ value }) =>
                 value.length < 2
-                  ? `${categoryName} description must be at least 2 characters long`
+                  ? `${capitalCase(categoryName)} description must be at least 2 characters long`
                   : undefined,
             }}
           >
             {(field) => (
               <TextAreaField
-                label={categoryName + ' Description'}
+                label={capitalCase(categoryName) + ' Description'}
                 field={field}
               />
             )}
@@ -391,30 +389,27 @@ const ItemForm = () => {
               <Divider />
               {itemTypes.includes('weapon') && (
                 <>
-                  <WeaponLinkField form={itemForm} weaponList={weapons} />
+                  <ItemLinkField form={itemForm} category="weapons" />
                   <Divider />
                 </>
               )}
               {itemTypes.includes('armor') && (
                 <>
-                  <ArmorLinkField form={itemForm} armorList={armors} />
+                  <ItemLinkField form={itemForm} category="armors" />
                   <Divider />
                 </>
               )}
               {itemTypes.includes('vehicle') && (
                 <>
-                  <WeaponLinkField
-                    form={itemForm}
-                    weaponList={vehicleWeapons}
-                  />
+                  <ItemLinkField form={itemForm} category="weapons" />
                   <Divider />
-                  <VehicleLinkField form={itemForm} vehicleList={vehicles} />
+                  <ItemLinkField form={itemForm} category="vehicles" />
                   <Divider />
                 </>
               )}
               {itemTypes.includes('drone') && (
                 <>
-                  <WeaponLinkField form={itemForm} weaponList={droneWeapons} />
+                  <ItemLinkField form={itemForm} category="weapons" />
                   <Divider />
                 </>
               )}

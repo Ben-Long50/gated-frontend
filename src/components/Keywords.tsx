@@ -19,25 +19,22 @@ const Keywords = ({
   title,
   forcedMode,
   field,
-  keywordType,
 }: {
   title?: string;
   forcedMode?: string;
   field?: FieldApi;
-  keywordType?:
-    | 'weapon'
-    | 'armor'
-    | 'vehicle'
-    | 'chromebits'
-    | 'hardwired'
-    | 'networked';
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const location = useLocation();
   const parts = location.pathname.split('/').filter(Boolean);
   const mode = forcedMode || parts[parts.length - 2];
 
-  const keywords = useKeywords(keywordType || undefined);
+  const {
+    filteredKeywords: keywords,
+    filterByQuery,
+    filterByCategory,
+    isLoading,
+  } = useKeywords();
 
   const searchForm = useForm({
     defaultValues: {
@@ -45,12 +42,12 @@ const Keywords = ({
       category: '',
     },
     onSubmit: () => {
-      keywords.filterByQuery('');
-      keywords.filterByCategory('');
+      filterByQuery('');
+      filterByCategory('');
     },
   });
 
-  if (keywords.isLoading || keywords.isPending) {
+  if (isLoading) {
     return <Loading />;
   }
 
@@ -80,7 +77,7 @@ const Keywords = ({
                   ]}
                   field={field}
                   onChange={() => {
-                    keywords.filterByCategory(field.state.value);
+                    filterByCategory(field.state.value);
                   }}
                 />
               )}
@@ -94,7 +91,7 @@ const Keywords = ({
                   label="Search Traits"
                   field={field}
                   onChange={() => {
-                    keywords.filterByQuery(field.state.value);
+                    filterByQuery(field.state.value);
                   }}
                 />
               )}
@@ -133,10 +130,10 @@ const Keywords = ({
             )}
           </searchForm.Subscribe>
           <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {keywords.filteredKeywords.map((keyword) => {
+            {keywords?.map((keyword) => {
               const activeKeyword =
                 mode === 'form'
-                  ? field.state.value.find(
+                  ? field.state.value?.find(
                       (item: { keyword: Keyword; value?: number }) =>
                         item.keyword.id === keyword.id,
                     )
@@ -152,7 +149,7 @@ const Keywords = ({
                         label="Value"
                         value={activeKeyword.value}
                         onChange={(value: number | string) => {
-                          const updatedValue = field.state.value.map(
+                          const updatedValue = field.state.value?.map(
                             (item: { keyword: Keyword; value?: number }) =>
                               item.keyword.id === keyword.id
                                 ? {
@@ -179,7 +176,7 @@ const Keywords = ({
                           ]);
                         } else {
                           field.handleChange(
-                            field.state.value.filter(
+                            field.state.value?.filter(
                               (item: { keyword: Keyword; value?: number }) =>
                                 item.keyword.id !== keyword.id,
                             ),

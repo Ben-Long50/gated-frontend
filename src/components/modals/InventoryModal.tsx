@@ -1,47 +1,34 @@
 import { useContext } from 'react';
-import { ThemeContext } from '../contexts/ThemeContext';
+import { ThemeContext } from '../../contexts/ThemeContext';
 import Icon from '@mdi/react';
 import { mdiCheckCircle } from '@mdi/js';
 import Modal from './Modal';
-import ItemMenu from './ItemMenu';
-import useToggleEquipmentMutation from '../hooks/useEquipmentToggleMutation/useEquipmentToggleMutation';
-import { AuthContext } from '../contexts/AuthContext';
-import { useParams } from 'react-router-dom';
-import { Character, SortedInventory } from 'src/types/character';
+import ItemMenu from '../ItemMenu';
+import useToggleEquipmentMutation from '../../hooks/useEquipmentToggleMutation/useEquipmentToggleMutation';
+import { AuthContext } from '../../contexts/AuthContext';
+import { useOutletContext, useParams } from 'react-router-dom';
+import useCharacter from 'src/hooks/useCharacter';
 
-const InventoryModal = ({
-  character,
-  inventory,
-  active,
-  toggleActive,
-  toggleModal,
-  modalOpen,
-}: {
-  character: Character;
-  inventory: SortedInventory | null;
-  active: {
-    id: null | number;
-    category: null | string;
-  };
-  toggleActive: (id: null | number, category: null | string) => void;
-  toggleModal: () => void;
-  modalOpen: boolean;
-}) => {
+const InventoryModal = () => {
   const { apiUrl } = useContext(AuthContext);
   const { rarityColorMap } = useContext(ThemeContext);
   const { characterId } = useParams();
 
+  const { activeItem, toggleActive } = useOutletContext() || {};
+
+  const { filteredCharacter: character } = useCharacter(Number(characterId));
+
   const toggleEquipment = useToggleEquipmentMutation(apiUrl);
 
   return (
-    <Modal modalOpen={modalOpen} toggleModal={toggleModal}>
+    <Modal>
       <div
         className="flex w-full flex-col gap-8"
         onClick={(e) => e.stopPropagation()}
       >
         <h1 className="text-center">Inventory</h1>
 
-        <ItemMenu forcedMode="inventory" equipment={inventory}>
+        <ItemMenu forcedMode="inventory" equipment={character?.inventory}>
           {(item, index) => (
             <div
               className="group relative h-full cursor-pointer select-none overflow-hidden rounded-bl rounded-tr pl-1 clip-4"
@@ -49,7 +36,7 @@ const InventoryModal = ({
               key={index}
               onDoubleClick={() => {
                 if (characterId) {
-                  if (item.id === active.id) {
+                  if (item.id === activeItem?.id) {
                     toggleActive(null, null);
                   }
                   toggleEquipment.mutate({

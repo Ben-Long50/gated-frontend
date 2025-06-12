@@ -1,5 +1,5 @@
 import { Item } from 'src/types/item';
-import ConditionLinkField from './form_fields/ConditionLinkField';
+import ConditionModal from './modals/ConditionModal';
 import ConditionIcon from './icons/ConditionIcon';
 import RadialMenu from './RadialMenu';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import WeaponIcon from './icons/WeaponIcon';
 import Icon from '@mdi/react';
 import { mdiCardTextOutline } from '@mdi/js';
 import { AuthContext } from 'src/contexts/AuthContext';
+import useModalStore from 'src/stores/modalStore';
 
 const ItemRadialMenu = ({
   item,
@@ -24,7 +25,14 @@ const ItemRadialMenu = ({
   const location = useLocation();
   const parts = location.pathname.split('/');
 
+  const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
+
   const toggleConditionModal = () => {
+    if (!conditionModal) {
+      setBackgroundPath(location.pathname);
+    } else {
+      setBackgroundPath(null);
+    }
     setConditionModal(!conditionModal);
   };
 
@@ -32,7 +40,11 @@ const ItemRadialMenu = ({
     if (path) return path;
     if (parts.includes('equipment') || parts.includes('deployments')) {
       return `${item?.itemTypes[0]}s/${item?.id}`;
-    } else if (parts.includes('codex') || parts.includes('inventory')) {
+    } else if (
+      parts.includes('codex') ||
+      parts.includes('inventory') ||
+      parts.includes('shop')
+    ) {
       return `${item?.id}`;
     } else return ``;
   })();
@@ -44,11 +56,6 @@ const ItemRadialMenu = ({
         data-active={item.userId === user?.id}
       >
         <ConditionIcon className="size-8 text-inherit" />
-        <ConditionLinkField
-          item={item}
-          conditionModal={conditionModal}
-          toggleConditionModal={toggleConditionModal}
-        />
       </div>
       <div
         onClick={() =>

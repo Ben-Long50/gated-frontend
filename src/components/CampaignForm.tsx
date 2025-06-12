@@ -17,7 +17,7 @@ import AffiliationBar from './AffiliationBar';
 import Divider from './Divider';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import useDeleteCampaignMutation from '../hooks/useDeleteCampaignMutation/useDeleteCampaignMutation';
-import PictureField from './form_fields/PictureField';
+import PictureField from './formFields/PictureField';
 import AccountPicture from './AccountPicture';
 import InputSelectField from './InputSelectField';
 

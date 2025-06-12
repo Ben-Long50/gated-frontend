@@ -76,11 +76,11 @@ const Tag = ({
         }}
       >
         <p className="whitespace-nowrap text-base">{keywordName}</p>
-        <DescriptionModal
+        {/* <DescriptionModal
           keyword={keyword}
           modalOpen={descriptionOpen}
           toggleModal={toggleDescription}
-        />
+        /> */}
       </div>
     );
 
@@ -124,11 +124,11 @@ const Tag = ({
           </div>
           <div onClick={() => toggleDescription()}>
             <Icon className="text-inherit" path={mdiFileDocumentOutline} />
-            <DescriptionModal
+            {/* <DescriptionModal
               condition={condition}
               modalOpen={descriptionOpen}
               toggleModal={toggleDescription}
-            />
+            /> */}
           </div>
           <div
             onClick={() => {

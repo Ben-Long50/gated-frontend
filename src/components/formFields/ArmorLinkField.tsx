@@ -1,5 +1,5 @@
-import { FormApi, FormState } from '@tanstack/react-form';
-import FormLinkModal from './FormLinkModal';
+import { FieldState, FormApi } from '@tanstack/react-form';
+import FormLinkModal from '../modals/ItemLinkModal';
 import { useState } from 'react';
 import BtnRect from '../buttons/BtnRect';
 import ArrowHeader2 from '../ArrowHeader2';
@@ -7,49 +7,54 @@ import { Item } from 'src/types/item';
 import ItemCard from '../ItemCard';
 import Items from '../Items';
 
-const CyberneticLinkField = ({ form }: { form: FormApi }) => {
-  const [cyberneticsOpen, setCyberneticsOpen] = useState(false);
+const ArmorLinkField = ({
+  form,
+  armorList,
+}: {
+  form: FormApi;
+  armorList?: Item[];
+}) => {
+  const [armorOpen, setArmorOpen] = useState(false);
 
-  const toggleCybernetics = () => setCyberneticsOpen((prev) => !prev);
+  const toggleArmor = () => setArmorOpen((prev) => !prev);
 
   return (
     <>
-      <form.Subscribe selector={(state: FormState) => state.values.cybernetics}>
-        {(cybernetics: Item[]) => (
+      <form.Subscribe selector={(state: FieldState) => state.values.armor}>
+        {(armor: Item[]) => (
           <>
-            {cybernetics.length > 0 && (
-              <ArrowHeader2 title="Linked Cybernetics" />
-            )}
-            <form.Field name="cybernetics">
+            {armor.length > 0 && <ArrowHeader2 title="Linked Armor" />}
+            <form.Field name="armor">
               {(field) => (
                 <>
                   <FormLinkModal
-                    key="cybernetics"
+                    key="armor"
                     field={field}
-                    modalOpen={cyberneticsOpen}
-                    toggleModal={toggleCybernetics}
+                    modalOpen={armorOpen}
+                    toggleModal={toggleArmor}
                   >
                     {({ toggleFormLink }) => (
                       <Items
-                        title="Link Cybernetics"
+                        title="Link Armor"
+                        itemList={armorList}
                         forcedMode="form"
                         toggleFormLink={toggleFormLink}
                       />
                     )}
                   </FormLinkModal>
-                  {cybernetics.map((cybernetic: Item) => {
+                  {armor.map((armor: Item) => {
                     return (
                       <button
-                        key={cybernetic.id}
+                        key={armor.id}
                         onClick={() => {
                           field.handleChange(
                             field.state.value.filter(
-                              (item: Item) => item.id !== cybernetic.id,
+                              (item: Item) => item.id !== armor.id,
                             ),
                           );
                         }}
                       >
-                        <ItemCard item={cybernetic} mode="form" />
+                        <ItemCard item={armor} mode="form" />
                       </button>
                     );
                   })}
@@ -61,17 +66,17 @@ const CyberneticLinkField = ({ form }: { form: FormApi }) => {
       </form.Subscribe>
       <BtnRect
         className="w-1/3 min-w-48 self-end"
-        ariaLabel="Open link cybernetic modal"
+        ariaLabel="Open link armor modal"
         type="button"
         onClick={(e) => {
           e.preventDefault();
-          toggleCybernetics();
+          toggleArmor();
         }}
       >
-        Link Cybernetics
+        Link Armor
       </BtnRect>
     </>
   );
 };
 
-export default CyberneticLinkField;
+export default ArmorLinkField;

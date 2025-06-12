@@ -1,42 +1,33 @@
 import { useForm } from '@tanstack/react-form';
 import Conditions from '../Conditions';
-import Modal from '../Modal';
-import { Character } from 'src/types/character';
+import Modal from './Modal';
 import { Condition } from 'src/types/condition';
 import BtnRect from '../buttons/BtnRect';
 import { useContext, useEffect } from 'react';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useCreateCharacterConditionMutation from 'src/hooks/useCreateCharacterConditionMutation/useCreateCharacterConditionMutation';
-import { Item } from 'src/types/item';
 import useCreateItemConditionMutation from 'src/hooks/useCreateItemConditionMutation/useCreateItemConditionMutation';
 import { useParams } from 'react-router-dom';
+import useCharacter from 'src/hooks/useCharacter';
+import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 
-const ConditionLinkField = ({
-  character,
-  item,
-  conditionModal,
-  toggleConditionModal,
-}: {
-  character?: Character;
-  item?: Item;
-  conditionModal: boolean;
-  toggleConditionModal: () => void;
-}) => {
+const ConditionModal = () => {
   const { apiUrl } = useContext(AuthContext);
-  const { characterId } = useParams();
+  const { characterId, itemId } = useParams();
+
+  const { filteredCharacter: character } = useCharacter(Number(characterId));
+
+  const { data: item } = useItemQuery(Number(itemId));
 
   const createCharacterCondition = useCreateCharacterConditionMutation(
     apiUrl,
     Number(character?.id),
-    toggleConditionModal,
   );
 
   const createItemCondition = useCreateItemConditionMutation(
     apiUrl,
     Number(item?.id),
-    item?.itemTypes,
     Number(characterId),
-    toggleConditionModal,
   );
 
   useEffect(() => {
@@ -64,11 +55,11 @@ const ConditionLinkField = ({
   });
 
   return (
-    <Modal modalOpen={conditionModal} toggleModal={toggleConditionModal}>
+    <Modal className="h-full">
       <conditionLinkForm.Field name="conditions">
         {(field) => (
           <Conditions
-            title="Manage Conditions"
+            title={character?.firstName + "'s Conditions"}
             forcedMode="form"
             field={field}
           />
@@ -89,4 +80,4 @@ const ConditionLinkField = ({
   );
 };
 
-export default ConditionLinkField;
+export default ConditionModal;

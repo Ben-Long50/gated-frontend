@@ -1,13 +1,12 @@
 import { FormApi, FormState } from '@tanstack/react-form';
-import FormLinkModal from './FormLinkModal';
-import { useState } from 'react';
 import BtnRect from '../buttons/BtnRect';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
-import Perks from '../Perks';
 import { Perk } from 'src/types/perk';
 import PerkCard from '../PerkCard';
 import { AttributeTree } from 'src/types/attributeTree';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import useModalStore from 'src/stores/modalStore';
 
 const PerkLinkField = ({
   form,
@@ -16,9 +15,16 @@ const PerkLinkField = ({
   form: FormApi;
   attributeTree: AttributeTree;
 }) => {
-  const [perksOpen, setPerksOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const parts = location.pathname.split('/');
 
-  const togglePerks = () => setPerksOpen((prev) => !prev);
+  const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
+
+  const openPerkLinkModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate('perks');
+  };
 
   return (
     <>
@@ -28,21 +34,9 @@ const PerkLinkField = ({
             <form.Field name="perks">
               {(field) => (
                 <>
-                  <FormLinkModal
-                    key="perks"
-                    field={field}
-                    modalOpen={perksOpen}
-                    toggleModal={togglePerks}
-                  >
-                    {({ toggleFormLink }) => (
-                      <Perks
-                        title="Link Perks"
-                        forcedMode="form"
-                        field={field}
-                        attributeTree={attributeTree}
-                      />
-                    )}
-                  </FormLinkModal>
+                  {parts[parts.length - 1] === 'perks' && (
+                    <Outlet context={{ field, attributeTree }} />
+                  )}
                   {perks.map((perk: Perk) => {
                     return (
                       <div className="flex items-center gap-4" key={perk.id}>
@@ -76,7 +70,7 @@ const PerkLinkField = ({
         type="button"
         onClick={(e) => {
           e.preventDefault();
-          togglePerks();
+          openPerkLinkModal();
         }}
       >
         Link Perks

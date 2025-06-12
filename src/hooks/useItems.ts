@@ -21,31 +21,38 @@ const useItems = ({
 
   const { data: items, isLoading, isPending } = useItemsQuery(apiUrl, category);
 
-  const categorizedItems = useMemo(() => {
-    const list =
-      itemList ||
-      (subcategory
-        ? items?.filter((item) => item.itemSubtypes?.includes(subcategory))
-        : items);
+  const list = itemList || items;
 
-    const filteredExcludeList = excludedKeywords
-      ? list?.filter((item: Item) =>
-          item.keywords?.every(
-            (keyword) => !excludedKeywords?.includes(keyword.keyword?.name),
-          ),
-        )
-      : list;
+  const categorizeItems = (itemList: Item[]) => {
+    let list = itemList;
 
-    const filteredIncludeList = includedKeywords
-      ? filteredExcludeList?.filter((item: Item) =>
-          item.keywords?.some((keyword) =>
-            includedKeywords?.includes(keyword.keyword?.name),
-          ),
-        )
-      : filteredExcludeList;
+    if (subcategory) {
+      list = list?.filter((item) => item.itemSubtypes?.includes(subcategory));
+    }
 
-    return filteredIncludeList;
-  }, [items, itemList, includedKeywords, excludedKeywords, subcategory]);
+    if (excludedKeywords) {
+      list = list?.filter((item: Item) =>
+        item.keywords?.every(
+          (keyword) => !excludedKeywords?.includes(keyword.keyword?.name),
+        ),
+      );
+    }
+
+    if (includedKeywords) {
+      list = list?.filter((item: Item) =>
+        item.keywords?.some((keyword) =>
+          includedKeywords?.includes(keyword.keyword?.name),
+        ),
+      );
+    }
+
+    return list;
+  };
+
+  const categorizedItems = useMemo(
+    () => categorizeItems(list || []),
+    [list, includedKeywords, excludedKeywords, subcategory],
+  );
 
   const filteredKeywords = useMemo(() => {
     if (!categorizedItems) return null;
@@ -115,7 +122,10 @@ const useItems = ({
     return filteredItems;
   };
 
-  const filteredItems = filterItems(categorizedItems);
+  const filteredItems = useMemo(
+    () => filterItems(categorizedItems),
+    [query, priceFilter, rarity, category, categorizedItems],
+  );
 
   const filterByQuery = (newQuery: string) => {
     setQuery(newQuery);

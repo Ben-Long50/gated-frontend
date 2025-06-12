@@ -2,24 +2,23 @@ import { Item, Stats } from 'src/types/item';
 import Modal from './Modal';
 import { mdiTriangleDown } from '@mdi/js';
 import Icon from '@mdi/react';
-import BtnRect from './buttons/BtnRect';
-import KeywordList from './KeywordList';
-import ArrowHeader2 from './ArrowHeader2';
-import Divider from './Divider';
+import BtnRect from '../buttons/BtnRect';
+import KeywordList from '../KeywordList';
+import ArrowHeader2 from '../ArrowHeader2';
+import Divider from '../Divider';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import { useContext } from 'react';
 import { AuthContext } from 'src/contexts/AuthContext';
-import Loading from './Loading';
-import ItemPicture from './ItemPicture';
+import Loading from '../Loading';
+import ItemPicture from '../ItemPicture';
 import useItemUpdateMutation from 'src/hooks/useItemUpdateMutation/useItemUpdateMutation';
 import { useForm } from '@tanstack/react-form';
 import { useParams } from 'react-router-dom';
-import { extractKeywordListIds } from '../utils/extractIds';
-import ArrowHeader4 from './ArrowHeader4';
+import { extractKeywordListIds } from '../../utils/extractIds';
+import ArrowHeader4 from '../ArrowHeader4';
 
 const ItemUpdateModal = ({
   item,
-  updateMode,
   toggleUpdateMode,
 }: {
   item: Item;
@@ -31,11 +30,7 @@ const ItemUpdateModal = ({
   const parts = location.pathname.split('/').filter(Boolean);
   const category = parts[parts.length - 2];
 
-  const { data: baseItem, isLoading } = useItemQuery(
-    apiUrl,
-    Number(item.baseItemId),
-    category,
-  );
+  const { data: baseItem, isLoading } = useItemQuery(Number(item.baseItemId));
 
   const updateItem = useItemUpdateMutation(
     apiUrl,
@@ -130,7 +125,7 @@ const ItemUpdateModal = ({
   if (isLoading) return <Loading />;
 
   return (
-    <Modal modalOpen={updateMode} toggleModal={toggleUpdateMode}>
+    <Modal>
       <h1 className="text-center">{`Update your ${item.name}`}</h1>
       <p>
         Since purchase and/or upgrade of your {item.name}, the base weapon (

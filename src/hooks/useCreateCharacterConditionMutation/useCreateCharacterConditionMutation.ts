@@ -6,7 +6,6 @@ import { Character } from 'src/types/character';
 const useCreateCharacterConditionMutation = (
   apiUrl: string,
   characterId: number,
-  toggleConditionModal: () => void,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -39,8 +38,6 @@ const useCreateCharacterConditionMutation = (
           conditions: conditionData,
         }),
       );
-
-      toggleConditionModal();
 
       return { prevCharacterData };
     },

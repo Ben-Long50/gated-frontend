@@ -131,7 +131,6 @@ const Cart = ({ character }: { character?: Character }) => {
         </div>
       </ThemeContainer>
       {characterObj?.characterCart.items.map((itemReference) => {
-        console.log(itemReference.item);
         return (
           <CartCard
             key={itemReference.id}

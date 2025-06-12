@@ -6,14 +6,12 @@ import { Item } from 'src/types/item';
 const useCreateItemConditionMutation = (
   apiUrl: string,
   itemId: number,
-  category: string,
   characterId: number,
-  toggleConditionModal: () => void,
 ) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (formData: { conditionId: number; stacks?: number }[]) => {
-      return createItemCondition(apiUrl, itemId, category, formData);
+      return createItemCondition(apiUrl, itemId, formData);
     },
 
     onMutate: (formData) => {
@@ -39,8 +37,6 @@ const useCreateItemConditionMutation = (
         ...prev,
         conditions: conditionData,
       }));
-
-      toggleConditionModal();
 
       return { prevItemData };
     },

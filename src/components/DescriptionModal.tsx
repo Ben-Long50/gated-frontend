@@ -1,7 +1,7 @@
 import { Keyword } from 'src/types/keyword';
 import BtnRect from './buttons/BtnRect';
 import Divider from './Divider';
-import Modal from './Modal';
+import Modal from './modals/Modal';
 import { ConditionReference } from 'src/types/condition';
 
 const DescriptionModal = ({

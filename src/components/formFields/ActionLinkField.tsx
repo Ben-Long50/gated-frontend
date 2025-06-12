@@ -1,18 +1,24 @@
 import { FormApi, FormState } from '@tanstack/react-form';
-import FormLinkModal from './FormLinkModal';
-import { useState } from 'react';
 import BtnRect from '../buttons/BtnRect';
 import { Action } from 'src/types/action';
-import Actions from '../Actions';
 import ActionCard from '../ActionCard';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 import ArrowHeader2 from '../ArrowHeader2';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import useModalStore from 'src/stores/modalStore';
 
 const ActionLinkField = ({ form }: { form: FormApi }) => {
-  const [actionsOpen, setActionsOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const parts = location.pathname.split('/');
 
-  const toggleActions = () => setActionsOpen((prev) => !prev);
+  const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
+
+  const openActionModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate('actions');
+  };
 
   return (
     <>
@@ -23,21 +29,9 @@ const ActionLinkField = ({ form }: { form: FormApi }) => {
             <form.Field name="actions">
               {(field) => (
                 <>
-                  <FormLinkModal
-                    key="actions"
-                    field={field}
-                    modalOpen={actionsOpen}
-                    toggleModal={toggleActions}
-                  >
-                    {({ toggleFormLink }) => (
-                      <Actions
-                        title="Link Actions"
-                        forcedMode="form"
-                        field={field}
-                        toggleFormLink={toggleFormLink}
-                      />
-                    )}
-                  </FormLinkModal>
+                  {parts[parts.length - 1] === 'actions' && (
+                    <Outlet context={{ field }} />
+                  )}
                   {actions.map((action: Action) => {
                     return (
                       <div className="flex items-center gap-4" key={action.id}>
@@ -71,7 +65,7 @@ const ActionLinkField = ({ form }: { form: FormApi }) => {
         type="button"
         onClick={(e) => {
           e.preventDefault();
-          toggleActions();
+          openActionModal();
         }}
       >
         Link Actions

@@ -3,7 +3,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { useLocation, useParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
@@ -18,7 +18,6 @@ import ArrowHeader3 from './ArrowHeader3';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
-import InventoryModal from './InventoryModal';
 import useCharacter from 'src/hooks/useCharacter';
 import ItemCard from './ItemCard';
 import ItemCardMobile from './ItemCardMobile';
@@ -26,13 +25,14 @@ import EquipmentIcon from './icons/EquipmentIcon';
 import CharacterIcon from './icons/CharacterIcon';
 import CharacterStatBars from './CharacterStatBars';
 import CharacterPicture from './CharacterPicture';
+import useModalStore from 'src/stores/modalStore';
 
 const Equipment = () => {
   const { user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
   const { characterId } = useParams();
   const location = useLocation();
-  const [inventoryOpen, setInventoryOpen] = useState(false);
+  const navigate = useNavigate();
   const path = location.pathname.split('/');
   const mode = path[path.length - 1];
 
@@ -51,8 +51,11 @@ const Equipment = () => {
     }
   });
 
-  const toggleInventoryOpen = () => {
-    setInventoryOpen((prev) => !prev);
+  const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
+
+  const openInventoryModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate('inventory');
   };
 
   const toggleActive = (id: number | null, category: string | null) => {
@@ -172,19 +175,12 @@ const Equipment = () => {
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
-                    toggleInventoryOpen();
+                    openInventoryModal();
                   }}
                 >
                   Open Inventory
                 </BtnRect>
-                <InventoryModal
-                  character={character}
-                  inventory={character?.inventory}
-                  active={active}
-                  toggleActive={toggleActive}
-                  toggleModal={toggleInventoryOpen}
-                  modalOpen={inventoryOpen}
-                />
+                <Outlet context={{ activeItem, toggleActive }} />
               </>
             )}
           </div>

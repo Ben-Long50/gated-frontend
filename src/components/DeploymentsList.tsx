@@ -19,7 +19,7 @@ const DeploymentsList = ({
 
   return (
     <div className="flex w-full flex-col gap-8">
-      <ItemMenu equipment={equipment} forcedMode="inventory">
+      <ItemMenu equipment={equipment}>
         {(item, index, { tab }) =>
           item.equipped === true && (
             <div

@@ -1,5 +1,5 @@
 import { FieldState, FormApi } from '@tanstack/react-form';
-import FormLinkModal from './FormLinkModal';
+import FormLinkModal from '../modals/ItemLinkModal';
 import { useState } from 'react';
 import BtnRect from '../buttons/BtnRect';
 import ArrowHeader2 from '../ArrowHeader2';

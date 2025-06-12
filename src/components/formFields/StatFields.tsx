@@ -3,6 +3,7 @@ import InputField from '../InputField';
 import ArrowHeader2 from '../ArrowHeader2';
 import Divider from '../Divider';
 import { ItemType } from 'src/types/item';
+import { capitalCase } from 'change-case';
 
 const StatFields = ({
   form,
@@ -16,7 +17,7 @@ const StatFields = ({
   return (
     <>
       <Divider />
-      <ArrowHeader2 title={categoryName + ' Stats'} />
+      <ArrowHeader2 title={capitalCase(categoryName) + ' Stats'} />
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-8">
         {categories.includes('augmentation') && (
           <>

@@ -2,10 +2,10 @@ import { useContext, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { useLocation, useParams } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
-import InventoryModal from './InventoryModal';
+import InventoryModal from './modals/InventoryModal';
 import DeploymentsList from './DeploymentsList';
 import ThemeContainer from './ThemeContainer';
 import ItemPicture from './ItemPicture';
@@ -18,6 +18,7 @@ import ItemCardMobile from './ItemCardMobile';
 import { LayoutContext } from 'src/contexts/LayoutContext';
 import { DroneControls, VehicleControls } from './ItemCardControls';
 import useItemStats from 'src/hooks/useItemStats';
+import useModalStore from 'src/stores/modalStore';
 
 const Deployments = () => {
   const { user } = useContext(AuthContext);
@@ -25,7 +26,7 @@ const Deployments = () => {
   const { accentPrimary } = useContext(ThemeContext);
   const { characterId } = useParams();
   const location = useLocation();
-  const [inventoryOpen, setInventoryOpen] = useState(false);
+  const navigate = useNavigate();
   const path = location.pathname.split('/');
   const mode = path[path.length - 1];
 
@@ -44,8 +45,11 @@ const Deployments = () => {
     }
   });
 
-  const toggleInventoryOpen = () => {
-    setInventoryOpen((prev) => !prev);
+  const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
+
+  const openInventoryModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate('inventory');
   };
 
   const toggleActive = (id: number | null, category: string | null) => {
@@ -88,17 +92,6 @@ const Deployments = () => {
     );
   }, [activeItem, character]);
 
-  const cardRef = useRef(null);
-  const [cardHeight, setCardHeight] = useState<number | null>(null);
-
-  const { itemStats } = useItemStats(activeItem);
-
-  useLayoutEffect(() => {
-    if (cardRef.current) {
-      setCardHeight(cardRef.current.offsetHeight);
-    }
-  }, [activeItem]);
-
   if (isLoading || isPending) return <Loading />;
 
   if (!character) return <h1>Character not found</h1>;
@@ -113,38 +106,7 @@ const Deployments = () => {
       <div className="flex w-full flex-col items-start gap-8">
         <div className="flex w-full flex-col gap-8">
           {activeItem !== null && (
-            <div className="grid grid-rows-[auto_auto] justify-between gap-8 lg:grid-cols-[auto_1fr]">
-              {activeItem.picture?.imageUrl && (
-                <ThemeContainer
-                  className={`mx-auto mb-auto aspect-square min-w-[300px]`}
-                  style={
-                    cardHeight
-                      ? {
-                          width: cardHeight,
-                        }
-                      : undefined
-                  }
-                  chamfer="medium"
-                  borderColor={accentPrimary}
-                  overflowHidden={true}
-                >
-                  <ItemPicture
-                    key={activeItem.id}
-                    className="w-full clip-6"
-                    item={activeItem}
-                  />
-                </ThemeContainer>
-              )}
-              <div
-                ref={cardRef}
-                className={`${cardRef.current?.offsetWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} col-start-2 grid h-full w-full grow grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2`}
-              >
-                <StatBars
-                  cardWidth={cardRef.current?.offsetWidth}
-                  stats={itemStats}
-                />
-              </div>
-            </div>
+            <ItemCard ownerId={character.userId} item={activeItem} />
           )}
           {activeItem !== null && active.category === 'vehicle' && (
             <VehicleControls
@@ -186,18 +148,14 @@ const Deployments = () => {
                 <BtnRect
                   ariaLabel="Open inventory"
                   type="button"
-                  onClick={() => toggleInventoryOpen()}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openInventoryModal();
+                  }}
                 >
                   Open Garage
                 </BtnRect>
-                <InventoryModal
-                  character={character}
-                  inventory={character.inventory}
-                  active={active}
-                  toggleModal={toggleInventoryOpen}
-                  toggleActive={toggleActive}
-                  modalOpen={inventoryOpen}
-                />
+                <Outlet context={{ activeItem, toggleActive }} />
               </>
             )}
           </div>

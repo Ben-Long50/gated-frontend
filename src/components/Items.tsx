@@ -10,12 +10,10 @@ import ArrowHeader2 from './ArrowHeader2';
 import { LayoutContext } from '../contexts/LayoutContext';
 import Icon from '@mdi/react';
 import { mdiCropSquare, mdiGrid, mdiSync } from '@mdi/js';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import ItemCardMobile from './ItemCardMobile';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import InputSelectField from './InputSelectField';
 import { capitalCase } from 'change-case';
-
-const LazyItemCard = lazy(() => import('./ItemCard'));
+import ItemCard from './ItemCard';
 
 const Items = ({
   title,
@@ -38,7 +36,7 @@ const Items = ({
   const location = useLocation();
   const state = location.state;
   const parts = location.pathname.split('/').filter(Boolean);
-  const category = forcedCategory || parts[parts.length - 1];
+  const { category } = useParams();
   const mode = forcedMode || parts[parts.length - 2];
 
   const heading = state ? state.title : title;
@@ -51,8 +49,16 @@ const Items = ({
     mobile ? 'small' : 'large',
   );
 
-  const items = useItems({
-    category,
+  const {
+    filteredItems: items,
+    filterByCategory,
+    filterByPrice,
+    filterByQuery,
+    filterByRarity,
+    filteredKeywords,
+    isLoading,
+  } = useItems({
+    category: forcedCategory || category,
     itemList: itemList || undefined,
     includedKeywords: include.length > 0 ? include : undefined,
     excludedKeywords: exclude.length > 0 ? exclude : undefined,
@@ -67,16 +73,12 @@ const Items = ({
       rarity: '',
     },
     onSubmit: () => {
-      items.filterByCategory('');
-      items.filterByPrice('');
-      items.filterByRarity('');
-      items.filterByQuery('');
+      filterByCategory('');
+      filterByPrice('');
+      filterByRarity('');
+      filterByQuery('');
     },
   });
-
-  if (items.isLoading || items.isPending) {
-    return <Loading />;
-  }
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-8">
@@ -94,9 +96,9 @@ const Items = ({
                 <InputSelectField
                   field={field}
                   label="Trait"
-                  options={items.filteredKeywords || []}
+                  options={filteredKeywords || []}
                   onChange={() => {
-                    items.filterByCategory(field.state.value);
+                    filterByCategory(field.state.value);
                   }}
                 />
               )}
@@ -109,7 +111,7 @@ const Items = ({
                   field={field}
                   options={['lowToHigh', 'highToLow']}
                   onChange={() => {
-                    items.filterByPrice(field.state.value);
+                    filterByPrice(field.state.value);
                   }}
                 />
               )}
@@ -128,7 +130,7 @@ const Items = ({
                     'artifact',
                   ]}
                   onChange={() => {
-                    items.filterByRarity(field.state.value);
+                    filterByRarity(field.state.value);
                   }}
                 />
               )}
@@ -139,10 +141,12 @@ const Items = ({
               {(field) => (
                 <InputField
                   className="w-full"
-                  label={`Search ${capitalCase(category)}`}
+                  label={
+                    category ? `Search ${capitalCase(category)}` : 'Search All'
+                  }
                   field={field}
                   onChange={() => {
-                    items.filterByQuery(field.state.value);
+                    filterByQuery(field.state.value);
                   }}
                 />
               )}
@@ -191,32 +195,18 @@ const Items = ({
           </div>
         </div>
       </ThemeContainer>
-      {cardType === 'large' ? (
-        items.filteredItems?.map((item: Item) => {
-          return (
-            <Suspense key={item.id} fallback={<Loading />}>
-              <LazyItemCard
-                item={item}
-                mode={mode}
-                character={character}
-                toggleFormLink={toggleFormLink}
-              />
-            </Suspense>
-          );
-        })
+      {isLoading ? (
+        <Loading />
       ) : (
-        <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-          {items.filteredItems?.map((item: Item) => {
-            return (
-              <ItemCardMobile
-                key={item.id}
-                item={item}
-                mode={mode}
-                toggleFormLink={toggleFormLink}
-              />
-            );
-          })}
-        </div>
+        items?.map((item: Item) => (
+          <ItemCard
+            key={item.id}
+            item={item}
+            mode={mode}
+            character={character}
+            toggleFormLink={toggleFormLink}
+          />
+        ))
       )}
     </div>
   );

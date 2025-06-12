@@ -6,7 +6,7 @@ import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import FormLayout from 'src/layouts/FormLayout';
 import { Keyword } from 'src/types/keyword';
 import TextAreaField from './TextAreaField';
-import PictureField from './form_fields/PictureField';
+import PictureField from './formFields/PictureField';
 import Loading from './Loading';
 import InputField from './InputField';
 import ArrowHeader2 from './ArrowHeader2';
@@ -22,9 +22,9 @@ import {
   extractKeywordListIds,
 } from 'src/utils/extractIds';
 import useGradePoints from 'src/hooks/useGradePoints';
-import KeywordLinkField from './form_fields/KeywordLinkField';
+import KeywordLinkField from './formFields/KeywordLinkField';
 import KeywordList from './KeywordList';
-import Modal from './Modal';
+import Modal from './modals/Modal';
 import useCharacterQuery from 'src/hooks/useCharacterQuery/useCharacterQuery';
 import useItemStats from 'src/hooks/useItemStats';
 import BtnIcon from './buttons/BtnIcon';

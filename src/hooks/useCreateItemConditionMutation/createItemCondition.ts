@@ -3,21 +3,17 @@ import handleResponse from '../handleResponse';
 const createItemCondition = async (
   apiUrl: string,
   itemId: number,
-  category: string,
   formData: object,
 ) => {
   try {
-    const response = await fetch(
-      `${apiUrl}/items/${category}/${itemId}/conditions`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+    const response = await fetch(`${apiUrl}/items/${itemId}/conditions`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify(formData),
+    });
     const data = await handleResponse(response);
     return data;
   } catch (error) {

@@ -20,26 +20,28 @@ import {
 import { AuthContext } from 'src/contexts/AuthContext';
 import useItemStats from 'src/hooks/useItemStats';
 import ItemRadialMenu from './ItemRadialMenu';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useOutletContext } from 'react-router-dom';
 import Icon from '@mdi/react';
 import { mdiLinkBoxVariantOutline } from '@mdi/js';
 
 const ItemCard = ({
   item,
   mode,
-  character,
   toggleFormLink,
   ownerId,
 }: {
   item: Item;
   mode?: string;
-  character?: string;
   toggleFormLink?: (item: Item) => void;
   ownerId?: number;
 }) => {
   const { user } = useContext(AuthContext);
   const { accentPrimary } = useContext(ThemeContext);
+  const location = useLocation();
+  const parts = location.pathname.split('/');
   const [cardWidth, setCardWidth] = useState(0);
+
+  const { character } = useOutletContext() || {};
 
   useLayoutEffect(() => {
     if (cardRef.current) {
@@ -82,7 +84,7 @@ const ItemCard = ({
               : undefined
           }
         >
-          <ItemRadialMenu item={item} />
+          {!mode === 'form' && <ItemRadialMenu item={item} />}
           {item.picture?.imageUrl && (
             <ItemPicture
               key={item.id}
@@ -115,7 +117,7 @@ const ItemCard = ({
               </div>
               <div className="z-20 flex grow items-start justify-end gap-4">
                 <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
-                {mode === 'shop' && (
+                {parts.includes('shop') && (
                   <CartButton character={character} itemId={item?.id} />
                 )}
               </div>

@@ -16,7 +16,7 @@ import useFactionQuery from '../hooks/useFactionQuery/useFactionQuery';
 import ArrowHeader2 from './ArrowHeader2';
 import useUpdateFactionMutation from '../hooks/useUpdateFactionMutation/useUpdateFactionMutation';
 import useDeleteFactionMutation from '../hooks/useDeleteFactionMutation/useDeleteFactionMutation';
-import PictureField from './form_fields/PictureField';
+import PictureField from './formFields/PictureField';
 
 const FactionForm = ({ title, mode }: { title: string; mode?: string }) => {
   const { apiUrl } = useContext(AuthContext);

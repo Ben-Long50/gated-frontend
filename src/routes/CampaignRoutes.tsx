@@ -18,6 +18,7 @@ import ResumeForm from 'src/components/ResumeForm';
 import { CampaignSocketProvider } from 'src/contexts/CampaignSocketContext';
 import CampaignAffiliations from 'src/components/CampaignAffiliations';
 import CharacterAffiliations from 'src/components/CharacterAffiliations';
+import RollModal from 'src/components/modals/RollModal';
 
 const CampaignRoutes = () => {
   return (
@@ -70,13 +71,17 @@ const CampaignRoutes = () => {
         </Route>
         {SessionRoutes()}
         <Route path="affiliations" element={<CampaignAffiliations />} />
-        <Route path="rollSimulator" element={<RollSimulator />} />
+        <Route path="rollSimulator" element={<RollSimulator />}>
+          <Route path="rollResults" element={<RollModal />} />
+        </Route>
       </Route>
       <Route
         path="create"
         element={<CampaignForm title="Create" mode="create" />}
       />
-      <Route path="rollSimulator" element={<RollSimulator />} />
+      <Route path="rollSimulator" element={<RollSimulator />}>
+        <Route path="rollResults" element={<RollModal />} />
+      </Route>
     </Route>
   );
 };

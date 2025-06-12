@@ -28,7 +28,7 @@ const useToggleEquipmentMutation = (apiUrl: string) => {
 
       queryClient.setQueryData(['item', mutationInfo.itemId], (prev: Item) => ({
         ...prev,
-        equipped: !prevItemData.equipped,
+        equipped: !prevItemData?.equipped,
       }));
 
       return { prevItemData };

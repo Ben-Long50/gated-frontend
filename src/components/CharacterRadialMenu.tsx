@@ -1,5 +1,5 @@
 import { Character } from 'src/types/character';
-import ConditionLinkField from './form_fields/ConditionLinkField';
+import ConditionModal from './modals/ConditionModal';
 import ConditionIcon from './icons/ConditionIcon';
 import RadialMenu from './RadialMenu';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -17,10 +17,10 @@ import {
   mdiPlus,
 } from '@mdi/js';
 import useProfitsMutation from 'src/hooks/useProfitsMutation/useProfitsMutation';
-import useCharacters from 'src/hooks/useCharacters';
 import AffiliationIcon from './icons/AffiliationIcon';
 import ShopIcon from './icons/ShopIcon';
-import ShopModal from './ShopModal';
+import ShopModal from './modals/ShopModal';
+import useModalStore from 'src/stores/modalStore';
 
 const CharacterRadialMenu = ({
   character,
@@ -30,20 +30,19 @@ const CharacterRadialMenu = ({
   className?: string;
 }) => {
   const { apiUrl, user } = useContext(AuthContext);
-  const [conditionModal, setConditionModal] = useState(false);
-  const [shopModal, setShopModal] = useState(false);
+  const location = useLocation();
+  const parts = location.pathname.split('/');
   const [profitMenu, setProfitMenu] = useState(false);
   const [affiliationMenu, setAffiliationMenu] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const parts = location.pathname.split('/');
-
-  const { activeCharacter } = useCharacters();
 
   const editProfits = useProfitsMutation(apiUrl, character.id);
 
-  const toggleConditionModal = () => {
-    setConditionModal(!conditionModal);
+  const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
+
+  const openConditionModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate(`${character.id}/conditions`);
   };
 
   const toggleProfitMenu = () => {
@@ -54,8 +53,14 @@ const CharacterRadialMenu = ({
     setAffiliationMenu(!affiliationMenu);
   };
 
-  const toggleShopModal = () => {
-    setShopModal(!shopModal);
+  const openAffiliationModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate(`${character.id}/affiliations`);
+  };
+
+  const openShopModal = () => {
+    setBackgroundPath(location.pathname);
+    navigate(`${character.id}/shop/global`);
   };
 
   const userPermissions =
@@ -116,7 +121,7 @@ const CharacterRadialMenu = ({
         >
           <Icon className="text-inherit" path={mdiArrowULeftBottom} />
         </div>
-        <div onClick={() => navigate(`${path}/affiliations`)}>
+        <div onClick={() => openAffiliationModal()}>
           <Icon path={mdiCardTextOutline} className="size-8 text-inherit" />
         </div>
       </RadialMenu>
@@ -125,13 +130,8 @@ const CharacterRadialMenu = ({
   return (
     <RadialMenu className={`${className}`} size="large">
       {userPermissions && (
-        <div onClick={() => toggleConditionModal()}>
+        <div onClick={() => openConditionModal()}>
           <ConditionIcon className="text-inherit" />
-          <ConditionLinkField
-            character={character}
-            conditionModal={conditionModal}
-            toggleConditionModal={toggleConditionModal}
-          />
         </div>
       )}
       {userPermissions && (
@@ -160,14 +160,8 @@ const CharacterRadialMenu = ({
         <AffiliationIcon className="text-inherit" />
       </div>
       {character.userId === user.id && (
-        <div onClick={() => toggleShopModal()}>
+        <div onClick={() => openShopModal()}>
           <ShopIcon className="text-inherit" />
-          <ShopModal
-            modalOpen={shopModal}
-            toggleModal={toggleShopModal}
-            character={character}
-            activeCharacter={character}
-          />
         </div>
       )}
     </RadialMenu>

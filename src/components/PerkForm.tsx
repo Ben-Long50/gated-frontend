@@ -13,11 +13,11 @@ import Loading from './Loading';
 import useDeletePerkMutation from '../hooks/useDeletePerkMutation/useDeletePerkMutation';
 import usePerks from '../hooks/usePerks';
 import { Perk } from 'src/types/perk';
-import ModifierField from './form_fields/ModifierField';
+import ModifierField from './formFields/ModifierField';
 import Divider from './Divider';
 import ArrowHeader2 from './ArrowHeader2';
 import { capitalCase } from 'change-case';
-import AttributeField from './form_fields/AttributeField';
+import AttributeField from './formFields/AttributeField';
 
 const PerkForm = () => {
   const { apiUrl } = useContext(AuthContext);

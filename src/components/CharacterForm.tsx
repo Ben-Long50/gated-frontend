@@ -24,11 +24,11 @@ import ArrowHeader2 from './ArrowHeader2';
 import Divider from './Divider';
 import InputFieldRadio from './InputFieldRadio';
 import InputSelectField from './InputSelectField';
-import PerkLinkField from './form_fields/PerkLinkField';
+import PerkLinkField from './formFields/PerkLinkField';
 import { Perk } from 'src/types/perk';
-import NpcPreferenceField from './form_fields/NpcPreferenceField';
-import PictureField from './form_fields/PictureField';
-import AttributeField from './form_fields/AttributeField';
+import NpcPreferenceField from './formFields/NpcPreferenceField';
+import PictureField from './formFields/PictureField';
+import AttributeField from './formFields/AttributeField';
 
 const CharacterForm = () => {
   const { apiUrl } = useContext(AuthContext);
