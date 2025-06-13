@@ -49,7 +49,7 @@ const ShopModal = () => {
     <Modal className="h-full">
       <button
         className="group absolute left-2 top-2 sm:left-4 sm:top-4"
-        onClick={() => navigate('cart')}
+        onClick={() => navigate('cart', { replace: true })}
       >
         <Icon
           className="group-hover:text-accent text-secondary timing size-12 shrink-0 p-2"
@@ -76,7 +76,7 @@ const ShopModal = () => {
         {shopId && (
           <BtnAuth
             active={category === 'all' ? true : false}
-            onClick={() => navigate('all')}
+            onClick={() => navigate('all', { replace: true })}
           >
             <ShopIcon className="size-8" />
           </BtnAuth>
@@ -84,7 +84,7 @@ const ShopModal = () => {
         {(!categorizedShopItems || shopItems.weapons?.length) > 0 && (
           <BtnAuth
             active={category === 'weapons' ? true : false}
-            onClick={() => navigate('weapons')}
+            onClick={() => navigate('weapons', { replace: true })}
           >
             <WeaponIcon className="size-8" />
           </BtnAuth>
@@ -92,7 +92,7 @@ const ShopModal = () => {
         {(!categorizedShopItems || shopItems.armors?.length > 0) && (
           <BtnAuth
             active={category === 'armors' ? true : false}
-            onClick={() => navigate('armors')}
+            onClick={() => navigate('armors', { replace: true })}
           >
             <ArmorIcon className="size-8" />
           </BtnAuth>
@@ -100,7 +100,7 @@ const ShopModal = () => {
         {(!categorizedShopItems || shopItems.augmentations?.length > 0) && (
           <BtnAuth
             active={category === 'augmentations' ? true : false}
-            onClick={() => navigate('augmentations')}
+            onClick={() => navigate('augmentations', { replace: true })}
           >
             <CyberIcon className="size-8" />
           </BtnAuth>
@@ -108,7 +108,7 @@ const ShopModal = () => {
         {(!categorizedShopItems || shopItems.reusables?.length > 0) && (
           <BtnAuth
             active={category === 'reusables' ? true : false}
-            onClick={() => navigate('reusables')}
+            onClick={() => navigate('reusables', { replace: true })}
           >
             <InventoryIcon className="size-8" />
           </BtnAuth>
@@ -116,7 +116,7 @@ const ShopModal = () => {
         {(!categorizedShopItems || shopItems.consumables?.length > 0) && (
           <BtnAuth
             active={category === 'consumables' ? true : false}
-            onClick={() => navigate('consumables')}
+            onClick={() => navigate('consumables', { replace: true })}
           >
             <PotionIcon className="size-8" />
           </BtnAuth>
@@ -124,7 +124,7 @@ const ShopModal = () => {
         {(!categorizedShopItems || shopItems.vehicles?.length > 0) && (
           <BtnAuth
             active={category === 'vehicles' ? true : false}
-            onClick={() => navigate('vehicles')}
+            onClick={() => navigate('vehicles', { replace: true })}
           >
             <VehicleIcon className="size-8" />
           </BtnAuth>
@@ -132,7 +132,7 @@ const ShopModal = () => {
         {(!categorizedShopItems || shopItems.drones?.length > 0) && (
           <BtnAuth
             active={category === 'drones' ? true : false}
-            onClick={() => navigate('drones')}
+            onClick={() => navigate('drones', { replace: true })}
           >
             <DroneIcon className="size-8" />
           </BtnAuth>

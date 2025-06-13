@@ -13,7 +13,12 @@ const RootPortal = ({ children }: { children?: ReactNode }) => {
     <div
       className={`backdrop-fade fixed inset-0 top-14 z-30 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-md sm:p-4 md:p-8`}
       onClick={() => {
-        navigate(backgroundPath);
+        if (!backgroundPath) {
+          navigate('..', { replace: true });
+        } else {
+          navigate(backgroundPath, { replace: true });
+          navigate(-1);
+        }
       }}
     >
       {children}

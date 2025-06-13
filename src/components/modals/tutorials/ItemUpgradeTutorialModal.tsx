@@ -70,7 +70,7 @@ const ItemUpgradeTutorialModal = () => {
         ariaLabel="Close tutorial"
         onClick={(e) => {
           e.preventDefault();
-          navigate('..');
+          navigate('..', { replace: true });
         }}
       >
         Close

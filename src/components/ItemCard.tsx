@@ -1,4 +1,10 @@
-import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
 import ItemRarity from './ItemRarity';
@@ -52,16 +58,19 @@ const ItemCard = ({
   });
 
   const { character } = useOutletContext() || {};
+  const cardRef = useRef(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (cardRef.current) {
       setCardWidth(cardRef.current.offsetWidth);
     }
-  }, [cardType]);
+  }, [cardType, inView]);
 
   const { itemStats } = useItemStats(item);
 
-  const cardRef = useRef(null);
+  const keywordList = [...item?.keywords, ...item?.modifiedKeywords].sort(
+    (a, b) => a.keyword.name.localeCompare(b.keyword.name),
+  );
 
   const linkedWeapons =
     item.itemLinkReference?.items.filter((item: Item) =>
@@ -147,20 +156,13 @@ const ItemCard = ({
                 <div
                   className={`timing flex items-center justify-between gap-x-8 gap-y-2`}
                 >
-                  {item.keywords && (
+                  {keywordList.length > 0 && (
                     <div className={`flex flex-wrap items-center gap-1`}>
-                      {item?.keywords &&
-                        item.keywords.length > 0 &&
-                        item.keywords?.map(
-                          (item: {
-                            keyword: Keyword;
-                            value: number | null;
-                          }) => {
-                            return (
-                              <Tag key={item.keyword?.id} keyword={item} />
-                            );
-                          },
-                        )}
+                      {keywordList.map(
+                        (item: { keyword: Keyword; value: number | null }) => {
+                          return <Tag key={item.keyword?.id} keyword={item} />;
+                        },
+                      )}
                     </div>
                   )}
                   <ItemRarity
@@ -173,7 +175,7 @@ const ItemCard = ({
                 {item.stats && (
                   <div
                     ref={cardRef}
-                    className={`${cardWidth < 500 ? 'gap-2 px-2' : 'gap-4 px-4'} scrollbar-primary-2 grid w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 overflow-y-auto border-x-2 border-gray-400 border-opacity-50`}
+                    className={`${cardWidth < 500 ? 'max-h-[200px] gap-2 px-2' : 'gap-4 px-4'} scrollbar-primary-2 grid w-full grid-cols-[auto_auto_1fr_auto] place-items-center gap-y-2 overflow-y-auto border-x-2 border-gray-400 border-opacity-50`}
                   >
                     <StatBars
                       cardWidth={cardWidth}

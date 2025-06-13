@@ -26,7 +26,7 @@ const BtnRect = ({
     >
       <button
         aria-label={ariaLabel}
-        className={`timing w-full ${hover ? 'text-accent' : 'accent-primary'} bg-primary px-4 py-2 text-lg clip-4`}
+        className={`timing w-full ${hover ? 'text-accent' : 'accent-primary'} bg-primary rounded-bl rounded-tr px-4 py-2 text-lg clip-4`}
         type={type}
         onClick={onClick}
         onMouseEnter={() => setHover(true)}

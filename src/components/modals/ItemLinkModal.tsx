@@ -41,7 +41,12 @@ const ItemLinkModal = () => {
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
-          navigate(backgroundPath);
+          if (!backgroundPath) {
+            navigate('..', { replace: true });
+          } else {
+            navigate(backgroundPath, { replace: true });
+            navigate(-1);
+          }
         }}
       >
         Close

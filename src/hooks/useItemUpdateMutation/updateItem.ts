@@ -2,19 +2,15 @@ import handleResponse from '../handleResponse';
 
 const updateItem = async (
   apiUrl: string,
-  category: string,
   itemId: number,
   formData: FormData,
 ) => {
   try {
-    const response = await fetch(
-      `${apiUrl}/items/${category}/${itemId}/update`,
-      {
-        method: 'PUT',
-        credentials: 'include',
-        body: formData,
-      },
-    );
+    const response = await fetch(`${apiUrl}/items/${itemId}/update`, {
+      method: 'PUT',
+      credentials: 'include',
+      body: formData,
+    });
     const data = await handleResponse(response);
 
     return data;

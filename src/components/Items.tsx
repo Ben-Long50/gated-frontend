@@ -203,7 +203,7 @@ const Items = ({
         </div>
       </ThemeContainer>
       <div
-        className={`${cardType === 'small' ? 'grid-cols-[repeat(auto-fit,_minmax(400px,_1fr))] gap-4' : 'grid-cols-1 gap-8'} grid w-full`}
+        className={`${cardType === 'small' ? 'grid-cols-[repeat(auto-fit,_minmax(350px,_1fr))] gap-4' : 'grid-cols-1 gap-8'} grid w-full`}
       >
         {isLoading ? (
           <Loading />

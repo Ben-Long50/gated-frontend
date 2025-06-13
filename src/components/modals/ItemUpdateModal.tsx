@@ -13,24 +13,26 @@ import Loading from '../Loading';
 import ItemPicture from '../ItemPicture';
 import useItemUpdateMutation from 'src/hooks/useItemUpdateMutation/useItemUpdateMutation';
 import { useForm } from '@tanstack/react-form';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { extractKeywordListIds } from '../../utils/extractIds';
 import ArrowHeader4 from '../ArrowHeader4';
+import { capitalCase } from 'change-case';
+import useModalStore from 'src/stores/modalStore';
 
 const ItemUpdateModal = () => {
   const { apiUrl } = useContext(AuthContext);
   const { characterId } = useParams();
-  const parts = location.pathname.split('/').filter(Boolean);
-  const category = parts[parts.length - 2];
+
+  const backgroundPath = useModalStore((state) => state.backgroundPath);
+  const navigate = useNavigate();
 
   const { item } = useOutletContext() || {};
 
-  const { data: baseItem, isLoading } = useItemQuery(Number(item.baseItemId));
+  const { data: baseItem, isLoading } = useItemQuery(Number(item?.baseItemId));
 
   const updateItem = useItemUpdateMutation(
     apiUrl,
-    category,
-    Number(item.id),
+    Number(item?.id),
     Number(characterId),
   );
 
@@ -111,6 +113,12 @@ const ItemUpdateModal = () => {
         }
       });
       await updateItem.mutate(formData);
+      if (!backgroundPath) {
+        navigate('..', { replace: true });
+      } else {
+        navigate(backgroundPath, { replace: true });
+        navigate(-1);
+      }
     },
   });
 
@@ -176,7 +184,7 @@ const ItemUpdateModal = () => {
 
           return (
             <div key={stat} className="flex items-center justify-between gap-8">
-              <h4>{stat}</h4>
+              <h4>{capitalCase(stat)}</h4>
               <div className="flex items-center justify-end gap-4">
                 <p className="min-w-6 text-center">{value}</p>
                 <Icon

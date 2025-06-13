@@ -122,9 +122,14 @@ const NpcPreferenceModal = () => {
           ariaLabel="Confirm preferences"
           className="w-full"
           onClick={(e) => {
-            e.stopPropagation();
             e.preventDefault();
-            navigate(backgroundPath);
+            e.stopPropagation();
+            if (!backgroundPath) {
+              navigate('..', { replace: true });
+            } else {
+              navigate(backgroundPath, { replace: true });
+              navigate(-1);
+            }
           }}
         >
           Close

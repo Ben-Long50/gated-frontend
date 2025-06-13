@@ -24,7 +24,14 @@ const Modal = ({
       >
         <BtnIcon
           active={true}
-          onClick={() => navigate(backgroundPath)}
+          onClick={() => {
+            if (!backgroundPath) {
+              navigate('..', { replace: true });
+            } else {
+              navigate(backgroundPath, { replace: true });
+              navigate(-1);
+            }
+          }}
           path={mdiClose}
           className="absolute right-2 top-2"
         />

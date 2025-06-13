@@ -7,13 +7,17 @@ import { useContext, useEffect } from 'react';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useCreateCharacterConditionMutation from 'src/hooks/useCreateCharacterConditionMutation/useCreateCharacterConditionMutation';
 import useCreateItemConditionMutation from 'src/hooks/useCreateItemConditionMutation/useCreateItemConditionMutation';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useCharacter from 'src/hooks/useCharacter';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
+import useModalStore from 'src/stores/modalStore';
 
 const ConditionModal = () => {
   const { apiUrl } = useContext(AuthContext);
   const { characterId, itemId } = useParams();
+  const navigate = useNavigate();
+
+  const backgroundPath = useModalStore((state) => state.backgroundPath);
 
   const { filteredCharacter: character } = useCharacter(Number(characterId));
 
@@ -51,6 +55,12 @@ const ConditionModal = () => {
       } else if (character) {
         await createCharacterCondition.mutate(data);
       }
+      if (!backgroundPath) {
+        navigate('..', { replace: true });
+      } else {
+        navigate(backgroundPath, { replace: true });
+        navigate(-1);
+      }
     },
   });
 
@@ -70,6 +80,7 @@ const ConditionModal = () => {
         type="button"
         ariaLabel="Submit conditions"
         onClick={(e) => {
+          e.stopPropagation();
           e.preventDefault();
           conditionLinkForm.handleSubmit();
         }}

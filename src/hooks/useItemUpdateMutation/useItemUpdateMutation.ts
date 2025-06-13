@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 const useItemUpdateMutation = (
   apiUrl: string,
-  category: string,
   itemId: number,
   characterId: number,
 ) => {
@@ -13,7 +12,7 @@ const useItemUpdateMutation = (
 
   return useMutation({
     mutationFn: (formData: FormData) => {
-      return updateItem(apiUrl, category, itemId, formData);
+      return updateItem(apiUrl, itemId, formData);
     },
     onSuccess: () => {
       navigate(-1);

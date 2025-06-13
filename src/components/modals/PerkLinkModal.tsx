@@ -26,7 +26,12 @@ const PerkLinkModal = () => {
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          navigate(backgroundPath);
+          if (!backgroundPath) {
+            navigate('..', { replace: true });
+          } else {
+            navigate(backgroundPath, { replace: true });
+            navigate(-1);
+          }
         }}
       >
         Close

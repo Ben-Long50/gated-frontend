@@ -19,6 +19,7 @@ import PerkLinkModal from 'src/components/modals/PerkLinkModal';
 import ItemUpgradeTutorialModal from 'src/components/modals/tutorials/ItemUpgradeTutorialModal';
 import KeywordLinkModal from 'src/components/modals/KeywordLinkModal';
 import CharacterModalRoutes from './CharacterModalRoutes';
+import ItemUpdateModal from 'src/components/modals/ItemUpdateModal';
 
 const CharacterRoutes = () => {
   return (
@@ -48,7 +49,9 @@ const CharacterRoutes = () => {
         <Route path="inventory">
           <Route path=":category">
             <Route index element={<Inventory />} />
-            <Route path=":itemId" element={<ItemPageWrapper />} />
+            <Route path=":itemId" element={<ItemPageWrapper />}>
+              <Route path="update" element={<ItemUpdateModal />} />
+            </Route>
             <Route path=":itemId/upgrade" element={<ItemUpgradeForm />}>
               <Route path="traits" element={<KeywordLinkModal />} />
               <Route path="tutorial" element={<ItemUpgradeTutorialModal />} />
