@@ -21,7 +21,7 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
       overflowHidden={true}
     >
       <div className="flex flex-col items-center gap-8 p-6 md:flex-row">
-        <div className="absolute inset-0 bg-black bg-opacity-60" />
+        <div className="absolute inset-0 bg-white bg-opacity-70 dark:bg-black dark:opacity-60" />
         <div className="z-10 flex h-full w-full flex-col justify-between gap-4 md:gap-6">
           <div className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-4">

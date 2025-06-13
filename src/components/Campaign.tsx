@@ -106,7 +106,7 @@ const Campaign = () => {
           >
             {joinCampaign.isPending ? (
               <Loading
-                className="group-hover:text-yellow-300 dark:text-gray-900"
+                className="group-hover:text-accent dark:text-gray-900"
                 size={1.15}
               />
             ) : (
@@ -185,7 +185,7 @@ const Campaign = () => {
                         <div className="flex items-center gap-4">
                           {faction.picture?.imageUrl && (
                             <img
-                              className="size-16 rounded-full object-cover shadow shadow-black"
+                              className="shadow-color size-16 rounded-full object-cover shadow"
                               src={faction.picture?.imageUrl}
                               alt={faction.name + "'s picture"}
                             />

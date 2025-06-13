@@ -33,7 +33,7 @@ const CartCard = ({
     : 'Global Shop';
 
   return (
-    <div className="w-full rounded-br-4xl rounded-tl-4xl shadow-md shadow-black">
+    <div className="shadow-color w-full rounded-br-4xl rounded-tl-4xl shadow-md">
       <div
         className={`${className} bg-secondary timing flex w-full flex-col pr-4 clip-4 sm:pr-6`}
       >

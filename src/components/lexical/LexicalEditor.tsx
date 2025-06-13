@@ -14,6 +14,8 @@ import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
 import { ListNode, ListItemNode } from '@lexical/list';
 import { $generateHtmlFromNodes } from '@lexical/html';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { useContext } from 'react';
+import { ThemeContext } from 'src/contexts/ThemeContext';
 
 const theme = {
   text: {
@@ -30,6 +32,7 @@ function onError(error: Error) {
 }
 
 const EditorTools = ({ field }) => {
+  const { accentPrimary } = useContext(ThemeContext);
   const [editor] = useLexicalComposerContext();
 
   const onChange = () => {
@@ -49,7 +52,10 @@ const EditorTools = ({ field }) => {
         <div className="mt-2 h-full w-full">
           <RichTextPlugin
             contentEditable={
-              <ContentEditable className="scrollbar-primary max-h-[850px] w-full overflow-y-auto border-2 border-yellow-300 border-opacity-50 p-2 outline-none" />
+              <ContentEditable
+                className="scrollbar-primary max-h-[850px] w-full overflow-y-auto border-2 border-opacity-50 p-2 outline-none"
+                style={{ borderColor: accentPrimary }}
+              />
             }
             ErrorBoundary={LexicalErrorBoundary}
           />

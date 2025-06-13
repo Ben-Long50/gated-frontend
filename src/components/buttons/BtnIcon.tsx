@@ -16,7 +16,7 @@ const BtnIcon = ({
 }) => {
   return (
     <button
-      className={`${className} ${active ? 'hover:text-accent' : 'opacity-30'} bg-tertiary text-secondary timing shrink-0 rounded-md p-1.5 text-center font-semibold shadow-md shadow-black`}
+      className={`${className} ${active ? 'hover:text-accent' : 'opacity-30'} bg-tertiary text-secondary timing shadow-color shrink-0 rounded-md p-1.5 text-center font-semibold shadow-md`}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();

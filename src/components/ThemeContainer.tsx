@@ -19,12 +19,9 @@ const ThemeContainer = ({
   overflowHidden?: boolean;
 }) => {
   const radiusMap = {
-    small:
-      'rounded-tl-4xl rounded-br-4xl rounded-br-5xl rounded-tl-5xl shadow-md shadow-zinc-950',
-    medium:
-      'rounded-tl-5xl rounded-br-5xl rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950',
-    large:
-      'rounded-tl-5xl rounded-br-5xl rounded-br-5xl rounded-tl-5xl shadow-lg shadow-zinc-950',
+    small: 'rounded-br-[27px] rounded-tl-[27px] shadow-md',
+    medium: 'rounded-br-[35px] rounded-tl-[35px] shadow-lg',
+    large: 'rounded-br-[50px]  rounded-tl-[50px] shadow-lg',
   };
 
   const chamferMapBg = {
@@ -35,7 +32,7 @@ const ThemeContainer = ({
 
   return (
     <div
-      className={`${className} ${radiusMap[chamfer]} relative shadow-lg shadow-black`}
+      className={`${className} ${radiusMap[chamfer]} shadow-color relative shadow-lg`}
       style={style}
     >
       <ThemeBorder

@@ -41,9 +41,11 @@
     z-index: -1;
   }
 
-  .dark body::before {
+  html.light body::after {
     content: '';
     position: fixed;
+    background-color: rgb(190, 190, 190);
+    opacity: 90%;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -51,11 +53,9 @@
     left: 0;
     width: 100lvw;
     height: 100lvh;
-    background-image: url('/public/nova_viridian.jpeg');
-    z-index: -1;
   }
 
-  body::after {
+  html.dark body::after {
     content: '';
     position: fixed;
     background-color: rgb(5, 5, 5);
@@ -67,58 +67,52 @@
     left: 0;
     width: 100lvw;
     height: 100lvh;
-    z-index: -1;
   }
 }
 
 @layer components {
+  .text-accent {
+    color: var(--accent-primary);
+    fill: var(--accent-primary);
+  }
   .bg-primary {
-    @apply bg-zinc-100 dark:bg-zinc-900;
+    @apply bg-zinc-150 dark:bg-zinc-900;
   }
   .bg-secondary {
-    @apply bg-zinc-150 dark:bg-zinc-850;
+    @apply bg-zinc-200 dark:bg-zinc-850;
   }
   .bg-tertiary {
-    @apply bg-zinc-200 dark:bg-zinc-800;
+    @apply bg-zinc-300 dark:bg-zinc-800;
   }
   .input-primary {
     @apply bg-zinc-200 dark:bg-zinc-800;
   }
   .text-primary {
-    @apply text-gray-900 dark:fill-gray-50 dark:text-gray-50;
+    @apply text-black dark:fill-gray-50 dark:text-gray-50;
   }
   .text-secondary {
-    @apply text-gray-700 dark:fill-gray-200 dark:text-gray-200;
+    @apply text-gray-900 dark:fill-gray-200 dark:text-gray-200;
   }
   .text-tertiary {
-    @apply text-gray-500 dark:fill-gray-400 dark:text-gray-400;
-  }
-  .text-accent {
-    @apply fill-yellow-300 text-yellow-300 dark:text-yellow-300;
+    @apply text-gray-600 dark:fill-gray-400 dark:text-gray-400;
   }
   .text-error {
     @apply text-red-500 dark:text-red-500;
   }
-  .accent-primary {
-    @apply bg-yellow-300 text-gray-900 dark:bg-yellow-300 dark:text-gray-900;
-  }
-  .shadow-standard {
-    @apply shadow shadow-gray-300 dark:shadow dark:shadow-black;
-  }
-  .shadow-medium {
-    @apply shadow-md shadow-gray-300 dark:shadow-md dark:shadow-black;
+  .shadow-color {
+    @apply shadow-md shadow-black dark:shadow-black;
   }
   .scrollbar-primary {
-    @apply scrollbar scrollbar-track-zinc-800 scrollbar-thumb-zinc-900;
+    @apply scrollbar scrollbar-track-zinc-100 dark:scrollbar-track-zinc-800 scrollbar-thumb-zinc-400 dark:scrollbar-thumb-zinc-900;
   }
   .scrollbar-secondary {
-    @apply scrollbar-thin scrollbar-track-zinc-800 scrollbar-thumb-zinc-900;
+    @apply scrollbar-thin scrollbar-track-zinc-100 dark:scrollbar-track-zinc-800 scrollbar-thumb-zinc-400 dark:scrollbar-thumb-zinc-900;
   }
   .scrollbar-primary-2 {
-    @apply scrollbar scrollbar-track-zinc-900 scrollbar-thumb-zinc-800;
+    @apply scrollbar scrollbar-track-zinc-100 dark:scrollbar-track-zinc-900 scrollbar-thumb-zinc-400 dark:scrollbar-thumb-zinc-800;
   }
   .scrollbar-secondary-2 {
-    @apply scrollbar-thin scrollbar-track-zinc-900 scrollbar-thumb-zinc-800;
+    @apply scrollbar-thin scrollbar-track-zinc-100 dark:scrollbar-track-zinc-900 scrollbar-thumb-zinc-400 dark:scrollbar-thumb-zinc-800;
   }
   .timing {
     @apply transition-all duration-300 ease-in-out md:duration-300;
@@ -164,44 +158,10 @@
   .editor-table-cell {
     @apply !border-2 !border-zinc-400 bg-transparent p-2;
   }
-  .auth-layout-small {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  .auth-layout-large {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
   .main-layout-large {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-rows: auto 1fr;
-  }
-  .stat-bar-layout {
-    display: grid;
-    align-items: center;
-    grid-template-columns: auto auto 1fr auto;
-  }
-  .stat-bar-layout-sm {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-  }
-  dialog::backdrop {
-    backdrop-filter: blur(5px) brightness(0.8);
-    background-color: rgba(0, 0, 0, 0.7);
-  }
-  .clip-chamfer {
-    clip-path: polygon(
-      2rem 0px,
-      100% 0px,
-      100% calc(100% - 2rem),
-      calc(100% - 2rem) 100%,
-      0px 100%,
-      0px 2rem
-    );
   }
 }
 
@@ -216,19 +176,4 @@
 
 .spin {
   animation: spin 0.75s linear infinite;
-}
-
-.image-container {
-  -webkit-transform: translateZ(0);
-  -moz-transform: translateZ(0);
-  transform: translateZ(0);
-}
-
-.image-container img {
-  -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  backface-visibility: hidden;
-  -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  transform-style: preserve-3d;
 }

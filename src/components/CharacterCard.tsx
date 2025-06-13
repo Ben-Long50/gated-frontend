@@ -66,7 +66,7 @@ const CharacterCard = ({ characterId }: { characterId: number }) => {
                 ))}
               </div>
             )}
-            <p className="text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
+            <p className="!text-accent flex size-8 shrink-0 items-center justify-center text-3xl font-semibold sm:pt-1">
               {character?.level}
             </p>
           </div>

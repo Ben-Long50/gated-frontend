@@ -16,6 +16,7 @@ import useCharacterConditionStacksMutation from 'src/hooks/itemStatHooks/useChar
 import useDeleteCharacterConditionMutation from 'src/hooks/useDeleteCharacterConditionMutation/useDeleteCharacterConditionMutation';
 import useDeleteItemConditionMutation from 'src/hooks/useDeleteItemConditionMutation/useDeleteItemConditionMutation';
 import DescriptionModal from './DescriptionModal';
+import { ThemeContext } from 'src/contexts/ThemeContext';
 
 const Tag = ({
   keyword,
@@ -26,6 +27,7 @@ const Tag = ({
   condition?: ConditionReference;
   className?: string;
 }) => {
+  const { accentPrimary } = useContext(ThemeContext);
   const { apiUrl } = useContext(AuthContext);
   const [descriptionOpen, setDescriptionOpen] = useState(false);
 
@@ -68,7 +70,8 @@ const Tag = ({
   if (keyword)
     return (
       <div
-        className={`${className} bg-primary relative z-20 cursor-pointer rounded border border-yellow-300 border-opacity-50 px-2 text-base shadow-md shadow-black`}
+        className={`${className} bg-secondary shadow-color relative z-20 cursor-pointer rounded border border-opacity-50 px-2 text-base shadow-md`}
+        style={{ borderColor: accentPrimary }}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -87,7 +90,7 @@ const Tag = ({
   if (condition)
     return (
       <div
-        className={`bg-primary relative rounded border border-red-400 border-opacity-50 px-2 text-base shadow-md shadow-black`}
+        className={`bg-primary shadow-color relative rounded border border-red-400 border-opacity-50 px-2 text-base shadow-md`}
       >
         <p className="whitespace-nowrap text-base">{conditionName}</p>
 

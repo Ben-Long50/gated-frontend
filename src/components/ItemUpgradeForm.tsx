@@ -186,7 +186,7 @@ const ItemUpgradeForm = () => {
                           <div className="flex items-center gap-2">
                             <Icon
                               path={mdiStar}
-                              className="size-6 shrink-0 text-yellow-300"
+                              className="text-accent size-6 shrink-0"
                             />
                             <p className="whitespace-nowrap pt-1 font-semibold">
                               x {field.state.value}
@@ -199,7 +199,7 @@ const ItemUpgradeForm = () => {
                                 <Icon
                                   key={index}
                                   path={mdiStar}
-                                  className="size-6 text-yellow-300"
+                                  className="text-accent size-6"
                                 />
                               ),
                             )}
@@ -383,7 +383,7 @@ const ItemUpgradeForm = () => {
           >
             {modifyItem.isPending ? (
               <Loading
-                className="group-hover:text-yellow-300 dark:text-gray-900"
+                className="group-hover:text-accent dark:text-gray-900"
                 size={1.15}
               />
             ) : (

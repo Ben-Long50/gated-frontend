@@ -16,6 +16,7 @@ import NavMenuMobile from './NavMenuMobile';
 import CharacterIcon from './icons/CharacterIcon';
 import AccountPicture from './AccountPicture';
 import Divider from './Divider';
+import { ThemeContext } from 'src/contexts/ThemeContext';
 
 const Navbar = ({
   setNavbarHeight,
@@ -30,6 +31,7 @@ const Navbar = ({
 }) => {
   const { user } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
+  const { accentPrimary } = useContext(ThemeContext);
 
   const [navMenuVisibility, setNavMenuVisibility] = useState(false);
   const [accountMenuVisibility, setAccountMenuVisibility] = useState(false);
@@ -59,7 +61,7 @@ const Navbar = ({
   return mobile ? (
     <nav
       ref={navbarRef}
-      className={`bg-primary fixed top-0 z-30 col-span-2 flex w-full flex-col items-center justify-start shadow-md shadow-black`}
+      className={`bg-primary timing shadow-color fixed top-0 z-30 col-span-2 flex w-full flex-col items-center justify-start shadow-md`}
     >
       <div className="my-2 flex w-full items-center justify-between px-2">
         <button onClick={() => setSidebarVisibility(!sidebarVisibility)}>
@@ -73,7 +75,10 @@ const Navbar = ({
           <Link className="relative" to={`account/${user?.id}/notifications`}>
             <Icon path={mdiBellOutline} className="text-secondary size-8" />
             {user?._count.receivedNotifications > 0 && (
-              <div className="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-yellow-300 shadow-md shadow-black">
+              <div
+                className="shadow-color absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full shadow-md"
+                style={{ backgroundColor: accentPrimary }}
+              >
                 <p className="text-sm font-semibold !text-zinc-900 sm:pt-0.5">
                   {user?._count?.receivedNotifications}
                 </p>
@@ -150,10 +155,13 @@ const Navbar = ({
   ) : (
     <nav
       ref={navbarRef}
-      className="bg-primary sticky top-0 z-30 col-span-2 flex items-center justify-between gap-4 py-2 pl-4 pr-6 shadow-md shadow-black"
+      className="bg-primary shadow-color timing sticky top-0 z-30 col-span-2 flex items-center justify-between gap-4 py-2 pl-4 pr-6 shadow-md"
     >
       <Link to="/glam/codex">
-        <h2 className="text-accent text-shadow -mb-2 pt-0.5 font-zen !text-4xl italic text-shadow-x-1 text-shadow-y-1 text-shadow-black">
+        <h2
+          className="text-shadow-color text-shadow -mb-2 pt-0.5 font-zen !text-4xl italic text-shadow-x-1 text-shadow-y-1"
+          style={{ color: accentPrimary }}
+        >
           EDO
         </h2>
       </Link>
@@ -170,7 +178,10 @@ const Navbar = ({
         <Link className="relative" to={`account/${user?.id}/notifications`}>
           <Icon path={mdiBellOutline} className="text-secondary size-8" />
           {user?._count.receivedNotifications > 0 && (
-            <div className="absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full bg-yellow-300 shadow-md shadow-black">
+            <div
+              className="shadow-color absolute -right-1 -top-1 flex size-6 items-center justify-center rounded-full shadow-md"
+              style={{ backgroundColor: accentPrimary }}
+            >
               <p className="text-sm font-semibold !text-zinc-900 sm:pt-0.5">
                 {user?._count?.receivedNotifications}
               </p>

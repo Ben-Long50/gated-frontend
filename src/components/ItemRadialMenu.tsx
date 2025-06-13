@@ -27,9 +27,14 @@ const ItemRadialMenu = ({
 
   const setBackgroundPath = useModalStore((state) => state.setBackgroundPath);
 
-  const toggleConditionModal = () => {
+  const openConditionModal = () => {
     if (!conditionModal) {
       setBackgroundPath(location.pathname);
+      if (parts?.includes('inventory')) {
+        navigate(`${item?.id}/conditions`);
+      } else {
+        navigate(`${item?.itemTypes[0]}s/${item?.id}/conditions`);
+      }
     } else {
       setBackgroundPath(null);
     }
@@ -52,7 +57,7 @@ const ItemRadialMenu = ({
   return (
     <RadialMenu className={`${className}`} size="large">
       <div
-        onClick={() => toggleConditionModal()}
+        onClick={() => openConditionModal()}
         data-active={item.userId === user?.id}
       >
         <ConditionIcon className="size-8 text-inherit" />

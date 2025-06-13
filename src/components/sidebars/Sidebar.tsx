@@ -13,6 +13,7 @@ import Icon from '@mdi/react';
 import CharacterIcon from '../icons/CharacterIcon';
 import CharacterPictureRound from '../CharacterPictureRound';
 import useCharacters from 'src/hooks/useCharacters';
+import { ThemeContext } from 'src/contexts/ThemeContext';
 
 const Sidebar = ({
   sidebarVisibility,
@@ -28,6 +29,7 @@ const Sidebar = ({
   children: ReactNode;
 }) => {
   const { mobile } = useContext(LayoutContext);
+  const { accentPrimary } = useContext(ThemeContext);
 
   const sidebarRef = useRef(null);
 
@@ -71,10 +73,11 @@ const Sidebar = ({
   return (
     <nav
       ref={sidebarRef}
-      className={`${navStyle} bg-secondary timing sticky z-20 col-start-1 row-start-2 flex w-auto overflow-x-hidden border-r border-yellow-300 border-opacity-50`}
+      className={`${navStyle} bg-secondary timing sticky z-20 col-start-1 row-start-2 flex w-auto overflow-x-hidden border-r`}
       style={{
         height: `calc(100dvh - ${navbarHeight}px)`,
         top: `${navbarHeight}px`,
+        borderColor: accentPrimary,
       }}
       onMouseEnter={() => {
         if (!mobile) setSidebarVisibility(true);
@@ -106,7 +109,10 @@ const Sidebar = ({
                   className="bg-secondary group-hover:text-accent timing size-12 shrink-0 p-2"
                   path={mdiCartOutline}
                 />
-                <p className="absolute right-0 top-0 flex h-6 min-w-6 items-center justify-center rounded-full bg-yellow-300 pt-0.5 text-center text-base font-semibold shadow-md shadow-black dark:text-gray-950">
+                <p
+                  className="shadow-color absolute right-0 top-0 flex h-6 min-w-6 items-center justify-center rounded-full pt-0.5 text-center text-base font-semibold shadow-md dark:text-gray-950"
+                  style={{ backgroundColor: accentPrimary }}
+                >
                   {cartLength}
                 </p>
               </div>

@@ -11,6 +11,7 @@ import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
 import useDeleteBookSectionMutation from '../hooks/useDeleteBookSectionMutation/useDeleteBookSectionMutation';
 import { capitalCase } from 'change-case';
+import Divider from './Divider';
 
 const BookManage = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -93,7 +94,7 @@ const BookManage = () => {
 
                 {section.entries.length > 0 && (
                   <>
-                    <hr className="border border-yellow-300 border-opacity-50" />
+                    <Divider />
                     <div className="flex flex-col gap-2">
                       {section.entries?.map((entry) => {
                         return (
@@ -155,7 +156,7 @@ const BookManage = () => {
               <BtnRect type="submit" className="group w-full">
                 {createBookSection.isPending ? (
                   <Loading
-                    className="group-hover:text-yellow-300 dark:text-gray-900"
+                    className="group-hover:text-accent dark:text-gray-900"
                     size={1.15}
                   />
                 ) : section.id ? (

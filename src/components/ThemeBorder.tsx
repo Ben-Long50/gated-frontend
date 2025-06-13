@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+import { ThemeContext } from 'src/contexts/ThemeContext';
 import { Picture } from 'src/types/picture';
 
 const ThemeBorder = ({
@@ -9,6 +11,8 @@ const ThemeBorder = ({
   chamfer: string;
   bgImageUrl?: Picture;
 }) => {
+  const { theme } = useContext(ThemeContext);
+
   const chamferMapBorder = {
     small: 'clip-3 rounded-bl-[4px] rounded-tr-[4px]',
     medium: 'clip-5 rounded-bl-[6px] rounded-tr-[6px]',
@@ -24,29 +28,25 @@ const ThemeBorder = ({
   return (
     <>
       <div
-        className={`${chamferMapBorder[chamfer]} timing absolute right-[2px] top-[2px] z-0 h-full w-full opacity-50`}
+        className={`${chamferMapBorder[chamfer]} timing absolute right-[2px] top-[2px] z-0 h-full w-full`}
         style={{
           backgroundColor: `${borderColor}`,
         }}
       />
       <div
-        className={`${chamferMapBg[chamfer]} absolute z-0 h-full w-full`}
-        style={
-          bgImageUrl
-            ? {
-                backgroundImage: `url(${bgImageUrl.imageUrl})`,
-                backgroundPosition: bgImageUrl.position
-                  ? `${bgImageUrl.position.x}% ${bgImageUrl.position.y}%`
-                  : '50% 50%',
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-              }
-            : { backgroundColor: 'rgb(24 24 27)' }
-        }
+        className={`${chamferMapBg[chamfer]} bg-primary absolute z-0 h-full w-full`}
+        style={{
+          backgroundImage: `url(${bgImageUrl?.imageUrl})`,
+          backgroundPosition: bgImageUrl?.position
+            ? `${bgImageUrl.position.x}% ${bgImageUrl.position.y}%`
+            : '50% 50%',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+        }}
       />
       {bgImageUrl && (
         <div
-          className={`${chamferMapBg[chamfer]} absolute w-full bg-black bg-opacity-50`}
+          className={`${chamferMapBg[chamfer]} absolute w-full bg-white bg-opacity-50 dark:bg-black`}
         />
       )}
     </>

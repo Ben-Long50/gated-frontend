@@ -24,7 +24,7 @@ const DeploymentsList = ({
           item.equipped === true && (
             <div
               key={index}
-              className="flex flex-col rounded-br-4xl rounded-tl-4xl shadow-md shadow-black"
+              className="shadow-color flex flex-col rounded-br-4xl rounded-tl-4xl shadow-md"
             >
               <div className="bg-secondary relative flex w-full items-start gap-3 pr-4 clip-4 sm:gap-6">
                 <button

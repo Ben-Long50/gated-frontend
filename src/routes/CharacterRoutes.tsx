@@ -20,6 +20,7 @@ import ItemUpgradeTutorialModal from 'src/components/modals/tutorials/ItemUpgrad
 import KeywordLinkModal from 'src/components/modals/KeywordLinkModal';
 import CharacterModalRoutes from './CharacterModalRoutes';
 import ItemUpdateModal from 'src/components/modals/ItemUpdateModal';
+import ConditionModal from 'src/components/modals/ConditionModal';
 
 const CharacterRoutes = () => {
   return (
@@ -42,12 +43,17 @@ const CharacterRoutes = () => {
         <Route path="resume/update" element={<ResumeForm />} />
         <Route path="equipment" element={<Equipment />}>
           <Route path="inventory" element={<InventoryModal />} />
+          <Route
+            path=":category/:itemId/conditions"
+            element={<ConditionModal />}
+          />
         </Route>
         <Route path="deployments" element={<Deployments />}>
           <Route path="inventory" element={<InventoryModal />} />
         </Route>
         <Route path="inventory">
           <Route path=":category">
+            <Route path=":itemId/conditions" element={<ConditionModal />} />
             <Route index element={<Inventory />} />
             <Route path=":itemId" element={<ItemPageWrapper />}>
               <Route path="update" element={<ItemUpdateModal />} />

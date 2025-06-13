@@ -41,8 +41,8 @@ const ConditionModal = () => {
   const conditionLinkForm = useForm({
     defaultValues: {
       conditions:
-        character?.conditions ||
         item?.conditions ||
+        character?.conditions ||
         ([] as { condition: Condition; stacks: number | null }[]),
     },
     onSubmit: async ({ value }) => {
@@ -52,7 +52,7 @@ const ConditionModal = () => {
       }));
       if (item) {
         await createItemCondition.mutate(data);
-      } else if (character) {
+      } else {
         await createCharacterCondition.mutate(data);
       }
       if (!backgroundPath) {

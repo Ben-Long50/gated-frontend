@@ -17,7 +17,7 @@ const Modal = ({
   return (
     <RootPortal>
       <div
-        className={`${className} scrollbar-primary-2 relative flex max-h-85dvh w-full max-w-5xl flex-col items-center gap-4 overflow-y-auto rounded-lg bg-zinc-925 p-4 shadow-lg shadow-black sm:gap-8 sm:p-8`}
+        className={`${className} scrollbar-primary-2 shadow-color relative flex max-h-85dvh w-full max-w-5xl flex-col items-center gap-4 overflow-y-auto rounded-lg bg-zinc-50 p-4 shadow-lg dark:bg-zinc-925 sm:gap-8 sm:p-8`}
         onClick={(e) => {
           e.stopPropagation();
         }}

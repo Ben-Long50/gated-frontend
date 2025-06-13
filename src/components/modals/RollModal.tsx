@@ -34,36 +34,42 @@ const RollModal = () => {
               return (
                 <Die1Icon
                   key={index}
-                  className={`${!rolling && modifiers.includes('dooming') ? 'fill-red-500' : 'fill-gray-200'} h-full w-full`}
+                  className={`${!rolling && modifiers.includes('dooming') ? 'fill-red-500' : 'fill-zinc-600 dark:fill-gray-200'} h-full w-full`}
                 />
               );
             case 2:
               return (
-                <Die2Icon key={index} className="h-full w-full fill-gray-200" />
+                <Die2Icon
+                  key={index}
+                  className="h-full w-full fill-zinc-600 dark:fill-gray-200"
+                />
               );
             case 3:
               return (
-                <Die3Icon key={index} className="h-full w-full fill-gray-200" />
+                <Die3Icon
+                  key={index}
+                  className="h-full w-full fill-zinc-600 dark:fill-gray-200"
+                />
               );
             case 4:
               return (
                 <Die4Icon
                   key={index}
-                  className={`${!rolling && lucky ? 'fill-green-500' : 'fill-gray-200'} h-full w-full`}
+                  className={`${!rolling && lucky ? 'fill-green-500' : 'fill-zinc-600 dark:fill-gray-200'} h-full w-full`}
                 />
               );
             case 5:
               return (
                 <Die5Icon
                   key={index}
-                  className={`${!rolling && !unlucky ? 'fill-green-500' : 'fill-gray-200'} h-full w-full`}
+                  className={`${!rolling && !unlucky ? 'fill-green-500' : 'fill-zinc-600 dark:fill-gray-200'} h-full w-full`}
                 />
               );
             case 6:
               return (
                 <Die6Icon
                   key={index}
-                  className={`${!rolling && modifiers.includes('booming') ? 'fill-yellow-400' : !rolling && !modifiers.includes('booming') ? 'fill-green-500' : 'fill-gray-200'} h-full w-full`}
+                  className={`${!rolling && modifiers.includes('booming') ? 'fill-yellow-400' : !rolling && !modifiers.includes('booming') ? 'fill-green-500' : 'fill-zinc-600 dark:fill-gray-200'} h-full w-full`}
                 />
               );
             default:

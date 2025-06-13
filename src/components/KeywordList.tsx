@@ -23,7 +23,7 @@ const KeywordList = ({
         <ArrowHeader2 title={title} />
         <button
           aria-label="Expand all traits"
-          className="bg-tertiary group ml-auto size-10 rounded p-2 shadow-md shadow-black"
+          className="bg-tertiary shadow-color group ml-auto size-10 rounded p-2 shadow-md"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -33,12 +33,12 @@ const KeywordList = ({
           {traitsExpanded ? (
             <Icon
               path={mdiCollapseAllOutline}
-              className="text-secondary timing group-hover:text-yellow-300"
+              className="text-secondary timing group-hover:text-accent"
             />
           ) : (
             <Icon
               path={mdiExpandAllOutline}
-              className="text-secondary timing group-hover:text-yellow-300"
+              className="text-secondary timing group-hover:text-accent"
             />
           )}
         </button>

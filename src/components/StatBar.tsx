@@ -1,4 +1,5 @@
-import { ReactNode } from 'react';
+import { ReactNode, useContext } from 'react';
+import { ThemeContext } from 'src/contexts/ThemeContext';
 
 const StatBar = ({
   title,
@@ -21,6 +22,7 @@ const StatBar = ({
   mutation?: (value: number) => void;
   cardWidth: number;
 }) => {
+  const { theme } = useContext(ThemeContext);
   const small = cardWidth < 500;
 
   const arrayLength = (() => {
@@ -56,13 +58,18 @@ const StatBar = ({
           }).map((_, index) => (
             <div
               key={index}
-              className={`${index === 0 && 'rounded-l-sm border-l-[1px]'} ${index === arrayLength - 1 && 'rounded-r-sm border-r-[1px]'} ${total && index >= total && 'ring-[3px] ring-inset ring-red-600'} h-4 w-full min-w-[1px] max-w-8 grow border-b-[1px] border-l-[0.5px] border-r-[0.5px] border-t-[1px] border-black`}
+              className={`${index === 0 && 'rounded-l-sm border-l-[1px]'} ${index === arrayLength - 1 && 'rounded-r-sm border-r-[1px]'} ${total && index >= total && 'ring-[3px] ring-inset ring-red-600'} h-4 w-full min-w-[1px] max-w-8 grow border-b-[1px] border-l-[0.5px] border-r-[0.5px] border-t-[1px] border-zinc-700 dark:border-black`}
               style={{
                 backgroundImage:
                   index < current
                     ? `linear-gradient(to bottom, rgb(160, 160, 160), ${color}, rgb(50, 50, 50)`
                     : 'none',
-                backgroundColor: index < current ? undefined : 'gray',
+                backgroundColor:
+                  index < current
+                    ? undefined
+                    : theme === 'light'
+                      ? 'rgb(161 161 170)'
+                      : 'gray',
               }}
             />
           ))}

@@ -60,7 +60,7 @@ const Notes = () => {
           </p>
           <div className="flex items-center justify-center gap-8">
             <img
-              className="size-16 rounded-full shadow-md shadow-black"
+              className="shadow-color size-16 rounded-full shadow-md"
               src={character.picture.imageUrl}
               alt={`${character.firstName} ${character.lastName}'s picture`}
             />
@@ -90,7 +90,7 @@ const Notes = () => {
           </p>
           <div className="flex items-center justify-center gap-8">
             <img
-              className="size-16 rounded-full shadow-md shadow-black"
+              className="shadow-color size-16 rounded-full shadow-md"
               src={character.picture.imageUrl}
               alt={`${character.firstName} ${character.lastName}'s picture`}
             />
@@ -117,7 +117,7 @@ const Notes = () => {
         </p>
         <div className="flex items-center justify-center gap-8">
           <img
-            className="size-16 rounded-full shadow-md shadow-black"
+            className="shadow-color size-16 rounded-full shadow-md"
             src={character.picture.imageUrl}
             alt={`${character.firstName} ${character.lastName}'s picture`}
           />

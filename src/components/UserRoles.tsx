@@ -22,6 +22,7 @@ const UserRoleForm = ({
   user: User;
   setQuery: (value: string) => void;
 }) => {
+  const { accentPrimary } = useContext(ThemeContext);
   const { apiUrl } = useContext(AuthContext);
   const [formMessage, setFormMessage] = useState('');
 
@@ -63,7 +64,8 @@ const UserRoleForm = ({
             )}
           </roleForm.Field>
           <button
-            className="hover:bg-primary timing group size-12 shrink-0 rounded-full bg-yellow-300 p-1.5 shadow-md shadow-black hover:ring-2 hover:ring-yellow-300"
+            className="hover:bg-primary timing shadow-color group size-12 shrink-0 rounded-full p-1.5 shadow-md hover:ring-2 hover:ring-yellow-300"
+            style={{ backgroundColor: accentPrimary }}
             onClick={() => roleForm.handleSubmit()}
           >
             <Icon
@@ -107,7 +109,7 @@ const UserRoles = () => {
               }}
             />
             <button
-              className="text-accent bg-tertiary group z-10 grid size-12 shrink-0 place-items-center rounded-md p-1.5 shadow-md shadow-black hover:underline"
+              className="text-accent bg-tertiary shadow-color group z-10 grid size-12 shrink-0 place-items-center rounded-md p-1.5 shadow-md hover:underline"
               onClick={(e) => {
                 e.preventDefault();
                 setQuery('');

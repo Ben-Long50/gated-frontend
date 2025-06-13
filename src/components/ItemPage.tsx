@@ -134,18 +134,18 @@ const ItemPage = ({
               <ArrowHeader3 title="Traits" />
               <button
                 aria-label="Expand all traits"
-                className="bg-tertiary group ml-auto size-10 rounded p-2 shadow-md shadow-black"
+                className="bg-tertiary shadow-color group ml-auto size-10 rounded p-2 shadow-md"
                 onClick={() => setTraitsExpanded((prev) => !prev)}
               >
                 {traitsExpanded ? (
                   <Icon
                     path={mdiCollapseAllOutline}
-                    className="text-secondary timing group-hover:text-yellow-300"
+                    className="text-secondary timing group-hover:text-accent"
                   />
                 ) : (
                   <Icon
                     path={mdiExpandAllOutline}
-                    className="text-secondary timing group-hover:text-yellow-300"
+                    className="text-secondary timing group-hover:text-accent"
                   />
                 )}
               </button>
@@ -281,9 +281,7 @@ const ItemPage = ({
                     item={modification}
                     cardWidth={cardRef.current?.offsetWidth}
                   />
-                  {index < linkedModifiactions.length - 1 && (
-                    <hr className="w-full border-yellow-300 border-opacity-50" />
-                  )}
+                  {index < linkedModifiactions.length - 1 && <Divider />}
                 </>
               );
             })}

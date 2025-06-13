@@ -117,8 +117,8 @@ const ItemCard = ({
               )}
               <div className="flex w-full flex-col gap-4">
                 <div className="flex w-full items-start justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex w-full items-center justify-between gap-4">
+                  <div className="flex w-full items-center gap-4">
+                    <div className="flex items-center justify-between gap-4">
                       <ArrowHeader2 title={item?.name} />
                       {item.baseItemId && (
                         <Link

@@ -10,7 +10,7 @@ import CampaignLinks from '../components/sidebars/CampaignLinks';
 import AccountLinks from '../components/sidebars/AccountLinks';
 
 const MainLayout = () => {
-  const { theme } = useContext(ThemeContext);
+  const { theme, accentPrimary } = useContext(ThemeContext);
   const { mobile } = useContext(LayoutContext);
   const { pathname } = useLocation();
 
@@ -20,7 +20,10 @@ const MainLayout = () => {
   const navbarRef = useRef(null);
 
   return (
-    <div className={`${theme} main-layout-large relative min-h-dvh w-dvw`}>
+    <div
+      className={`${theme} main-layout-large relative min-h-dvh w-dvw`}
+      style={{ '--accent-primary': accentPrimary } as React.CSSProperties}
+    >
       <Navbar
         setNavbarHeight={setNavbarHeight}
         sidebarVisibility={sidebarVisibility}

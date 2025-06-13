@@ -3,11 +3,13 @@ import {
   cloneElement,
   isValidElement,
   ReactNode,
+  useContext,
   useEffect,
   useRef,
   useState,
 } from 'react';
 import { Outlet } from 'react-router-dom';
+import { ThemeContext } from 'src/contexts/ThemeContext';
 
 const RadialMenu = ({
   className,
@@ -18,6 +20,7 @@ const RadialMenu = ({
   size: 'large' | 'medium' | 'small';
   children: ReactNode;
 }) => {
+  const { accentPrimary } = useContext(ThemeContext);
   const [menuVisibility, setMenuVisibility] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
@@ -106,7 +109,7 @@ const RadialMenu = ({
       onClick={(e) => handleClick(e)}
     >
       <div
-        className={`${menuVisibility ? 'visible scale-100' : 'invisible scale-0'} timing pointer-events-none absolute grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center items-start overflow-hidden rounded-full shadow-md shadow-black transition-transform`}
+        className={`${menuVisibility ? 'visible scale-100' : 'invisible scale-0'} timing shadow-color pointer-events-none absolute grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center items-start overflow-hidden rounded-full shadow-md transition-transform`}
         style={{
           height: diameter,
           width: diameter,
@@ -124,8 +127,9 @@ const RadialMenu = ({
           return (
             <button
               key={index}
-              className={`${!active ? 'opacity-50' : 'hover:bg-yellow-300'} bg-tertiary timing group pointer-events-auto flex items-start justify-center`}
+              className={`${!active && 'opacity-50'} bg-tertiary timing group pointer-events-auto flex items-start justify-center`}
               style={{
+                backgroundColor: hoveredIndex === index && accentPrimary,
                 height: diameter / 2 - (diameter / 2) * centerOffset,
                 width: pieWidthOutside,
                 transform: `rotate(${(360 / segmentCount) * index}deg) translateY(-50%) translateY(-${(diameter / 2) * centerOffset}px)`,

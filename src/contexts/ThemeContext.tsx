@@ -4,8 +4,7 @@ interface ThemeContextType {
   theme: 'light' | 'dark';
   changeTheme: () => void;
   accentPrimary: string;
-  accentSecondary: string;
-  accentModifier: string;
+  changeAccent: (color: string) => void;
   errorPrimary: string;
   rarityColorMap: object;
   statColorMap: object;
@@ -19,6 +18,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const storedTheme = localStorage.getItem('theme');
     if (storedTheme === 'light' || storedTheme === 'dark') {
+      document.documentElement.classList.add(storedTheme);
       return storedTheme;
     } else if (
       window.matchMedia &&
@@ -32,9 +32,15 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
   });
 
-  const accentPrimary = 'rgb(253 224 71)';
-  const accentSecondary = 'rgb(14 165 233)';
-  const accentModifier = 'rgb(74 222 128)';
+  const [accentPrimary, setAccentPrimary] = useState(() => {
+    const storedAccent = localStorage.getItem('accent');
+    if (storedAccent) {
+      return storedAccent;
+    } else {
+      return 'rgb(253 224 71)';
+    }
+  });
+
   const errorPrimary = 'rgb(239 68 68)';
 
   const rarityColorMap = {
@@ -82,7 +88,14 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const changeTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     localStorage.setItem('theme', newTheme);
+    document.documentElement.classList.remove(theme);
+    document.documentElement.classList.add(newTheme);
     setTheme(newTheme);
+  };
+
+  const changeAccent = (color: string) => {
+    localStorage.setItem('accent', color);
+    setAccentPrimary(color);
   };
 
   return (
@@ -91,8 +104,7 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
         theme,
         changeTheme,
         accentPrimary,
-        accentSecondary,
-        accentModifier,
+        changeAccent,
         errorPrimary,
         rarityColorMap,
         statColorMap,

@@ -81,7 +81,7 @@ const ErrorReport = () => {
             <BtnRect type="submit" className="group w-full min-w-40">
               {createErrorReport.isPending ? (
                 <Loading
-                  className="group-hover:text-yellow-300 dark:text-gray-900"
+                  className="group-hover:text-accent dark:text-gray-900"
                   size={1.15}
                 />
               ) : (

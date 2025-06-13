@@ -66,7 +66,7 @@ const CharacterSheet = () => {
               <ArrowHeader1
                 title={character?.firstName + ' ' + character?.lastName}
               />
-              <h1 className="text-accent">{character?.level}</h1>
+              <h1 className="!text-accent">{character?.level}</h1>
             </div>
           </ThemeContainer>
           <div className="flex flex-col items-center gap-1">

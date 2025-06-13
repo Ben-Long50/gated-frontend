@@ -32,7 +32,12 @@ const AttributeCard = ({
             <div key={index}>
               {mobile ? (
                 index < points ? (
-                  <Icon key={index} path={mdiCircle} size={0.7} color="gold" />
+                  <Icon
+                    key={index}
+                    path={mdiCircle}
+                    size={0.7}
+                    color={accentPrimary}
+                  />
                 ) : (
                   <Icon
                     key={index}
@@ -42,7 +47,12 @@ const AttributeCard = ({
                   />
                 )
               ) : index < points ? (
-                <Icon key={index} path={mdiSquare} size={1} color="gold" />
+                <Icon
+                  key={index}
+                  path={mdiSquare}
+                  size={1}
+                  color={accentPrimary}
+                />
               ) : (
                 <Icon
                   key={index}

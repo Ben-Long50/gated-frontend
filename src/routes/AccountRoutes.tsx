@@ -1,4 +1,5 @@
 import { Route } from 'react-router-dom';
+import AccountPreferences from 'src/components/AccountPreferences';
 import AccountSettingsForm from 'src/components/AccountSettingsForm';
 import ErrorReport from 'src/components/ErrorReport';
 import ErrorReports from 'src/components/ErrorReports';
@@ -11,7 +12,7 @@ const AccountRoutes = () => {
     <Route path="account/:userId">
       <Route index element={<AccountSettingsForm />} />
       <Route path="notifications" element={<Notifications />} />
-      <Route path="preferences" element={<ErrorReport />} />
+      <Route path="preferences" element={<AccountPreferences />} />
       <Route path="adminTools" element={<ErrorReports />} />
       <Route path="userPermissions" element={<UserRoles />} />
       <Route path="errorReport" element={<ErrorReport />} />

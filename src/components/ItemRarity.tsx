@@ -41,7 +41,10 @@ const ItemRarity = ({
       )}
       {grade > 5 ? (
         <div className="flex items-center gap-2">
-          <Icon path={mdiStar} className="size-6 shrink-0 text-yellow-300" />
+          <Icon
+            path={mdiStar}
+            className="size-6 shrink-0 stroke-zinc-950 text-yellow-400"
+          />
           <p className="whitespace-nowrap pt-1 font-semibold">x {grade}</p>
         </div>
       ) : (
@@ -50,7 +53,7 @@ const ItemRarity = ({
             <Icon
               key={index}
               path={mdiStar}
-              className="size-6 text-yellow-300"
+              className="size-6 stroke-zinc-950 text-yellow-400"
             />
           ))}
         </div>

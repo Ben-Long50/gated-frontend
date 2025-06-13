@@ -1,5 +1,5 @@
 import BtnAuth from '../buttons/BtnAuth';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import WeaponIcon from '../icons/WeaponIcon';
 import ArmorIcon from '../icons/ArmorIcon';
 import CyberIcon from '../icons/CyberIcon';
@@ -15,8 +15,10 @@ import ShopIcon from '../icons/ShopIcon';
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
 import useCharacter from 'src/hooks/useCharacter';
 import Divider from '../Divider';
+import { ThemeContext } from 'src/contexts/ThemeContext';
 
 const ShopModal = () => {
+  const { accentPrimary } = useContext(ThemeContext);
   const navigate = useNavigate();
   const location = useLocation();
   const parts = location.pathname.split('/');
@@ -55,7 +57,10 @@ const ShopModal = () => {
           className="group-hover:text-accent text-secondary timing size-12 shrink-0 p-2"
           path={mdiCartOutline}
         />
-        <p className="absolute right-0 top-0 flex h-6 min-w-6 items-center justify-center rounded-full bg-yellow-300 pt-0.5 text-center text-base font-semibold shadow-md shadow-black dark:text-gray-950">
+        <p
+          className="shadow-color absolute right-0 top-0 flex h-6 min-w-6 items-center justify-center rounded-full pt-0.5 text-center text-base font-semibold shadow-md dark:text-gray-950"
+          style={{ backgroundColor: accentPrimary }}
+        >
           {cartLength}
         </p>
       </button>

@@ -6,6 +6,7 @@ import BtnRect from './buttons/BtnRect';
 import BtnAuth from './buttons/BtnAuth';
 import { LayoutContext } from '../contexts/LayoutContext';
 import useCharacter from 'src/hooks/useCharacter';
+import Divider from './Divider';
 
 const Resume = () => {
   const { user } = useContext(AuthContext);
@@ -57,7 +58,7 @@ const Resume = () => {
           Bad Medicine
         </BtnAuth>
       </div>
-      <hr className="my-4 w-full border border-yellow-300 border-opacity-50" />
+      <Divider />
       <h1 className="text-center">{resume}</h1>
       {content ? (
         <>

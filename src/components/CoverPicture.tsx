@@ -9,8 +9,8 @@ const CoverPicture = ({
   children?: ReactNode;
 }) => {
   return (
-    <div className="absolute top-0 -z-10 mx-auto flex h-[400px] w-full max-w-9xl justify-center overflow-hidden shadow-lg shadow-black sm:h-[500px] xl:rounded-b-xl">
-      <div className="absolute inset-0 w-full bg-black opacity-60" />
+    <div className="shadow-color absolute top-0 -z-10 mx-auto flex h-[400px] w-full max-w-9xl justify-center overflow-hidden shadow-lg sm:h-[500px] xl:rounded-b-xl">
+      <div className="absolute inset-0 w-full bg-white opacity-60 dark:bg-black" />
       <img
         className="w-full border-opacity-50 object-cover object-center filter"
         src={`${picture?.imageUrl}`}

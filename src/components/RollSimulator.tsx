@@ -73,7 +73,7 @@ const RollSimulator = () => {
           ?.points || 0) +
         value.diceCount +
         (value.modifiers.includes('push') ? 2 : 0);
-      console.log(diceCount);
+
       calculateSuccesses(diceCount, value.modifiers);
     },
   });
