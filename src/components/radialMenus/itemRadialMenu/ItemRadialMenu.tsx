@@ -66,7 +66,7 @@ const ItemRadialMenu = ({
             }
           }}
         >
-          <Outlet />
+          {parts.includes('conditions') && <Outlet />}
           <ConditionIcon className="size-8 text-inherit" />
         </div>,
         <div>

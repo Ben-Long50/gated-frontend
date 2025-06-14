@@ -37,12 +37,16 @@ const CharacterRoutes = () => {
       <Route path="shop">
         <Route path="global" element={<ShopModal />}>
           <Route path="cart" element={<Cart />} />
-          <Route path=":category" element={<Items />} />
+          <Route path=":category" element={<Items />}>
+            <Route path="traits/:traitId" element={<DescriptionModal />} />
+          </Route>
           <Route path=":category/:itemId" element={<ItemPageWrapper />} />
         </Route>
         <Route path=":shopId" element={<ShopModal />}>
           <Route path="cart" element={<Cart />} />
-          <Route path=":category" element={<Items />} />
+          <Route path=":category" element={<Items />}>
+            <Route path="traits/:traitId" element={<DescriptionModal />} />
+          </Route>
           <Route path=":category/:itemId" element={<ItemPageWrapper />} />
         </Route>
       </Route>
