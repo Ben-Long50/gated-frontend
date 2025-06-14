@@ -89,7 +89,13 @@ const Items = ({
 
   return (
     <div className="flex w-full max-w-6xl flex-col items-center gap-8">
-      {heading && <h1 className="text-center">{heading}</h1>}
+      {category && (
+        <h1 className="text-center">
+          {include.length > 0
+            ? include[0] + ' ' + capitalCase(category)
+            : capitalCase(category)}
+        </h1>
+      )}
       <ThemeContainer
         className={`ml-auto w-full`}
         chamfer="medium"

@@ -1,17 +1,12 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutContext } from '../../contexts/LayoutContext';
+import useNavigationStore from 'src/stores/navbarStore';
 
-const SubLinkSidebar = ({
-  title,
-  path,
-  setSidebarVisibility,
-}: {
-  title: string;
-  path: string;
-  setSidebarVisibility: (mode: boolean) => void;
-}) => {
+const SubLinkSidebar = ({ title, path }: { title: string; path: string }) => {
   const { layoutSize } = useContext(LayoutContext);
+
+  const setSidebar = useNavigationStore((state) => state.setSidebar);
 
   return (
     <Link
@@ -23,7 +18,7 @@ const SubLinkSidebar = ({
         className="w-full pl-4 text-left text-inherit"
         onClick={() => {
           if (layoutSize !== 'large') {
-            setSidebarVisibility(false);
+            setSidebar(false);
           }
         }}
       >

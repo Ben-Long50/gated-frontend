@@ -1,16 +1,9 @@
-import {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
-import { Keyword } from 'src/types/keyword';
-import Tag from './Tag';
+import { KeywordReference } from 'src/types/keyword';
 import { Item } from 'src/types/item';
 import ItemPicture from './ItemPicture';
 import ArrowHeader2 from './ArrowHeader2';
@@ -25,12 +18,20 @@ import {
 } from './ItemCardControls';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useItemStats from 'src/hooks/useItemStats';
-import ItemRadialMenu from './ItemRadialMenu';
-import { Link, useLocation, useOutletContext } from 'react-router-dom';
+import ItemRadialMenu from './radialMenus/itemRadialMenu/ItemRadialMenu';
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useOutletContext,
+  useParams,
+} from 'react-router-dom';
 import Icon from '@mdi/react';
 import { mdiLinkBoxVariantOutline } from '@mdi/js';
-import { LayoutContext } from 'src/contexts/LayoutContext';
 import { useInView } from 'react-intersection-observer';
+import KeywordTag from './KeywordTag';
+import ConditionTag from './ConditionTag';
+import useRadialMenuStore from 'src/stores/radialMenuStore';
 
 const ItemCard = ({
   item,
@@ -45,8 +46,8 @@ const ItemCard = ({
   toggleFormLink?: (item: Item) => void;
   ownerId?: number;
 }) => {
+  const { conditionId, traitId } = useParams();
   const { user } = useContext(AuthContext);
-  const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
   const location = useLocation();
   const parts = location.pathname.split('/');
@@ -58,7 +59,28 @@ const ItemCard = ({
   });
 
   const { character } = useOutletContext() || {};
+
+  const containerRef = useRef(null);
   const cardRef = useRef(null);
+
+  const menuOpen = useRadialMenuStore((state) => state.menuOpen);
+  const setMenuOpen = useRadialMenuStore((state) => state.setMenuOpen);
+  const setMenu = useRadialMenuStore((state) => state.setMenu);
+  const setCoordinates = useRadialMenuStore((state) => state.setCoordinates);
+
+  const handleMenu = (e: MouseEvent) => {
+    if (!containerRef.current) return;
+    setMenu('item', 'large', item.id);
+
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    if (!menuOpen) {
+      setCoordinates(x, y);
+    }
+    setMenuOpen(!menuOpen);
+  };
 
   useEffect(() => {
     if (cardRef.current) {
@@ -95,10 +117,18 @@ const ItemCard = ({
           borderColor={accentPrimary}
         >
           <div
-            className={`timing flex w-full cursor-pointer flex-col gap-8 p-4`}
+            ref={containerRef}
+            className={`timing relative flex w-full cursor-pointer flex-col gap-8 p-4`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleMenu(e);
+            }}
           >
+            {mode !== 'form' && (
+              <ItemRadialMenu item={item} containerRef={containerRef} />
+            )}
             <div
-              className={`${cardType === 'small' ? 'flex-col' : 'max-h-[300px] flex-row'} relative my-auto flex w-full gap-8`}
+              className={`${cardType === 'small' ? 'flex-col' : 'max-h-[300px] flex-row'} my-auto flex w-full gap-8`}
               onClick={
                 mode === 'form' && toggleFormLink
                   ? () => {
@@ -107,7 +137,6 @@ const ItemCard = ({
                   : undefined
               }
             >
-              {mode !== 'form' && <ItemRadialMenu item={item} />}
               {cardType === 'large' && item.picture?.publicId && (
                 <ItemPicture
                   key={item.id}
@@ -122,7 +151,7 @@ const ItemCard = ({
                       <ArrowHeader2 title={item?.name} />
                       {item.baseItemId && (
                         <Link
-                          className="timing group z-20 ml-auto flex items-center gap-4 py-2"
+                          className="timing group ml-auto flex items-center gap-4 py-2"
                           to={`/glam/codex/${item.itemTypes[0]}s/${item.baseItemId}`}
                         >
                           <Icon
@@ -134,12 +163,19 @@ const ItemCard = ({
                     </div>
                     <div className="flex grow flex-wrap items-center justify-start gap-1">
                       {item.conditions?.map((condition) => (
-                        <Tag key={condition.id} condition={condition} />
+                        <Fragment key={condition.id}>
+                          <ConditionTag
+                            key={condition.id}
+                            condition={condition}
+                          />
+                          {Number(conditionId) === condition.id && (
+                            <Outlet context={{ condition }} />
+                          )}
+                        </Fragment>
                       ))}
                     </div>
                   </div>
-
-                  <div className="z-20 flex grow items-start justify-end gap-4">
+                  <div className="flex grow items-start justify-end gap-4">
                     <p>{item?.price ? item.price + 'p' : 'N/A'}</p>
                     {parts.includes('shop') && (
                       <CartButton character={character} itemId={item?.id} />
@@ -158,11 +194,16 @@ const ItemCard = ({
                 >
                   {keywordList.length > 0 && (
                     <div className={`flex flex-wrap items-center gap-1`}>
-                      {keywordList.map(
-                        (item: { keyword: Keyword; value: number | null }) => {
-                          return <Tag key={item.keyword?.id} keyword={item} />;
-                        },
-                      )}
+                      {keywordList.map((keyword: KeywordReference) => {
+                        return (
+                          <Fragment key={keyword.id}>
+                            <KeywordTag key={keyword.id} keyword={keyword} />
+                            {Number(traitId) === keyword.id && (
+                              <Outlet context={{ keyword }} />
+                            )}
+                          </Fragment>
+                        );
+                      })}
                     </div>
                   )}
                   <ItemRarity

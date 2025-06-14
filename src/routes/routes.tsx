@@ -12,10 +12,10 @@ import SignupForm from '../components/SignupForm';
 import MainLayout from '../layouts/MainLayout';
 import ErrorReport from '../components/ErrorReport';
 import ErrorReports from '../components/ErrorReports';
-import AccountRoutes from './AccountRoutes';
-import CampaignRoutes from './CampaignRoutes';
-import CharacterRoutes from './CharacterRoutes';
-import CodexRoutes from './CodexRoutes';
+import AccountTabRoutes from './AccountTabRoutes';
+import CampaignTabRoutes from './CampaignTabRoutes';
+import CharacterTabRoutes from './CharacterTabRoutes';
+import CodexTabRoutes from './CodexTabRoutes';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,10 +37,10 @@ const router = createBrowserRouter(
           <Route path="error">
             <Route index element={<ErrorReports />} />
           </Route>
-          {AccountRoutes()}
-          {CampaignRoutes()}
-          {CharacterRoutes()}
-          {CodexRoutes()}
+          {AccountTabRoutes()}
+          {CampaignTabRoutes()}
+          {CharacterTabRoutes()}
+          {CodexTabRoutes()}
         </Route>
       </Route>
       ,

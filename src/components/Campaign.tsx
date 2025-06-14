@@ -68,7 +68,7 @@ const Campaign = () => {
                 <AccountPicture key={campaign.owner.id} user={campaign.owner} />
                 <Icon
                   path={mdiCrown}
-                  className="text-accent absolute -right-2 -top-2 size-5"
+                  className="absolute -right-2 -top-2 size-5 text-yellow-400"
                 />
               </div>
 
@@ -91,9 +91,9 @@ const Campaign = () => {
         <h1 className="w-full text-center font-zen text-4xl sm:text-5xl">
           {capitalCase(campaign.name)}
         </h1>
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex w-full items-center justify-center gap-4">
           <LocationIcon className="text-accent size-8" />
-          <h2 className="text-accent">{campaign.location}</h2>
+          <h2 className="!text-accent text-left">{campaign.location}</h2>
         </div>
         {pendingIds?.includes(user?.id) && (
           <BtnRect
@@ -120,7 +120,7 @@ const Campaign = () => {
               <AccountPicture key={campaign.owner.id} user={campaign.owner} />
               <Icon
                 path={mdiCrown}
-                className="text-accent absolute -right-2 -top-2 size-5"
+                className="absolute -right-2 -top-2 size-5 text-yellow-400"
               />
             </div>
 
@@ -207,7 +207,7 @@ const Campaign = () => {
                   <>
                     <ArrowHeader2 title="Player Characters" />
                     {playerCharacters?.map((character: Character, index) => (
-                      <CharacterCard key={index} characterId={character.id} />
+                      <CharacterCard key={index} id={character.id} />
                     ))}
                   </>
                 )}
@@ -215,7 +215,7 @@ const Campaign = () => {
                   <>
                     <ArrowHeader2 title="Non-player Characters" />
                     {nonPlayerCharacters?.map((character: Character, index) => (
-                      <CharacterCard key={index} characterId={character.id} />
+                      <CharacterCard key={index} id={character.id} />
                     ))}
                   </>
                 )}

@@ -1,5 +1,4 @@
 import { ReactNode, useContext } from 'react';
-import Tag from './Tag';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import { Keyword } from 'src/types/keyword';
@@ -43,9 +42,6 @@ const KeywordCard = ({
         </div>
       }
     >
-      <div className="flex">
-        <Tag className="mr-auto" label={keyword.keywordType} />
-      </div>
       <p className="text-secondary">{keyword.description}</p>
     </ItemCardSmall>
   );

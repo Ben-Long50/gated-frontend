@@ -53,15 +53,11 @@ const CampaignCharacterList = () => {
       <div className="grid w-full grid-flow-row gap-10">
         {characters === 'playerCharacters' &&
           playerCharacters?.map((character: Character) => {
-            return (
-              <CharacterCard key={character.id} characterId={character.id} />
-            );
+            return <CharacterCard key={character.id} id={character.id} />;
           })}
         {characters === 'nonPlayerCharacters' &&
           nonPlayerCharacters?.map((character: Character) => {
-            return (
-              <CharacterCard key={character.id} characterId={character.id} />
-            );
+            return <CharacterCard key={character.id} id={character.id} />;
           })}
       </div>
     </div>

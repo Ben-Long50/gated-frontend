@@ -144,7 +144,9 @@ const ShopModal = () => {
         )}
       </div>
       <Divider className="my-0" />
-      <Outlet context={{ character, categorizedShopItems }} />
+      {parts.includes('shop') && (
+        <Outlet context={{ character, categorizedShopItems }} />
+      )}
     </Modal>
   );
 };

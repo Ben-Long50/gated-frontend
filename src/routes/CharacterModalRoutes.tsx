@@ -7,10 +7,12 @@ import ItemPageWrapper from 'src/components/ItemPageWrapper';
 import Items from 'src/components/Items';
 import ShopModal from 'src/components/modals/ShopModal';
 import AffiliationModal from 'src/components/modals/AffiliationModal';
+import DescriptionModal from 'src/components/modals/DescriptionModal';
 
 const CharacterModalRoutes = () => {
   return (
     <Route path=":characterId">
+      <Route path="conditions/:conditionId" element={<DescriptionModal />} />
       <Route path="conditions" element={<ConditionModal />} />
       <Route path="affiliations" element={<AffiliationModal />}>
         <Route index element={<CharacterAffiliations />} />

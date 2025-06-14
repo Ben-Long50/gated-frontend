@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { Fragment, useContext, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
@@ -11,7 +11,7 @@ import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
-import { Link, useParams } from 'react-router-dom';
+import { Link, Outlet, useParams } from 'react-router-dom';
 import BtnRect from './buttons/BtnRect';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
@@ -24,19 +24,18 @@ import BtnAuth from './buttons/BtnAuth';
 import useCharacter from 'src/hooks/useCharacter';
 import CharacterPicture from './CharacterPicture';
 import CharacterStatBars from './CharacterStatBars';
-import Tag from './Tag';
 import { capitalCase } from 'change-case';
+import ConditionTag from './ConditionTag';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
+  const { conditionId, characterId } = useParams();
   const { user } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
 
   const [infoVisibility, setInfoVisibility] = useState(mobile ? false : true);
 
   const cardRef = useRef(null);
-
-  const { characterId } = useParams();
 
   const {
     filteredCharacter: character,
@@ -176,7 +175,12 @@ const CharacterSheet = () => {
           className={`${cardRef.current?.offsetWidth < 500 ? 'px-2' : 'px-4'} flex grow flex-wrap items-center justify-start gap-1`}
         >
           {character?.conditions?.map((condition) => (
-            <Tag key={condition.id} condition={condition} />
+            <Fragment key={condition.id}>
+              <ConditionTag key={condition.id} condition={condition} />
+              {characterId && Number(conditionId) === condition.id && (
+                <Outlet context={{ condition }} />
+              )}
+            </Fragment>
           ))}
         </div>
       )}

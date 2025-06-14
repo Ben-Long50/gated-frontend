@@ -75,6 +75,9 @@
     color: var(--accent-primary);
     fill: var(--accent-primary);
   }
+  .border-accent {
+    border-color: var(--accent-primary);
+  }
   .bg-primary {
     @apply bg-zinc-150 dark:bg-zinc-900;
   }
@@ -174,6 +177,23 @@
   }
 }
 
+@keyframes blur {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 0.5;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
 .spin {
   animation: spin 0.75s linear infinite;
+}
+
+.barBlur {
+  animation: blur 0.3s linear forwards;
 }

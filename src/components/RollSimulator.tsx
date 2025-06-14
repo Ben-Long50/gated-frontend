@@ -17,7 +17,7 @@ import InputField from './InputField';
 import useRoll from '../hooks/useRoll';
 import { AttributeName, SkillName } from 'src/types/attributeTree';
 import InputSelectField from './InputSelectField';
-import { Outlet, useParams, useNavigate } from 'react-router-dom';
+import { Outlet, useParams, useNavigate, useLocation } from 'react-router-dom';
 import useCampaignQuery from '../hooks/useCampaignQuery/useCampaignQuery';
 import { LayoutContext } from '../contexts/LayoutContext';
 import CharacterPictureRound from './CharacterPictureRound';
@@ -31,6 +31,8 @@ const RollSimulator = () => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const parts = location.pathname.split('/');
   const { campaignId } = useParams();
 
   const { data: campaign, isLoading: campaignLoading } = useCampaignQuery(
@@ -389,7 +391,9 @@ const RollSimulator = () => {
           </form>
         </div>
       </ThemeContainer>
-      <Outlet context={{ rollForm, diceArray, rolling, successes }} />
+      {parts.includes('rollSimulator') && (
+        <Outlet context={{ rollForm, diceArray, rolling, successes }} />
+      )}
     </div>
   );
 };

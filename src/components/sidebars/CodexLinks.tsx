@@ -22,13 +22,7 @@ import DroneIcon from '../icons/DroneIcon';
 import PotionIcon from '../icons/PotionIcon';
 import { capitalCase } from 'change-case';
 
-const CodexLinks = ({
-  sidebarVisibility,
-  setSidebarVisibility,
-}: {
-  sidebarVisibility: boolean;
-  setSidebarVisibility: (mode: boolean) => void;
-}) => {
+const CodexLinks = () => {
   const { apiUrl, user } = useContext(AuthContext);
 
   const { data: bookSections } = useBookSectionsQuery(apiUrl);
@@ -45,11 +39,8 @@ const CodexLinks = ({
           />
         }
         path="/glam/codex/search"
-        sidebarVisibility={sidebarVisibility}
-        setSidebarVisibility={setSidebarVisibility}
       />
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
         icon={
           <BookIcon className="group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2" />
         }
@@ -67,7 +58,6 @@ const CodexLinks = ({
                     key={entry.id}
                     title={capitalCase(entry.title)}
                     path={`codex/book/${entry.id}`}
-                    setSidebarVisibility={setSidebarVisibility}
                   />
                 );
               })}
@@ -75,296 +65,232 @@ const CodexLinks = ({
           );
         })}
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-          <SubLinkSidebar
-            title="Manage Book"
-            path="codex/book/manage"
-            setSidebarVisibility={setSidebarVisibility}
-          />
+          <SubLinkSidebar title="Manage Book" path="codex/book/manage" />
         )}
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-          <SubLinkSidebar
-            title="Create Entry"
-            path="codex/book/create"
-            setSidebarVisibility={setSidebarVisibility}
-          />
+          <SubLinkSidebar title="Create Entry" path="codex/book/create" />
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
-        icon={<WeaponIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
+        icon={
+          <WeaponIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+        }
         title="Weapons"
       >
         <SubLinkSidebar
           title="All Weapons"
           path="codex/items/weapons?exclude=Vehicle Weapon&exclude=Drone Weapon"
-          setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Ranged Weapons"
           path="codex/items/weapons?include=Ranged&exclude=Vehicle Weapon&exclude=Drone Weapon"
-          setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Melee Weapons"
           path="codex/items/weapons/?include=Melee&exclude=Vehicle Weapon&exclude=Drone Weapon"
-          setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Consumable Weapons"
-          path="codex/items/weapons?include=Grenade&include=Mine&exclude=Vehicle Weapon&exclude=Drone Weapon"
-          setSidebarVisibility={setSidebarVisibility}
+          path="codex/items/weapons?include=Consumable&include=Light Consumable&exclude=Vehicle Weapon&exclude=Drone Weapon"
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
             title="Create a New Weapon"
             path="codex/items/weapons/create"
-            setSidebarVisibility={setSidebarVisibility}
           />
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
-        icon={<ArmorIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
+        icon={
+          <ArmorIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+        }
         title="Armor"
       >
-        <SubLinkSidebar
-          title="All Armor"
-          path="codex/items/armors"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        <SubLinkSidebar title="All Armor" path="codex/items/armors" />
         <SubLinkSidebar
           title="Head Armor"
           path="codex/items/armors/?include=Head"
-          setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Body Armor"
           path="codex/items/armors/?include=Body"
-          setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Cloak Armor"
           path="codex/items/armors/?include=Cloak"
-          setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
             title="Create New Armor"
             path="codex/items/armors/create"
-            setSidebarVisibility={setSidebarVisibility}
           />
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
-        icon={<CyberIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
+        icon={
+          <CyberIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+        }
         title="Augmentations"
       >
         <SubLinkSidebar
           title="Cybernetics"
           path="codex/items/augmentations?augmentType=cybernetic"
-          setSidebarVisibility={setSidebarVisibility}
         />
         <SubLinkSidebar
           title="Mutations"
           path="codex/items/augmentations?augmentType=mutation"
-          setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
             title="Create a New Augmentation"
             path="codex/items/augmentations/create"
-            setSidebarVisibility={setSidebarVisibility}
           />
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
         icon={
-          <VehicleIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+          <VehicleIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
         }
         title="Vehicles"
       >
-        <SubLinkSidebar
-          title="All Vehicles"
-          path="codex/items/vehicles"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        <SubLinkSidebar title="All Vehicles" path="codex/items/vehicles" />
         <SubLinkSidebar
           title="Vehicle Weapons"
           path="codex/items/weapons?include=Vehicle Weapon"
-          setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <>
             <SubLinkSidebar
               title="Create a New Vehicle"
               path="codex/items/vehicles/create"
-              setSidebarVisibility={setSidebarVisibility}
             />
           </>
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
-        icon={<DroneIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
+        icon={
+          <DroneIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+        }
         title="Drones"
       >
-        <SubLinkSidebar
-          title="All Drones"
-          path="codex/items/drones"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        <SubLinkSidebar title="All Drones" path="codex/items/drones" />
         <SubLinkSidebar
           title="Drone Weapons"
           path="codex/items/weapons?include=Drone Weapon"
-          setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <>
             <SubLinkSidebar
               title="Create a New Drone"
               path="codex/items/drones/create"
-              setSidebarVisibility={setSidebarVisibility}
             />
           </>
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
         icon={
-          <ModificationIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+          <ModificationIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
         }
         title="Modifications"
       >
         <SubLinkSidebar
           title="All Modifications"
           path="codex/items/modifications"
-          setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <>
             <SubLinkSidebar
               title="Create a New Modification"
               path="codex/items/modifications/create"
-              setSidebarVisibility={setSidebarVisibility}
             />
           </>
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
-        icon={<SackIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
+        icon={
+          <SackIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+        }
         title="Reusable Items"
       >
-        <SubLinkSidebar
-          title="All Reusables"
-          path="codex/items/reusables"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        <SubLinkSidebar title="All Reusables" path="codex/items/reusables" />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <>
             <SubLinkSidebar
               title="Create a New Reusable"
               path="codex/items/reusables/create"
-              setSidebarVisibility={setSidebarVisibility}
             />
           </>
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
-        icon={<PotionIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
+        icon={
+          <PotionIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+        }
         title="Consumable Items"
       >
         <SubLinkSidebar
           title="All Consumables"
           path="codex/items/consumables"
-          setSidebarVisibility={setSidebarVisibility}
         />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <>
             <SubLinkSidebar
               title="Create a New Consumable"
               path="codex/items/consumables/create"
-              setSidebarVisibility={setSidebarVisibility}
             />
           </>
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
-        icon={<PerkIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
+        icon={
+          <PerkIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+        }
         title="Perks"
       >
-        <SubLinkSidebar
-          title="All Perks"
-          path="codex/perks"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        <SubLinkSidebar title="All Perks" path="codex/perks" />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
-          <SubLinkSidebar
-            title="Create a New Perk"
-            path="codex/perks/create"
-            setSidebarVisibility={setSidebarVisibility}
-          />
+          <SubLinkSidebar title="Create a New Perk" path="codex/perks/create" />
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
         icon={
-          <KeywordIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+          <KeywordIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
         }
         title="Traits"
       >
-        <SubLinkSidebar
-          title="All Traits"
-          path="codex/keywords"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        <SubLinkSidebar title="All Traits" path="codex/keywords" />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
             title="Create a New Trait"
             path="codex/keywords/create"
-            setSidebarVisibility={setSidebarVisibility}
           />
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
-        icon={<ActionIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />}
+        icon={
+          <ActionIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+        }
         title="Actions"
       >
-        <SubLinkSidebar
-          title="All Actions"
-          path="codex/actions"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        <SubLinkSidebar title="All Actions" path="codex/actions" />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
             title="Create a New Action"
             path="codex/actions/create"
-            setSidebarVisibility={setSidebarVisibility}
           />
         )}
       </LinkListSidebar>
       <LinkListSidebar
-        sidebarVisibility={sidebarVisibility}
         icon={
-          <ConditionIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+          <ConditionIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
         }
         title="Conditions"
       >
-        <SubLinkSidebar
-          title="All conditions"
-          path="codex/conditions"
-          setSidebarVisibility={setSidebarVisibility}
-        />
+        <SubLinkSidebar title="All conditions" path="codex/conditions" />
         {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
           <SubLinkSidebar
             title="Create a New Condition"
             path="codex/conditions/create"
-            setSidebarVisibility={setSidebarVisibility}
           />
         )}
       </LinkListSidebar>

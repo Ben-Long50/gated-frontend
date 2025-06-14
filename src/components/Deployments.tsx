@@ -22,8 +22,8 @@ const Deployments = () => {
   const { characterId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const path = location.pathname.split('/');
-  const mode = path[path.length - 1];
+  const parts = location.pathname.split('/');
+  const mode = parts[parts.length - 1];
 
   const [active, setActive] = useState<{
     id: null | number;
@@ -147,7 +147,9 @@ const Deployments = () => {
                 >
                   Open Garage
                 </BtnRect>
-                <Outlet context={{ activeItem, toggleActive }} />
+                {parts.includes('inventory') && (
+                  <Outlet context={{ activeItem, toggleActive }} />
+                )}
               </>
             )}
           </div>

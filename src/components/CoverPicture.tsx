@@ -10,7 +10,7 @@ const CoverPicture = ({
 }) => {
   return (
     <div className="shadow-color absolute top-0 -z-10 mx-auto flex h-[400px] w-full max-w-9xl justify-center overflow-hidden shadow-lg sm:h-[500px] xl:rounded-b-xl">
-      <div className="absolute inset-0 w-full bg-white opacity-60 dark:bg-black" />
+      <div className="absolute inset-0 w-full bg-white opacity-70 dark:bg-black dark:opacity-70" />
       <img
         className="w-full border-opacity-50 object-cover object-center filter"
         src={`${picture?.imageUrl}`}

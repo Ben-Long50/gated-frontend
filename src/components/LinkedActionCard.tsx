@@ -3,15 +3,16 @@ import DieIcon from './icons/DieIcon';
 import { mdiLinkBoxVariantOutline, mdiTriangleDown } from '@mdi/js';
 import { Action } from 'src/types/action';
 import StopwatchIcon from './icons/StopwatchIcon';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ArrowHeader3 from './ArrowHeader3';
 import ThemeContainer from './ThemeContainer';
 import ActionStatBars from './ActionStatBars';
 import { capitalCase } from 'change-case';
 import { Link } from 'react-router-dom';
-import ActionRadialMenu from './ActionRadialMenu';
+import ActionRadialMenu from './radialMenus/ActionRadialMenu';
 import ItemCardSmall from './ItemCardSmall';
+import useRadialMenuStore from 'src/stores/radialMenuStore';
 
 const LinkedActionCard = ({
   action,
@@ -22,6 +23,27 @@ const LinkedActionCard = ({
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
+  const containerRef = useRef(null);
+
+  const menuOpen = useRadialMenuStore((state) => state.menuOpen);
+  const setMenuOpen = useRadialMenuStore((state) => state.setMenuOpen);
+  const setMenu = useRadialMenuStore((state) => state.setMenu);
+  const setCoordinates = useRadialMenuStore((state) => state.setCoordinates);
+
+  const handleMenu = (e: MouseEvent) => {
+    if (!containerRef.current) return;
+    setMenu('action', 'large', action.id);
+
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    if (!menuOpen) {
+      setCoordinates(x, y);
+    }
+    setMenuOpen(!menuOpen);
+  };
+
   const costLength = action?.costs ? Object.keys(action.costs).length : 0;
 
   const description = action.description.split(/\[stats\]/);
@@ -31,12 +53,19 @@ const LinkedActionCard = ({
 
   return (
     <ThemeContainer borderColor={accentPrimary} chamfer="medium">
-      {action.characterInventoryId && (
-        <ActionRadialMenu action={action} itemId={action.itemLink.itemId} />
-      )}
       <div
-        className={`${action.characterInventoryId ? (action.active ? 'opacity-100' : 'opacity-30') : ''} flex flex-col items-start justify-start gap-4 p-4`}
+        ref={containerRef}
+        className={`${action.characterInventoryId ? (action.active ? 'opacity-100' : 'opacity-30') : ''} flex cursor-pointer flex-col items-start justify-start gap-4 p-4`}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleMenu(e);
+        }}
       >
+        <ActionRadialMenu
+          action={action}
+          itemId={action.itemLink.itemId}
+          containerRef={containerRef}
+        />
         <div className={`flex w-full items-center justify-start gap-4`}>
           <ArrowHeader3 title={action?.name} />
           <p className="text-tertiary">({capitalCase(action.actionType)})</p>

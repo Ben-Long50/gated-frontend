@@ -1,23 +1,23 @@
 import { ReactNode, useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutContext } from '../../contexts/LayoutContext';
+import useNavigationStore from 'src/stores/navbarStore';
 
 const LinkSidebar = ({
   title,
   icon,
   path,
-  sidebarVisibility,
-  setSidebarVisibility,
   onClick,
 }: {
   title: string;
   icon: ReactNode;
   path: string;
-  sidebarVisibility: boolean;
-  setSidebarVisibility: (mode: boolean) => void;
   onClick?: () => void;
 }) => {
   const { mobile } = useContext(LayoutContext);
+
+  const sidebar = useNavigationStore((state) => state.sidebar);
+  const setSidebar = useNavigationStore((state) => state.setSidebar);
 
   return (
     <NavLink
@@ -27,7 +27,7 @@ const LinkSidebar = ({
       to={path}
       onClick={() => {
         if (mobile) {
-          setSidebarVisibility(false);
+          setSidebar(false);
         }
         if (onClick) {
           onClick();
@@ -38,9 +38,9 @@ const LinkSidebar = ({
       {icon}
       {
         <button
-          className={`${!sidebarVisibility && 'invisible -translate-x-full opacity-0'} timing w-full pl-4 text-left text-inherit`}
+          className={`${!sidebar && 'invisible -translate-x-full opacity-0'} timing overflow-hidden pl-4 text-left text-inherit`}
         >
-          <div className="timing group-hover:text-accent whitespace-nowrap text-xl tracking-wide text-inherit">
+          <div className="timing group-hover:text-accent max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-xl tracking-wide text-inherit">
             {title}
           </div>
         </button>

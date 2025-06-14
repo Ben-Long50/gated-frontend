@@ -45,7 +45,7 @@ export const CampaignSocketProvider = () => {
 
   return (
     <CampaignSocketContext.Provider value={{ socket }}>
-      <Outlet />
+      <Outlet context={{ socket }} />
     </CampaignSocketContext.Provider>
   );
 };

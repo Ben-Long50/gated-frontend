@@ -7,7 +7,7 @@ import Notifications from 'src/components/Notifications';
 import PatchNoteForm from 'src/components/PatchNotesForm';
 import UserRoles from 'src/components/UserRoles';
 
-const AccountRoutes = () => {
+const AccountTabRoutes = () => {
   return (
     <Route path="account/:userId">
       <Route index element={<AccountSettingsForm />} />
@@ -23,4 +23,4 @@ const AccountRoutes = () => {
   );
 };
 
-export default AccountRoutes;
+export default AccountTabRoutes;

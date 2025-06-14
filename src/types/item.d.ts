@@ -1,6 +1,6 @@
 import { Action } from './action';
 import { ConditionReference } from './condition';
-import { Keyword } from './keyword';
+import { Keyword, KeywordReference } from './keyword';
 import { Picture } from './picture';
 
 interface Item {
@@ -18,7 +18,7 @@ interface Item {
   description: string;
   stats: Stats;
   modifiedStats?: Stats;
-  keywords: { keyword: Keyword; value: number | null }[];
+  keywords: KeywordReference[];
   modifiedKeywords: { keyword: Keyword; value: number | null }[];
   conditions: ConditionReference[];
   itemLinkReference?: LinkReference;

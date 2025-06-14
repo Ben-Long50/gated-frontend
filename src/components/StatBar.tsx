@@ -76,11 +76,14 @@ const StatBar = ({
         </div>
         {mode !== 'edit' && (
           <div
-            className={`${small ? 'gap-1' : 'gap-2'} text-tertiary z-20 flex items-center whitespace-nowrap text-xl`}
+            className={`${small ? 'gap-1' : 'gap-2'} text-tertiary flex items-center whitespace-nowrap text-xl`}
           >
             <div
-              className={`${mutation && 'hover:text-accent cursor-pointer'} text-secondary grid h-6 min-w-6 place-content-center`}
-              onClick={mutation ? () => mutation(-1) : undefined}
+              className={`${mutation && 'hover:text-accent cursor-pointer'} text-secondary grid h-6 min-w-6 select-none place-content-center`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (mutation) mutation(-1);
+              }}
             >
               <p
                 className={`${total && current > total ? 'text-error' : '!text-inherit'}`}
@@ -92,8 +95,11 @@ const StatBar = ({
               <>
                 <p>/</p>
                 <div
-                  className={`${mutation && 'hover:text-accent cursor-pointer'} text-secondary grid h-6 min-w-6 place-content-center`}
-                  onClick={mutation ? () => mutation(1) : undefined}
+                  className={`${mutation && 'hover:text-accent cursor-pointer'} text-secondary grid h-6 min-w-6 select-none place-content-center`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (mutation) mutation(1);
+                  }}
                 >
                   <p className="!text-inherit">
                     {reserve !== undefined ? reserve : total}

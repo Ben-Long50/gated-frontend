@@ -43,7 +43,7 @@ export default {
         '8xl': '88rem',
         '9xl': '96rem',
         '10xl': '104rem',
-        '75dvw': '75dvw',
+        '85dvw': '85dvw',
       },
       minHeight: {
         '50dvh': '50dvh',

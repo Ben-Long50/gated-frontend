@@ -1,6 +1,6 @@
 import LinkListSidebar from './LinkListSidebar';
 import SubLinkSidebar from './SubLinkSidebar';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import CampaignIcon from '../icons/CampaignIcon';
 import LinkSidebar from './LinkSidebar';
@@ -13,66 +13,45 @@ import { Session } from 'src/types/campaign';
 import SessionIcon from '../icons/SessionIcon';
 import AffiliationIcon from '../icons/AffiliationIcon';
 
-const CampaignLinks = ({
-  sidebarVisibility,
-  setSidebarVisibility,
-}: {
-  sidebarVisibility: boolean;
-  setSidebarVisibility: (mode: boolean) => void;
-}) => {
+const CampaignLinks = () => {
   const { apiUrl, user } = useContext(AuthContext);
   const { campaignId } = useParams();
-  const [modalOpen, setModalOpen] = useState(false);
 
   const { data: campaign, isLoading } = useCampaignQuery(
     apiUrl,
     Number(campaignId),
   );
 
-  const toggleModal = () => {
-    setModalOpen((prev) => !prev);
-  };
-
   return (
     <>
       {!campaignId ? (
         <>
           <LinkListSidebar
-            sidebarVisibility={sidebarVisibility}
             icon={
-              <CampaignIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+              <CampaignIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
             }
             title="Campaigns"
           >
             <SubLinkSidebar
               title="Player campaigns"
               path={`campaigns?campaignType=player`}
-              setSidebarVisibility={setSidebarVisibility}
             />
             <SubLinkSidebar
               title="Pending campaigns"
               path={`campaigns?campaignType=pending`}
-              setSidebarVisibility={setSidebarVisibility}
             />
             <SubLinkSidebar
               title="Owner campaigns"
               path={`campaigns?campaignType=owner`}
-              setSidebarVisibility={setSidebarVisibility}
             />
-            <SubLinkSidebar
-              title="Create campaign"
-              path={`campaigns/create`}
-              setSidebarVisibility={setSidebarVisibility}
-            />
+            <SubLinkSidebar title="Create campaign" path={`campaigns/create`} />
           </LinkListSidebar>
           <LinkSidebar
             title="Roll Simulator"
             icon={
-              <DieIcon className="bg-secondary z-10 size-12 shrink-0 p-1" />
+              <DieIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
             }
             path="campaigns/rollSimulator"
-            sidebarVisibility={sidebarVisibility}
-            setSidebarVisibility={setSidebarVisibility}
           />
         </>
       ) : (
@@ -91,13 +70,10 @@ const CampaignLinks = ({
               )
             }
             path={`/glam/campaigns/${campaign?.id}`}
-            sidebarVisibility={sidebarVisibility}
-            setSidebarVisibility={setSidebarVisibility}
           />
           <LinkListSidebar
-            sidebarVisibility={sidebarVisibility}
             icon={
-              <SessionIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+              <SessionIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
             }
             title="Sessions"
           >
@@ -106,52 +82,43 @@ const CampaignLinks = ({
                 key={session.id}
                 title={`${session.sessionNumber} — ${session.name}`}
                 path={`campaigns/${campaignId}/sessions/${session.id}`}
-                setSidebarVisibility={setSidebarVisibility}
               />
             ))}
             {campaign?.ownerId === user.id && (
               <SubLinkSidebar
                 title={`Create a new session`}
                 path={`campaigns/${campaignId}/sessions/create`}
-                setSidebarVisibility={setSidebarVisibility}
               />
             )}
           </LinkListSidebar>
           <LinkListSidebar
-            sidebarVisibility={sidebarVisibility}
             icon={
-              <CharacterIcon className="bg-secondary z-10 size-12 shrink-0 p-2" />
+              <CharacterIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
             }
             title="Campaign Characters"
           >
             <SubLinkSidebar
               title="Player Characters"
               path={`campaigns/${campaignId}/characters?list=playerCharacters`}
-              setSidebarVisibility={setSidebarVisibility}
             />
             <SubLinkSidebar
               title="Non-player Characters"
               path={`campaigns/${campaignId}/characters?list=nonPlayerCharacters`}
-              setSidebarVisibility={setSidebarVisibility}
             />
           </LinkListSidebar>
           <LinkSidebar
             title="Affiliations"
             icon={
-              <AffiliationIcon className="bg-secondary z-10 size-12 shrink-0 p-1" />
+              <AffiliationIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
             }
             path={`campaigns/${campaignId}/affiliations`}
-            sidebarVisibility={sidebarVisibility}
-            setSidebarVisibility={setSidebarVisibility}
           />
           <LinkSidebar
             title="Roll Simulator"
             icon={
-              <DieIcon className="bg-secondary z-10 size-12 shrink-0 p-1" />
+              <DieIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
             }
             path={`campaigns/${campaignId}/rollSimulator`}
-            sidebarVisibility={sidebarVisibility}
-            setSidebarVisibility={setSidebarVisibility}
           />
         </>
       )}

@@ -6,6 +6,16 @@ export interface Keyword {
   gpCost: number;
 }
 
+export interface KeywordReference {
+  id: number;
+  itemId: number | null;
+  modifiedItemId: number | null;
+  actionId: number | null;
+  keywordId: number;
+  keyword: Keyword;
+  value: number | null;
+}
+
 enum KeywordType {
   weapon = 'weapon',
   armor = 'armor',

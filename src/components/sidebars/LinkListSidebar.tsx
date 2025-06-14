@@ -1,20 +1,20 @@
 import { mdiChevronDown } from '@mdi/js';
 import Icon from '@mdi/react';
 import { Children, isValidElement, ReactNode, useState } from 'react';
+import useNavigationStore from 'src/stores/navbarStore';
 
 const LinkListSidebar = ({
   icon,
   title,
   children,
-  sidebarVisibility,
 }: {
   icon: ReactNode;
   title: string;
   children: ReactNode;
-  sidebarVisibility?: boolean;
 }) => {
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [hover, setHover] = useState(false);
+
+  const sidebar = useNavigationStore((state) => state.sidebar);
 
   function countChildren(children: ReactNode) {
     let count = 0;
@@ -38,11 +38,7 @@ const LinkListSidebar = ({
   const height = count * 60;
 
   return (
-    <div
-      className={`timing relative flex flex-col clip-4`}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
+    <div className={`timing relative flex flex-col clip-4`}>
       <button
         className="text-primary group z-10 flex items-center"
         onClick={(e) => {
@@ -53,7 +49,7 @@ const LinkListSidebar = ({
         {icon}
         {
           <div
-            className={`${!sidebarVisibility && 'invisible -translate-x-full opacity-0'} timing flex w-full items-center justify-between`}
+            className={`${!sidebar && 'invisible -translate-x-full opacity-0'} timing flex w-full items-center justify-between`}
           >
             <p className="group-hover:text-accent timing whitespace-nowrap pl-4 text-inherit">
               {title}
@@ -73,9 +69,7 @@ const LinkListSidebar = ({
       <div
         className={`timing flex flex-col gap-4`}
         style={
-          detailsOpen && sidebarVisibility
-            ? { maxHeight: height }
-            : { maxHeight: 0 }
+          detailsOpen && sidebar ? { maxHeight: height } : { maxHeight: 0 }
         }
       >
         {

@@ -1,13 +1,11 @@
 import Loading from './Loading';
 import Items from './Items';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import useInventory from 'src/hooks/useInventory';
 import useCharacters from 'src/hooks/useCharacters';
 
 const Inventory = () => {
-  const location = useLocation();
-  const parts = location.pathname.split('/').filter(Boolean);
-  const category = parts[parts.length - 1];
+  const { category } = useParams();
 
   const { activeCharacter, isLoading } = useCharacters();
 

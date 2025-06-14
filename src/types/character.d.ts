@@ -1,7 +1,7 @@
 import { Action } from './action';
 import { AttributeTree } from './attributeTree';
 import { Campaign } from './campaign';
-import { Condition } from './condition';
+import { Condition, ConditionReference } from './condition';
 import { Affiliation } from './faction';
 import { Gang } from './gang';
 import { Item } from './item';
@@ -34,7 +34,7 @@ interface Character {
   npcTypes?: string[];
   preferences: CharacterPreferences;
   perks: Perk[];
-  conditions: { condition: Condition; stacks: number | null }[];
+  conditions: ConditionReference[];
   characterCart: CharacterCart;
   characterInventory: CharacterInventory;
   affiliations: Affiliation[];

@@ -1,11 +1,4 @@
-import {
-  RefObject,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { RefObject, useContext, useEffect, useLayoutEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import BtnNavbar from './buttons/BtnNavbar';
 import { Link } from 'react-router-dom';
@@ -17,39 +10,24 @@ import CharacterIcon from './icons/CharacterIcon';
 import AccountPicture from './AccountPicture';
 import Divider from './Divider';
 import { ThemeContext } from 'src/contexts/ThemeContext';
+import useNavigationStore from 'src/stores/navbarStore';
 
 const Navbar = ({
   setNavbarHeight,
-  sidebarVisibility,
-  setSidebarVisibility,
   navbarRef,
 }: {
   setNavbarHeight: (height: number) => void;
-  sidebarVisibility: boolean;
-  setSidebarVisibility: (mode: boolean) => void;
-  navbarRef: RefObject;
+  navbarRef: RefObject<null | HTMLElement>;
 }) => {
   const { user } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
 
-  const [navMenuVisibility, setNavMenuVisibility] = useState(false);
-  const [accountMenuVisibility, setAccountMenuVisibility] = useState(false);
-
-  useEffect(() => {
-    const closeMenus = (e) => {
-      if (navbarRef.current && !navbarRef.current.contains(e.target)) {
-        setNavMenuVisibility(false);
-        setAccountMenuVisibility(false);
-      }
-    };
-
-    document.addEventListener('click', closeMenus);
-
-    return () => {
-      document.removeEventListener('click', closeMenus);
-    };
-  }, []);
+  const navbar = useNavigationStore((state) => state.navbar);
+  const sidebar = useNavigationStore((state) => state.sidebar);
+  const setNavbar = useNavigationStore((state) => state.setNavbar);
+  const setSidebar = useNavigationStore((state) => state.setSidebar);
+  const closeBars = useNavigationStore((state) => state.closeBars);
 
   useLayoutEffect(() => {
     if (navbarRef.current) {
@@ -64,15 +42,25 @@ const Navbar = ({
       className={`bg-primary timing shadow-color fixed top-0 z-30 col-span-2 flex w-full flex-col items-center justify-start shadow-md`}
     >
       <div className="my-2 flex w-full items-center justify-between px-2">
-        <button onClick={() => setSidebarVisibility(!sidebarVisibility)}>
-          {!sidebarVisibility ? (
-            <Icon className="text-secondary size-10" path={mdiMenuClose} />
-          ) : (
-            <Icon className="text-secondary size-10" path={mdiMenuOpen} />
-          )}
+        <button
+          onClick={() => {
+            setNavbar(false);
+            setSidebar(!sidebar);
+          }}
+        >
+          <Icon
+            className="text-secondary size-10"
+            path={sidebar ? mdiMenuOpen : mdiMenuClose}
+          />
         </button>
         <div className="flex items-center justify-end gap-4">
-          <Link className="relative" to={`account/${user?.id}/notifications`}>
+          <Link
+            className="relative"
+            to={`account/${user?.id}/notifications`}
+            onClick={() => {
+              closeBars();
+            }}
+          >
             <Icon path={mdiBellOutline} className="text-secondary size-8" />
             {user?._count.receivedNotifications > 0 && (
               <div
@@ -86,10 +74,10 @@ const Navbar = ({
             )}
           </Link>
           <button
-            className={`${navMenuVisibility && 'scale-y-150'} timing z-10`}
+            className={`${navbar && 'scale-y-150'} timing z-10`}
             onClick={() => {
-              setAccountMenuVisibility(false);
-              setNavMenuVisibility(!navMenuVisibility);
+              setSidebar(false);
+              setNavbar(!navbar);
             }}
           >
             <Icon path={mdiMenu} size={1.5} className={`text-secondary`} />
@@ -98,7 +86,7 @@ const Navbar = ({
             <button
               className="z-10"
               onClick={() => {
-                setSidebarVisibility(true);
+                setNavbar(false);
               }}
             >
               {user?.profilePicture ? (
@@ -114,13 +102,12 @@ const Navbar = ({
           </Link>
         </div>
       </div>
-      <NavMenuMobile menuVisibility={navMenuVisibility}>
+      <NavMenuMobile>
         <Link className="w-full p-2" to="campaigns">
           <BtnNavbar
             className="w-full text-left"
             onClick={() => {
-              setNavMenuVisibility(false);
-              setSidebarVisibility(true);
+              setNavbar(false);
             }}
           >
             Campaigns
@@ -131,8 +118,7 @@ const Navbar = ({
           <BtnNavbar
             className="w-full text-left"
             onClick={() => {
-              setNavMenuVisibility(false);
-              setSidebarVisibility(true);
+              setNavbar(false);
             }}
           >
             Codex
@@ -143,8 +129,7 @@ const Navbar = ({
           <BtnNavbar
             className="bg-primary text-left"
             onClick={() => {
-              setNavMenuVisibility(false);
-              setSidebarVisibility(true);
+              setNavbar(false);
             }}
           >
             Characters
@@ -188,14 +173,7 @@ const Navbar = ({
             </div>
           )}
         </Link>
-        <Link
-          to={`account/${user?.id}`}
-          className="z-10 shrink-0"
-          onClick={() => {
-            setNavMenuVisibility(false);
-            setAccountMenuVisibility(!accountMenuVisibility);
-          }}
-        >
+        <Link to={`account/${user?.id}`} className="z-10 shrink-0">
           <AccountPicture user={user} />
         </Link>
       </div>

@@ -1,8 +1,14 @@
-import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import { Fragment, useContext, useLayoutEffect, useRef, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { ThemeContext } from '../contexts/ThemeContext';
 import ThemeContainer from './ThemeContainer';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import ItemRarity from './ItemRarity';
 import CartButton from './CartButton';
 import Icon from '@mdi/react';
@@ -28,9 +34,9 @@ import { Item } from 'src/types/item';
 import useItemStats from 'src/hooks/useItemStats';
 import LinkedItemCard from './LinkedItemCard';
 import LinkedActionCard from './LinkedActionCard';
-import ItemRadialMenu from './ItemRadialMenu';
-import Tag from './Tag';
+import ItemRadialMenu from './radialMenus/itemRadialMenu/ItemRadialMenu';
 import useModalStore from 'src/stores/modalStore';
+import ConditionTag from './ConditionTag';
 
 const ItemPage = ({
   itemId,
@@ -43,6 +49,7 @@ const ItemPage = ({
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
+  const { conditionId } = useParams();
   const navigate = useNavigate();
   const [cardWidth, setCardWidth] = useState(0);
   const [traitsExpanded, setTraitsExpanded] = useState(false);
@@ -101,7 +108,7 @@ const ItemPage = ({
           </div>
         )}
       </div>
-      <div className="relative grid h-full w-full grid-rows-2 gap-8 sm:grid-cols-2 sm:grid-rows-1">
+      <div className="relative grid h-full w-full grid-rows-[auto_auto] gap-8 sm:grid-cols-2 sm:grid-rows-1">
         {item.picture?.imageUrl && (
           <ItemPicture key={item.id} className={`timing w-full`} item={item} />
         )}
@@ -109,7 +116,12 @@ const ItemPage = ({
           {item.conditions.length > 0 && (
             <div className="flex flex-wrap items-center justify-start gap-1">
               {item.conditions?.map((condition) => (
-                <Tag key={condition.id} condition={condition} />
+                <Fragment key={condition.id}>
+                  <ConditionTag key={condition.id} condition={condition} />
+                  {Number(conditionId) === condition.id && (
+                    <Outlet context={{ condition }} />
+                  )}
+                </Fragment>
               ))}
             </div>
           )}
@@ -275,14 +287,14 @@ const ItemPage = ({
           <div className="flex flex-col gap-4 p-4">
             {linkedModifiactions.map((modification: Item, index: number) => {
               return (
-                <>
+                <Fragment key={modification.id}>
                   <LinkedItemCard
                     key={modification.id}
                     item={modification}
                     cardWidth={cardRef.current?.offsetWidth}
                   />
                   {index < linkedModifiactions.length - 1 && <Divider />}
-                </>
+                </Fragment>
               );
             })}
           </div>
@@ -344,7 +356,7 @@ const ItemPage = ({
               </>
             )}
           </button>
-          <Outlet context={{ item }} />
+          {parts.includes('update') && <Outlet context={{ item }} />}
         </div>
       )}
 

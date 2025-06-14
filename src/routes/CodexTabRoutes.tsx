@@ -20,8 +20,9 @@ import PatchNoteForm from 'src/components/PatchNotesForm';
 import PerkForm from 'src/components/PerkForm';
 import Perks from 'src/components/Perks';
 import ActionLinkModal from 'src/components/modals/ActionLinkModal';
+import DescriptionModal from 'src/components/modals/DescriptionModal';
 
-const CodexRoutes = () => {
+const CodexTabRoutes = () => {
   return (
     <Route path="codex">
       <Route path="search" element={<CodexSearch />} />
@@ -39,8 +40,20 @@ const CodexRoutes = () => {
       </Route>
       <Route path="items">
         <Route path=":category">
-          <Route index element={<Items />} />
-          <Route path=":itemId" element={<ItemPageWrapper />} />
+          <Route path="" element={<Items />}>
+            <Route
+              path="conditions/:conditionId"
+              element={<DescriptionModal />}
+            />
+            <Route path="traits/:traitId" element={<DescriptionModal />} />
+          </Route>
+          <Route path=":itemId" element={<ItemPageWrapper />}>
+            <Route
+              path="conditions/:conditionId"
+              element={<DescriptionModal />}
+            />
+            <Route path="traits/:traitId" element={<DescriptionModal />} />
+          </Route>
           <Route path="create" element={<ItemForm />}>
             <Route path="traits" element={<KeywordLinkModal />} />
             <Route path=":linkCategory" element={<ItemLinkModal />} />
@@ -55,8 +68,12 @@ const CodexRoutes = () => {
       </Route>
       <Route path="perks">
         <Route index element={<Perks key="perks" />} />
-        <Route path="create" element={<PerkForm key="create perk" />} />
-        <Route path=":perkId/update" element={<PerkForm key="update perk" />} />
+        <Route path="create" element={<PerkForm key="create perk" />}>
+          <Route path="modifiers" element={<ModifierModal />} />
+        </Route>
+        <Route path=":perkId/update" element={<PerkForm key="update perk" />}>
+          <Route path="modifiers" element={<ModifierModal />} />
+        </Route>
       </Route>
       <Route path="keywords">
         <Route index element={<Keywords key="keywords" />} />
@@ -95,4 +112,4 @@ const CodexRoutes = () => {
   );
 };
 
-export default CodexRoutes;
+export default CodexTabRoutes;

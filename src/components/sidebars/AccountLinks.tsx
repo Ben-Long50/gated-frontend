@@ -8,22 +8,13 @@ import {
   mdiAccountWrenchOutline,
   mdiAlertCircleOutline,
   mdiBellOutline,
-  mdiLockOpenOutline,
   mdiLogout,
-  mdiNoteMultipleOutline,
 } from '@mdi/js';
 import useSignoutMutation from '../../hooks/useSignoutMutation/useSignoutMutation';
 import LinkListSidebar from './LinkListSidebar';
-import ConditionIcon from '../icons/ConditionIcon';
 import SubLinkSidebar from './SubLinkSidebar';
 
-const AccountLinks = ({
-  sidebarVisibility,
-  setSidebarVisibility,
-}: {
-  sidebarVisibility: boolean;
-  setSidebarVisibility: (mode: boolean) => void;
-}) => {
+const AccountLinks = () => {
   const { apiUrl, user } = useContext(AuthContext);
 
   const signout = useSignoutMutation(apiUrl);
@@ -39,8 +30,6 @@ const AccountLinks = ({
           />
         }
         title="Account Settings"
-        sidebarVisibility={sidebarVisibility}
-        setSidebarVisibility={setSidebarVisibility}
       />
       <LinkSidebar
         path={`account/${user?.id}/preferences`}
@@ -51,8 +40,6 @@ const AccountLinks = ({
           />
         }
         title="Account Preferences"
-        sidebarVisibility={sidebarVisibility}
-        setSidebarVisibility={setSidebarVisibility}
       />
       <LinkSidebar
         path={`account/${user?.id}/notifications`}
@@ -63,12 +50,9 @@ const AccountLinks = ({
           />
         }
         title="Notifications"
-        sidebarVisibility={sidebarVisibility}
-        setSidebarVisibility={setSidebarVisibility}
       />
       {(user?.role === 'ADMIN' || user?.role === 'SUPERADMIN') && (
         <LinkListSidebar
-          sidebarVisibility={sidebarVisibility}
           icon={
             <Icon
               path={mdiAccountTieOutline}
@@ -80,17 +64,14 @@ const AccountLinks = ({
           <SubLinkSidebar
             path={`account/${user?.id}/patchNotes/create`}
             title="Create Patch Notes"
-            setSidebarVisibility={setSidebarVisibility}
           />
           <SubLinkSidebar
             path={`account/${user?.id}/adminTools`}
             title="Error Reports"
-            setSidebarVisibility={setSidebarVisibility}
           />
           <SubLinkSidebar
             path={`account/${user?.id}/userPermissions`}
             title="User Account Permissions"
-            setSidebarVisibility={setSidebarVisibility}
           />
         </LinkListSidebar>
       )}
@@ -103,8 +84,6 @@ const AccountLinks = ({
           />
         }
         title="Create Error Report"
-        sidebarVisibility={sidebarVisibility}
-        setSidebarVisibility={setSidebarVisibility}
       />
       <LinkSidebar
         path=""
@@ -115,8 +94,6 @@ const AccountLinks = ({
           />
         }
         title="Sign Out"
-        sidebarVisibility={sidebarVisibility}
-        setSidebarVisibility={setSidebarVisibility}
         onClick={() => signout.mutate()}
       />
     </>

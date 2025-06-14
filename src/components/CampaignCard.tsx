@@ -21,7 +21,7 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
       overflowHidden={true}
     >
       <div className="flex flex-col items-center gap-8 p-6 md:flex-row">
-        <div className="absolute inset-0 bg-white bg-opacity-70 dark:bg-black dark:opacity-60" />
+        <div className="absolute inset-0 bg-white bg-opacity-70 dark:bg-black dark:opacity-80" />
         <div className="z-10 flex h-full w-full flex-col justify-between gap-4 md:gap-6">
           <div className="flex w-full flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-4">
@@ -30,7 +30,7 @@ const CampaignCard = ({ campaign }: { campaign: Campaign }) => {
             </div>
             <div className="flex items-center gap-4">
               <LocationIcon className="text-accent size-6 shrink-0 sm:size-8" />
-              <h3 className="text-accent text-right">{campaign.location}</h3>
+              <h3 className="!text-accent text-right">{campaign.location}</h3>
             </div>
           </div>
           <div className="grid grid-cols-[1fr_1fr]">

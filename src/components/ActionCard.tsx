@@ -1,5 +1,5 @@
 import { useContext, useRef } from 'react';
-import Tag from './Tag';
+import Tag from './ConditionTag';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import DieIcon from './icons/DieIcon';
