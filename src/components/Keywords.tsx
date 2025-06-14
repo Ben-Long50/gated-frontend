@@ -10,10 +10,11 @@ import ArrowHeader2 from './ArrowHeader2';
 import InputSelectField from './InputSelectField';
 import Icon from '@mdi/react';
 import { mdiSync } from '@mdi/js';
-import { Keyword } from 'src/types/keyword';
+import { Keyword, KeywordReference } from 'src/types/keyword';
 import InputFieldBasic from './InputFieldBasic';
 import { useLocation } from 'react-router-dom';
 import { capitalCase } from 'change-case';
+import ExpandingList from './ExpandingList';
 
 const Keywords = ({
   title,
@@ -120,75 +121,34 @@ const Keywords = ({
         <div className="flex w-full flex-col gap-8 p-4 sm:p-8">
           <searchForm.Subscribe selector={(state) => state.values.category}>
             {(category) => (
-              <ArrowHeader2
+              <ExpandingList
                 title={
                   category.length > 0
                     ? capitalCase(category) + ' Traits'
                     : 'All Traits'
                 }
-              />
+                className="flex flex-col gap-4 md:grid md:grid-cols-2"
+              >
+                {keywords?.map((keyword) => {
+                  const activeKeyword =
+                    mode === 'form'
+                      ? field.state.value?.find(
+                          (item: KeywordReference) =>
+                            item.keyword.id === keyword.id,
+                        )
+                      : null;
+                  return (
+                    <KeywordCard
+                      mode={mode}
+                      keyword={keyword}
+                      activeKeyword={activeKeyword}
+                      field={field}
+                    />
+                  );
+                })}
+              </ExpandingList>
             )}
           </searchForm.Subscribe>
-          <div className="flex flex-col gap-4 md:grid md:grid-cols-2">
-            {keywords?.map((keyword) => {
-              const activeKeyword =
-                mode === 'form'
-                  ? field.state.value?.find(
-                      (item: { keyword: Keyword; value?: number }) =>
-                        item.keyword.id === keyword.id,
-                    )
-                  : null;
-              return (
-                <div key={keyword.id} className="flex items-center gap-4">
-                  <KeywordCard mode={mode} keyword={keyword}>
-                    {activeKeyword && (
-                      <InputFieldBasic
-                        className="max-w-20 shrink-0"
-                        name="value"
-                        type="number"
-                        label="Value"
-                        value={activeKeyword.value}
-                        onChange={(value: number | string) => {
-                          const updatedValue = field.state.value?.map(
-                            (item: { keyword: Keyword; value?: number }) =>
-                              item.keyword.id === keyword.id
-                                ? {
-                                    keyword: item.keyword,
-                                    value,
-                                  }
-                                : item,
-                          );
-                          field.handleChange(updatedValue);
-                        }}
-                      />
-                    )}
-                  </KeywordCard>
-                  {mode === 'form' && (
-                    <input
-                      className="size-6 shrink-0"
-                      type="checkbox"
-                      checked={activeKeyword}
-                      onChange={() => {
-                        if (!activeKeyword) {
-                          field.handleChange([
-                            ...field.state.value,
-                            { keyword },
-                          ]);
-                        } else {
-                          field.handleChange(
-                            field.state.value?.filter(
-                              (item: { keyword: Keyword; value?: number }) =>
-                                item.keyword.id !== keyword.id,
-                            ),
-                          );
-                        }
-                      }}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
         </div>
       </ThemeContainer>
     </div>

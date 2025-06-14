@@ -33,13 +33,13 @@ const PerkLinkField = ({
           <>
             <form.Field name="perks">
               {(field) => (
-                <>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   {parts[parts.length - 1] === 'perks' && (
                     <Outlet context={{ field, attributeTree }} />
                   )}
                   {perks.map((perk: Perk) => {
                     return (
-                      <div className="flex items-center gap-4" key={perk.id}>
+                      <div className="flex items-center gap-2" key={perk.id}>
                         <PerkCard perk={perk} key={perk.id} />
                         <button
                           onClick={() => {
@@ -58,7 +58,7 @@ const PerkLinkField = ({
                       </div>
                     );
                   })}
-                </>
+                </div>
               )}
             </form.Field>
           </>

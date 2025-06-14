@@ -18,6 +18,9 @@ import { extractKeywordListIds } from '../../utils/extractIds';
 import ArrowHeader4 from '../ArrowHeader4';
 import { capitalCase } from 'change-case';
 import useModalStore from 'src/stores/modalStore';
+import ExpandingList from '../ExpandingList';
+import KeywordCard from '../KeywordCard';
+import { KeywordReference } from 'src/types/keyword';
 
 const ItemUpdateModal = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -205,16 +208,22 @@ const ItemUpdateModal = () => {
       </div>
       <Divider />
       <div className="flex flex-col gap-8">
-        <KeywordList
-          className="flex flex-col gap-4"
+        <ExpandingList
           title="Current Base Traits"
-          item={item}
-        />
-        <KeywordList
-          className="flex flex-col gap-4"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+        >
+          {item?.keywords.map((keyword: KeywordReference) => (
+            <KeywordCard key={keyword.id} keyword={keyword.keyword} />
+          ))}
+        </ExpandingList>
+        <ExpandingList
           title="Updated Base Traits"
-          item={baseItem}
-        />
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+        >
+          {baseItem?.keywords.map((keyword: KeywordReference) => (
+            <KeywordCard key={keyword.id} keyword={keyword.keyword} />
+          ))}
+        </ExpandingList>
       </div>
       <Divider />
       <div className="flex w-full flex-col gap-4">

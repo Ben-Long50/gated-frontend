@@ -29,7 +29,7 @@ import ArrowHeader3 from './ArrowHeader3';
 import ArrowHeader2 from './ArrowHeader2';
 import useItemQuery from '../hooks/useItemQuery/useItemQuery';
 import ItemCardSmall from './ItemCardSmall';
-import { Keyword } from 'src/types/keyword';
+import { Keyword, KeywordReference } from 'src/types/keyword';
 import { Item } from 'src/types/item';
 import useItemStats from 'src/hooks/useItemStats';
 import LinkedItemCard from './LinkedItemCard';
@@ -37,6 +37,7 @@ import LinkedActionCard from './LinkedActionCard';
 import ItemRadialMenu from './radialMenus/itemRadialMenu/ItemRadialMenu';
 import useModalStore from 'src/stores/modalStore';
 import ConditionTag from './ConditionTag';
+import ExpandingList from './ExpandingList';
 
 const ItemPage = ({
   itemId,
@@ -52,7 +53,6 @@ const ItemPage = ({
   const { conditionId } = useParams();
   const navigate = useNavigate();
   const [cardWidth, setCardWidth] = useState(0);
-  const [traitsExpanded, setTraitsExpanded] = useState(false);
 
   const location = useLocation();
   const parts = location.pathname.split('/');
@@ -140,62 +140,37 @@ const ItemPage = ({
             <h3>{powerLevel}</h3>
           </div>
           {item.keywords?.length > 0 && (
-            <div
-              className={` ${mode !== 'codex' && 'col-span-2'} col-start-1 row-start-2 flex flex-wrap items-center gap-1`}
+            <ExpandingList
+              title="Traits"
+              className={`${mode !== 'codex' && 'col-span-2'} col-start-1 row-start-2 flex flex-wrap items-center gap-2`}
             >
-              <ArrowHeader3 title="Traits" />
-              <button
-                aria-label="Expand all traits"
-                className="bg-tertiary shadow-color group ml-auto size-10 rounded p-2 shadow-md"
-                onClick={() => setTraitsExpanded((prev) => !prev)}
-              >
-                {traitsExpanded ? (
-                  <Icon
-                    path={mdiCollapseAllOutline}
-                    className="text-secondary timing group-hover:text-accent"
-                  />
-                ) : (
-                  <Icon
-                    path={mdiExpandAllOutline}
-                    className="text-secondary timing group-hover:text-accent"
-                  />
-                )}
-              </button>
-              <Divider />
-              <div className="flex flex-col gap-4">
-                {itemKeywords &&
-                  itemKeywords.length > 0 &&
-                  itemKeywords?.map(
-                    (item: { keyword: Keyword; value: number | null }) => {
-                      return (
-                        <ItemCardSmall
-                          key={item.keyword?.id}
-                          expanded={traitsExpanded}
-                          heading={
-                            <h4>
-                              {item.value
-                                ? item.keyword?.name.replace(
-                                    /X/g,
-                                    item.value.toString(),
-                                  )
-                                : item.keyword?.name}
-                            </h4>
-                          }
-                        >
-                          <p>
-                            {item.value
-                              ? item.keyword?.description.replace(
-                                  /X/g,
-                                  item.value.toString(),
-                                )
-                              : item.keyword?.description}
-                          </p>
-                        </ItemCardSmall>
-                      );
-                    },
-                  )}
-              </div>
-            </div>
+              {itemKeywords?.map((item: KeywordReference) => {
+                return (
+                  <ItemCardSmall
+                    key={item.keyword?.id}
+                    heading={
+                      <h4>
+                        {item.value
+                          ? item.keyword?.name.replace(
+                              /X/g,
+                              item.value.toString(),
+                            )
+                          : item.keyword?.name}
+                      </h4>
+                    }
+                  >
+                    <p>
+                      {item.value
+                        ? item.keyword?.description.replace(
+                            /X/g,
+                            item.value.toString(),
+                          )
+                        : item.keyword?.description}
+                    </p>
+                  </ItemCardSmall>
+                );
+              })}
+            </ExpandingList>
           )}
         </div>
       </div>

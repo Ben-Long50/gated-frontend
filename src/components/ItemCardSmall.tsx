@@ -62,7 +62,7 @@ const ItemCardSmall = ({
         </summary>
         {children && (
           <div
-            className={`${detailsOpen && 'pb-4'} timing overflow-hidden px-4`}
+            className={`${(detailsOpen || expanded) && 'pb-4'} timing overflow-hidden px-4`}
           >
             <motion.div
               ref={detailRef}

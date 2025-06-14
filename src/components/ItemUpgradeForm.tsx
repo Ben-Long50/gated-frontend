@@ -4,7 +4,7 @@ import { Outlet, useLocation, useParams } from 'react-router-dom';
 import { AuthContext } from 'src/contexts/AuthContext';
 import useItemQuery from 'src/hooks/useItemQuery/useItemQuery';
 import FormLayout from 'src/layouts/FormLayout';
-import { Keyword } from 'src/types/keyword';
+import { Keyword, KeywordReference } from 'src/types/keyword';
 import TextAreaField from './TextAreaField';
 import PictureField from './formFields/PictureField';
 import Loading from './Loading';
@@ -28,6 +28,8 @@ import BtnIcon from './buttons/BtnIcon';
 import { capitalCase } from 'change-case';
 import upgradePointMap from '../hooks/upgradePointMap';
 import useUpgradePoints from 'src/hooks/useUpgradePoints';
+import ExpandingList from './ExpandingList';
+import KeywordCard from './KeywordCard';
 
 const ItemUpgradeForm = () => {
   const { apiUrl } = useContext(AuthContext);
@@ -325,11 +327,14 @@ const ItemUpgradeForm = () => {
             </itemModifyForm.Field>
           </div>
           <Divider />
-          <KeywordList
-            item={item}
-            title={'Base Traits'}
+          <ExpandingList
+            title="Base Traits"
             className="grid grid-cols-1 gap-4 sm:grid-cols-2"
-          />
+          >
+            {item?.keywords.map((keyword: KeywordReference) => (
+              <KeywordCard key={keyword.id} keyword={keyword.keyword} />
+            ))}
+          </ExpandingList>
           <KeywordLinkField
             title="Upgraded Traits"
             mode={mode}

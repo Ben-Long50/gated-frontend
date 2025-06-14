@@ -26,6 +26,7 @@ import CharacterPicture from './CharacterPicture';
 import CharacterStatBars from './CharacterStatBars';
 import { capitalCase } from 'change-case';
 import ConditionTag from './ConditionTag';
+import ExpandingList from './ExpandingList';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -320,8 +321,10 @@ const CharacterSheet = () => {
       </div>
       <ThemeContainer chamfer="medium" borderColor={accentPrimary}>
         <div className="p-4">
-          <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
-            <ArrowHeader2 className="col-span-2" title="Perks" />
+          <ExpandingList
+            title="Perks"
+            className="grid grid-cols-1 gap-4 md:grid-cols-2"
+          >
             {character?.perks ? (
               character?.perks.map((perk) => {
                 return <PerkCard key={perk.name} perk={perk} />;
@@ -329,7 +332,7 @@ const CharacterSheet = () => {
             ) : (
               <h2 className="pl-6">???</h2>
             )}
-          </div>
+          </ExpandingList>
         </div>
       </ThemeContainer>
       {user?.id === character.userId && (

@@ -27,29 +27,29 @@ const ItemLinkField = ({
 
   return (
     <>
-      <form.Subscribe selector={(state: FormState) => state.values.weapons}>
-        {(weapons: Item[]) => (
+      <form.Subscribe selector={(state: FormState) => state.values[category]}>
+        {(items: Item[]) => (
           <>
-            {weapons.length > 0 && (
+            {items.length > 0 && (
               <ArrowHeader2 title={'Linked ' + capitalCase(category)} />
             )}
             <form.Field name={category}>
               {(field) => (
                 <>
                   {linkCategory && <Outlet context={{ field, category }} />}
-                  {weapons.map((weapon: Item) => {
+                  {items.map((item: Item) => {
                     return (
                       <button
-                        key={weapon.id}
+                        key={item.id}
                         onClick={() => {
                           field.handleChange(
                             field.state.value.filter(
-                              (item: Item) => item.id !== weapon.id,
+                              (item: Item) => item.id !== item.id,
                             ),
                           );
                         }}
                       >
-                        <ItemCard item={weapon} mode="form" />
+                        <ItemCard item={item} mode="form" />
                       </button>
                     );
                   })}

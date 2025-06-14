@@ -42,7 +42,7 @@ const MainLayout = () => {
       >
         {mobile && (
           <div
-            className={`${navbar || sidebar ? 'visible h-dvh bg-black bg-opacity-50 backdrop-blur-md' : 'invisible h-0 bg-transparent bg-opacity-0 backdrop-blur-0'} timing absolute top-0 z-20 w-dvw`}
+            className={`${navbar || sidebar ? 'visible h-full bg-black bg-opacity-50 backdrop-blur-md' : 'invisible bg-transparent bg-opacity-0 backdrop-blur-0'} timing absolute top-0 z-20 w-dvw`}
             onClick={(e) => {
               e.stopPropagation();
               setNavbar(false);

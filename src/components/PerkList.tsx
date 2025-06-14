@@ -3,6 +3,7 @@ import { Perk, PerkTree } from 'src/types/perk';
 import ArrowHeader2 from './ArrowHeader2';
 import { FieldApi } from '@tanstack/react-form';
 import { capitalCase } from 'change-case';
+import ExpandingList from './ExpandingList';
 
 const PerkList = ({
   field,
@@ -30,46 +31,27 @@ const PerkList = ({
                   return (
                     perkList.length > 0 && (
                       <div className="flex flex-col gap-4" key={skill}>
-                        <div className="flex items-center justify-between gap-2">
-                          <h3 className="mr-auto">{capitalCase(skill)}</h3>
-                          <h4>({perkList.length})</h4>
-                        </div>
-                        <div className="flex flex-col items-start gap-4 md:grid md:grid-cols-2">
+                        <ExpandingList
+                          title={
+                            capitalCase(skill) + ' ' + `(${perkList.length})`
+                          }
+                          className="flex flex-col items-start gap-4 md:grid md:grid-cols-2"
+                        >
                           {perkList.map((perk: Perk) => {
                             const perkIds = field
                               ? field.state.value.map((perk: Perk) => perk.id)
                               : [];
                             return (
-                              <div
+                              <PerkCard
                                 key={perk.id}
-                                className="flex w-full items-center justify-between gap-4"
-                              >
-                                <PerkCard perk={perk} mode={mode} />
-                                {mode === 'form' && (
-                                  <input
-                                    className="size-6"
-                                    type="checkbox"
-                                    checked={perkIds.includes(perk.id)}
-                                    onChange={() => {
-                                      if (!perkIds?.includes(perk.id)) {
-                                        field.handleChange([
-                                          ...field.state.value,
-                                          perk,
-                                        ]);
-                                      } else {
-                                        field.handleChange(
-                                          field.state.value.filter(
-                                            (item: Perk) => item.id !== perk.id,
-                                          ),
-                                        );
-                                      }
-                                    }}
-                                  />
-                                )}
-                              </div>
+                                perk={perk}
+                                mode={mode}
+                                perkIds={perkIds}
+                                field={field}
+                              />
                             );
                           })}
-                        </div>
+                        </ExpandingList>
                       </div>
                     )
                   );
