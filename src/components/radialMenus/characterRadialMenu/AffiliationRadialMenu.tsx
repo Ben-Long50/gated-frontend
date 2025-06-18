@@ -41,29 +41,44 @@ const AffiliationRadialMenu = ({
       elementId={character.id}
       containerRef={containerRef}
       array={[
-        <div
-          onClick={() => {
-            navigate(`${path}/affiliations/create`);
-            setMenuOpen(false);
-          }}
-        >
-          <Icon className="text-inherit" path={mdiPlus} />
-        </div>,
-        <div
-          onClick={() => {
-            setMenu('character', 'large', character.id);
-          }}
-        >
-          <Icon className="text-inherit" path={mdiArrowULeftBottom} />
-        </div>,
-        <div
-          onClick={() => {
-            openAffiliationModal();
-            setMenuOpen(false);
-          }}
-        >
-          <Icon path={mdiCardTextOutline} className="size-8 text-inherit" />
-        </div>,
+        {
+          label: 'Create Affiliation',
+          element: (
+            <div
+              onClick={() => {
+                navigate(`${path}/affiliations/create`);
+                setMenuOpen(false);
+              }}
+            >
+              <Icon className="text-inherit" path={mdiPlus} />
+            </div>
+          ),
+        },
+        {
+          label: 'Back',
+          element: (
+            <div
+              onClick={() => {
+                setMenu('character', 'large', character.id);
+              }}
+            >
+              <Icon className="text-inherit" path={mdiArrowULeftBottom} />
+            </div>
+          ),
+        },
+        {
+          label: 'View Affiliations',
+          element: (
+            <div
+              onClick={() => {
+                openAffiliationModal();
+                setMenuOpen(false);
+              }}
+            >
+              <Icon path={mdiCardTextOutline} className="size-8 text-inherit" />
+            </div>
+          ),
+        },
       ]}
     />
   );

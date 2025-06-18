@@ -3,12 +3,11 @@ import handleResponse from '../handleResponse';
 const getNotes = async (
   apiUrl: string,
   campaignId: number,
-  sessionId: number,
   characterId: number,
 ) => {
   try {
     const response = await fetch(
-      `${apiUrl}/campaigns/${campaignId}/sessions/${sessionId}/characters/${characterId}/notes`,
+      `${apiUrl}/campaigns/${campaignId}/characters/${characterId}/notes`,
       {
         method: 'GET',
         credentials: 'include',

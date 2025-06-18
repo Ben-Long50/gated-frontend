@@ -24,32 +24,52 @@ const ProfitRadialMenu = ({
       elementId={character.id}
       containerRef={containerRef}
       array={[
-        <div className="flex justify-center">
-          <p className="text-2xl font-semibold !text-inherit">
-            {character.profits || 0}
-          </p>
-        </div>,
-        <div
-          onClick={() => {
-            editProfits.mutate(1);
-          }}
-        >
-          <Icon className="text-inherit" path={mdiPlus} />
-        </div>,
-        <div
-          onClick={() => {
-            setMenu('character', 'large', character.id);
-          }}
-        >
-          <Icon className="text-inherit" path={mdiArrowULeftBottom} />
-        </div>,
-        <div
-          onClick={() => {
-            editProfits.mutate(-1);
-          }}
-        >
-          <Icon className="text-inherit" path={mdiMinus} />
-        </div>,
+        {
+          label: 'Current Profits',
+          element: (
+            <div className="flex justify-center">
+              <p className="text-2xl font-semibold !text-inherit">
+                {character.profits || 0}
+              </p>
+            </div>
+          ),
+        },
+        {
+          label: 'Add Profit',
+          element: (
+            <div
+              onClick={() => {
+                editProfits.mutate(1);
+              }}
+            >
+              <Icon className="text-inherit" path={mdiPlus} />
+            </div>
+          ),
+        },
+        {
+          label: 'Back',
+          element: (
+            <div
+              onClick={() => {
+                setMenu('character', 'large', character.id);
+              }}
+            >
+              <Icon className="text-inherit" path={mdiArrowULeftBottom} />
+            </div>
+          ),
+        },
+        {
+          label: 'Remove Profit',
+          element: (
+            <div
+              onClick={() => {
+                editProfits.mutate(-1);
+              }}
+            >
+              <Icon className="text-inherit" path={mdiMinus} />
+            </div>
+          ),
+        },
       ]}
     />
   );

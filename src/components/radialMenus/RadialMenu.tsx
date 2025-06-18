@@ -102,13 +102,14 @@ const RadialMenu = ({
   };
 
   return (
-    <div className="z-20">
+    <div
+      className="absolute z-20"
+      style={{ top: `${coordinates.y}px`, left: `${coordinates.x}px` }}
+    >
       {hoveredIndex !== null && (
         <p
-          className={`timing bg-primary absolute rounded border px-1 text-sm`}
+          className={`timing bg-primary absolute whitespace-nowrap rounded border px-1 text-sm`}
           style={{
-            top: `${coordinates.y}px`,
-            left: `${coordinates.x}px`,
             transform: `translateX(-50%) translateY(-${diameter / 2 + diameter * 0.2}px)`,
             borderColor: accentPrimary,
           }}
@@ -118,13 +119,11 @@ const RadialMenu = ({
       )}
       <div
         ref={menuRef}
-        className={`${menuId === elementId && menuOpen ? 'visible scale-100' : 'invisible scale-0'} timing shadow-color absolute grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center items-start overflow-hidden rounded-full shadow-md transition-transform`}
+        className={`${menuId === elementId && menuOpen ? 'visible scale-100' : 'invisible scale-0'} timing shadow-color grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center items-start overflow-hidden rounded-full shadow-md transition-transform`}
         style={{
           height: diameter,
           width: diameter,
           gridTemplateAreas: 'center',
-          top: `${coordinates.y}px`,
-          left: `${coordinates.x}px`,
         }}
       >
         {elements?.map((element, index) => {

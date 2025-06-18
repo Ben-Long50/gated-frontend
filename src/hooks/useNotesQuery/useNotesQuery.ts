@@ -5,13 +5,11 @@ import getNotes from './getNotes';
 const useNotesQuery = (
   apiUrl: string,
   campaignId: number,
-  sessionId: number,
   characterId: number,
 ) => {
-  return useQuery<Notes>({
-    queryKey: ['notes', sessionId, characterId],
-    queryFn: async () =>
-      await getNotes(apiUrl, campaignId, sessionId, characterId),
+  return useQuery<Notes[]>({
+    queryKey: ['notes', characterId],
+    queryFn: async () => await getNotes(apiUrl, campaignId, characterId),
     throwOnError: false,
   });
 };

@@ -13,6 +13,8 @@ import { LayoutContext } from '../contexts/LayoutContext';
 import CoverPicture from './CoverPicture';
 import { capitalCase } from 'change-case';
 import CharacterPictureRound from './CharacterPictureRound';
+import BtnIcon from './buttons/BtnIcon';
+import NoteIcon from './icons/NoteIcon';
 
 const Session = () => {
   const { apiUrl, user } = useContext(AuthContext);
@@ -101,9 +103,9 @@ const Session = () => {
                   key={character.id}
                   to={`characters/${character.id}/notes`}
                 >
-                  <BtnRect ariaLabel="Navigate to notes" type="button">
-                    Notes
-                  </BtnRect>
+                  <button className="bg-tertiary text-secondary hover:text-accent shadow-color rounded-md p-2 shadow-md">
+                    <NoteIcon className="size-8" />
+                  </button>
                 </Link>
               </div>
             ))}

@@ -8,34 +8,31 @@ import { useParams } from 'react-router-dom';
 import LexicalEditor from './lexical/LexicalEditor';
 import useNotesQuery from '../hooks/useNotesQuery/useNotesQuery';
 import useCreateNotesMutation from '../hooks/useCreateNotesMutation/useCreateNotesMutation';
+import { Notes } from 'src/types/campaign';
 
-const NotesForm = ({ title, mode }: { title: string; mode?: string }) => {
+const NotesForm = ({
+  note,
+  setEditModeId,
+  title,
+  sessionId,
+}: {
+  note?: Notes;
+  setEditModeId: (id: number | null) => void;
+  title: string;
+  sessionId: number;
+}) => {
   const { apiUrl } = useContext(AuthContext);
-  const { campaignId, sessionId, characterId } = useParams();
+  const { campaignId, characterId } = useParams();
   const [formMessage, setFormMessage] = useState('');
   const [deleteMode, setDeleteMode] = useState(false);
 
   const createNotes = useCreateNotesMutation(
     apiUrl,
     Number(campaignId),
-    Number(sessionId),
+    sessionId,
     Number(characterId),
     setFormMessage,
   );
-
-  const {
-    data: notes,
-    isLoading: notesLoading,
-    isPaused: notesPending,
-  } = useNotesQuery(
-    apiUrl,
-    Number(campaignId),
-    Number(sessionId),
-    Number(characterId),
-  );
-
-  const isLoading = notesLoading;
-  const isPending = notesPending;
 
   const handleReset = async () => {
     notesForm.reset();
@@ -43,17 +40,14 @@ const NotesForm = ({ title, mode }: { title: string; mode?: string }) => {
 
   const notesForm = useForm({
     defaultValues: {
-      content: notes?.content || ({} as { html: string; nodes: object }),
+      content: note?.content || ({} as { html: string; nodes: object }),
     },
 
     onSubmit: async ({ value }) => {
-      if (mode === 'create' || mode === 'update') {
-        await createNotes.mutate(value.content);
-      }
+      await createNotes.mutate(value.content);
+      setEditModeId(null);
     },
   });
-
-  if (isLoading || isPending) return <Loading />;
 
   return (
     <FormLayout
@@ -105,7 +99,7 @@ const NotesForm = ({ title, mode }: { title: string; mode?: string }) => {
               size={1.15}
             />
           ) : (
-            title
+            'Save'
           )}
         </BtnRect>
       </form>

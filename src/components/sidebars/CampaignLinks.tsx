@@ -12,15 +12,22 @@ import Loading from '../Loading';
 import { Session } from 'src/types/campaign';
 import SessionIcon from '../icons/SessionIcon';
 import AffiliationIcon from '../icons/AffiliationIcon';
+import NoteIcon from '../icons/NoteIcon';
+import useCampaignCharactersQuery from 'src/hooks/useCampaignCharactersQuery/useCampaignCharactersQuery';
 
 const CampaignLinks = () => {
   const { apiUrl, user } = useContext(AuthContext);
   const { campaignId } = useParams();
 
-  const { data: campaign, isLoading } = useCampaignQuery(
+  const { data: campaign, isLoading: campaignLoading } = useCampaignQuery(
     apiUrl,
     Number(campaignId),
   );
+
+  const { playerCharacters, isLoading: charactersLoading } =
+    useCampaignCharactersQuery(
+      campaign?.characters.map((character) => character.id) || [],
+    );
 
   return (
     <>
@@ -59,7 +66,7 @@ const CampaignLinks = () => {
           <LinkSidebar
             title={campaign?.name}
             icon={
-              isLoading ? (
+              campaignLoading ? (
                 <Loading size={2} className="text-secondary size-12 p-1" />
               ) : (
                 <img
@@ -105,6 +112,19 @@ const CampaignLinks = () => {
               title="Non-player Characters"
               path={`campaigns/${campaignId}/characters?list=nonPlayerCharacters`}
             />
+          </LinkListSidebar>
+          <LinkListSidebar
+            icon={
+              <NoteIcon className="timing group-hover:text-accent bg-secondary z-10 size-12 shrink-0 p-2 text-inherit" />
+            }
+            title="Notes"
+          >
+            {playerCharacters.map((character) => (
+              <SubLinkSidebar
+                title={`${character?.firstName}'s Notes`}
+                path={`campaigns/${campaignId}/characters/${character.id}/notes`}
+              />
+            ))}
           </LinkListSidebar>
           <LinkSidebar
             title="Affiliations"

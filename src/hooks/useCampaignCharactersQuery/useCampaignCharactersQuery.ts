@@ -13,11 +13,13 @@ const useCampaignCharactersQuery = (characterIds: number[]) => {
         playerCharacters:
           results
             .map((result) => result.data)
-            .filter((character) => character?.playerCharacter) || [],
+            .filter((character) => character?.playerCharacter)
+            .sort((a, b) => a.firstName.localeCompare(b.firstName)) || [],
         nonPlayerCharacters:
           results
             .map((result) => result.data)
-            .filter((character) => !character?.playerCharacter) || [],
+            .filter((character) => !character?.playerCharacter)
+            .sort((a, b) => a.firstName.localeCompare(b.firstName)) || [],
         isLoading: results.some((result) => result.isLoading),
         isPending: results.some((result) => result.isPending),
       };

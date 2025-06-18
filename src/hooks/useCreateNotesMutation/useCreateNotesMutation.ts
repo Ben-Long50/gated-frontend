@@ -16,8 +16,7 @@ const useCreateNotesMutation = (
     onSuccess: (data) => {
       setFormMessage(data.message);
       return queryClient.invalidateQueries({
-        queryKey: ['notes', sessionId, characterId],
-        exact: false,
+        queryKey: ['notes', characterId],
       });
     },
     onError: (error) => {

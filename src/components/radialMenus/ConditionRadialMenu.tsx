@@ -65,52 +65,77 @@ const ConditionRadialMenu = ({
       elementId={condition.id}
       containerRef={containerRef}
       array={[
-        <div>
-          <p className="w-full text-center font-semibold !text-inherit">
-            {condition.stacks || 0}
-          </p>
-        </div>,
-        <div
-          onClick={() => {
-            if (condition.itemId) {
-              editItemConditionStacks.mutate(1);
-            } else if (condition.characterId) {
-              editCharacterConditionStacks.mutate(1);
-            }
-          }}
-        >
-          <Icon className="text-inherit" path={mdiPlus} />
-        </div>,
-        <div
-          onClick={() => {
-            if (condition.itemId) {
-              deleteItemCondition.mutate();
-            } else if (condition.characterId) {
-              deleteCharacterCondition.mutate();
-            }
-          }}
-        >
-          <Icon className="text-inherit" path={mdiTrashCanOutline} />
-        </div>,
-        <div
-          onClick={() => {
-            openDescriptionModal();
-            setMenuOpen(false);
-          }}
-        >
-          <Icon className="text-inherit" path={mdiFileDocumentOutline} />
-        </div>,
-        <div
-          onClick={() => {
-            if (condition.itemId) {
-              editItemConditionStacks.mutate(-1);
-            } else if (condition.characterId) {
-              editCharacterConditionStacks.mutate(-1);
-            }
-          }}
-        >
-          <Icon className="text-inherit" path={mdiMinus} />
-        </div>,
+        {
+          label: 'Current Stacks',
+          element: (
+            <div>
+              <p className="w-full text-center font-semibold !text-inherit">
+                {condition.stacks || 0}
+              </p>
+            </div>
+          ),
+        },
+        {
+          label: 'Add Stack',
+          element: (
+            <div
+              onClick={() => {
+                if (condition.itemId) {
+                  editItemConditionStacks.mutate(1);
+                } else if (condition.characterId) {
+                  editCharacterConditionStacks.mutate(1);
+                }
+              }}
+            >
+              <Icon className="text-inherit" path={mdiPlus} />
+            </div>
+          ),
+        },
+        {
+          label: 'Remove Condition',
+          element: (
+            <div
+              onClick={() => {
+                if (condition.itemId) {
+                  deleteItemCondition.mutate();
+                } else if (condition.characterId) {
+                  deleteCharacterCondition.mutate();
+                }
+              }}
+            >
+              <Icon className="text-inherit" path={mdiTrashCanOutline} />
+            </div>
+          ),
+        },
+        {
+          label: 'Description',
+          element: (
+            <div
+              onClick={() => {
+                openDescriptionModal();
+                setMenuOpen(false);
+              }}
+            >
+              <Icon className="text-inherit" path={mdiFileDocumentOutline} />
+            </div>
+          ),
+        },
+        {
+          label: 'Remove Stack',
+          element: (
+            <div
+              onClick={() => {
+                if (condition.itemId) {
+                  editItemConditionStacks.mutate(-1);
+                } else if (condition.characterId) {
+                  editCharacterConditionStacks.mutate(-1);
+                }
+              }}
+            >
+              <Icon className="text-inherit" path={mdiMinus} />
+            </div>
+          ),
+        },
       ]}
     />
   );

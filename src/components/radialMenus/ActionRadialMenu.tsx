@@ -29,20 +29,35 @@ const ActionRadialMenu = ({
       elementId={action.id}
       containerRef={containerRef}
       array={[
-        <div
-          onClick={() => {
-            activateAction.mutate(action.active);
-            setMenuOpen(false);
-          }}
-        >
-          <ActionIcon className="size-8 text-inherit" />
-        </div>,
-        <div>
-          <ConditionIcon className="size-8 text-inherit" />
-        </div>,
-        <div>
-          <Icon path={mdiCardTextOutline} className="size-8 text-inherit" />
-        </div>,
+        {
+          label: 'Activate Action',
+          element: (
+            <div
+              onClick={() => {
+                activateAction.mutate(action.active);
+                setMenuOpen(false);
+              }}
+            >
+              <ActionIcon className="size-8 text-inherit" />
+            </div>
+          ),
+        },
+        {
+          label: 'Nothing',
+          element: (
+            <div>
+              <ConditionIcon className="size-8 text-inherit" />
+            </div>
+          ),
+        },
+        {
+          label: 'Nothing',
+          element: (
+            <div>
+              <Icon path={mdiCardTextOutline} className="size-8 text-inherit" />
+            </div>
+          ),
+        },
       ]}
     />
   );

@@ -58,28 +58,43 @@ const ItemRadialMenu = ({
       elementId={item.id}
       containerRef={containerRef}
       array={[
-        <div
-          onClick={() => {
-            if (item.userId === user?.id) {
-              openConditionModal();
-              setMenuOpen(false);
-            }
-          }}
-        >
-          {parts.includes('conditions') && <Outlet />}
-          <ConditionIcon className="size-8 text-inherit" />
-        </div>,
-        <div>
-          <WeaponIcon className="size-8 text-inherit" />
-        </div>,
-        <div
-          onClick={() => {
-            navigate(detailsPath);
-            setMenuOpen(false);
-          }}
-        >
-          <Icon path={mdiCardTextOutline} className="size-8 text-inherit" />
-        </div>,
+        {
+          label: 'Conditions',
+          element: (
+            <div
+              onClick={() => {
+                if (item.userId === user?.id) {
+                  openConditionModal();
+                  setMenuOpen(false);
+                }
+              }}
+            >
+              {parts.includes('conditions') && <Outlet />}
+              <ConditionIcon className="size-8 text-inherit" />
+            </div>
+          ),
+        },
+        {
+          label: 'Nothing',
+          element: (
+            <div>
+              <WeaponIcon className="size-8 text-inherit" />
+            </div>
+          ),
+        },
+        {
+          label: 'Item Detials',
+          element: (
+            <div
+              onClick={() => {
+                navigate(detailsPath);
+                setMenuOpen(false);
+              }}
+            >
+              <Icon path={mdiCardTextOutline} className="size-8 text-inherit" />
+            </div>
+          ),
+        },
       ]}
     />
   );

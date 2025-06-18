@@ -12,6 +12,7 @@ import CampaignAffiliations from 'src/components/CampaignAffiliations';
 import RollModal from 'src/components/modals/RollModal';
 import CharacterRoutes from './CharacterRoutes';
 import DescriptionModal from 'src/components/modals/DescriptionModal';
+import Notes from 'src/components/Notes';
 
 const CampaignTabRoutes = () => {
   return (
@@ -42,6 +43,7 @@ const CampaignTabRoutes = () => {
               element={<DescriptionModal />}
             />
           </Route>
+          <Route path=":characterId/notes" element={<Notes />} />
           {CharacterRoutes()}
         </Route>
         {SessionRoutes()}
