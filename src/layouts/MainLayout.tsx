@@ -20,7 +20,7 @@ const MainLayout = () => {
   const sidebar = useNavigationStore((state) => state.sidebar);
   const setSidebar = useNavigationStore((state) => state.setSidebar);
 
-  const [navbarHeight, setNavbarHeight] = useState(0);
+  const navbarHeight = useNavigationStore((state) => state.navbarHeight);
 
   const navbarRef = useRef(null);
 
@@ -29,8 +29,8 @@ const MainLayout = () => {
       className={`${theme} main-layout-large relative min-h-dvh w-dvw`}
       style={{ '--accent-primary': accentPrimary } as React.CSSProperties}
     >
-      <Navbar setNavbarHeight={setNavbarHeight} navbarRef={navbarRef} />
-      <Sidebar navbarHeight={navbarHeight}>
+      <Navbar navbarRef={navbarRef} />
+      <Sidebar>
         {pathname.startsWith('/glam/codex') && <CodexLinks />}
         {pathname.startsWith('/glam/characters') && <CharacterLinks />}
         {pathname.startsWith('/glam/campaigns') && <CampaignLinks />}
@@ -38,7 +38,8 @@ const MainLayout = () => {
       </Sidebar>
       <div
         id="portal-root"
-        className={`${!mobile && 'ml-[68px]'} timing relative z-10 col-start-1 col-end-3 row-start-2 flex flex-col items-center overflow-y-auto px-2 py-4 max-xl:col-start-1 max-sm:pt-20 sm:p-8 lg:px-16`}
+        className={`${!mobile && 'ml-[68px]'} timing relative z-10 col-span-2 col-start-1 row-start-1 flex flex-col items-center px-2 py-4 max-xl:col-start-1 sm:p-8`}
+        style={{ marginTop: navbarHeight }}
       >
         {mobile && (
           <div
@@ -50,7 +51,7 @@ const MainLayout = () => {
             }}
           />
         )}
-        <Outlet context={{ navbarHeight }} />
+        <Outlet />
       </div>
     </div>
   );

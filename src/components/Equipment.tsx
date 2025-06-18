@@ -3,7 +3,13 @@ import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from '../contexts/ThemeContext';
-import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
@@ -26,6 +32,8 @@ import CharacterStatBars from './CharacterStatBars';
 import CharacterPicture from './CharacterPicture';
 import useModalStore from 'src/stores/modalStore';
 import { LayoutContext } from 'src/contexts/LayoutContext';
+import BtnAuth from './buttons/BtnAuth';
+import NavTabs from './NavTabs';
 
 const Equipment = () => {
   const { user } = useContext(AuthContext);
@@ -124,6 +132,14 @@ const Equipment = () => {
 
   return (
     <div className="relative flex w-full max-w-9xl flex-col items-center gap-8">
+      <NavTabs>
+        <Link to="..">
+          <BtnAuth>Character Sheet</BtnAuth>
+        </Link>
+        <Link to="../deployments">
+          <BtnAuth>Drones & Vehicles</BtnAuth>
+        </Link>
+      </NavTabs>
       <h1 className="text-center">{namePrefix + ' ' + 'Equipment'}</h1>
       <div className="flex w-full flex-col gap-8 sm:flex-row">
         {character?.picture?.publicId && (

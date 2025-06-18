@@ -9,13 +9,7 @@ import useCharacters from 'src/hooks/useCharacters';
 import { ThemeContext } from 'src/contexts/ThemeContext';
 import useNavigationStore from 'src/stores/navbarStore';
 
-const Sidebar = ({
-  navbarHeight,
-  children,
-}: {
-  navbarHeight: number;
-  children: ReactNode;
-}) => {
+const Sidebar = ({ children }: { children: ReactNode }) => {
   const { mobile } = useContext(LayoutContext);
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -25,6 +19,7 @@ const Sidebar = ({
 
   const sidebar = useNavigationStore((state) => state.sidebar);
   const setSidebar = useNavigationStore((state) => state.setSidebar);
+  const navbarHeight = useNavigationStore((state) => state.navbarHeight);
 
   const cartLength = useMemo(() => {
     return Object.values(activeCharacter?.characterCart || {})
@@ -42,7 +37,7 @@ const Sidebar = ({
   return (
     <nav
       ref={sidebarRef}
-      className={`${mobile ? mobileSidebarStyle : sidebarStyle} bg-secondary timing sticky z-20 col-start-1 row-start-2 flex overflow-x-hidden border-r`}
+      className={`${mobile ? mobileSidebarStyle : sidebarStyle} bg-secondary timing sticky z-20 col-start-1 row-start-1 flex overflow-x-hidden border-r`}
       style={{
         height: `calc(100dvh - ${navbarHeight}px)`,
         top: `${navbarHeight}px`,

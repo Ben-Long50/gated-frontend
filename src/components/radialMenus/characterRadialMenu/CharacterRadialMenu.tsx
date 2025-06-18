@@ -61,36 +61,51 @@ const CharacterRadialMenu = ({
   const userPermissions =
     character?.userId === user?.id || character?.campaign?.ownerId === user?.id
       ? [
-          <div
-            onClick={() => {
-              openConditionModal();
-              setMenuOpen(false);
-            }}
-          >
-            <ConditionIcon className="text-inherit" />
-          </div>,
+          {
+            label: 'Conditions',
+            element: (
+              <div
+                onClick={() => {
+                  openConditionModal();
+                  setMenuOpen(false);
+                }}
+              >
+                <ConditionIcon className="text-inherit" />
+              </div>
+            ),
+          },
 
-          <div
-            onClick={() => {
-              setMenu('profit', 'large', character.id);
-            }}
-          >
-            <ProfitsIcon className="text-inherit" />
-          </div>,
+          {
+            label: 'Profits',
+            element: (
+              <div
+                onClick={() => {
+                  setMenu('profit', 'large', character.id);
+                }}
+              >
+                <ProfitsIcon className="text-inherit" />
+              </div>
+            ),
+          },
         ]
       : [];
 
   const shop =
     character?.userId === user?.id || character?.npcTypes?.includes('shop')
       ? [
-          <div
-            onClick={() => {
-              openShopModal();
-              setMenuOpen(false);
-            }}
-          >
-            <ShopIcon className="text-inherit" />
-          </div>,
+          {
+            label: 'Shop',
+            element: (
+              <div
+                onClick={() => {
+                  openShopModal();
+                  setMenuOpen(false);
+                }}
+              >
+                <ShopIcon className="text-inherit" />
+              </div>
+            ),
+          },
         ]
       : [];
 
@@ -114,38 +129,58 @@ const CharacterRadialMenu = ({
       elementId={character.id}
       containerRef={containerRef}
       array={[
-        <div
-          onClick={() => {
-            navigate(`${path}`);
-            setMenuOpen(false);
-          }}
-        >
-          <CharacterIcon className="text-inherit" />
-        </div>,
-        <div
-          onClick={() => {
-            navigate(`${path}/equipment`);
-            setMenuOpen(false);
-          }}
-        >
-          <EquipmentIcon className="text-inherit" />
-        </div>,
-        <div
-          onClick={() => {
-            navigate(`${path}/deployments`);
-            setMenuOpen(false);
-          }}
-        >
-          <HangarIcon className="text-inherit" />
-        </div>,
+        {
+          label: 'Character Sheet',
+          element: (
+            <div
+              onClick={() => {
+                navigate(`${path}`);
+                setMenuOpen(false);
+              }}
+            >
+              <CharacterIcon className="text-inherit" />
+            </div>
+          ),
+        },
+        {
+          label: 'Equipment',
+          element: (
+            <div
+              onClick={() => {
+                navigate(`${path}/equipment`);
+                setMenuOpen(false);
+              }}
+            >
+              <EquipmentIcon className="text-inherit" />
+            </div>
+          ),
+        },
+        {
+          label: 'Drones & Vehicles',
+          element: (
+            <div
+              onClick={() => {
+                navigate(`${path}/deployments`);
+                setMenuOpen(false);
+              }}
+            >
+              <HangarIcon className="text-inherit" />
+            </div>
+          ),
+        },
 
-        <div
-          onClick={() => {
-            setMenu('affiliation', 'large', character.id);
-          }}
-        >
-          <AffiliationIcon className="text-inherit" />
-        </div>,
+        {
+          label: 'Affiliations',
+          element: (
+            <div
+              onClick={() => {
+                setMenu('affiliation', 'large', character.id);
+              }}
+            >
+              <AffiliationIcon className="text-inherit" />
+            </div>
+          ),
+        },
         ...userPermissions,
         ...shop,
       ]}

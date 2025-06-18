@@ -13,10 +13,8 @@ import { ThemeContext } from 'src/contexts/ThemeContext';
 import useNavigationStore from 'src/stores/navbarStore';
 
 const Navbar = ({
-  setNavbarHeight,
   navbarRef,
 }: {
-  setNavbarHeight: (height: number) => void;
   navbarRef: RefObject<null | HTMLElement>;
 }) => {
   const { user } = useContext(AuthContext);
@@ -28,6 +26,7 @@ const Navbar = ({
   const setNavbar = useNavigationStore((state) => state.setNavbar);
   const setSidebar = useNavigationStore((state) => state.setSidebar);
   const closeBars = useNavigationStore((state) => state.closeBars);
+  const setNavbarHeight = useNavigationStore((state) => state.setNavbarHeight);
 
   useLayoutEffect(() => {
     if (navbarRef.current) {
@@ -140,7 +139,7 @@ const Navbar = ({
   ) : (
     <nav
       ref={navbarRef}
-      className="bg-primary shadow-color timing sticky top-0 z-30 col-span-2 flex items-center justify-between gap-4 py-2 pl-4 pr-6 shadow-md"
+      className="bg-primary shadow-color timing fixed top-0 z-30 flex w-full items-center justify-between gap-4 px-4 py-2 shadow-md"
     >
       <Link to="/glam/codex">
         <h2

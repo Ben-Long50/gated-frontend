@@ -1,7 +1,13 @@
 import { useContext, useMemo, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import Loading from './Loading';
-import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  Link,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import ArrowHeader2 from './ArrowHeader2';
 import BtnRect from './buttons/BtnRect';
 import DeploymentsList from './DeploymentsList';
@@ -14,6 +20,8 @@ import { DroneControls, VehicleControls } from './ItemCardControls';
 import useModalStore from 'src/stores/modalStore';
 import ThemeContainer from './ThemeContainer';
 import { ThemeContext } from 'src/contexts/ThemeContext';
+import BtnAuth from './buttons/BtnAuth';
+import NavTabs from './NavTabs';
 
 const Deployments = () => {
   const { user } = useContext(AuthContext);
@@ -93,6 +101,14 @@ const Deployments = () => {
 
   return (
     <div className="relative flex w-full max-w-9xl flex-col items-center gap-8">
+      <NavTabs>
+        <Link to="..">
+          <BtnAuth>Character Sheet</BtnAuth>
+        </Link>
+        <Link to="../equipment">
+          <BtnAuth>Equipment</BtnAuth>
+        </Link>
+      </NavTabs>
       <div className="flex items-center gap-4">
         <h1 className="text-center">Deployment</h1>
         {activeItem && <ArrowHeader1 title={activeItem.name} />}

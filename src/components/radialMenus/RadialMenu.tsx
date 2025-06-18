@@ -16,7 +16,7 @@ const RadialMenu = ({
 }: {
   elementId: number;
   containerRef: ReactNode;
-  array: ReactNode[];
+  array: { label: string; element: ReactNode }[];
 }) => {
   const { accentPrimary } = useContext(ThemeContext);
 
@@ -42,6 +42,9 @@ const RadialMenu = ({
     window.addEventListener('click', closeMenu);
     return () => window.removeEventListener('click', closeMenu);
   }, [containerRef, menuOpen]);
+
+  const elements = array.map((item) => item.element);
+  const labels = array.map((item) => item.label);
 
   let radius = 0;
   let iconSize = 0;
@@ -99,58 +102,73 @@ const RadialMenu = ({
   };
 
   return (
-    <div
-      ref={menuRef}
-      className={`${menuId === elementId && menuOpen ? 'visible scale-100' : 'invisible scale-0'} timing shadow-color absolute z-20 grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center items-start overflow-hidden rounded-full shadow-md transition-transform`}
-      style={{
-        height: diameter,
-        width: diameter,
-        gridTemplateAreas: 'center',
-        top: `${coordinates.y}px`,
-        left: `${coordinates.x}px`,
-      }}
-    >
-      {array?.map((element, index) => {
-        if (!isValidElement(element)) return null;
+    <div className="z-20">
+      {hoveredIndex !== null && (
+        <p
+          className={`timing bg-primary absolute rounded border px-1 text-sm`}
+          style={{
+            top: `${coordinates.y}px`,
+            left: `${coordinates.x}px`,
+            transform: `translateX(-50%) translateY(-${diameter / 2 + diameter * 0.2}px)`,
+            borderColor: accentPrimary,
+          }}
+        >
+          {labels[hoveredIndex]}
+        </p>
+      )}
+      <div
+        ref={menuRef}
+        className={`${menuId === elementId && menuOpen ? 'visible scale-100' : 'invisible scale-0'} timing shadow-color absolute grid size-48 -translate-x-1/2 -translate-y-1/2 place-content-center items-start overflow-hidden rounded-full shadow-md transition-transform`}
+        style={{
+          height: diameter,
+          width: diameter,
+          gridTemplateAreas: 'center',
+          top: `${coordinates.y}px`,
+          left: `${coordinates.x}px`,
+        }}
+      >
+        {elements?.map((element, index) => {
+          if (!isValidElement(element)) return null;
 
-        const onClick = element.props.onClick || null;
+          const onClick = element.props.onClick || null;
 
-        return (
-          <button
-            key={index}
-            className={`${!active && 'opacity-50'} bg-tertiary timing group pointer-events-auto flex items-start justify-center`}
-            style={{
-              backgroundColor: hoveredIndex === index && accentPrimary,
-              height:
-                sliceDims.diameter / 2 -
-                (sliceDims.diameter / 2) * sliceDims.centerOffset,
-              width: sliceDims.pieWidthOutside,
-              transform: `rotate(${(360 / sliceDims.segmentCount) * index}deg) translateY(-50%) translateY(-${(sliceDims.diameter / 2) * sliceDims.centerOffset}px)`,
-              gridArea: 'center',
-              clipPath: `polygon(0% 0%, 100% 0%, ${(sliceDims.pieWidthOutside + sliceDims.pieWidthInside) / 2}px 100%, ${(sliceDims.pieWidthOutside - sliceDims.pieWidthInside) / 2}px 100%)`,
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onClick) {
-                onClick();
-              }
-            }}
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
-          >
-            <div
-              className={`${hoveredIndex === index && active ? 'text-black' : 'text-secondary'} pointer-events-none`}
+          return (
+            <button
+              key={index}
+              className={`${!active && 'opacity-50'} bg-tertiary timing group pointer-events-auto flex items-start justify-center`}
               style={{
-                height: iconSize,
-                width: iconSize,
-                transform: `translateY(${sliceDims.offset}px) rotate(-${(360 / sliceDims.segmentCount) * index}deg)`,
+                backgroundColor: hoveredIndex === index && accentPrimary,
+                height:
+                  sliceDims.diameter / 2 -
+                  (sliceDims.diameter / 2) * sliceDims.centerOffset,
+                width: sliceDims.pieWidthOutside,
+                transform: `rotate(${(360 / sliceDims.segmentCount) * index}deg) translateY(-50%) translateY(-${(sliceDims.diameter / 2) * sliceDims.centerOffset}px)`,
+                gridArea: 'center',
+                clipPath: `polygon(0% 0%, 100% 0%, ${(sliceDims.pieWidthOutside + sliceDims.pieWidthInside) / 2}px 100%, ${(sliceDims.pieWidthOutside - sliceDims.pieWidthInside) / 2}px 100%)`,
               }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onClick) {
+                  onClick();
+                }
+              }}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
             >
-              {element}
-            </div>
-          </button>
-        );
-      })}
+              <div
+                className={`${hoveredIndex === index && active ? 'text-black' : 'text-secondary'} pointer-events-none`}
+                style={{
+                  height: iconSize,
+                  width: iconSize,
+                  transform: `translateY(${sliceDims.offset}px) rotate(-${(360 / sliceDims.segmentCount) * index}deg)`,
+                }}
+              >
+                {element}
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };

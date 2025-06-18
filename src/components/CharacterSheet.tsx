@@ -11,7 +11,7 @@ import EvasionIcon from './icons/EvasionIcon';
 import ArmorIcon from './icons/ArmorIcon';
 import WardIcon from './icons/WardIcon';
 import SpeedIcon from './icons/SpeedIcon';
-import { Link, Outlet, useParams } from 'react-router-dom';
+import { Link, Outlet, useOutletContext, useParams } from 'react-router-dom';
 import BtnRect from './buttons/BtnRect';
 import InjuryIcon from './icons/InjuryIcon';
 import InsanityIcon from './icons/InsanityIcon';
@@ -27,6 +27,8 @@ import CharacterStatBars from './CharacterStatBars';
 import { capitalCase } from 'change-case';
 import ConditionTag from './ConditionTag';
 import ExpandingList from './ExpandingList';
+import useNavigationStore from 'src/stores/navbarStore';
+import NavTabs from './NavTabs';
 
 const CharacterSheet = () => {
   const { accentPrimary } = useContext(ThemeContext);
@@ -34,9 +36,13 @@ const CharacterSheet = () => {
   const { user } = useContext(AuthContext);
   const { mobile } = useContext(LayoutContext);
 
+  const navbarHeight = useNavigationStore((state) => state.navbarHeight);
+
   const [infoVisibility, setInfoVisibility] = useState(mobile ? false : true);
 
   const cardRef = useRef(null);
+
+  console.log(navbarHeight);
 
   const {
     filteredCharacter: character,
@@ -54,7 +60,15 @@ const CharacterSheet = () => {
   }
 
   return (
-    <div className="text-primary flex w-full max-w-5xl flex-col gap-10">
+    <div className="text-primary flex w-full max-w-5xl flex-col gap-8">
+      <NavTabs>
+        <Link to="equipment">
+          <BtnAuth>Equipment</BtnAuth>
+        </Link>
+        <Link to="deployments">
+          <BtnAuth>Drones & Vehicles</BtnAuth>
+        </Link>
+      </NavTabs>
       <div className="flex flex-col items-center justify-between gap-8 lg:flex-row">
         <div className="flex w-full items-center gap-4">
           <ThemeContainer
